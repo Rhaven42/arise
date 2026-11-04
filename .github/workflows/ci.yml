@@ -99,6 +99,8 @@ jobs:
       - run: flutter pub get
       - run: flutter gen-l10n
       - run: dart run build_runner build --delete-conflicting-outputs
+      - name: Préconstruction Android (NDK installé avant de lancer l'émulateur)
+        run: flutter build apk --debug --target=integration_test/app_launch_test.dart
       - name: Démarrage de l'application sur un émulateur
         uses: reactivecircus/android-emulator-runner@v2
         with:

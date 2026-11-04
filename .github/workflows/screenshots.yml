@@ -40,6 +40,8 @@ jobs:
       - run: flutter pub get
       - run: flutter gen-l10n
       - run: dart run build_runner build --delete-conflicting-outputs
+      - name: Préconstruction Android (NDK installé avant de lancer l'émulateur)
+        run: flutter build apk --debug --target=integration_test/screenshots_test.dart
       - name: Captures sur émulateur (Pixel)
         uses: reactivecircus/android-emulator-runner@v2
         with:
