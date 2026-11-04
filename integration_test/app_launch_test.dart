@@ -21,6 +21,19 @@ Future<void> _tapText(WidgetTester tester, String text) async {
   await tester.pumpAndSettle();
 }
 
+/// Revient en arrière jusqu'à l'écran qui affiche [text] (au plus 3 retours).
+///
+/// Un retour peut être absorbé par la fin d'une sauvegarde ou d'une
+/// transition : on vérifie l'écran atteint au lieu de compter les retours.
+Future<void> _backTo(WidgetTester tester, String text) async {
+  for (var attempt = 0; attempt < 3; attempt++) {
+    await tester.pumpAndSettle();
+    if (find.text(text).evaluate().isNotEmpty) return;
+    await tester.binding.handlePopRoute();
+  }
+  await tester.pumpAndSettle();
+}
+
 /// Avance le temps sans attendre la fin des animations en boucle.
 Future<void> _pumpFor(WidgetTester tester, int milliseconds) async {
   for (var elapsed = 0; elapsed < milliseconds; elapsed += 100) {
@@ -85,8 +98,7 @@ void main() {
     expect(find.text('Durée estimée : 4 min'), findsOneWidget);
     await _tapText(tester, 'Enregistrer');
     expect(find.text('Tabata express'), findsOneWidget);
-    await tester.binding.handlePopRoute();
-    await tester.pumpAndSettle();
+    await _backTo(tester, 'Planning');
 
     // Planning : séance le lundi, sans rappel (évite la demande
     // d'autorisation système pendant le test).
