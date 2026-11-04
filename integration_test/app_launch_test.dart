@@ -4,6 +4,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 Future<void> _tapText(WidgetTester tester, String text) async {
+  // Les listes ne construisent que les éléments visibles : on fait défiler
+  // la page jusqu'au texte s'il n'est pas encore à l'écran.
+  if (find.text(text).evaluate().isEmpty) {
+    await tester.scrollUntilVisible(
+      find.text(text),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+  }
   await tester.ensureVisible(find.text(text).last);
   await tester.tap(find.text(text).last);
   await tester.pumpAndSettle();
