@@ -3,10 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
+/// Attend qu'un widget apparaisse (au plus 10 s).
+///
+/// Les écritures dans la base locale se terminent hors du cycle d'images :
+/// `pumpAndSettle` peut rendre la main avant la navigation qui suit.
+Future<void> _waitFor(WidgetTester tester, Finder finder) async {
+  for (var elapsed = 0; elapsed < 10000; elapsed += 100) {
+    if (finder.evaluate().isNotEmpty) return;
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+}
+
 Future<void> _tapText(WidgetTester tester, String text) async {
   // Le clavier peut masquer le texte : on le ferme d'abord.
   FocusManager.instance.primaryFocus?.unfocus();
   await tester.pumpAndSettle();
+  await _waitFor(tester, find.text(text));
   // Les listes ne construisent que les éléments visibles : on fait défiler
   // la page jusqu'au texte s'il n'est pas encore à l'écran.
   if (find.text(text).evaluate().isEmpty) {
@@ -28,6 +40,7 @@ Future<void> _tapText(WidgetTester tester, String text) async {
 Future<void> _backTo(WidgetTester tester, String text) async {
   for (var attempt = 0; attempt < 3; attempt++) {
     await tester.pumpAndSettle();
+    await _waitFor(tester, find.text(text));
     if (find.text(text).evaluate().isNotEmpty) return;
     await tester.binding.handlePopRoute();
   }
@@ -65,6 +78,7 @@ void main() {
     await _tapText(tester, 'Continuer');
     await _tapText(tester, "J'ai lu et compris ce rappel");
     await _tapText(tester, 'Entrer dans Arisia');
+    await _waitFor(tester, find.text('Bienvenue, chasseur'));
 
     expect(find.text('Bienvenue, chasseur'), findsOneWidget);
     expect(find.text('Jours de repos : Samedi'), findsOneWidget);
