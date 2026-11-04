@@ -4,44 +4,58 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('resolveRedirect', () {
-    test('laisse passer les écrans publics quel que soit l’état', () {
-      for (final status in AuthStatus.values) {
-        expect(
-          resolveRedirect(location: AppRoutes.welcome, status: status),
-          isNull,
-        );
-        expect(
-          resolveRedirect(location: AppRoutes.designSystem, status: status),
-          isNull,
-        );
+    test('laisse toujours passer l’écran titre et la restauration', () {
+      for (final status in ProfileStatus.values) {
+        for (final location in [
+          AppRoutes.title,
+          AppRoutes.designSystem,
+          AppRoutes.restore,
+        ]) {
+          expect(
+            resolveRedirect(location: location, status: status),
+            isNull,
+          );
+        }
       }
     });
 
-    test('renvoie vers l’accueil un visiteur non connecté', () {
+    test('renvoie vers l’écran titre tant qu’il n’y a pas de profil', () {
+      for (final status in [ProfileStatus.unknown, ProfileStatus.missing]) {
+        for (final location in [
+          AppRoutes.systemHome,
+          AppRoutes.settings,
+          AppRoutes.backup,
+        ]) {
+          expect(
+            resolveRedirect(location: location, status: status),
+            AppRoutes.title,
+          );
+        }
+      }
+    });
+
+    test('ouvre les écrans du jeu une fois le profil créé', () {
       expect(
         resolveRedirect(
-          location: AppRoutes.systemHome,
-          status: AuthStatus.signedOut,
+          location: AppRoutes.settings,
+          status: ProfileStatus.ready,
         ),
-        AppRoutes.welcome,
+        isNull,
       );
     });
 
-    test('renvoie vers l’accueil tant que la session est inconnue', () {
+    test('ne repropose pas le questionnaire à un joueur déjà éveillé', () {
       expect(
         resolveRedirect(
-          location: AppRoutes.systemHome,
-          status: AuthStatus.unknown,
+          location: AppRoutes.onboarding,
+          status: ProfileStatus.ready,
         ),
-        AppRoutes.welcome,
+        AppRoutes.systemHome,
       );
-    });
-
-    test('laisse un utilisateur connecté accéder aux écrans protégés', () {
       expect(
         resolveRedirect(
-          location: AppRoutes.systemHome,
-          status: AuthStatus.signedIn,
+          location: AppRoutes.onboarding,
+          status: ProfileStatus.missing,
         ),
         isNull,
       );

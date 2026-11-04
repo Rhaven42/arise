@@ -67,6 +67,33 @@ abstract final class AriseTheme {
         ),
       ),
       dividerTheme: const DividerThemeData(color: AriseColors.stoneLight),
+      chipTheme: ChipThemeData(
+        backgroundColor: AriseColors.stone,
+        selectedColor: AriseColors.gold,
+        checkmarkColor: AriseColors.onGold,
+        side: const BorderSide(color: AriseColors.woodLight),
+        labelStyle: textTheme.bodyMedium?.copyWith(
+          color: WidgetStateColor.resolveWith(
+            (states) => states.contains(WidgetState.selected)
+                ? AriseColors.onGold
+                : AriseColors.parchment,
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AriseSpacing.sm,
+          vertical: AriseSpacing.xs,
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: AriseColors.stoneLight,
+        contentTextStyle: textTheme.bodyMedium,
+        behavior: SnackBarBehavior.floating,
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AriseColors.stone,
+        titleTextStyle: textTheme.titleLarge,
+        contentTextStyle: textTheme.bodyMedium,
+      ),
     );
   }
 }

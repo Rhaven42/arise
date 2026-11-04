@@ -43,6 +43,48 @@ void main() {
     });
   });
 
+  group('profil', () {
+    test('est enregistré, remplacé et diffusé', () async {
+      final emissions = database.watchProfileJson();
+      final expectation = expectLater(
+        emissions,
+        emitsInOrder([isNull, '{"v":1}', '{"v":2}']),
+      );
+
+      await pumpEventQueue();
+      await database.saveProfileJson(
+        '{"v":1}',
+        updatedAt: DateTime.utc(2026),
+      );
+      await pumpEventQueue();
+      await database.saveProfileJson(
+        '{"v":2}',
+        updatedAt: DateTime.utc(2026),
+      );
+      await expectation;
+    });
+
+    test('eraseAll efface profil, brouillons et séances', () async {
+      await database.saveProfileJson('{}', updatedAt: DateTime.utc(2026));
+      await database.saveDraft(
+        key: 'k',
+        json: '{}',
+        updatedAt: DateTime.utc(2026),
+      );
+      await database.enqueuePendingSession(
+        id: 's',
+        payloadJson: '{}',
+        createdAt: DateTime.utc(2026),
+      );
+
+      await database.eraseAll();
+
+      expect(await database.readProfileJson(), isNull);
+      expect(await database.readDraft('k'), isNull);
+      expect(await database.pendingSessionsInOrder(), isEmpty);
+    });
+  });
+
   group('brouillons', () {
     test('sont enregistrés, remplacés puis supprimés', () async {
       expect(await database.readDraft('character'), isNull);

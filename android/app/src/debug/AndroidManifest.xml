@@ -1,7 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- INTERNET : nécessaire en développement (hot reload, débogage). -->
+    <!-- INTERNET : nécessaire uniquement en développement (hot reload,
+         débogage). L'application elle-même fonctionne hors ligne. -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- Trafic HTTP en clair autorisé uniquement en debug, pour joindre les
-         émulateurs Firebase locaux (10.0.2.2 ou l'IP du poste). -->
-    <application android:usesCleartextTraffic="true"/>
 </manifest>

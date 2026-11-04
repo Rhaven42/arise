@@ -3,6 +3,8 @@
 > Référence fonctionnelle complète. En cas de conflit : CLAUDE.md (règles) > ANATOMY.md (anatomie) > SPEC.md. Les valeurs numériques citées ici sont reportées dans les fichiers de configuration de jeu (client + serveur) et ne sont écrites nulle part ailleurs dans le code.
 >
 > Les points marqués **[À PRÉCISER]** sont tranchés par les décisions de la section 20, qui font foi.
+>
+> ⚠️ **Depuis le 04/11/2026, l'application est 100 % hors ligne (§21).** Partout où ce document parle de « serveur », de Cloud Functions, de Firestore ou de connexion Google, lire : logique du domaine et base locale Drift sur le téléphone. Le coach caméra est retiré du MVP.
 
 ## 1. Vision et univers
 - Application de sport gamifiée : sport réel → expérience → niveaux → rangs → évolution d'un avatar 3D personnalisable.
@@ -12,13 +14,13 @@
 
 ## 2. Onboarding
 1. **Écran titre** dans une taverne fantasy.
-2. **Connexion Google** (Firebase Auth). Création de l'utilisateur côté serveur (Cloud Function).
+2. ~~Connexion Google~~ — retirée (§21) : aucun compte, le profil est créé sur le téléphone.
 3. **Questionnaire** :
    - objectif : force, perte de poids, endurance, souplesse, forme générale ;
    - niveau (débutant, intermédiaire, avancé — libellés à valider) ;
    - équipement disponible ;
    - **1 à 3 jours de repos par semaine**, choisis librement ;
-   - consentements santé et caméra (séparés, révocables dans les paramètres).
+   - consentement santé (révocable dans les paramètres) et rappel de prudence (douleur, fatigue extrême).
 4. **Création du personnage** (§3).
 5. **Tutoriel « l'Éveil »** : première quête simple de **10 squats** qui fait passer au **niveau 1**.
 
@@ -175,7 +177,8 @@
 - Alertes de déséquilibre poussée / tirage et avant / arrière **[À PRÉCISER : groupes et seuil]**.
 - **Agrégats calculés côté serveur.**
 
-## 12. Coach caméra
+## 12. Coach caméra — retiré du MVP (§21)
+Conservé ci-dessous à titre d'idée pour une version future.
 - Optionnel, uniquement avec consentement.
 - Détection de pose sur l'appareil (ML Kit) : comptage des répétitions de pompes, squats, jumping jacks, fentes ; chronométrage de la planche ; vérification de l'amplitude.
 - Anti-triche : répétitions validées par caméra = **+10 % d'XP** ; caméra obligatoire pendant les boss si l'exercice est compatible.
@@ -209,42 +212,32 @@
 - **Paramètres** : unités, sons, notifications, caméra, santé ; **export et suppression des données (RGPD)**.
 - Classement entre amis : **hors MVP**, prévu plus tard.
 
-## 16. Modèle de données (Firestore)
-Proposition de structure (à affiner en phase 0/1) :
-```
-users/{uid}                         profil (client : champs non sensibles)
-users/{uid}/character/current       sexe, morphologie, apparence, équipement porté (client, contrôlé)
-users/{uid}/progression/current     niveau, XP, rang, stats, points libres, cristaux, série, boucliers, classe (SERVEUR)
-users/{uid}/sessions/{id}           séances ; source : manual | camera | health (client : création seule)
-users/{uid}/programs/{id}           programmes (client)
-users/{uid}/customExercises/{id}    exercices personnalisés (client)
-users/{uid}/inventory/{itemId}      (SERVEUR)
-users/{uid}/achievements/{id}       (SERVEUR)
-users/{uid}/quests/{id}             (SERVEUR)
-users/{uid}/muscleAggregates/{period} agrégats par période (SERVEUR)
-users/{uid}/trials/{id}             tentatives d'épreuves (SERVEUR)
-users/{uid}/shadows/{id}            Ombres (SERVEUR)
-usernames/{normalizedName}          réservation de nom (SERVEUR)
-catalog_exercises/{id}              lecture seule
-catalog_items/{id}                  lecture seule
-catalog_achievements/{id}           lecture seule
-catalog_trials/{id}                 lecture seule
-```
-
-## 17. Fonctions serveur
-| Fonction | Déclencheur | Rôle |
+## 16. Modèle de données (base locale Drift)
+Une seule base SQLite sur le téléphone. Tables prévues (créées au fil des phases, chaque ajout = migration testée) :
+| Table | Contenu | Phase |
 |---|---|---|
-| `onUserCreated` | Auth | création du document utilisateur et de la progression initiale |
-| `onSessionCreated` | Firestore create | validation, XP, stats, progression, agrégats, hauts faits |
-| `dailyTick` | Planifiée (horaire), par fuseau | séries, pénalités, boucliers, génération des quêtes |
-| `purchaseItem` | Callable | achat en cristaux |
-| `allocateStatPoints` | Callable | répartition des points libres |
-| `chooseClass` | Callable | choix/changement de classe (rang C, 1×/mois) |
-| `startTrial` / `completeTrial` | Callable | démarrage et validation des épreuves |
-| `reserveUsername` | Callable | filtre + unicité du nom |
-| `syncHealthData` | Callable | ingestion des données santé plafonnées |
-| `setSickMode` | Callable | mode maladie / blessure (≤ 14 jours) |
-| `exportUserData` / `deleteUserData` | Callable | RGPD |
+| `player_profiles` | profil du questionnaire (objectif, niveau, équipement, jours de repos, consentement santé) | 1 |
+| `local_drafts` | brouillons (questionnaire, personnage) | 0 |
+| `pending_sessions` | file de séances (conservée pour un futur export ou une synchronisation) | 0 |
+| `characters` | sexe, race, morphologie, apparence, équipement porté | 6 |
+| `progression` | niveau, XP, rang, stats, points libres, cristaux, série, boucliers, classe | 4 |
+| `sessions`, `session_sets` | séances réalisées ; source : manuelle ou santé | 3 |
+| `programs`, `custom_exercises` | programmes et exercices personnalisés | 2 |
+| `inventory`, `achievements`, `quests`, `trials`, `shadows` | contenu du jeu débloqué | 7 à 9 |
+| `muscle_aggregates` | volume par muscle et par période | 5 |
+
+Les catalogues (exercices, objets, hauts faits, épreuves) sont des fichiers embarqués en lecture seule.
+
+## 17. Règles du jeu (use cases du domaine)
+| Use case | Rôle |
+|---|---|
+| `CompleteSession` | validation, XP, stats, progression, agrégats, hauts faits |
+| `RunDailyRollover` | à l'ouverture de l'app, pour chaque jour écoulé : séries, pénalités, boucliers, génération des quêtes |
+| `AllocateStatPoints`, `ChooseClass` | répartition des points, choix de classe (rang C, 1×/mois) |
+| `StartTrial` / `CompleteTrial` | épreuves de rang |
+| `PurchaseItem` | achat en cristaux |
+| `SetSickMode` | mode maladie / blessure (≤ 14 jours) |
+| `ExportBackup` / `ImportBackup` / `EraseAllData` | sauvegarde et effacement |
 
 ## 18. Accessibilité et santé (exigences transverses)
 - Polices dynamiques, contrastes suffisants, heatmap daltonien-compatible (motifs + libellés), lecteurs d'écran.
@@ -269,3 +262,15 @@ Ces décisions remplacent les anciens points « [À PRÉCISER] ». Toute valeur 
 8. **Polices et sons** : polices Google Fonts sous licence OFL (Cinzel, IM Fell English) incluses dans l'app ; sons libres de droits.
 9. **Lint** : `very_good_analysis` (Dart) et ESLint strict (TypeScript).
 10. **Environnement** : code hébergé sur un **dépôt GitHub** ; compilation et tests Flutter via **GitHub Actions**.
+
+## 21. Passage en 100 % hors ligne (04/11/2026)
+Décision de la propriétaire du projet : pas de forfait Firebase Blaze, pas de serveur, pas de caméra.
+
+1. **Aucun compte ni serveur.** Firebase (Auth, Firestore, Functions, Storage, Messaging) et la connexion Google sont retirés. Toutes les données vivent dans la base Drift du téléphone.
+2. **Règles du jeu** : calculées par les use cases purs de la couche `domain` (et non plus par des Cloud Functions). Les quêtes, séries, pénalités et agrégats musculaires sont évalués sur l'appareil, à l'ouverture de l'application et à chaque séance, dans le fuseau horaire du téléphone.
+3. **Sauvegarde** : export d'un fichier JSON versionné (partage vers Drive, mails…) et import pour restaurer sur un nouveau téléphone. Effacement complet des données dans les paramètres.
+4. **Coach caméra** : retiré du MVP. Plus de bonus caméra (+10 %) ; les répétitions sont saisies à la main, y compris pendant les épreuves de boss.
+5. **Nom du personnage** : unicité non vérifiable sans serveur ; seuls la longueur (3 à 16 caractères) et le filtre anti-insultes s'appliquent.
+6. **Classement entre amis** : impossible sans serveur ; reste hors périmètre.
+7. **Anti-triche** : sans objet pour une application solo.
+8. **Créateur de personnage (phase 6)** : interface à menus déroulants demandée, qui met à jour la fiche JSON du personnage et affiche le rendu en direct, avec un choix de **race (Humain, Elfe, Orque)** en plus du sexe, du nombre de coiffures et de la couleur de peau. Modèles **originaux uniquement** : `wow-model-viewer`, Wowhead et les exports de World of Warcraft sont exclus (assets protégés). Le détail (races × sexes, maillages à prévoir) sera validé avec le plan de la phase 6 et reporté dans ASSETS.md.

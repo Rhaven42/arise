@@ -51,9 +51,3 @@ app.*.map.json
 *.g.dart
 *.freezed.dart
 lib/l10n/generated/
-
-# Firebase
-.firebase/
-firebase-debug.log
-firestore-debug.log
-ui-debug.log

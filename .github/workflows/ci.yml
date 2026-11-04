@@ -37,8 +37,8 @@ jobs:
       - name: Analyse (aucun avertissement toléré)
         run: flutter analyze --fatal-infos --fatal-warnings
       - name: Absence de TODO
-        run: "! grep -rnI 'TODO' lib test functions/src functions/test android/app/src ios/Runner --include='*.dart' --include='*.ts' --include='*.kt' --include='*.kts' --include='*.swift' --include='*.xml'"
-      - name: Tests (dont parité de la configuration de jeu)
+        run: "! grep -rnI 'TODO' lib test integration_test android/app/src ios/Runner --include='*.dart' --include='*.kt' --include='*.kts' --include='*.swift' --include='*.xml'"
+      - name: Tests
         run: flutter test --coverage
       - name: APK de debug
         run: flutter build apk --debug
@@ -82,47 +82,4 @@ jobs:
           disable-animations: true
           disk-size: 4096M
           emulator-boot-timeout: 900
-          script: flutter test integration_test -d emulator-5554
-
-  functions:
-    name: Cloud Functions (lint, build, tests, parité)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    defaults:
-      run:
-        working-directory: functions
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: npm
-          cache-dependency-path: functions/package-lock.json
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm run build
-      - run: npm test
-
-  rules:
-    name: Règles de sécurité (émulateur)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: npm
-          cache-dependency-path: functions/package-lock.json
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-      - run: npm ci
-        working-directory: functions
-      - name: Tests des règles Firestore
-        run: >
-          functions/node_modules/.bin/firebase emulators:exec
-          --only firestore --project demo-arise
-          "npm --prefix functions run test:rules"
+          script: flutter test integration_test/app_launch_test.dart -d emulator-5554

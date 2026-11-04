@@ -2,7 +2,6 @@
   "@@locale": "fr",
   "appTitle": "ARISE",
   "welcomeTagline": "Le royaume d'Arisia attend son prochain chasseur.",
-  "welcomeBuildInfo": "Version de développement — fondations",
   "welcomeDesignSystemButton": "Voir le design system",
   "designSystemTitle": "Design system",
   "designSystemColors": "Couleurs",
@@ -36,30 +35,206 @@
   "xpProgress": "{current} / {goal} XP",
   "@xpProgress": {
     "placeholders": {
-      "current": { "type": "int" },
-      "goal": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      }
     }
   },
   "xpSemantics": "Expérience : {current} sur {goal}",
   "@xpSemantics": {
     "placeholders": {
-      "current": { "type": "int" },
-      "goal": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      }
     }
   },
   "rankName": "{rank, select, e{E} d{D} c{C} b{B} a{A} s{S} monarch{Monarque} other{?}}",
   "@rankName": {
     "placeholders": {
-      "rank": { "type": "String" }
+      "rank": {
+        "type": "String"
+      }
     }
   },
   "rankSemantics": "Rang {rank}",
   "@rankSemantics": {
     "placeholders": {
-      "rank": { "type": "String" }
+      "rank": {
+        "type": "String"
+      }
     }
   },
   "systemHomeTitle": "Fenêtre du Système",
-  "systemHomeBody": "Ta progression s'affichera ici.",
-  "backButtonLabel": "Retour"
+  "backButtonLabel": "Retour",
+  "titleStartButton": "Commencer l'aventure",
+  "titleContinueButton": "Continuer",
+  "titleRestoreButton": "Restaurer une sauvegarde",
+  "onboardingTitle": "L'Éveil",
+  "onboardingStepCounter": "Étape {current} sur {total}",
+  "@onboardingStepCounter": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingBack": "Retour",
+  "onboardingNext": "Continuer",
+  "onboardingFinish": "Entrer dans Arisia",
+  "onboardingGoalQuestion": "Quel est ton objectif principal ?",
+  "goalLabel": "{goal, select, strength{Force} weightLoss{Perte de poids} endurance{Endurance} flexibility{Souplesse} generalFitness{Forme générale} other{?}}",
+  "@goalLabel": {
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "goalDescription": "{goal, select, strength{Gagner en puissance et en muscle.} weightLoss{Brûler des calories et s'affiner.} endurance{Tenir plus longtemps et mieux respirer.} flexibility{Gagner en mobilité et en aisance.} generalFitness{Bouger régulièrement et se sentir bien.} other{?}}",
+  "@goalDescription": {
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingLevelQuestion": "Quel est ton niveau actuel ?",
+  "levelLabel": "{level, select, beginner{Débutant} intermediate{Intermédiaire} advanced{Avancé} other{?}}",
+  "@levelLabel": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "levelDescription": "{level, select, beginner{Je débute ou je reprends le sport.} intermediate{Je m'entraîne de temps en temps.} advanced{Je m'entraîne régulièrement depuis longtemps.} other{?}}",
+  "@levelDescription": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingEquipmentQuestion": "De quel équipement disposes-tu ?",
+  "onboardingEquipmentHint": "Aucun équipement ? Pas de souci : tout peut se faire au poids du corps.",
+  "equipmentLabel": "{item, select, dumbbells{Haltères} barbell{Barre et disques} kettlebell{Kettlebell} pullUpBar{Barre de traction} dipBars{Barres parallèles} bench{Banc} resistanceBands{Élastiques} jumpRope{Corde à sauter} yogaMat{Tapis} stationaryBike{Vélo d'appartement} rowingMachine{Rameur} other{?}}",
+  "@equipmentLabel": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingRestQuestion": "Quels jours veux-tu te reposer ?",
+  "onboardingRestHint": "Choisis de {min} à {max} jours. Le repos fait partie de l'entraînement : ces jours-là, ta série ne sera jamais cassée.",
+  "@onboardingRestHint": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingRestCount": "{count, plural, =0{Aucun jour choisi} =1{1 jour choisi} other{{count} jours choisis}}",
+  "@onboardingRestCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "weekdayLong": "{day, select, monday{Lundi} tuesday{Mardi} wednesday{Mercredi} thursday{Jeudi} friday{Vendredi} saturday{Samedi} sunday{Dimanche} other{?}}",
+  "@weekdayLong": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "weekdayShort": "{day, select, monday{Lun} tuesday{Mar} wednesday{Mer} thursday{Jeu} friday{Ven} saturday{Sam} sunday{Dim} other{?}}",
+  "@weekdayShort": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingHealthQuestion": "Santé et prudence",
+  "healthConsentTitle": "Lire mes données de santé",
+  "healthConsentBody": "ARISE pourra lire tes pas, ton sommeil et tes activités pour te faire progresser. Rien n'est jamais écrit ni envoyé : tout reste sur ton téléphone. Tu pourras changer d'avis dans les paramètres.",
+  "safetyTitle": "Rappel de prudence",
+  "safetyBody": "Arrête immédiatement l'exercice en cas de douleur, de vertige ou de fatigue extrême. Si tu as un problème de santé, demande l'avis d'un médecin avant de commencer.",
+  "safetyAcknowledge": "J'ai lu et compris ce rappel",
+  "systemWelcomeTitle": "Bienvenue, chasseur",
+  "systemWelcomeBody": "Le Système a enregistré ton éveil. Ton premier entraînement arrive bientôt.",
+  "systemLevel": "Niveau {level}",
+  "@systemLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "systemGoal": "Objectif : {goal}",
+  "@systemGoal": {
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "systemRestDays": "Jours de repos : {days}",
+  "@systemRestDays": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsTitle": "Paramètres",
+  "settingsHealthSection": "Santé",
+  "settingsHealthConsentHint": "Pas, sommeil et activités, en lecture seule. Rien ne quitte ton téléphone.",
+  "settingsBackupSection": "Sauvegarde",
+  "settingsBackupHint": "Ta progression est stockée uniquement sur ce téléphone. Exporte régulièrement une sauvegarde (par exemple vers Google Drive) pour ne rien perdre.",
+  "settingsExport": "Exporter une sauvegarde",
+  "settingsImport": "Restaurer une sauvegarde",
+  "settingsDataSection": "Données",
+  "settingsErase": "Effacer toutes mes données",
+  "eraseConfirmTitle": "Tout effacer ?",
+  "eraseConfirmBody": "Ton profil et ta progression seront supprimés de ce téléphone. Cette action est définitive.",
+  "eraseConfirmAction": "Effacer",
+  "cancelAction": "Annuler",
+  "restoreConfirmTitle": "Restaurer cette sauvegarde ?",
+  "restoreConfirmBody": "La sauvegarde du {date} remplacera toutes les données actuelles de ce téléphone.",
+  "@restoreConfirmBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "restoreConfirmAction": "Restaurer",
+  "restoreSuccess": "Sauvegarde restaurée.",
+  "exportSuccess": "Sauvegarde exportée.",
+  "eraseSuccess": "Toutes les données ont été effacées.",
+  "backupErrorMessage": "{error, select, unreadable{Ce fichier est illisible.} notArise{Ce fichier n'est pas une sauvegarde ARISE.} tooRecent{Cette sauvegarde vient d'une version plus récente d'ARISE : mets l'application à jour.} corrupted{Cette sauvegarde est endommagée.} other{Fichier refusé.}}",
+  "@backupErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorGeneric": "Une erreur est survenue. Réessaie."
 }

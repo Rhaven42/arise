@@ -1,13 +1,9 @@
-// Constantes d'équilibrage d'ARISE, côté client.
+// Constantes d'équilibrage d'ARISE.
 //
-// Miroir exact de `functions/src/config/gameConfig.ts`. Les deux fichiers
-// sont comparés à `shared/game_config.snapshot.json` par un test de parité :
-// toute modification doit être reportée dans les trois fichiers.
-//
-// Le client n'utilise ces valeurs que pour afficher des estimations : le
-// serveur reste seul à calculer et à enregistrer la progression.
+// Seule source des valeurs du jeu : aucun nombre d'équilibrage ne doit être
+// écrit ailleurs. Les règles du jeu (couche domain) lisent ces valeurs.
 
-/// Identifiant stable d'un rang (identique à `RankId` côté serveur).
+/// Identifiant stable d'un rang.
 enum RankId {
   e,
   d,
@@ -383,7 +379,7 @@ class GameConfig {
   /// Chemins (« section.clé ») des valeurs provisoires, cf. SPEC.md §20.
   final List<String> provisionalKeys;
 
-  /// Export canonique, comparé à l'instantané partagé par le test de parité.
+  /// Export lisible de la configuration (tests de cohérence, débogage).
   Map<String, Object> toJson() => {
     'version': version,
     'progression': progression.toJson(),

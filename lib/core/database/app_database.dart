@@ -33,18 +33,75 @@ class LocalDrafts extends Table {
   Set<Column<Object>> get primaryKey => {draftKey};
 }
 
+/// Profil du joueur (une seule ligne, `id` = 1), stocké en JSON.
+@DataClassName('PlayerProfileRow')
+class PlayerProfiles extends Table {
+  IntColumn get id => integer()();
+
+  TextColumn get json => text()();
+
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
 /// Base locale SQLite (Drift) de l'application.
-@DriftDatabase(tables: [PendingSessions, LocalDrafts])
+///
+/// Historique du schéma :
+/// - v1 (phase 0) : `pending_sessions`, `local_drafts` ;
+/// - v2 (phase 1) : ajout de `player_profiles`.
+@DriftDatabase(tables: [PendingSessions, LocalDrafts, PlayerProfiles])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
+  /// Identifiant unique de la ligne de profil.
+  static const profileRowId = 1;
+
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (migrator) => migrator.createAll(),
+    onUpgrade: (migrator, from, to) async {
+      if (from < 2) {
+        await migrator.createTable(playerProfiles);
+      }
+    },
   );
+
+  /// Profil sérialisé en JSON, émis à chaque changement.
+  Stream<String?> watchProfileJson() {
+    final query = select(playerProfiles)
+      ..where((t) => t.id.equals(profileRowId));
+    return query.watchSingleOrNull().map((row) => row?.json);
+  }
+
+  Future<String?> readProfileJson() async {
+    final query = select(playerProfiles)
+      ..where((t) => t.id.equals(profileRowId));
+    return (await query.getSingleOrNull())?.json;
+  }
+
+  Future<void> saveProfileJson(String json, {required DateTime updatedAt}) {
+    return into(playerProfiles).insertOnConflictUpdate(
+      PlayerProfilesCompanion(
+        id: const Value(profileRowId),
+        json: Value(json),
+        updatedAt: Value(updatedAt.toUtc()),
+      ),
+    );
+  }
+
+  /// Efface toutes les données du joueur (profil, brouillons, séances).
+  Future<void> eraseAll() {
+    return transaction(() async {
+      await delete(playerProfiles).go();
+      await delete(localDrafts).go();
+      await delete(pendingSessions).go();
+    });
+  }
 
   /// Ajoute une séance à la file d'attente de synchronisation.
   Future<void> enqueuePendingSession({

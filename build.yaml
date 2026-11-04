@@ -1,0 +1,7 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # Sérialise aussi les objets imbriqués (profil dans la sauvegarde…).
+          explicit_to_json: true

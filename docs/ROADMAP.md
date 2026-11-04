@@ -10,25 +10,27 @@
 
 ## Phase 0 — Fondations
 - [x] Projet Flutter (Android + iOS) initialisé, identifiants d'application définis
-- [x] Projet Firebase configuré + émulateurs (Auth, Firestore, Functions, Storage) — projet de démo `demo-arise` ; projet réel à créer en phase 1
+- [x] Projet Firebase configuré + émulateurs — retiré en phase 1 (passage hors ligne)
 - [x] Structure Clean Architecture (`core/`, `features/*/domain|data|presentation`, `functions/`, `assets/`, `test/` miroir)
 - [x] Thème fantasy (couleurs, typographies médiévales sous licence libre, cadres pierre/bois)
 - [x] Design system (boutons, cadres, fenêtre « Système », barres, badges) + page de démonstration
 - [x] Navigation `go_router` + garde d'authentification
 - [x] Riverpod + générateur configurés
 - [x] Base locale Drift (schéma initial + migrations)
-- [x] Configuration de jeu partagée (`game_config.dart` / `gameConfig.ts`) + **test de parité**
+- [x] Configuration de jeu partagée (`game_config.dart` / `gameConfig.ts`) + **test de parité** — côté serveur retiré en phase 1
 - [x] Localisation FR (ARB)
 - [x] Lint strict Dart et TypeScript, zéro avertissement
 - [x] Intégration continue (analyse, tests Flutter, tests Functions, parité, règles, lancement réel sur émulateur Android, APK de debug)
 
-## Phase 1 — Authentification et onboarding
+## Phase 1 — Accueil, questionnaire et sauvegarde (hors ligne)
+- [ ] Passage en 100 % hors ligne : retrait de Firebase et du serveur, doc mise à jour
 - [ ] Écran titre taverne
-- [ ] Connexion Google
-- [ ] Création de l'utilisateur côté serveur (`onUserCreated`)
-- [ ] Questionnaire : objectif, niveau, équipement, 1 à 3 jours de repos
-- [ ] Consentements santé et caméra (révocables)
-- [ ] Règles de sécurité Firestore + tests sur émulateur
+- [ ] Questionnaire : objectif, niveau, équipement, 1 à 3 jours de repos, brouillon conservé
+- [ ] Consentement santé (révocable) et rappel de prudence
+- [ ] Profil enregistré dans la base locale (migration testée)
+- [ ] Navigation selon l'état du profil
+- [ ] Paramètres : export, import et effacement des données
+- [ ] Parcours complet testé sur émulateur Android
 
 ## Phase 2 — Exercices et planning
 - [ ] Catalogue de 80 exercices conforme à ANATOMY.md (statut de relecture renseigné)
@@ -42,10 +44,10 @@
 ## Phase 3 — Lecteur de séance
 - [ ] Lecteur : minuteur visuel et sonore, voix optionnelle, animation synchronisée, compteur de séries
 - [ ] Saisie de l'intensité ressentie + avertissement douleur/fatigue
-- [ ] Mode hors ligne (Drift) et synchronisation
-- [ ] Récapitulatif (XP confirmée serveur, muscles travaillés)
+- [ ] Enregistrement des séances dans la base locale
+- [ ] Récapitulatif (XP gagnée, muscles travaillés)
 
-## Phase 4 — Moteur de progression (serveur)
+## Phase 4 — Moteur de progression
 - [ ] Calcul de l'XP par série (formule complète, plafond 120 min)
 - [ ] Niveaux, points de stat, cristaux par niveau
 - [ ] Rangs avec blocage au dernier niveau sans boss
@@ -53,14 +55,14 @@
 - [ ] Séries de jours, jours de repos, coffres 7/30/100/365
 - [ ] Boucliers, Zone de Pénalité, quête de pénalité
 - [ ] Mode maladie / blessure (≤ 14 jours)
-- [ ] `dailyTick` par fuseau horaire
+- [ ] Bascule quotidienne (`RunDailyRollover`) à l'ouverture, jours manqués inclus
 - [ ] Tests exhaustifs : fuseaux horaires, changement d'heure, cas limites
 - [ ] Fenêtre du Système (tableau de bord)
 
 ## Phase 5 — Analyse musculaire
 - [ ] Silhouettes SVG face et dos (33 zones identifiées)
 - [ ] Coloration post-exercice (principaux / secondaires)
-- [ ] Agrégats serveur par période (jour, semaine, mois, année)
+- [ ] Agrégats par période (jour, semaine, mois, année)
 - [ ] Seuils configurables + motifs + libellés (accessibilité daltonisme)
 - [ ] Indicateur de souplesse séparé
 - [ ] Suggestions basées sur le référentiel
@@ -68,23 +70,24 @@
 
 ## Phase 6 — Création du personnage
 - [ ] Interface `CharacterRenderer` + implémentation glb
+- [ ] Créateur à menus déroulants (race Humain/Elfe/Orque, sexe, coiffure, couleur de peau) mettant à jour la fiche JSON avec rendu en direct
 - [ ] Deux mannequins de substitution distincts (homme / femme)
 - [ ] Écrans morphologie (curseurs, morphotype, posture, 12 préréglages par sexe)
 - [ ] Écrans visage, yeux, sourcils, barbe, maquillage
 - [ ] Écrans coiffures (catégories, couleurs, favoris, verrouillage)
 - [ ] Scène de l'éditeur (360°, zoom, 4 poses, 3 éclairages, capture, aléatoire, reset, undo/redo ×20, avant/après)
-- [ ] Nom : filtre + réservation serveur ; brouillon local
+- [ ] Nom : longueur + filtre ; brouillon local
 - [ ] `docs/ASSETS.md` : cahier des charges complet de l'artiste 3D
 
 ## Phase 7 — Boutique et inventaire
 - [ ] Boutique (catégories, raretés, essayage)
-- [ ] Achat serveur en cristaux
+- [ ] Achat en cristaux
 - [ ] Inventaire et équipement par emplacement
 - [ ] Teinture
 - [ ] Coupes de cheveux verrouillées
 
 ## Phase 8 — Quêtes, boss, donjons, classes
-- [ ] Quête quotidienne générée par le serveur
+- [ ] Quête quotidienne générée par le moteur de jeu
 - [ ] Quêtes hebdomadaires et d'événement
 - [ ] Épreuves de rang (force, endurance, agilité), conditions d'accès, délai de 48 h
 - [ ] Récompenses de boss (rang, titre, équipement exclusif, cinématique)
@@ -97,16 +100,11 @@
 - [ ] Auras cosmétiques
 - [ ] Ombres (extraction rang B+, bonus passif, limites 5/7)
 
-## Phase 10 — Coach caméra
-- [ ] Consentement et écran caméra
-- [ ] Détection de pose ML Kit sur l'appareil
-- [ ] Comptage pompes, squats, jumping jacks, fentes ; chrono planche ; amplitude
-- [ ] Bonus +10 % et obligation pendant les boss compatibles
-- [ ] Vérification : aucune image stockée ni transmise
+## Phase 10 — ~~Coach caméra~~ (retiré du MVP, SPEC §21)
 
 ## Phase 11 — Santé
 - [ ] Health Connect / HealthKit en lecture seule
-- [ ] Synchronisation serveur plafonnée (Endurance / Vitalité)
+- [ ] Conversion plafonnée en Endurance / Vitalité
 - [ ] Bonus sommeil ≥ 7 h
 - [ ] Saisie manuelle de l'hydratation
 
@@ -114,7 +112,7 @@
 - [ ] Sons et ambiance
 - [ ] Performances (profilage, temps de démarrage)
 - [ ] Audit d'accessibilité
-- [ ] RGPD : export et suppression des données
+- [ ] Audit de confidentialité (aucune donnée ne quitte le téléphone sans action de l'utilisateur)
 - [ ] Textes du store et politique de confidentialité
 - [ ] Builds de publication Android et iOS
 - [ ] Relecture du référentiel anatomique par un coach diplômé ou un kinésithérapeute
