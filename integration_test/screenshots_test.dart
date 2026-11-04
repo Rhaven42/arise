@@ -9,6 +9,8 @@ void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   Future<void> tapText(WidgetTester tester, String text) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
     if (find.text(text).evaluate().isEmpty) {
       await tester.scrollUntilVisible(
         find.text(text),
