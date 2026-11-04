@@ -69,11 +69,19 @@ void main() {
     // Phase 2 : exercices, fiche animée, exercice perso, programme, planning.
     await tapText(tester, 'Exercices');
     await binding.takeScreenshot('10_exercices');
+    await tester.enterText(find.byType(TextField), 'pompes');
+    await tester.pumpAndSettle();
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Pompes'));
     await pumpFor(1200);
     await binding.takeScreenshot('11_fiche_pompes');
     await tester.binding.handlePopRoute();
     await pumpFor(800);
+    await tester.enterText(find.byType(TextField), 'squat');
+    await tester.pumpAndSettle();
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Squat'));
     await pumpFor(1700);
     await binding.takeScreenshot('12_fiche_squat');
