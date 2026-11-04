@@ -1,0 +1,48 @@
+# Ajoute ou retire des dépendances Flutter avec l'outil officiel, puis
+# committe pubspec.yaml et pubspec.lock sur la branche choisie.
+name: deps
+
+on:
+  workflow_dispatch:
+    inputs:
+      add:
+        description: Paquets à ajouter (séparés par des espaces)
+        required: false
+        default: ''
+      add_dev:
+        description: Paquets de développement à ajouter
+        required: false
+        default: ''
+      remove:
+        description: Paquets à retirer
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.9
+      - name: Retrait
+        if: inputs.remove != ''
+        run: flutter pub remove ${{ inputs.remove }}
+      - name: Ajout
+        if: inputs.add != ''
+        run: flutter pub add ${{ inputs.add }}
+      - name: Ajout (développement)
+        if: inputs.add_dev != ''
+        run: flutter pub add --dev ${{ inputs.add_dev }}
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pubspec.yaml pubspec.lock
+          git diff --cached --quiet || git commit -m "chore: mise à jour des dépendances"
+          git push
