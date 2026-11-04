@@ -46,3 +46,14 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# ARISE — fichiers générés (recréés par build_runner et gen-l10n)
+*.g.dart
+*.freezed.dart
+lib/l10n/generated/
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

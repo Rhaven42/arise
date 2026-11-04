@@ -1,5 +1,5 @@
 name: arise
-description: "A new Flutter project."
+description: "ARISE — application de sport gamifiée du royaume d'Arisia."
 publish_to: 'none'
 version: 0.1.0+1
 
@@ -25,16 +25,30 @@ dependencies:
   riverpod_annotation: ^4.0.7
 
 dev_dependencies:
+  build_runner: ^2.16.2
+  drift_dev: ^2.35.2
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
-  build_runner: ^2.16.2
   freezed: ^4.0.3
   json_serializable: ^6.15.2
-  riverpod_generator: ^4.0.9
-  drift_dev: ^2.35.2
-  very_good_analysis: ^11.0.0
   mocktail: ^1.0.5
+  riverpod_generator: ^4.0.9
+  very_good_analysis: ^11.0.0
 
 flutter:
   uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/fonts/cinzel/OFL.txt
+    - assets/fonts/im_fell_english/OFL.txt
+
+  fonts:
+    - family: Cinzel
+      fonts:
+        - asset: assets/fonts/cinzel/Cinzel-Variable.ttf
+    - family: IMFellEnglish
+      fonts:
+        - asset: assets/fonts/im_fell_english/IMFellEnglish-Regular.ttf
+        - asset: assets/fonts/im_fell_english/IMFellEnglish-Italic.ttf
+          style: italic

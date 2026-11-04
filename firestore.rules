@@ -1,0 +1,58 @@
+rules_version = '2';
+
+// Règles de sécurité d'ARISE.
+// Principe : le serveur (Admin SDK des Cloud Functions, qui ignore ces
+// règles) fait autorité. Le client ne lit que ses propres données et les
+// catalogues ; les écritures client autorisées seront ouvertes champ par
+// champ en phase 1, avec validation.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Données d'un utilisateur : lecture par lui seul, aucune écriture client
+    // pour l'instant.
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow write: if false;
+
+      match /{document=**} {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
+    }
+
+    // Catalogues (exercices, objets, hauts faits, épreuves) : lecture seule.
+    match /catalog_exercises/{id} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+    match /catalog_items/{id} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+    match /catalog_achievements/{id} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+    match /catalog_trials/{id} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    // Réservations de noms : gérées uniquement par le serveur.
+    match /usernames/{name} {
+      allow read, write: if false;
+    }
+
+    // Tout le reste est refusé par défaut.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

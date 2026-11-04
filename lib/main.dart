@@ -1,16 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:arise/app.dart';
+import 'package:arise/core/config/app_environment.dart';
+import 'package:arise/core/firebase/firebase_bootstrap.dart';
+import 'package:arise/core/utils/licenses.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
-  runApp(const MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(body: Center(child: Text('Hello World!'))),
-    );
-  }
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  registerFontLicenses();
+  await initializeFirebase(AppEnvironment.fromDefines());
+  runApp(const ProviderScope(child: AriseApp()));
 }
