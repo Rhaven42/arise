@@ -20,4 +20,14 @@ abstract final class AriseColors {
   static const danger = Color(0xFFE0735A);
   static const success = Color(0xFF7BC87A);
   static const onGold = Color(0xFF1B1408);
+
+  // Silhouettes musculaires : la couleur est toujours doublée d'un motif
+  // (hachures = principal, points = secondaire) pour les daltoniens.
+  static const bodyFill = Color(0xFF4A423B);
+  static const muscleIdle = Color(0xFF62574D);
+  static const musclePrimary = Color(0xFF3DDC6A);
+  static const musclePrimaryPattern = Color(0xFF0E4A20);
+  static const muscleSecondary = Color(0xFFA8E6A3);
+  static const muscleSecondaryPattern = Color(0xFF2F6A2B);
+  static const muscleSelectedOutline = Color(0xFFF0CC74);
 }

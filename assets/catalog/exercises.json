@@ -1,0 +1,925 @@
+{
+ "version": 1,
+ "exercises": [
+  {
+   "id": "push_up",
+   "motion": "push_up",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "pectoralis_mid_lower",
+    "deltoid_anterior",
+    "triceps_brachii"
+   ],
+   "secondaryMuscles": [
+    "pectoralis_upper",
+    "serratus_anterior",
+    "rectus_abdominis",
+    "transversus_abdominis"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Pompes",
+   "description": "Le mouvement de poussée de base, au poids du corps.",
+   "instructions": [
+    "Mains sous les épaules, un peu plus larges que la poitrine.",
+    "Garde le corps gainé, de la tête aux talons.",
+    "Descends la poitrine près du sol, puis pousse."
+   ],
+   "mistakes": [
+    "Laisser tomber les hanches.",
+    "Écarter les coudes à 90° du corps.",
+    "Faire des demi-répétitions."
+   ]
+  },
+  {
+   "id": "decline_push_up",
+   "motion": "push_up",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "pectoralis_upper",
+    "deltoid_anterior",
+    "triceps_brachii"
+   ],
+   "secondaryMuscles": [
+    "pectoralis_mid_lower",
+    "serratus_anterior"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "bench"
+   ],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Pompes déclinées",
+   "description": "Pompes pieds surélevés, qui insistent sur le haut des pectoraux.",
+   "instructions": [
+    "Pose les pieds sur un banc ou une marche stable.",
+    "Mains au sol sous les épaules.",
+    "Descends en contrôlant, sans cambrer."
+   ],
+   "mistakes": [
+    "Cambrer le bas du dos.",
+    "Choisir un support trop haut au début."
+   ]
+  },
+  {
+   "id": "diamond_push_up",
+   "motion": "push_up",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "triceps_brachii",
+    "pectoralis_mid_lower"
+   ],
+   "secondaryMuscles": [
+    "deltoid_anterior"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Pompes diamant",
+   "description": "Pompes mains rapprochées, centrées sur les triceps.",
+   "instructions": [
+    "Forme un losange avec les pouces et les index sous la poitrine.",
+    "Garde les coudes près du corps.",
+    "Descends lentement, puis pousse."
+   ],
+   "mistakes": [
+    "Ouvrir les coudes sur les côtés.",
+    "Lever les fesses."
+   ]
+  },
+  {
+   "id": "dips",
+   "motion": "dips",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "triceps_brachii",
+    "pectoralis_mid_lower",
+    "deltoid_anterior"
+   ],
+   "secondaryMuscles": [
+    "trapezius_mid_lower",
+    "rhomboids"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "dipBars"
+   ],
+   "difficulty": 3,
+   "reviewStatus": "validated",
+   "name": "Dips",
+   "description": "Poussée verticale aux barres parallèles.",
+   "instructions": [
+    "Bras tendus, épaules basses.",
+    "Descends jusqu'à ce que les bras soient à l'horizontale.",
+    "Remonte sans verrouiller brutalement les coudes."
+   ],
+   "mistakes": [
+    "Descendre trop bas et forcer sur les épaules.",
+    "Hausser les épaules vers les oreilles."
+   ]
+  },
+  {
+   "id": "pull_up_pronated",
+   "motion": "pull_up",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "latissimus_dorsi",
+    "teres_major",
+    "biceps_brachii",
+    "brachialis"
+   ],
+   "secondaryMuscles": [
+    "rhomboids",
+    "trapezius_mid_lower",
+    "deltoid_posterior",
+    "brachioradialis",
+    "forearm_flexors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "pullUpBar"
+   ],
+   "difficulty": 3,
+   "reviewStatus": "validated",
+   "name": "Tractions en pronation",
+   "description": "Tirage vertical à la barre, paumes vers l'avant.",
+   "instructions": [
+    "Mains un peu plus larges que les épaules, paumes vers l'avant.",
+    "Tire les coudes vers les hanches.",
+    "Monte le menton au-dessus de la barre, puis redescends bras tendus."
+   ],
+   "mistakes": [
+    "Se balancer pour s'aider.",
+    "Ne pas descendre jusqu'en bas."
+   ]
+  },
+  {
+   "id": "row",
+   "motion": "row",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "trapezius_mid_lower",
+    "deltoid_posterior"
+   ],
+   "secondaryMuscles": [
+    "biceps_brachii",
+    "brachialis",
+    "erector_spinae"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "dumbbells",
+    "barbell",
+    "kettlebell"
+   ],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Rowing",
+   "description": "Tirage horizontal buste penché, pour le dos.",
+   "instructions": [
+    "Penche le buste, dos plat, genoux légèrement fléchis.",
+    "Tire la charge vers le bas des côtes.",
+    "Serre les omoplates en haut, puis redescends lentement."
+   ],
+   "mistakes": [
+    "Arrondir le dos.",
+    "Tirer avec les bras sans engager le dos."
+   ]
+  },
+  {
+   "id": "overhead_press",
+   "motion": "overhead_press",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "deltoid_anterior",
+    "deltoid_lateral",
+    "triceps_brachii"
+   ],
+   "secondaryMuscles": [
+    "trapezius_upper",
+    "serratus_anterior"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "dumbbells",
+    "barbell",
+    "kettlebell"
+   ],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Développé militaire",
+   "description": "Poussée de la charge au-dessus de la tête.",
+   "instructions": [
+    "Debout, gainé, charge au niveau des épaules.",
+    "Pousse vers le haut jusqu'à tendre les bras.",
+    "Redescends en contrôlant."
+   ],
+   "mistakes": [
+    "Cambrer fortement le dos.",
+    "Pousser vers l'avant au lieu de vers le haut."
+   ]
+  },
+  {
+   "id": "lateral_raise",
+   "motion": "lateral_raise",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "deltoid_lateral"
+   ],
+   "secondaryMuscles": [
+    "trapezius_upper",
+    "deltoid_anterior"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "dumbbells",
+    "resistanceBands"
+   ],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Élévations latérales",
+   "description": "Élévation des bras sur les côtés, pour la largeur des épaules.",
+   "instructions": [
+    "Bras le long du corps, coudes très légèrement fléchis.",
+    "Monte les bras sur les côtés jusqu'à l'horizontale.",
+    "Redescends lentement."
+   ],
+   "mistakes": [
+    "Prendre de l'élan.",
+    "Monter les mains plus haut que les épaules."
+   ]
+  },
+  {
+   "id": "biceps_curl",
+   "motion": "biceps_curl",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "biceps_brachii",
+    "brachialis"
+   ],
+   "secondaryMuscles": [
+    "brachioradialis"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "dumbbells",
+    "barbell",
+    "resistanceBands"
+   ],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Curl biceps",
+   "description": "Flexion des coudes, charge en main.",
+   "instructions": [
+    "Coudes collés au corps.",
+    "Monte la charge en pliant les coudes.",
+    "Redescends jusqu'à tendre les bras."
+   ],
+   "mistakes": [
+    "Balancer le buste.",
+    "Décoller les coudes du corps."
+   ]
+  },
+  {
+   "id": "squat",
+   "motion": "squat",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "quadriceps",
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "adductors",
+    "erector_spinae",
+    "soleus",
+    "hamstrings"
+   ],
+   "weakMuscles": [
+    "hamstrings"
+   ],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Squat",
+   "description": "La flexion de jambes fondamentale.",
+   "instructions": [
+    "Pieds largeur d'épaules, pointes légèrement ouvertes.",
+    "Descends en poussant les hanches en arrière, dos droit.",
+    "Remonte en poussant sur les talons."
+   ],
+   "mistakes": [
+    "Laisser les genoux rentrer vers l'intérieur.",
+    "Décoller les talons.",
+    "Arrondir le dos."
+   ]
+  },
+  {
+   "id": "lunge",
+   "motion": "lunge",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "quadriceps",
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "gluteus_medius",
+    "adductors",
+    "hamstrings"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Fentes",
+   "description": "Grand pas en avant et flexion des deux genoux.",
+   "instructions": [
+    "Fais un grand pas en avant.",
+    "Descends jusqu'à ce que le genou arrière frôle le sol.",
+    "Repousse sur la jambe avant pour revenir."
+   ],
+   "mistakes": [
+    "Laisser le genou avant dépasser loin devant le pied.",
+    "Pencher le buste en avant."
+   ]
+  },
+  {
+   "id": "romanian_deadlift",
+   "motion": "romanian_deadlift",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "hamstrings",
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "erector_spinae",
+    "adductors",
+    "forearm_flexors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "dumbbells",
+    "barbell",
+    "kettlebell"
+   ],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Soulevé de terre roumain",
+   "description": "Bascule du buste hanches en arrière, pour l'arrière des cuisses.",
+   "instructions": [
+    "Genoux légèrement fléchis, charge devant les cuisses.",
+    "Pousse les hanches en arrière en gardant le dos plat.",
+    "Remonte en serrant les fessiers."
+   ],
+   "mistakes": [
+    "Arrondir le dos.",
+    "Plier les genoux comme pour un squat."
+   ]
+  },
+  {
+   "id": "hip_thrust",
+   "motion": "glute_bridge",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "hamstrings",
+    "gluteus_medius"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "bench"
+   ],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Hip thrust",
+   "description": "Extension de hanches, haut du dos appuyé sur un banc.",
+   "instructions": [
+    "Haut du dos contre le banc, pieds à plat.",
+    "Monte les hanches jusqu'à aligner épaules, hanches et genoux.",
+    "Serre les fessiers en haut, puis redescends."
+   ],
+   "mistakes": [
+    "Cambrer le bas du dos en haut.",
+    "Pousser sur les pointes de pied."
+   ]
+  },
+  {
+   "id": "glute_bridge",
+   "motion": "glute_bridge",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "hamstrings",
+    "gluteus_medius"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Pont fessier",
+   "description": "Extension de hanches allongé au sol.",
+   "instructions": [
+    "Allongé sur le dos, genoux pliés, pieds à plat.",
+    "Monte les hanches en serrant les fessiers.",
+    "Redescends lentement."
+   ],
+   "mistakes": [
+    "Monter trop haut en cambrant.",
+    "Écarter les genoux."
+   ]
+  },
+  {
+   "id": "standing_calf_raise",
+   "motion": "calf_raise",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "gastrocnemius",
+    "soleus"
+   ],
+   "secondaryMuscles": [],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Mollets debout",
+   "description": "Montée sur la pointe des pieds.",
+   "instructions": [
+    "Debout, pieds largeur de hanches.",
+    "Monte sur la pointe des pieds le plus haut possible.",
+    "Redescends lentement."
+   ],
+   "mistakes": [
+    "Rebondir en bas.",
+    "Plier les genoux."
+   ]
+  },
+  {
+   "id": "plank",
+   "motion": "plank",
+   "type": "duration",
+   "volumeRule": "strength",
+   "stats": {
+    "vitality": 1
+   },
+   "primaryMuscles": [
+    "rectus_abdominis",
+    "transversus_abdominis"
+   ],
+   "secondaryMuscles": [
+    "obliques",
+    "serratus_anterior",
+    "deltoid_anterior",
+    "gluteus_maximus"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Planche",
+   "description": "Gainage statique sur les avant-bras.",
+   "instructions": [
+    "Coudes sous les épaules, avant-bras au sol.",
+    "Corps aligné de la tête aux talons.",
+    "Respire calmement et tiens la position."
+   ],
+   "mistakes": [
+    "Laisser tomber les hanches.",
+    "Lever les fesses trop haut.",
+    "Bloquer sa respiration."
+   ]
+  },
+  {
+   "id": "side_plank",
+   "motion": "side_plank",
+   "type": "duration",
+   "volumeRule": "strength",
+   "stats": {
+    "vitality": 1
+   },
+   "primaryMuscles": [
+    "obliques",
+    "transversus_abdominis"
+   ],
+   "secondaryMuscles": [
+    "gluteus_medius"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Planche latérale",
+   "description": "Gainage sur le côté, en appui sur un avant-bras.",
+   "instructions": [
+    "Coude sous l'épaule, pieds superposés.",
+    "Monte les hanches pour aligner le corps.",
+    "Tiens la position, puis change de côté."
+   ],
+   "mistakes": [
+    "Laisser les hanches s'affaisser.",
+    "Pencher le buste en avant."
+   ]
+  },
+  {
+   "id": "crunch",
+   "motion": "crunch",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "rectus_abdominis"
+   ],
+   "secondaryMuscles": [
+    "obliques"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Crunch",
+   "description": "Enroulement du buste allongé au sol.",
+   "instructions": [
+    "Allongé, genoux pliés, mains croisées sur la poitrine.",
+    "Enroule le haut du dos en décollant les épaules.",
+    "Redescends sans relâcher complètement."
+   ],
+   "mistakes": [
+    "Tirer sur la nuque.",
+    "Se relever entièrement en s'aidant des hanches."
+   ]
+  },
+  {
+   "id": "leg_raise",
+   "motion": "leg_raise",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "hip_flexors",
+    "rectus_abdominis"
+   ],
+   "secondaryMuscles": [
+    "obliques"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Relevés de jambes",
+   "description": "Montée des jambes tendues, allongé sur le dos.",
+   "instructions": [
+    "Allongé, jambes tendues, bas du dos plaqué au sol.",
+    "Monte les jambes jusqu'à la verticale.",
+    "Redescends lentement sans toucher le sol."
+   ],
+   "mistakes": [
+    "Décoller le bas du dos.",
+    "Laisser retomber les jambes."
+   ]
+  },
+  {
+   "id": "superman",
+   "motion": "superman",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "vitality": 1
+   },
+   "primaryMuscles": [
+    "erector_spinae"
+   ],
+   "secondaryMuscles": [
+    "gluteus_maximus",
+    "hamstrings",
+    "trapezius_mid_lower"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Superman",
+   "description": "Extension du dos allongé sur le ventre.",
+   "instructions": [
+    "Allongé sur le ventre, bras tendus devant.",
+    "Décolle en même temps bras, buste et jambes.",
+    "Tiens deux secondes, puis redescends."
+   ],
+   "mistakes": [
+    "Relever la tête vers le plafond.",
+    "Faire le mouvement trop vite."
+   ]
+  },
+  {
+   "id": "burpee",
+   "motion": "burpee",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "endurance": 0.7,
+    "strength": 0.3
+   },
+   "primaryMuscles": [
+    "quadriceps",
+    "gluteus_maximus",
+    "pectoralis_mid_lower"
+   ],
+   "secondaryMuscles": [
+    "deltoid_anterior",
+    "triceps_brachii",
+    "rectus_abdominis",
+    "gastrocnemius"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 3,
+   "reviewStatus": "validated",
+   "name": "Burpees",
+   "description": "Enchaînement accroupi, planche et saut.",
+   "instructions": [
+    "Accroupis-toi, mains au sol.",
+    "Lance les pieds en arrière en planche.",
+    "Ramène les pieds et saute bras en l'air."
+   ],
+   "mistakes": [
+    "Laisser tomber les hanches en planche.",
+    "Retomber jambes tendues."
+   ]
+  },
+  {
+   "id": "jumping_jack",
+   "motion": "jumping_jack",
+   "type": "duration",
+   "volumeRule": "cardio",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "gastrocnemius",
+    "soleus",
+    "abductors",
+    "gluteus_medius"
+   ],
+   "secondaryMuscles": [
+    "deltoid_lateral",
+    "adductors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Jumping jacks",
+   "description": "Sauts écart des bras et des jambes, pour la coordination.",
+   "instructions": [
+    "Pieds joints, bras le long du corps.",
+    "Saute en écartant jambes et bras au-dessus de la tête.",
+    "Reviens en position de départ, en rythme."
+   ],
+   "mistakes": [
+    "Retomber sur les talons.",
+    "Perdre le rythme bras et jambes."
+   ]
+  },
+  {
+   "id": "mountain_climber",
+   "motion": "mountain_climber",
+   "type": "duration",
+   "volumeRule": "cardio",
+   "stats": {
+    "endurance": 1
+   },
+   "primaryMuscles": [
+    "rectus_abdominis",
+    "hip_flexors"
+   ],
+   "secondaryMuscles": [
+    "deltoid_anterior",
+    "quadriceps",
+    "obliques"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Mountain climbers",
+   "description": "Montées de genoux rapides en position de pompe.",
+   "instructions": [
+    "En appui sur les mains, corps gainé.",
+    "Ramène un genou vers la poitrine.",
+    "Alterne rapidement les jambes."
+   ],
+   "mistakes": [
+    "Lever les fesses.",
+    "Placer les mains devant les épaules."
+   ]
+  },
+  {
+   "id": "walking",
+   "motion": "walking",
+   "type": "duration",
+   "volumeRule": "cardio",
+   "stats": {
+    "endurance": 1
+   },
+   "primaryMuscles": [
+    "quadriceps",
+    "hamstrings",
+    "gluteus_maximus",
+    "gastrocnemius",
+    "soleus",
+    "tibialis_anterior"
+   ],
+   "secondaryMuscles": [],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Marche",
+   "description": "Marche active à bon rythme.",
+   "instructions": [
+    "Tiens-toi droit, regard devant.",
+    "Balance les bras naturellement.",
+    "Garde un rythme où tu peux encore parler."
+   ],
+   "mistakes": [
+    "Marcher voûté.",
+    "Faire de trop grands pas."
+   ]
+  },
+  {
+   "id": "running",
+   "motion": "running",
+   "type": "duration",
+   "volumeRule": "cardio",
+   "stats": {
+    "endurance": 1
+   },
+   "primaryMuscles": [
+    "quadriceps",
+    "hamstrings",
+    "gluteus_maximus",
+    "gastrocnemius",
+    "soleus",
+    "tibialis_anterior",
+    "hip_flexors"
+   ],
+   "secondaryMuscles": [],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Course",
+   "description": "Course à pied en endurance.",
+   "instructions": [
+    "Buste légèrement penché vers l'avant.",
+    "Pose le pied sous le corps.",
+    "Commence doucement et garde une allure régulière."
+   ],
+   "mistakes": [
+    "Attaquer par le talon loin devant.",
+    "Partir trop vite."
+   ]
+  },
+  {
+   "id": "cycling",
+   "motion": "cycling",
+   "type": "duration",
+   "volumeRule": "cardio",
+   "stats": {
+    "endurance": 1
+   },
+   "primaryMuscles": [
+    "quadriceps",
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "hamstrings",
+    "gastrocnemius",
+    "soleus"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "stationaryBike"
+   ],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Vélo",
+   "description": "Pédalage en endurance.",
+   "instructions": [
+    "Règle la selle : jambe presque tendue en bas.",
+    "Pédale de façon régulière.",
+    "Garde le dos long et les épaules relâchées."
+   ],
+   "mistakes": [
+    "Selle trop basse.",
+    "Pédaler en force sans résistance adaptée."
+   ]
+  },
+  {
+   "id": "jump_rope",
+   "motion": "jump_rope",
+   "type": "duration",
+   "volumeRule": "cardio",
+   "stats": {
+    "endurance": 1
+   },
+   "primaryMuscles": [
+    "gastrocnemius",
+    "soleus"
+   ],
+   "secondaryMuscles": [
+    "quadriceps",
+    "deltoid_lateral",
+    "forearm_flexors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "jumpRope"
+   ],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Corde à sauter",
+   "description": "Petits sauts réguliers à la corde.",
+   "instructions": [
+    "Coudes près du corps, la rotation vient des poignets.",
+    "Saute juste assez haut pour passer la corde.",
+    "Atterris sur l'avant du pied."
+   ],
+   "mistakes": [
+    "Sauter trop haut.",
+    "Faire tourner la corde avec les épaules."
+   ]
+  }
+ ]
+}

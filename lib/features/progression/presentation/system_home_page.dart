@@ -1,5 +1,6 @@
 import 'package:arise/core/config/game_config.dart';
 import 'package:arise/core/design_system/widgets/rank_badge.dart';
+import 'package:arise/core/design_system/widgets/stone_frame.dart';
 import 'package:arise/core/design_system/widgets/system_window.dart';
 import 'package:arise/core/design_system/widgets/xp_bar.dart';
 import 'package:arise/core/router/app_routes.dart';
@@ -91,7 +92,58 @@ class _SystemHomeBody extends StatelessWidget {
         ),
         const SizedBox(height: AriseSpacing.xs),
         Text(l10n.systemRestDays(restDays), style: textTheme.bodyLarge),
+        const SizedBox(height: AriseSpacing.lg),
+        _HomeLink(
+          icon: Icons.fitness_center,
+          title: l10n.exercisesTitle,
+          subtitle: l10n.homeExercisesHint,
+          onTap: () => context.go(AppRoutes.exercises),
+        ),
+        _HomeLink(
+          icon: Icons.list_alt,
+          title: l10n.programsTitle,
+          subtitle: l10n.homeProgramsHint,
+          onTap: () => context.go(AppRoutes.programs),
+        ),
+        _HomeLink(
+          icon: Icons.calendar_month,
+          title: l10n.planningTitle,
+          subtitle: l10n.homePlanningHint,
+          onTap: () => context.go(AppRoutes.planning),
+        ),
       ],
+    );
+  }
+}
+
+/// Accès à une section du jeu depuis la Fenêtre du Système.
+class _HomeLink extends StatelessWidget {
+  const _HomeLink({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AriseSpacing.sm),
+      child: StoneFrame(
+        padding: EdgeInsets.zero,
+        child: ListTile(
+          leading: Icon(icon, color: AriseColors.gold),
+          title: Text(title),
+          subtitle: Text(subtitle),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: onTap,
+        ),
+      ),
     );
   }
 }

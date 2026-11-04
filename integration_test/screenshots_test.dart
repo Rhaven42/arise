@@ -48,5 +48,58 @@ void main() {
     await tester.tap(find.text('Sauvegarde et données'));
     await tester.pumpAndSettle();
     await binding.takeScreenshot('09_sauvegarde');
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    Future<void> pumpFor(int milliseconds) async {
+      for (var t = 0; t < milliseconds; t += 100) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    // Phase 2 : exercices, fiche animée, exercice perso, programme, planning.
+    await tapText(tester, 'Exercices');
+    await binding.takeScreenshot('10_exercices');
+    await tester.tap(find.text('Pompes'));
+    await pumpFor(1200);
+    await binding.takeScreenshot('11_fiche_pompes');
+    await tester.pageBack();
+    await pumpFor(800);
+    await tester.tap(find.text('Squat'));
+    await pumpFor(1700);
+    await binding.takeScreenshot('12_fiche_squat');
+    await tester.pageBack();
+    await pumpFor(800);
+    await tester.tap(find.byTooltip('Créer un exercice'));
+    await pumpFor(800);
+    await binding.takeScreenshot('13_exercice_perso');
+    await tester.pageBack();
+    await pumpFor(800);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    await tapText(tester, 'Programmes');
+    await tapText(tester, 'Nouveau programme');
+    await tester.enterText(find.byType(TextField), 'Haut du corps');
+    await tapText(tester, 'Ajouter un exercice');
+    await tester.enterText(find.byType(TextField).last, 'pompes');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Pompes').last);
+    await tester.pumpAndSettle();
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await binding.takeScreenshot('14_programme');
+    await tapText(tester, 'Enregistrer');
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    await tapText(tester, 'Planning');
+    await tester.tap(find.byTooltip('Ajouter une séance le Lundi'));
+    await tester.pumpAndSettle();
+    await tapText(tester, 'Rappel');
+    await tapText(tester, 'Enregistrer');
+    await binding.takeScreenshot('15_planning');
   });
 }

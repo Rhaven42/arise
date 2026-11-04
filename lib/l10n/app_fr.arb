@@ -238,5 +238,360 @@
   },
   "errorGeneric": "Une erreur est survenue. Réessaie.",
   "settingsBackupTile": "Sauvegarde et données",
-  "settingsBackupTileHint": "Exporter, restaurer ou effacer ta progression."
+  "settingsBackupTileHint": "Exporter, restaurer ou effacer ta progression.",
+  "muscleName": "{muscle, select, sternocleidomastoid{Sterno-cléido-mastoïdien} pectoralisUpper{Pectoraux (haut)} pectoralisMidLower{Pectoraux (milieu et bas)} deltoidAnterior{Deltoïde antérieur} deltoidLateral{Deltoïde latéral} bicepsBrachii{Biceps} brachialis{Brachial} forearmFlexors{Fléchisseurs de l'avant-bras} brachioradialis{Brachio-radial} rectusAbdominis{Grand droit de l'abdomen} obliques{Obliques} transversusAbdominis{Transverse} serratusAnterior{Dentelé antérieur} hipFlexors{Fléchisseurs de la hanche} adductors{Adducteurs} abductors{Abducteurs} quadriceps{Quadriceps} tibialisAnterior{Tibial antérieur} trapeziusUpper{Trapèze supérieur} trapeziusMidLower{Trapèze moyen et inférieur} rhomboids{Rhomboïdes} latissimusDorsi{Grand dorsal} teresMajor{Grand rond} deltoidPosterior{Deltoïde postérieur} rotatorCuff{Coiffe des rotateurs} tricepsBrachii{Triceps} forearmExtensors{Extenseurs de l'avant-bras} erectorSpinae{Érecteurs du rachis} gluteusMaximus{Grand fessier} gluteusMedius{Moyen fessier} hamstrings{Ischio-jambiers} gastrocnemius{Gastrocnémien} soleus{Soléaire} other{Muscle}}",
+  "@muscleName": {
+    "placeholders": {
+      "muscle": {
+        "type": "String"
+      }
+    }
+  },
+  "statName": "{stat, select, strength{Force} endurance{Endurance} agility{Agilité} vitality{Vitalité} willpower{Volonté} other{Stat}}",
+  "@statName": {
+    "placeholders": {
+      "stat": {
+        "type": "String"
+      }
+    }
+  },
+  "statShare": "{stat} {percent} %",
+  "@statShare": {
+    "placeholders": {
+      "stat": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseType": "{type, select, reps{Répétitions} duration{Durée} distance{Distance} other{Autre}}",
+  "@exerciseType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "exerciseNoEquipment": "Sans matériel",
+  "exerciseEquipmentSeparator": " ou ",
+  "bodyViewLabel": "{view, select, front{Face} back{Dos} other{Vue}}",
+  "@bodyViewLabel": {
+    "placeholders": {
+      "view": {
+        "type": "String"
+      }
+    }
+  },
+  "bodyMapSemantics": "Silhouette de {view, select, front{face} back{dos} other{corps}}. Muscles principaux : {primary}. Muscles secondaires : {secondary}.",
+  "@bodyMapSemantics": {
+    "placeholders": {
+      "view": {
+        "type": "String"
+      },
+      "primary": {
+        "type": "String"
+      },
+      "secondary": {
+        "type": "String"
+      }
+    }
+  },
+  "noneLabel": "aucun",
+  "musclePrimaryLegend": "Muscles principaux",
+  "muscleSecondaryLegend": "Muscles secondaires",
+  "muscleWeak": "{muscle} (faiblement)",
+  "@muscleWeak": {
+    "placeholders": {
+      "muscle": {
+        "type": "String"
+      }
+    }
+  },
+  "animationPlay": "Lancer l'animation",
+  "animationPause": "Mettre l'animation en pause",
+  "exerciseAnimationSemantics": "Animation du mouvement : {name}",
+  "@exerciseAnimationSemantics": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exercisesTitle": "Exercices",
+  "exercisesSearchHint": "Rechercher un exercice",
+  "exercisesFilterMyEquipment": "Mon équipement",
+  "exercisesFilterAllStats": "Toutes les stats",
+  "exercisesFilterAllMuscles": "Tous les muscles",
+  "exercisesEmpty": "Aucun exercice ne correspond à ta recherche.",
+  "exerciseCustomBadge": "Perso",
+  "exerciseDifficulty": "{level, plural, =1{Débutant} =2{Intermédiaire} =3{Avancé} other{Niveau {level}}}",
+  "@exerciseDifficulty": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseNotFound": "Exercice introuvable",
+  "exerciseInfoTitle": "En bref",
+  "exerciseInstructionsTitle": "Consignes",
+  "exerciseMistakesTitle": "Erreurs fréquentes",
+  "customExerciseCreate": "Créer un exercice",
+  "customExerciseEdit": "Modifier l'exercice",
+  "customExerciseName": "Nom de l'exercice",
+  "customExerciseTypeLabel": "Mesure",
+  "customExerciseStat": "Stat travaillée",
+  "customExerciseMusclesHint": "Touche un muscle sur la silhouette : une fois pour « principal », deux fois pour « secondaire », trois fois pour le retirer.",
+  "customExerciseBodySemantics": "Silhouette {view} : touche un muscle pour le sélectionner.",
+  "@customExerciseBodySemantics": {
+    "placeholders": {
+      "view": {
+        "type": "String"
+      }
+    }
+  },
+  "customExerciseChangeRole": "Changer le rôle de {muscle}",
+  "@customExerciseChangeRole": {
+    "placeholders": {
+      "muscle": {
+        "type": "String"
+      }
+    }
+  },
+  "customExerciseAddMuscle": "Ajouter un muscle depuis la liste",
+  "customExerciseNameTooShort": "Le nom doit compter au moins {min} caractères.",
+  "@customExerciseNameTooShort": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "customExerciseNameTooLong": "Le nom doit compter au plus {max} caractères.",
+  "@customExerciseNameTooLong": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "customExerciseNoPrimaryMuscle": "Choisis au moins un muscle principal.",
+  "customExerciseDeleteTitle": "Supprimer l'exercice ?",
+  "customExerciseDeleteBody": "« {name} » sera supprimé de tes exercices.",
+  "@customExerciseDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "saveAction": "Enregistrer",
+  "deleteAction": "Supprimer",
+  "removeAction": "Retirer",
+  "moveUpAction": "Monter",
+  "moveDownAction": "Descendre",
+  "decreaseLabel": "Diminuer : {label}",
+  "@decreaseLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "increaseLabel": "Augmenter : {label}",
+  "@increaseLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "programsTitle": "Programmes",
+  "programsEmpty": "Aucun programme pour l'instant. Crée ton premier programme pour le placer dans ton planning.",
+  "programCreate": "Nouveau programme",
+  "programEdit": "Modifier le programme",
+  "programName": "Nom du programme",
+  "programFormatLabel": "Format",
+  "programFormat": "{format, select, strength{Musculation} interval{Tabata, HIIT, circuit} cardio{Cardio} mobility{Mobilité} other{Autre}}",
+  "@programFormat": {
+    "placeholders": {
+      "format": {
+        "type": "String"
+      }
+    }
+  },
+  "programExercisesTitle": "Exercices du programme",
+  "programAddExercise": "Ajouter un exercice",
+  "programPickExercise": "Choisis un exercice",
+  "programExerciseCount": "{count, plural, =0{Aucun exercice} =1{1 exercice} other{{count} exercices}}",
+  "@programExerciseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "programEstimatedDuration": "Durée estimée : {duration}",
+  "@programEstimatedDuration": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "programSets": "Séries",
+  "programReps": "Répétitions",
+  "programDuration": "Durée",
+  "programDistance": "Distance",
+  "programLoad": "Charge",
+  "programNoLoad": "Sans charge",
+  "programLoadValue": "{kg} kg",
+  "@programLoadValue": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "programRest": "Repos entre les séries",
+  "programHold": "Temps de maintien",
+  "programNameTooShort": "Le nom doit compter au moins {min} caractères.",
+  "@programNameTooShort": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "programNameTooLong": "Le nom doit compter au plus {max} caractères.",
+  "@programNameTooLong": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "programNoExercise": "Ajoute au moins un exercice.",
+  "programInvalidValues": "Certaines valeurs sont hors limites.",
+  "programDeleteTitle": "Supprimer le programme ?",
+  "programDeleteBody": "« {name} » et ses séances planifiées seront supprimés.",
+  "@programDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "intervalWork": "Travail",
+  "intervalRest": "Repos",
+  "intervalRounds": "Rounds",
+  "intervalCycles": "Cycles",
+  "intervalRestBetweenCycles": "Repos entre les cycles",
+  "durationSeconds": "{seconds} s",
+  "@durationSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "durationMinutes": "{minutes} min",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHours": "{hours} h {minutes}",
+  "@durationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "distanceMeters": "{meters} m",
+  "@distanceMeters": {
+    "placeholders": {
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "distanceKilometers": "{km} km",
+  "@distanceKilometers": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "planningTitle": "Planning",
+  "planningPreviousWeek": "Semaine précédente",
+  "planningNextWeek": "Semaine suivante",
+  "planningWeekRange": "Du {start} au {end}",
+  "@planningWeekRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "planningDragHint": "Appui long sur une séance pour la déplacer vers un autre jour.",
+  "planningRestDay": "Repos",
+  "planningRestDayHint": "Jour de repos : seule la mobilité légère est possible.",
+  "planningNoSession": "Aucune séance",
+  "planningAddSession": "Ajouter une séance le {day}",
+  "@planningAddSession": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "planningAddSessionTitle": "Nouvelle séance",
+  "planningEditSessionTitle": "Modifier la séance",
+  "planningProgram": "Programme",
+  "planningTime": "Heure",
+  "planningRecurring": "Chaque semaine",
+  "planningOneOff": "Cette semaine seulement",
+  "planningRecurringSwitch": "Répéter chaque semaine",
+  "planningReminderSwitch": "Rappel",
+  "planningReminderHint": "Une notification {minutes} minutes avant la séance.",
+  "planningReminderOn": "Rappel activé",
+  "planningReminderOff": "Rappel désactivé",
+  "planningRestDayRefused": "Ce jour est un jour de repos : seuls les programmes de mobilité peuvent y être placés.",
+  "reminderChannelName": "Séances planifiées",
+  "reminderChannelDescription": "Rappels avant tes séances.",
+  "reminderTitle": "Ta séance approche",
+  "reminderBody": "{program} commence dans {minutes} minutes.",
+  "@reminderBody": {
+    "placeholders": {
+      "program": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "homeExercisesHint": "Le catalogue et tes exercices perso",
+  "homeProgramsHint": "Tes séances sur mesure",
+  "homePlanningHint": "Ta semaine d'entraînement",
+  "@planningReminderHint": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  }
 }

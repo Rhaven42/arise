@@ -1,14 +1,26 @@
+import 'dart:io';
+
 import 'package:arise/app.dart';
+import 'package:arise/core/anatomy/body_shapes.dart';
+import 'package:arise/core/anatomy/body_shapes_provider.dart';
+import 'package:arise/core/anatomy/muscle.dart';
 import 'package:arise/core/database/app_database.dart';
+import 'package:arise/core/router/app_router.dart';
 import 'package:arise/core/utils/clock.dart';
 import 'package:arise/features/backup/presentation/backup_controller.dart';
+import 'package:arise/features/exercises/data/asset_exercise_catalog_repository.dart';
+import 'package:arise/features/exercises/presentation/animation/figure_animation.dart';
+import 'package:arise/features/exercises/presentation/exercise_providers.dart';
+import 'package:arise/features/planning/presentation/planning_providers.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
+import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'fake_backup_file_gateway.dart';
+import 'fake_reminder_scheduler.dart';
 
 /// Date fixe utilisée par les tests.
 final testNow = DateTime.utc(2026, 11, 4, 9);
@@ -23,6 +35,20 @@ final sampleProfile = PlayerProfile(
   createdAt: testNow,
 );
 
+/// Contenus embarqués lus directement sur le disque (évite les chargements
+/// asynchrones d'assets dans les tests de widgets).
+final testCatalog = AssetExerciseCatalogRepository.decodeCatalog(
+  File(AssetExerciseCatalogRepository.assetPath).readAsStringSync(),
+);
+final testMotions = decodeMotions(File(motionsAsset).readAsStringSync());
+final testBodyShapes = {
+  for (final view in BodyView.values)
+    view: BodyShapesParser.parse(
+      File(bodyShapeAssets[view]!).readAsStringSync(),
+      view,
+    ),
+};
+
 /// Base en mémoire, fermée automatiquement à la fin du test.
 AppDatabase createTestDatabase() {
   final database = AppDatabase(NativeDatabase.memory());
@@ -34,6 +60,7 @@ AppDatabase createTestDatabase() {
 ProviderContainer createTestContainer({
   AppDatabase? database,
   FakeBackupFileGateway? files,
+  FakeReminderScheduler? reminders,
 }) {
   return ProviderContainer.test(
     overrides: [
@@ -42,6 +69,12 @@ ProviderContainer createTestContainer({
       backupFileGatewayProvider.overrideWithValue(
         files ?? FakeBackupFileGateway(),
       ),
+      reminderSchedulerProvider.overrideWithValue(
+        reminders ?? FakeReminderScheduler(),
+      ),
+      exerciseCatalogProvider.overrideWith((_) async => testCatalog),
+      figureMotionsProvider.overrideWith((_) async => testMotions),
+      bodyShapesProvider.overrideWith((_) async => testBodyShapes),
     ],
   );
 }
@@ -53,6 +86,24 @@ extension PumpAriseApp on WidgetTester {
       UncontrolledProviderScope(container: container, child: const AriseApp()),
     );
     await pumpAndSettle();
+  }
+
+  /// Lance l'application avec un profil déjà créé et ouvre [location].
+  ///
+  /// N'attend pas la fin des animations (certaines tournent en boucle).
+  Future<void> openWithProfile(
+    ProviderContainer container,
+    String location,
+  ) async {
+    await container.read(profileRepositoryProvider).saveProfile(sampleProfile);
+    await pumpWidget(
+      UncontrolledProviderScope(container: container, child: const AriseApp()),
+    );
+    await pump();
+    await pump();
+    container.read(appRouterProvider).go(location);
+    await pump();
+    await pump(const Duration(milliseconds: 300));
   }
 
   /// Démonte l'application pour libérer les flux de la base avant sa

@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:arise/features/backup/domain/backup_data.dart';
+import 'package:arise/features/exercises/domain/exercise.dart';
+import 'package:arise/features/planning/domain/planned_session.dart';
+import 'package:arise/features/planning/domain/program.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
 
 /// Raison du refus d'un fichier de sauvegarde.
@@ -33,18 +36,27 @@ abstract final class BackupCodec {
   static const format = 'arise-backup';
 
   /// Version courante du format ; les versions antérieures restent lisibles.
-  static const currentVersion = 1;
+  ///
+  /// - v1 (phase 1) : profil ;
+  /// - v2 (phase 2) : exercices personnalisés, programmes et planning.
+  static const currentVersion = 2;
 
   /// Construit une sauvegarde au format courant.
   static BackupData create({
     required DateTime exportedAt,
     required PlayerProfile? profile,
+    List<Exercise> customExercises = const [],
+    List<Program> programs = const [],
+    List<PlannedSession> plannedSessions = const [],
   }) {
     return BackupData(
       format: format,
       version: currentVersion,
       exportedAt: exportedAt.toUtc(),
       profile: profile,
+      customExercises: customExercises,
+      programs: programs,
+      plannedSessions: plannedSessions,
     );
   }
 

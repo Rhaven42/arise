@@ -284,17 +284,32 @@ class IntervalDefaultsConfig {
     required this.workSeconds,
     required this.restSeconds,
     required this.rounds,
+    required this.cycles,
+    required this.restBetweenCyclesSeconds,
   });
 
   final int workSeconds;
   final int restSeconds;
   final int rounds;
+  final int cycles;
+  final int restBetweenCyclesSeconds;
 
   Map<String, Object> toJson() => {
     'workSeconds': workSeconds,
     'restSeconds': restSeconds,
     'rounds': rounds,
+    'cycles': cycles,
+    'restBetweenCyclesSeconds': restBetweenCyclesSeconds,
   };
+}
+
+class PlanningConfig {
+  const PlanningConfig({required this.reminderLeadMinutes});
+
+  /// Délai entre le rappel et l'heure de la séance.
+  final int reminderLeadMinutes;
+
+  Map<String, Object> toJson() => {'reminderLeadMinutes': reminderLeadMinutes};
 }
 
 class HeatmapConfig {
@@ -353,6 +368,7 @@ class GameConfig {
     required this.heatmap,
     required this.balance,
     required this.health,
+    required this.planning,
     required this.provisionalKeys,
   });
 
@@ -375,6 +391,7 @@ class GameConfig {
   final HeatmapConfig heatmap;
   final BalanceConfig balance;
   final HealthConfig health;
+  final PlanningConfig planning;
 
   /// Chemins (« section.clé ») des valeurs provisoires, cf. SPEC.md §20.
   final List<String> provisionalKeys;
@@ -400,6 +417,7 @@ class GameConfig {
     'heatmap': heatmap.toJson(),
     'balance': balance.toJson(),
     'health': health.toJson(),
+    'planning': planning.toJson(),
     'provisionalKeys': provisionalKeys,
   };
 }
@@ -484,6 +502,8 @@ const gameConfig = GameConfig(
     workSeconds: 20,
     restSeconds: 10,
     rounds: 8,
+    cycles: 1,
+    restBetweenCyclesSeconds: 60,
   ),
   heatmap: HeatmapConfig(
     weeklyThresholds: [4, 8, 12],
@@ -491,7 +511,10 @@ const gameConfig = GameConfig(
   ),
   balance: BalanceConfig(imbalanceRatio: 1.5),
   health: HealthConfig(sleepBonusMinHours: 7),
+  planning: PlanningConfig(reminderLeadMinutes: 30),
   provisionalKeys: [
+    'intervalDefaults.restBetweenCyclesSeconds',
+    'planning.reminderLeadMinutes',
     'progression.maxLevel',
     'streaks.shieldEveryDays',
     'classes.changeCooldownDays',

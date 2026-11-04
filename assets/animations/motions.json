@@ -1,0 +1,1497 @@
+{
+ "squat": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     -0.88
+    ],
+    "hold": 1.0,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": 0,
+     "sh_n": 0,
+     "th_f": 0,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     -0.2845,
+     -0.4613
+    ],
+    "hold": 1.0,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 148,
+     "ua_n": 90,
+     "fa_n": 90,
+     "ua_f": 90,
+     "fa_f": 90,
+     "th_n": 82,
+     "sh_n": -22,
+     "th_f": 82,
+     "sh_f": -22,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "lunge": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     -0.1686,
+     -0.8472
+    ],
+    "hold": 1.0,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": 22,
+     "sh_n": 0,
+     "th_f": -20,
+     "sh_f": -25,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     -0.4347,
+     -0.4454
+    ],
+    "hold": 1.0,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": 88,
+     "sh_n": -2,
+     "th_f": -12,
+     "sh_f": -92,
+     "ft_n": 90,
+     "ft_f": -170
+    }
+   }
+  ]
+ },
+ "push_up": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.7964,
+     -0.4179
+    ],
+    "hold": 1.0,
+    "anchor": "toe_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 109.4,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": -70.6,
+     "sh_n": -70.6,
+     "th_f": -70.6,
+     "sh_f": -70.6,
+     "ft_n": 15,
+     "ft_f": 15
+    }
+   },
+   {
+    "root": [
+     0.8445,
+     -0.1824
+    ],
+    "hold": 1.0,
+    "anchor": "toe_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 93.7,
+     "ua_n": -100,
+     "fa_n": 20,
+     "ua_f": -100,
+     "fa_f": 20,
+     "th_n": -86.3,
+     "sh_n": -86.3,
+     "th_f": -86.3,
+     "sh_f": -86.3,
+     "ft_n": 15,
+     "ft_f": 15
+    }
+   }
+  ]
+ },
+ "dips": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     -0.0,
+     -0.064
+    ],
+    "hold": 1.0,
+    "anchor": "hand_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": -10,
+     "sh_n": -70,
+     "th_f": -10,
+     "sh_f": -70,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.2284,
+     0.2572
+    ],
+    "hold": 1.0,
+    "anchor": "hand_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 172,
+     "ua_n": -95,
+     "fa_n": 0,
+     "ua_f": -95,
+     "fa_f": 0,
+     "th_n": -5,
+     "sh_n": -75,
+     "th_f": -5,
+     "sh_f": -75,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "pull_up": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     -0.0,
+     1.076
+    ],
+    "hold": 1.0,
+    "anchor": "hand_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 180,
+     "fa_n": 180,
+     "ua_f": 180,
+     "fa_f": 180,
+     "th_n": 8,
+     "sh_n": -25,
+     "th_f": 8,
+     "sh_f": -25,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     -0.1012,
+     0.4852
+    ],
+    "hold": 1.0,
+    "anchor": "hand_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 15,
+     "fa_n": 175,
+     "ua_f": 15,
+     "fa_f": 175,
+     "th_n": 15,
+     "sh_n": -30,
+     "th_f": 15,
+     "sh_f": -30,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "row": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     -0.0497,
+     -0.8486
+    ],
+    "hold": 1.0,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 118,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": 18,
+     "sh_n": -12,
+     "th_f": 18,
+     "sh_f": -12,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     -0.0497,
+     -0.8486
+    ],
+    "hold": 1.0,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 118,
+     "ua_n": -70,
+     "fa_n": -5,
+     "ua_f": -70,
+     "fa_f": -5,
+     "th_n": 18,
+     "sh_n": -12,
+     "th_f": 18,
+     "sh_f": -12,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "overhead_press": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     -0.88
+    ],
+    "hold": 1.0,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 25,
+     "fa_n": 175,
+     "ua_f": 25,
+     "fa_f": 175,
+     "th_n": 0,
+     "sh_n": 0,
+     "th_f": 0,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     -0.88
+    ],
+    "hold": 1.0,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 178,
+     "fa_n": 180,
+     "ua_f": 178,
+     "fa_f": 180,
+     "th_n": 0,
+     "sh_n": 0,
+     "th_f": 0,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "lateral_raise": {
+  "view": "front",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 8,
+     "fa_n": 10,
+     "ua_f": 8,
+     "fa_f": 10,
+     "th_n": 0,
+     "sh_n": 0,
+     "th_f": 0,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 88,
+     "fa_n": 92,
+     "ua_f": 88,
+     "fa_f": 92,
+     "th_n": 0,
+     "sh_n": 0,
+     "th_f": 0,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "biceps_curl": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     -0.88
+    ],
+    "hold": 1.0,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 2,
+     "fa_n": 5,
+     "ua_f": 2,
+     "fa_f": 5,
+     "th_n": 0,
+     "sh_n": 0,
+     "th_f": 0,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     -0.88
+    ],
+    "hold": 1.0,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": -5,
+     "fa_n": 160,
+     "ua_f": -5,
+     "fa_f": 160,
+     "th_n": 0,
+     "sh_n": 0,
+     "th_f": 0,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "romanian_deadlift": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     -0.88
+    ],
+    "hold": 1.0,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": 0,
+     "sh_n": 0,
+     "th_f": 0,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     -0.0326,
+     -0.8746
+    ],
+    "hold": 1.0,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 100,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": 8,
+     "sh_n": -4,
+     "th_f": 8,
+     "sh_f": -4,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "glute_bridge": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.5,
+     -0.0
+    ],
+    "hold": 1.0,
+    "anchor": "neck",
+    "target": [
+     -0.05,
+     0.0
+    ],
+    "angles": {
+     "t": -90,
+     "ua_n": -88,
+     "fa_n": -88,
+     "ua_f": -88,
+     "fa_f": -88,
+     "th_n": 132,
+     "sh_n": -45,
+     "th_f": 132,
+     "sh_f": -45,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.46,
+     -0.206
+    ],
+    "hold": 1.0,
+    "anchor": "neck",
+    "target": [
+     -0.05,
+     0.0
+    ],
+    "angles": {
+     "t": -68,
+     "ua_n": -80,
+     "fa_n": -80,
+     "ua_f": -80,
+     "fa_f": -80,
+     "th_n": 103,
+     "sh_n": -44,
+     "th_f": 103,
+     "sh_f": -44,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "calf_raise": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     -0.13,
+     -0.88
+    ],
+    "hold": 1.0,
+    "anchor": "toe_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": 0,
+     "sh_n": 0,
+     "th_f": 0,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     -0.0836,
+     -0.9796
+    ],
+    "hold": 1.0,
+    "anchor": "toe_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": 0,
+     "sh_n": 0,
+     "th_f": 0,
+     "sh_f": 0,
+     "ft_n": 40,
+     "ft_f": 40
+    }
+   }
+  ]
+ },
+ "plank": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.838,
+     -0.2465
+    ],
+    "hold": 1.6,
+    "anchor": "toe_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 97.9,
+     "ua_n": 0,
+     "fa_n": 90,
+     "ua_f": 0,
+     "fa_f": 90,
+     "th_n": -82.1,
+     "sh_n": -82.1,
+     "th_f": -82.1,
+     "sh_f": -82.1,
+     "ft_n": 15,
+     "ft_f": 15
+    }
+   },
+   {
+    "root": [
+     0.8367,
+     -0.2556
+    ],
+    "hold": 1.6,
+    "anchor": "toe_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 98.5,
+     "ua_n": 0,
+     "fa_n": 90,
+     "ua_f": 0,
+     "fa_f": 90,
+     "th_n": -81.5,
+     "sh_n": -81.5,
+     "th_f": -81.5,
+     "sh_f": -81.5,
+     "ft_n": 15,
+     "ft_f": 15
+    }
+   }
+  ]
+ },
+ "side_plank": {
+  "view": "front",
+  "keys": [
+   {
+    "root": [
+     0.6409,
+     -0.5047
+    ],
+    "hold": 1.6,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 125,
+     "ua_n": 180,
+     "fa_n": 180,
+     "ua_f": 0,
+     "fa_f": 90,
+     "th_n": -55,
+     "sh_n": -55,
+     "th_f": -55,
+     "sh_f": -55,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.6663,
+     -0.4663
+    ],
+    "hold": 1.6,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 122,
+     "ua_n": 180,
+     "fa_n": 180,
+     "ua_f": 0,
+     "fa_f": 90,
+     "th_n": -58,
+     "sh_n": -58,
+     "th_f": -58,
+     "sh_f": -58,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "crunch": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": -90,
+     "ua_n": -80,
+     "fa_n": 60,
+     "ua_f": -80,
+     "fa_f": 60,
+     "th_n": 140,
+     "sh_n": 30,
+     "th_f": 140,
+     "sh_f": 30,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": -122,
+     "ua_n": -110,
+     "fa_n": 30,
+     "ua_f": -110,
+     "fa_f": 30,
+     "th_n": 140,
+     "sh_n": 30,
+     "th_f": 140,
+     "sh_f": 30,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "leg_raise": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": -90,
+     "ua_n": -90,
+     "fa_n": -90,
+     "ua_f": -90,
+     "fa_f": -90,
+     "th_n": 95,
+     "sh_n": 95,
+     "th_f": 95,
+     "sh_f": 95,
+     "ft_n": 180,
+     "ft_f": 180
+    }
+   },
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": -90,
+     "ua_n": -90,
+     "fa_n": -90,
+     "ua_f": -90,
+     "fa_f": -90,
+     "th_n": 175,
+     "sh_n": 175,
+     "th_f": 175,
+     "sh_f": 175,
+     "ft_n": -90,
+     "ft_f": -90
+    }
+   }
+  ]
+ },
+ "superman": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 90,
+     "ua_n": 90,
+     "fa_n": 90,
+     "ua_f": 90,
+     "fa_f": 90,
+     "th_n": -90,
+     "sh_n": -90,
+     "th_f": -90,
+     "sh_f": -90,
+     "ft_n": -90,
+     "ft_f": -90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 106,
+     "ua_n": 108,
+     "fa_n": 110,
+     "ua_f": 108,
+     "fa_f": 110,
+     "th_n": -102,
+     "sh_n": -104,
+     "th_f": -102,
+     "sh_f": -104,
+     "ft_n": -100,
+     "ft_f": -100
+    }
+   }
+  ]
+ },
+ "burpee": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     -0.88
+    ],
+    "hold": 0.8,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": 0,
+     "sh_n": 0,
+     "th_f": 0,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     -0.1612,
+     -0.1621
+    ],
+    "hold": 0.8,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 140,
+     "ua_n": 15,
+     "fa_n": 5,
+     "ua_f": 15,
+     "fa_f": 5,
+     "th_n": 115,
+     "sh_n": -35,
+     "th_f": 115,
+     "sh_f": -35,
+     "ft_n": 110,
+     "ft_f": 110
+    }
+   },
+   {
+    "root": [
+     0.0727,
+     -0.4019
+    ],
+    "hold": 0.8,
+    "anchor": "hand_n",
+    "target": [
+     0.55,
+     0.0
+    ],
+    "angles": {
+     "t": 109.4,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": -70.6,
+     "sh_n": -70.6,
+     "th_f": -70.6,
+     "sh_f": -70.6,
+     "ft_n": 15,
+     "ft_f": 15
+    }
+   },
+   {
+    "root": [
+     -0.1612,
+     -0.1621
+    ],
+    "hold": 0.8,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 140,
+     "ua_n": 15,
+     "fa_n": 5,
+     "ua_f": 15,
+     "fa_f": 5,
+     "th_n": 115,
+     "sh_n": -35,
+     "th_f": 115,
+     "sh_f": -35,
+     "ft_n": 110,
+     "ft_f": 110
+    }
+   },
+   {
+    "root": [
+     0.0,
+     -1.06
+    ],
+    "hold": 0.8,
+    "anchor": "ankle_n",
+    "target": [
+     0.0,
+     -0.18
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 175,
+     "fa_n": 180,
+     "ua_f": 175,
+     "fa_f": 180,
+     "th_n": 0,
+     "sh_n": 0,
+     "th_f": 0,
+     "sh_f": 0,
+     "ft_n": 60,
+     "ft_f": 60
+    }
+   }
+  ]
+ },
+ "jumping_jack": {
+  "view": "front",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 6,
+     "fa_n": 8,
+     "ua_f": 6,
+     "fa_f": 8,
+     "th_n": 3,
+     "sh_n": 3,
+     "th_f": 3,
+     "sh_f": 3,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     -0.06
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     -0.06
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 160,
+     "fa_n": 170,
+     "ua_f": 160,
+     "fa_f": 170,
+     "th_n": 20,
+     "sh_n": 22,
+     "th_f": 20,
+     "sh_f": 22,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "mountain_climber": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     -0.4773,
+     -0.4019
+    ],
+    "hold": 1.0,
+    "anchor": "hand_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 109.4,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": 55,
+     "sh_n": -40,
+     "th_f": -70.6,
+     "sh_f": -70.6,
+     "ft_n": 150,
+     "ft_f": 15
+    }
+   },
+   {
+    "root": [
+     -0.4773,
+     -0.4019
+    ],
+    "hold": 1.0,
+    "anchor": "hand_n",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 109.4,
+     "ua_n": 0,
+     "fa_n": 0,
+     "ua_f": 0,
+     "fa_f": 0,
+     "th_n": -70.6,
+     "sh_n": -70.6,
+     "th_f": 55,
+     "sh_f": -40,
+     "ft_n": 15,
+     "ft_f": 150
+    }
+   }
+  ]
+ },
+ "walking": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": -22,
+     "fa_n": -10,
+     "ua_f": 22,
+     "fa_f": 35,
+     "th_n": 24,
+     "sh_n": 12,
+     "th_f": -20,
+     "sh_f": -35,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     -0.02
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     -0.02
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 0,
+     "fa_n": 8,
+     "ua_f": 0,
+     "fa_f": 8,
+     "th_n": 2,
+     "sh_n": -8,
+     "th_f": 2,
+     "sh_f": -8,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 22,
+     "fa_n": 35,
+     "ua_f": -22,
+     "fa_f": -10,
+     "th_n": -20,
+     "sh_n": -35,
+     "th_f": 24,
+     "sh_f": 12,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     -0.02
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     -0.02
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 0,
+     "fa_n": 8,
+     "ua_f": 0,
+     "fa_f": 8,
+     "th_n": 2,
+     "sh_n": -8,
+     "th_f": 2,
+     "sh_f": -8,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "running": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 170,
+     "ua_n": -45,
+     "fa_n": 40,
+     "ua_f": 50,
+     "fa_f": 140,
+     "th_n": 55,
+     "sh_n": 0,
+     "th_f": -30,
+     "sh_f": -95,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     -0.05
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     -0.05
+    ],
+    "angles": {
+     "t": 170,
+     "ua_n": 50,
+     "fa_n": 140,
+     "ua_f": -45,
+     "fa_f": 40,
+     "th_n": -30,
+     "sh_n": -95,
+     "th_f": 55,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "cycling": {
+  "view": "side",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 150,
+     "ua_n": 60,
+     "fa_n": 85,
+     "ua_f": 60,
+     "fa_f": 85,
+     "th_n": 95,
+     "sh_n": 10,
+     "th_f": 40,
+     "sh_f": -15,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 150,
+     "ua_n": 60,
+     "fa_n": 85,
+     "ua_f": 60,
+     "fa_f": 85,
+     "th_n": 65,
+     "sh_n": -25,
+     "th_f": 70,
+     "sh_f": 30,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 150,
+     "ua_n": 60,
+     "fa_n": 85,
+     "ua_f": 60,
+     "fa_f": 85,
+     "th_n": 40,
+     "sh_n": -15,
+     "th_f": 95,
+     "sh_f": 10,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 150,
+     "ua_n": 60,
+     "fa_n": 85,
+     "ua_f": 60,
+     "fa_f": 85,
+     "th_n": 70,
+     "sh_n": 30,
+     "th_f": 65,
+     "sh_f": -25,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ },
+ "jump_rope": {
+  "view": "front",
+  "keys": [
+   {
+    "root": [
+     0.0,
+     0.0
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     0.0
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 15,
+     "fa_n": 70,
+     "ua_f": 15,
+     "fa_f": 70,
+     "th_n": 2,
+     "sh_n": 0,
+     "th_f": 2,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   },
+   {
+    "root": [
+     0.0,
+     -0.07
+    ],
+    "hold": 1.0,
+    "anchor": "root",
+    "target": [
+     0.0,
+     -0.07
+    ],
+    "angles": {
+     "t": 180,
+     "ua_n": 18,
+     "fa_n": 55,
+     "ua_f": 18,
+     "fa_f": 55,
+     "th_n": 2,
+     "sh_n": 0,
+     "th_f": 2,
+     "sh_f": 0,
+     "ft_n": 90,
+     "ft_f": 90
+    }
+   }
+  ]
+ }
+}

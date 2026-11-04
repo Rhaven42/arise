@@ -3,10 +3,16 @@ import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/core/router/route_guard.dart';
 import 'package:arise/features/backup/presentation/backup_page.dart';
 import 'package:arise/features/backup/presentation/restore_page.dart';
+import 'package:arise/features/exercises/presentation/custom_exercise_editor_page.dart';
+import 'package:arise/features/exercises/presentation/exercise_detail_page.dart';
+import 'package:arise/features/exercises/presentation/exercise_list_page.dart';
 import 'package:arise/features/onboarding/presentation/onboarding_page.dart';
 import 'package:arise/features/onboarding/presentation/title_page.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
+import 'package:arise/features/planning/presentation/planning_page.dart';
+import 'package:arise/features/planning/presentation/program_editor_page.dart';
+import 'package:arise/features/planning/presentation/programs_page.dart';
 import 'package:arise/features/progression/presentation/system_home_page.dart';
 import 'package:arise/features/settings/presentation/settings_page.dart';
 import 'package:flutter/foundation.dart';
@@ -76,6 +82,50 @@ GoRouter appRouter(Ref ref) {
                 builder: (_, _) => const BackupPage(),
               ),
             ],
+          ),
+          GoRoute(
+            path: AppRoutes.exercisesSegment,
+            builder: (_, _) => const ExerciseListPage(),
+            routes: [
+              GoRoute(
+                path: AppRoutes.customExerciseNewSegment,
+                builder: (_, _) => const CustomExerciseEditorPage(),
+              ),
+              GoRoute(
+                path: ':id',
+                builder: (_, state) => ExerciseDetailPage(
+                  exerciseId: state.pathParameters['id']!,
+                ),
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    builder: (_, state) => CustomExerciseEditorPage(
+                      exerciseId: state.pathParameters['id'],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          GoRoute(
+            path: AppRoutes.programsSegment,
+            builder: (_, _) => const ProgramsPage(),
+            routes: [
+              GoRoute(
+                path: AppRoutes.programNewSegment,
+                builder: (_, _) => const ProgramEditorPage(),
+              ),
+              GoRoute(
+                path: ':id',
+                builder: (_, state) => ProgramEditorPage(
+                  programId: state.pathParameters['id'],
+                ),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: AppRoutes.planningSegment,
+            builder: (_, _) => const PlanningPage(),
           ),
         ],
       ),
