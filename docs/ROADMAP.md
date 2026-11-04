@@ -6,21 +6,21 @@
 ## Étape préalable
 - [x] CLAUDE.md, docs/SPEC.md, docs/ANATOMY.md, docs/ROADMAP.md créés
 - [x] Questions bloquantes répondues et documentation validée (décisions : SPEC.md §20)
-- [ ] Dépôt GitHub créé et relié à Claude
+- [x] Dépôt GitHub créé et relié à Claude
 
 ## Phase 0 — Fondations
-- [ ] Projet Flutter (Android + iOS) initialisé, identifiants d'application définis
-- [ ] Projet Firebase configuré + émulateurs (Auth, Firestore, Functions, Storage)
-- [ ] Structure Clean Architecture (`core/`, `features/*/domain|data|presentation`, `functions/`, `assets/`, `test/` miroir)
-- [ ] Thème fantasy (couleurs, typographies médiévales sous licence libre, cadres pierre/bois)
-- [ ] Design system (boutons, cadres, fenêtre « Système », barres, badges) + page de démonstration
-- [ ] Navigation `go_router` + garde d'authentification
-- [ ] Riverpod + générateur configurés
-- [ ] Base locale Drift (schéma initial + migrations)
-- [ ] Configuration de jeu partagée (`game_config.dart` / `gameConfig.ts`) + **test de parité**
-- [ ] Localisation FR (ARB)
-- [ ] Lint strict Dart et TypeScript, zéro avertissement
-- [ ] Intégration continue (analyse, tests Flutter, tests Functions, parité, règles)
+- [x] Projet Flutter (Android + iOS) initialisé, identifiants d'application définis
+- [x] Projet Firebase configuré + émulateurs (Auth, Firestore, Functions, Storage) — projet de démo `demo-arise` ; projet réel à créer en phase 1
+- [x] Structure Clean Architecture (`core/`, `features/*/domain|data|presentation`, `functions/`, `assets/`, `test/` miroir)
+- [x] Thème fantasy (couleurs, typographies médiévales sous licence libre, cadres pierre/bois)
+- [x] Design system (boutons, cadres, fenêtre « Système », barres, badges) + page de démonstration
+- [x] Navigation `go_router` + garde d'authentification
+- [x] Riverpod + générateur configurés
+- [x] Base locale Drift (schéma initial + migrations)
+- [x] Configuration de jeu partagée (`game_config.dart` / `gameConfig.ts`) + **test de parité**
+- [x] Localisation FR (ARB)
+- [x] Lint strict Dart et TypeScript, zéro avertissement
+- [x] Intégration continue (analyse, tests Flutter, tests Functions, parité, règles)
 
 ## Phase 1 — Authentification et onboarding
 - [ ] Écran titre taverne
