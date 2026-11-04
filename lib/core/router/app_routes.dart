@@ -6,5 +6,5 @@ abstract final class AppRoutes {
   static const systemHome = '/system';
 
   /// Écrans accessibles uniquement à un utilisateur connecté.
-  static const protected = {systemHome};
+  static const Set<String> protected = {systemHome};
 }
