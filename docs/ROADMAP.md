@@ -20,7 +20,7 @@
 - [x] Configuration de jeu partagée (`game_config.dart` / `gameConfig.ts`) + **test de parité**
 - [x] Localisation FR (ARB)
 - [x] Lint strict Dart et TypeScript, zéro avertissement
-- [x] Intégration continue (analyse, tests Flutter, tests Functions, parité, règles)
+- [x] Intégration continue (analyse, tests Flutter, tests Functions, parité, règles, lancement réel sur émulateur Android, APK de debug)
 
 ## Phase 1 — Authentification et onboarding
 - [ ] Écran titre taverne
