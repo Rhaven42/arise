@@ -21,3 +21,7 @@ linter:
     # La documentation publique n'est pas exigée sur chaque membre : les
     # commentaires (en français) sont réservés à ce qui n'est pas évident.
     public_member_api_docs: false
+    # Dart 3.13 permet d'écrire « const new(...) » au lieu de répéter le nom
+    # de la classe. On garde la syntaxe classique, plus lisible et compatible
+    # avec les générateurs de code (freezed, drift).
+    unnecessary_type_name_in_constructor: false

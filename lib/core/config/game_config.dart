@@ -140,7 +140,10 @@ class RestConfig {
 }
 
 class PenaltyConfig {
-  const PenaltyConfig({required this.xpMultiplier, required this.durationHours});
+  const PenaltyConfig({
+    required this.xpMultiplier,
+    required this.durationHours,
+  });
 
   final double xpMultiplier;
   final int durationHours;

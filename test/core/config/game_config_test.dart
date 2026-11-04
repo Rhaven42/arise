@@ -37,8 +37,9 @@ void main() {
     });
 
     test('les seuils de la heatmap sont strictement croissants', () {
-      expect(_isStrictlyIncreasing(gameConfig.heatmap.weeklyThresholds), isTrue);
-      expect(_isStrictlyIncreasing(gameConfig.heatmap.dailyThresholds), isTrue);
+      final heatmap = gameConfig.heatmap;
+      expect(_isStrictlyIncreasing(heatmap.weeklyThresholds), isTrue);
+      expect(_isStrictlyIncreasing(heatmap.dailyThresholds), isTrue);
     });
 
     test('les paliers de coffres sont strictement croissants', () {

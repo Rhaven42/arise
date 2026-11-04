@@ -23,7 +23,7 @@ abstract final class AriseTheme {
     );
 
     final textTheme = AriseTypography.textTheme();
-    const minSize = Size(AriseSpacing.minTouchTarget, AriseSpacing.minTouchTarget);
+    const minSize = Size.square(AriseSpacing.minTouchTarget);
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(AriseSpacing.radius),
     );

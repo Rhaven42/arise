@@ -45,7 +45,11 @@ class StoneFrame extends StatelessWidget {
           border: Border.all(color: edge, width: AriseSpacing.frameBorder),
           borderRadius: BorderRadius.circular(AriseSpacing.radius),
           boxShadow: const [
-            BoxShadow(color: Colors.black54, blurRadius: 8, offset: Offset(0, 3)),
+            BoxShadow(
+              color: Colors.black54,
+              blurRadius: 8,
+              offset: Offset(0, 3),
+            ),
           ],
         ),
         child: Container(

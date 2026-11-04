@@ -48,7 +48,9 @@ class SystemWindow extends StatelessWidget {
                   ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AriseSpacing.sm),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AriseSpacing.sm,
+                  ),
                   child: Text(
                     header.toUpperCase(),
                     textAlign: TextAlign.center,

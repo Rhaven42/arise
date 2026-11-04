@@ -36,7 +36,7 @@ class LocalDrafts extends Table {
 /// Base locale SQLite (Drift) de l'application.
 @DriftDatabase(tables: [PendingSessions, LocalDrafts])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase(super.executor);
+  AppDatabase(super.e);
 
   @override
   int get schemaVersion => 1;

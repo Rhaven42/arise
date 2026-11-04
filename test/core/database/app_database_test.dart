@@ -27,7 +27,7 @@ void main() {
       expect(pending.first.attemptCount, 0);
     });
 
-    test('comptent les tentatives puis disparaissent une fois envoyées', () async {
+    test('comptent les tentatives puis disparaissent après envoi', () async {
       await database.enqueuePendingSession(
         id: 's1',
         payloadJson: '{}',
