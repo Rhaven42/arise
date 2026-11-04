@@ -23,14 +23,14 @@
 - [x] Intégration continue (analyse, tests Flutter, tests Functions, parité, règles, lancement réel sur émulateur Android, APK de debug)
 
 ## Phase 1 — Accueil, questionnaire et sauvegarde (hors ligne)
-- [ ] Passage en 100 % hors ligne : retrait de Firebase et du serveur, doc mise à jour
-- [ ] Écran titre taverne
-- [ ] Questionnaire : objectif, niveau, équipement, 1 à 3 jours de repos, brouillon conservé
-- [ ] Consentement santé (révocable) et rappel de prudence
-- [ ] Profil enregistré dans la base locale (migration testée)
-- [ ] Navigation selon l'état du profil
-- [ ] Paramètres : export, import et effacement des données
-- [ ] Parcours complet testé sur émulateur Android
+- [x] Passage en 100 % hors ligne : retrait de Firebase et du serveur, doc mise à jour
+- [x] Écran titre taverne
+- [x] Questionnaire : objectif, niveau, équipement, 1 à 3 jours de repos, brouillon conservé
+- [x] Consentement santé (révocable) et rappel de prudence
+- [x] Profil enregistré dans la base locale (migration testée)
+- [x] Navigation selon l'état du profil
+- [x] Paramètres : export, import et effacement des données
+- [x] Parcours complet testé sur émulateur Android
 
 ## Phase 2 — Exercices et planning
 - [ ] Catalogue de 80 exercices conforme à ANATOMY.md (statut de relecture renseigné)
