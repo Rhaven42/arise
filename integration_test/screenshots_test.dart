@@ -79,12 +79,20 @@ void main() {
     await pumpFor(1200);
     await binding.takeScreenshot('11_fiche_pompes');
     await tester.binding.handlePopRoute();
-    await pumpFor(800);
-    await tester.enterText(find.byType(TextField), 'squat');
     await tester.pumpAndSettle();
-    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.enterText(find.byType(TextField).first, 'squat');
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Squat'));
+    if (find.text('Squat').evaluate().isEmpty) {
+      // Aide au diagnostic : textes affichés si la recherche échoue.
+      final texts = find
+          .byType(Text)
+          .evaluate()
+          .map((element) => (element.widget as Text).data)
+          .whereType<String>()
+          .join(' | ');
+      debugPrint('Textes visibles : $texts');
+    }
+    await tapText(tester, 'Squat');
     await pumpFor(1700);
     await binding.takeScreenshot('12_fiche_squat');
     await tester.binding.handlePopRoute();
