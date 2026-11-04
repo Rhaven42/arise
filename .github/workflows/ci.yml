@@ -19,6 +19,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+      - name: Libération d'espace disque (build Android)
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
