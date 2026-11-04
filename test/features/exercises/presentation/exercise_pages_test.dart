@@ -73,7 +73,7 @@ void main() {
     await tester.tap(find.text('Ajouter un muscle depuis la liste'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
-    await tester.tap(find.text('Obliques').last);
+    await tester.tap(find.text('Abducteurs').last);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 
@@ -88,7 +88,7 @@ void main() {
 
     final saved = container.read(customExercisesProvider).value!;
     expect(saved.single.name, 'Gainage maison');
-    expect(saved.single.primaryMuscles, [MuscleId.obliques]);
+    expect(saved.single.primaryMuscles, [MuscleId.abductors]);
     expect(find.byType(ExerciseDetailPage), findsOneWidget);
     await tester.unmountApp();
   });
