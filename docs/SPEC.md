@@ -274,3 +274,11 @@ Décision de la propriétaire du projet : pas de forfait Firebase Blaze, pas de 
 6. **Classement entre amis** : impossible sans serveur ; reste hors périmètre.
 7. **Anti-triche** : sans objet pour une application solo.
 8. **Créateur de personnage (phase 6)** : interface à menus déroulants demandée, qui met à jour la fiche JSON du personnage et affiche le rendu en direct, avec un choix de **race (Humain, Elfe, Orque)** en plus du sexe, du nombre de coiffures et de la couleur de peau. Modèles **originaux uniquement** : `wow-model-viewer`, Wowhead et les exports de World of Warcraft sont exclus (assets protégés). Le détail (races × sexes, maillages à prévoir) sera validé avec le plan de la phase 6 et reporté dans ASSETS.md.
+
+## 22. Décisions de la phase 2 (04/11/2026)
+1. **Animations d'exercices** : mannequin 2D original (`FigureAnimationPlayer`), qui exécute le mouvement en boucle ; les segments du corps sont colorés en vert vif (muscles principaux) et vert clair (secondaires). La version 3D (modèle anatomique sous licence compatible + animations Mixamo) viendra plus tard, assemblée par un artiste 3D, via la même interface `ExerciseAnimationPlayer` (docs/ASSETS.md §1). Z-Anatomy est écarté (licence CC BY-SA à partage à l'identique).
+2. **Silhouettes face et dos** : SVG originaux à 33 zones (`assets/svg/body_*.svg`), communs à la fiche exercice, à la création d'exercices personnalisés et, en phase 5, à la heatmap. Chaque rôle est signalé par une couleur **et** un motif (hachures = principal, points = secondaire) et listé en texte.
+3. **Catalogue** : 27 exercices de référence validés (le référentiel compte hip thrust et pont fessier séparément). Les 53 suivants sont proposés **par lots de 10** dans ANATOMY.md §2 bis ; chaque lot rejoint le catalogue après validation.
+4. **Jours de repos** : seuls les programmes de **mobilité** peuvent y être planifiés.
+5. **Rappels** : notifications locales programmées sur le téléphone, 30 minutes avant la séance (valeur provisoire dans la configuration de jeu), avec une demande d'autorisation au premier rappel activé.
+6. **Difficulté** d'un exercice : 1 à 3, affichée avec les libellés de niveau du questionnaire (Débutant, Intermédiaire, Avancé).

@@ -41,6 +41,7 @@ Clean Architecture découpée par fonctionnalité.
 ```
 lib/
   core/              # thème, design system, routeur, erreurs, base locale, utilitaires, constantes de jeu
+    anatomy/                  # identifiants des muscles, silhouettes SVG, BodyMap
     config/game_config.dart   # TOUTES les constantes d'équilibrage
     database/                 # base Drift, tables, migrations
     design_system/
@@ -108,6 +109,8 @@ Versions : Flutter 3.47 / Dart 3.13.
 
 - Les fichiers générés (`*.g.dart`, `*.freezed.dart`, `lib/l10n/generated/`) ne sont pas versionnés : la CI les régénère.
 - Ajout ou retrait de dépendances : workflow GitHub `deps` (lancé avec la liste des paquets), qui committe `pubspec.yaml` et `pubspec.lock`.
+- Formatage : `dart format` est appliqué par la CI ; sur une branche de travail, elle committe le résultat (« style: formatage automatique ») — faire `git pull` avant de continuer.
+- Outils de création des contenus (hors application) : les silhouettes SVG, les poses d'animation et le catalogue sont générés par des scripts Python versionnés dans `tool/` ; le catalogue relit les muscles dans ANATOMY.md.
 - CI : `.github/workflows/ci.yml` (analyse, absence de TODO, tests, APK de debug en artefact, parcours d'intégration sur émulateur Android).
 
 ## 9. Choix techniques

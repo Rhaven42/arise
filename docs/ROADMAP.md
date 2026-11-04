@@ -33,13 +33,17 @@
 - [x] Parcours complet testé sur émulateur Android
 
 ## Phase 2 — Exercices et planning
-- [ ] Catalogue de 80 exercices conforme à ANATOMY.md (statut de relecture renseigné)
-- [ ] `ExerciseAnimationPlayer` + animations de substitution
-- [ ] Fiche exercice (consignes, erreurs fréquentes, muscles, animation en boucle)
-- [ ] Exercices personnalisés avec sélection des muscles sur la silhouette
-- [ ] Éditeur de programmes (musculation, Tabata/HIIT/circuit, cardio, mobilité)
-- [ ] Planning hebdomadaire glisser-déposer, séances récurrentes, jours de repos
-- [ ] Rappels (notifications)
+- [x] Catalogue des 27 exercices de référence conforme à ANATOMY.md, vérifié par un test
+- [ ] Catalogue complété à 80 exercices (lots de 10 à valider — lot 1 proposé dans ANATOMY.md §2 bis)
+- [x] `ExerciseAnimationPlayer` + animations 2D de substitution (24 mouvements, muscles colorés)
+- [x] Silhouettes SVG face et dos (33 zones), motifs + libellés pour les daltoniens
+- [x] Fiche exercice (consignes, erreurs fréquentes, muscles, animation en boucle)
+- [x] Exercices personnalisés avec sélection des muscles sur la silhouette
+- [x] Éditeur de programmes (musculation, Tabata/HIIT/circuit, cardio, mobilité)
+- [x] Planning hebdomadaire glisser-déposer, séances récurrentes, jours de repos
+- [x] Rappels (notifications locales)
+- [x] Base locale v3 (migration testée) et sauvegarde v2 (v1 toujours lisible)
+- [x] Parcours sur émulateur : exercice, programme et planning
 
 ## Phase 3 — Lecteur de séance
 - [ ] Lecteur : minuteur visuel et sonore, voix optionnelle, animation synchronisée, compteur de séries

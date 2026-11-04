@@ -1,0 +1,143 @@
+"""Construit assets/catalog/exercises.json : muscles lus dans ANATOMY.md (§2)."""
+import json, re, sys
+
+anatomy = open(sys.argv[1], encoding="utf8").read()
+section = anatomy.split("## 2. Mapping")[1].split("## 2 bis")[0].split("## 3.")[0]
+rows = {}
+for line in section.splitlines():
+    m = re.match(r"\| .*\(`([a-z_]+)`\) \| (.*) \| (.*) \|$", line)
+    if not m:
+        continue
+    eid, prim, sec = m.groups()
+    if eid == "id":
+        continue
+    split = lambda s: [x.strip() for x in s.split(",") if x.strip() and x.strip() != "—"]
+    secondary = split(sec)
+    weak = [x.replace("(faiblement)", "").strip() for x in secondary if "(faiblement)" in x]
+    secondary = [x.replace("(faiblement)", "").strip() for x in secondary]
+    rows[eid] = dict(primary=split(prim), secondary=secondary, weak=weak)
+
+S, E, A, V = "strength", "endurance", "agility", "vitality"
+# id: (motion, type, volumeRule, stats, equipmentAnyOf, difficulty, nom, description, consignes, erreurs)
+X = {
+ "push_up": ("push_up", "reps", "strength", {S: 1}, [], 1, "Pompes",
+   "Le mouvement de poussée de base, au poids du corps.",
+   ["Mains sous les épaules, un peu plus larges que la poitrine.", "Garde le corps gainé, de la tête aux talons.", "Descends la poitrine près du sol, puis pousse."],
+   ["Laisser tomber les hanches.", "Écarter les coudes à 90° du corps.", "Faire des demi-répétitions."]),
+ "decline_push_up": ("push_up", "reps", "strength", {S: 1}, ["bench"], 2, "Pompes déclinées",
+   "Pompes pieds surélevés, qui insistent sur le haut des pectoraux.",
+   ["Pose les pieds sur un banc ou une marche stable.", "Mains au sol sous les épaules.", "Descends en contrôlant, sans cambrer."],
+   ["Cambrer le bas du dos.", "Choisir un support trop haut au début."]),
+ "diamond_push_up": ("push_up", "reps", "strength", {S: 1}, [], 2, "Pompes diamant",
+   "Pompes mains rapprochées, centrées sur les triceps.",
+   ["Forme un losange avec les pouces et les index sous la poitrine.", "Garde les coudes près du corps.", "Descends lentement, puis pousse."],
+   ["Ouvrir les coudes sur les côtés.", "Lever les fesses."]),
+ "dips": ("dips", "reps", "strength", {S: 1}, ["dipBars"], 3, "Dips",
+   "Poussée verticale aux barres parallèles.",
+   ["Bras tendus, épaules basses.", "Descends jusqu'à ce que les bras soient à l'horizontale.", "Remonte sans verrouiller brutalement les coudes."],
+   ["Descendre trop bas et forcer sur les épaules.", "Hausser les épaules vers les oreilles."]),
+ "pull_up_pronated": ("pull_up", "reps", "strength", {S: 1}, ["pullUpBar"], 3, "Tractions en pronation",
+   "Tirage vertical à la barre, paumes vers l'avant.",
+   ["Mains un peu plus larges que les épaules, paumes vers l'avant.", "Tire les coudes vers les hanches.", "Monte le menton au-dessus de la barre, puis redescends bras tendus."],
+   ["Se balancer pour s'aider.", "Ne pas descendre jusqu'en bas."]),
+ "row": ("row", "reps", "strength", {S: 1}, ["dumbbells", "barbell", "kettlebell"], 2, "Rowing",
+   "Tirage horizontal buste penché, pour le dos.",
+   ["Penche le buste, dos plat, genoux légèrement fléchis.", "Tire la charge vers le bas des côtes.", "Serre les omoplates en haut, puis redescends lentement."],
+   ["Arrondir le dos.", "Tirer avec les bras sans engager le dos."]),
+ "overhead_press": ("overhead_press", "reps", "strength", {S: 1}, ["dumbbells", "barbell", "kettlebell"], 2, "Développé militaire",
+   "Poussée de la charge au-dessus de la tête.",
+   ["Debout, gainé, charge au niveau des épaules.", "Pousse vers le haut jusqu'à tendre les bras.", "Redescends en contrôlant."],
+   ["Cambrer fortement le dos.", "Pousser vers l'avant au lieu de vers le haut."]),
+ "lateral_raise": ("lateral_raise", "reps", "strength", {S: 1}, ["dumbbells", "resistanceBands"], 1, "Élévations latérales",
+   "Élévation des bras sur les côtés, pour la largeur des épaules.",
+   ["Bras le long du corps, coudes très légèrement fléchis.", "Monte les bras sur les côtés jusqu'à l'horizontale.", "Redescends lentement."],
+   ["Prendre de l'élan.", "Monter les mains plus haut que les épaules."]),
+ "biceps_curl": ("biceps_curl", "reps", "strength", {S: 1}, ["dumbbells", "barbell", "resistanceBands"], 1, "Curl biceps",
+   "Flexion des coudes, charge en main.",
+   ["Coudes collés au corps.", "Monte la charge en pliant les coudes.", "Redescends jusqu'à tendre les bras."],
+   ["Balancer le buste.", "Décoller les coudes du corps."]),
+ "squat": ("squat", "reps", "strength", {S: 1}, [], 1, "Squat",
+   "La flexion de jambes fondamentale.",
+   ["Pieds largeur d'épaules, pointes légèrement ouvertes.", "Descends en poussant les hanches en arrière, dos droit.", "Remonte en poussant sur les talons."],
+   ["Laisser les genoux rentrer vers l'intérieur.", "Décoller les talons.", "Arrondir le dos."]),
+ "lunge": ("lunge", "reps", "strength", {S: 1}, [], 1, "Fentes",
+   "Grand pas en avant et flexion des deux genoux.",
+   ["Fais un grand pas en avant.", "Descends jusqu'à ce que le genou arrière frôle le sol.", "Repousse sur la jambe avant pour revenir."],
+   ["Laisser le genou avant dépasser loin devant le pied.", "Pencher le buste en avant."]),
+ "romanian_deadlift": ("romanian_deadlift", "reps", "strength", {S: 1}, ["dumbbells", "barbell", "kettlebell"], 2, "Soulevé de terre roumain",
+   "Bascule du buste hanches en arrière, pour l'arrière des cuisses.",
+   ["Genoux légèrement fléchis, charge devant les cuisses.", "Pousse les hanches en arrière en gardant le dos plat.", "Remonte en serrant les fessiers."],
+   ["Arrondir le dos.", "Plier les genoux comme pour un squat."]),
+ "hip_thrust": ("glute_bridge", "reps", "strength", {S: 1}, ["bench"], 2, "Hip thrust",
+   "Extension de hanches, haut du dos appuyé sur un banc.",
+   ["Haut du dos contre le banc, pieds à plat.", "Monte les hanches jusqu'à aligner épaules, hanches et genoux.", "Serre les fessiers en haut, puis redescends."],
+   ["Cambrer le bas du dos en haut.", "Pousser sur les pointes de pied."]),
+ "glute_bridge": ("glute_bridge", "reps", "strength", {S: 1}, [], 1, "Pont fessier",
+   "Extension de hanches allongé au sol.",
+   ["Allongé sur le dos, genoux pliés, pieds à plat.", "Monte les hanches en serrant les fessiers.", "Redescends lentement."],
+   ["Monter trop haut en cambrant.", "Écarter les genoux."]),
+ "standing_calf_raise": ("calf_raise", "reps", "strength", {S: 1}, [], 1, "Mollets debout",
+   "Montée sur la pointe des pieds.",
+   ["Debout, pieds largeur de hanches.", "Monte sur la pointe des pieds le plus haut possible.", "Redescends lentement."],
+   ["Rebondir en bas.", "Plier les genoux."]),
+ "plank": ("plank", "duration", "strength", {V: 1}, [], 1, "Planche",
+   "Gainage statique sur les avant-bras.",
+   ["Coudes sous les épaules, avant-bras au sol.", "Corps aligné de la tête aux talons.", "Respire calmement et tiens la position."],
+   ["Laisser tomber les hanches.", "Lever les fesses trop haut.", "Bloquer sa respiration."]),
+ "side_plank": ("side_plank", "duration", "strength", {V: 1}, [], 2, "Planche latérale",
+   "Gainage sur le côté, en appui sur un avant-bras.",
+   ["Coude sous l'épaule, pieds superposés.", "Monte les hanches pour aligner le corps.", "Tiens la position, puis change de côté."],
+   ["Laisser les hanches s'affaisser.", "Pencher le buste en avant."]),
+ "crunch": ("crunch", "reps", "strength", {S: 1}, [], 1, "Crunch",
+   "Enroulement du buste allongé au sol.",
+   ["Allongé, genoux pliés, mains croisées sur la poitrine.", "Enroule le haut du dos en décollant les épaules.", "Redescends sans relâcher complètement."],
+   ["Tirer sur la nuque.", "Se relever entièrement en s'aidant des hanches."]),
+ "leg_raise": ("leg_raise", "reps", "strength", {S: 1}, [], 2, "Relevés de jambes",
+   "Montée des jambes tendues, allongé sur le dos.",
+   ["Allongé, jambes tendues, bas du dos plaqué au sol.", "Monte les jambes jusqu'à la verticale.", "Redescends lentement sans toucher le sol."],
+   ["Décoller le bas du dos.", "Laisser retomber les jambes."]),
+ "superman": ("superman", "reps", "strength", {V: 1}, [], 1, "Superman",
+   "Extension du dos allongé sur le ventre.",
+   ["Allongé sur le ventre, bras tendus devant.", "Décolle en même temps bras, buste et jambes.", "Tiens deux secondes, puis redescends."],
+   ["Relever la tête vers le plafond.", "Faire le mouvement trop vite."]),
+ "burpee": ("burpee", "reps", "strength", {E: 0.7, S: 0.3}, [], 3, "Burpees",
+   "Enchaînement accroupi, planche et saut.",
+   ["Accroupis-toi, mains au sol.", "Lance les pieds en arrière en planche.", "Ramène les pieds et saute bras en l'air."],
+   ["Laisser tomber les hanches en planche.", "Retomber jambes tendues."]),
+ "jumping_jack": ("jumping_jack", "duration", "cardio", {A: 1}, [], 1, "Jumping jacks",
+   "Sauts écart des bras et des jambes, pour la coordination.",
+   ["Pieds joints, bras le long du corps.", "Saute en écartant jambes et bras au-dessus de la tête.", "Reviens en position de départ, en rythme."],
+   ["Retomber sur les talons.", "Perdre le rythme bras et jambes."]),
+ "mountain_climber": ("mountain_climber", "duration", "cardio", {E: 1}, [], 2, "Mountain climbers",
+   "Montées de genoux rapides en position de pompe.",
+   ["En appui sur les mains, corps gainé.", "Ramène un genou vers la poitrine.", "Alterne rapidement les jambes."],
+   ["Lever les fesses.", "Placer les mains devant les épaules."]),
+ "walking": ("walking", "duration", "cardio", {E: 1}, [], 1, "Marche",
+   "Marche active à bon rythme.",
+   ["Tiens-toi droit, regard devant.", "Balance les bras naturellement.", "Garde un rythme où tu peux encore parler."],
+   ["Marcher voûté.", "Faire de trop grands pas."]),
+ "running": ("running", "duration", "cardio", {E: 1}, [], 2, "Course",
+   "Course à pied en endurance.",
+   ["Buste légèrement penché vers l'avant.", "Pose le pied sous le corps.", "Commence doucement et garde une allure régulière."],
+   ["Attaquer par le talon loin devant.", "Partir trop vite."]),
+ "cycling": ("cycling", "duration", "cardio", {E: 1}, ["stationaryBike"], 1, "Vélo",
+   "Pédalage en endurance.",
+   ["Règle la selle : jambe presque tendue en bas.", "Pédale de façon régulière.", "Garde le dos long et les épaules relâchées."],
+   ["Selle trop basse.", "Pédaler en force sans résistance adaptée."]),
+ "jump_rope": ("jump_rope", "duration", "cardio", {E: 1}, ["jumpRope"], 2, "Corde à sauter",
+   "Petits sauts réguliers à la corde.",
+   ["Coudes près du corps, la rotation vient des poignets.", "Saute juste assez haut pour passer la corde.", "Atterris sur l'avant du pied."],
+   ["Sauter trop haut.", "Faire tourner la corde avec les épaules."]),
+}
+
+missing = set(rows) ^ set(X)
+assert not missing, missing
+out = []
+for eid, (motion, typ, rule, stats, equip, diff, name, desc, ins, mis) in X.items():
+    r = rows[eid]
+    out.append(dict(id=eid, motion=motion, type=typ, volumeRule=rule, stats=stats,
+        primaryMuscles=r["primary"], secondaryMuscles=r["secondary"], weakMuscles=r["weak"],
+        equipmentAnyOf=equip, difficulty=diff, reviewStatus="validated",
+        name=name, description=desc, instructions=ins, mistakes=mis))
+json.dump({"version": 1, "exercises": out}, open(sys.argv[2], "w", encoding="utf8"), ensure_ascii=False, indent=1)
+print(len(out))
