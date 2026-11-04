@@ -41,9 +41,18 @@ void main() {
     expect(find.text('Pompes'), findsOneWidget);
     expect(find.byType(FigureAnimation), findsOneWidget);
     expect(find.byType(BodyMap), findsNWidgets(2));
+    await tester.scrollUntilVisible(
+      find.text('• Triceps'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('• Triceps'), findsOneWidget);
 
-    await tester.scrollUntilVisible(find.text('Erreurs fréquentes'), 300);
+    await tester.scrollUntilVisible(
+      find.text('Erreurs fréquentes'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Consignes'), findsOneWidget);
     await tester.unmountApp();
   });
@@ -59,6 +68,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('Ajouter un muscle depuis la liste'),
       200,
+      scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(find.text('Ajouter un muscle depuis la liste'));
     await tester.pump();
@@ -67,7 +77,11 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 
-    await tester.scrollUntilVisible(find.text('Enregistrer'), 200);
+    await tester.scrollUntilVisible(
+      find.text('Enregistrer'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Enregistrer'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
@@ -86,7 +100,11 @@ void main() {
     await tester.openWithProfile(container, AppRoutes.customExerciseNew);
 
     await tester.enterText(find.byType(TextField), 'Sans muscle');
-    await tester.scrollUntilVisible(find.text('Enregistrer'), 200);
+    await tester.scrollUntilVisible(
+      find.text('Enregistrer'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Enregistrer'));
     await tester.pump();
 

@@ -42,7 +42,11 @@ void main() {
     await tester.pump();
     expect(find.text('4'), findsOneWidget);
 
-    await tester.scrollUntilVisible(find.text('Enregistrer'), 200);
+    await tester.scrollUntilVisible(
+      find.text('Enregistrer'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Enregistrer'));
     await _settle(tester);
 
@@ -58,7 +62,11 @@ void main() {
     await tester.openWithProfile(container, AppRoutes.programNew);
 
     await tester.enterText(find.byType(TextField), 'Vide');
-    await tester.scrollUntilVisible(find.text('Enregistrer'), 200);
+    await tester.scrollUntilVisible(
+      find.text('Enregistrer'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Enregistrer'));
     await tester.pump();
 
@@ -98,6 +106,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.byTooltip('Ajouter une séance le Mercredi'),
       200,
+      scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(find.byTooltip('Ajouter une séance le Mercredi'));
     await _settle(tester);

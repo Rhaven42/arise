@@ -136,12 +136,15 @@ class _HomeLink extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: AriseSpacing.sm),
       child: StoneFrame(
         padding: EdgeInsets.zero,
-        child: ListTile(
+        child: Material(
+          type: MaterialType.transparency,
+          child: ListTile(
           leading: Icon(icon, color: AriseColors.gold),
           title: Text(title),
           subtitle: Text(subtitle),
           trailing: const Icon(Icons.chevron_right),
           onTap: onTap,
+          ),
         ),
       ),
     );
