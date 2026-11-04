@@ -92,7 +92,10 @@ void main() {
           .join(' | ');
       debugPrint('Textes visibles : $texts');
     }
-    await tapText(tester, 'Squat');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Squat'));
+    await tester.tap(find.text('Squat'));
     await pumpFor(1700);
     await binding.takeScreenshot('12_fiche_squat');
     await tester.binding.handlePopRoute();
