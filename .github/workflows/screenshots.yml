@@ -4,6 +4,9 @@ name: screenshots
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   screenshots:
     runs-on: ubuntu-latest
@@ -45,3 +48,10 @@ jobs:
           name: screenshots
           path: screenshots/
           retention-days: 30
+      - name: Publication sur la branche « screenshots » (consultable sur GitHub)
+        run: |
+          cd screenshots
+          git init -q -b screenshots
+          git add .
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "captures de ${{ github.sha }}"
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" screenshots
