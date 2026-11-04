@@ -90,7 +90,7 @@ class LocalNotificationReminderScheduler implements ReminderScheduler {
       iOS: const DarwinNotificationDetails(),
     );
     for (final reminder in reminders) {
-      final texts = texts(reminder.programName);
+      final content = texts(reminder.programName);
       final (date, match) = switch (reminder.time) {
         WeeklyReminderTime(:final weekday, :final minuteOfDay) => (
           _nextWeekly(now, weekday, minuteOfDay),
@@ -114,8 +114,8 @@ class LocalNotificationReminderScheduler implements ReminderScheduler {
         scheduledDate: date,
         notificationDetails: details,
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-        title: texts.title,
-        body: texts.body,
+        title: content.title,
+        body: content.body,
         matchDateTimeComponents: match,
       );
     }
