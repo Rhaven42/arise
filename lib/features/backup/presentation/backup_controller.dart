@@ -54,12 +54,13 @@ class BackupController extends _$BackupController {
   Future<bool> exportBackup() async {
     final now = ref.read(clockProvider)();
     final data = await ref.read(backupRepositoryProvider).snapshot(now);
-    return ref
+    final shared = await ref
         .read(backupFileGatewayProvider)
         .share(
           fileName: BackupCodec.fileName(now),
           content: BackupCodec.encode(data),
         );
+    return shared;
   }
 
   /// Laisse choisir un fichier et le valide, sans rien modifier.

@@ -22,7 +22,7 @@ class TitlePage extends ConsumerWidget {
     final profile = ref.watch(playerProfileProvider);
 
     final actions = switch (profile) {
-      AsyncData(value: final value) when value != null => [
+      AsyncData(:final value) when value != null => [
         AriseButton(
           label: l10n.titleContinueButton,
           icon: Icons.login,
