@@ -85,7 +85,24 @@ Format : **principaux** (P) puis **secondaires** (S). « Faiblement » est conse
 | Vélo (`cycling`) | quadriceps, gluteus_maximus | hamstrings, gastrocnemius, soleus |
 | Corde à sauter (`jump_rope`) | gastrocnemius, soleus | quadriceps, deltoid_lateral, forearm_flexors |
 
-26 exercices de référence (hip thrust et pont fessier comptés séparément).
+27 exercices de référence (hip thrust et pont fessier comptés séparément).
+
+## 2 bis. Propositions à relire (lot 1 sur 6)
+
+> ⚠️ **Statut : à relire** (`pending_review`). Ces correspondances sont des **propositions** de Claude (SPEC §20.1). Elles ne sont utilisées ni dans le catalogue ni dans les calculs tant que la propriétaire du projet ne les a pas validées. Une fois validée, une ligne rejoint le tableau du §2.
+
+| Exercice (`id`) | Principaux | Secondaires |
+|---|---|---|
+| Pompes inclinées, mains surélevées (`incline_push_up`) | pectoralis_mid_lower, deltoid_anterior, triceps_brachii | serratus_anterior, rectus_abdominis |
+| Pompes piquées (`pike_push_up`) | deltoid_anterior, deltoid_lateral, triceps_brachii | trapezius_upper, pectoralis_upper, serratus_anterior |
+| Tractions en supination (`chin_up`) | latissimus_dorsi, biceps_brachii, brachialis | teres_major, rhomboids, trapezius_mid_lower, forearm_flexors |
+| Rowing inversé (`inverted_row`) | latissimus_dorsi, rhomboids, trapezius_mid_lower | deltoid_posterior, biceps_brachii, brachialis |
+| Squat bulgare (`bulgarian_split_squat`) | quadriceps, gluteus_maximus | gluteus_medius, adductors, hamstrings |
+| Squat sumo (`sumo_squat`) | quadriceps, gluteus_maximus, adductors | hamstrings, erector_spinae |
+| Montées sur banc (`step_up`) | quadriceps, gluteus_maximus | gluteus_medius, hamstrings, gastrocnemius |
+| Bird dog (`bird_dog`) | erector_spinae, gluteus_maximus | transversus_abdominis, obliques, deltoid_anterior |
+| Crunch vélo (`bicycle_crunch`) | obliques, rectus_abdominis | hip_flexors |
+| Curl marteau (`hammer_curl`) | brachialis, brachioradialis | biceps_brachii |
 
 ## 3. Règles de conversion du volume
 

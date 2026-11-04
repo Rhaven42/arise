@@ -10,7 +10,10 @@ import 'package:flutter_test/flutter_test.dart';
 /// Lit le tableau de correspondance de docs/ANATOMY.md (§2).
 Map<String, ({List<String> primary, List<String> secondary})> _anatomyTable() {
   final doc = File('docs/ANATOMY.md').readAsStringSync();
-  final section = doc.split('## 2. Mapping')[1].split('## 3.')[0];
+  final section = doc
+      .split('## 2. Mapping')[1]
+      .split('## 2 bis')[0]
+      .split('## 3.')[0];
   final row = RegExp(r'^\| .*\(`([a-z_]+)`\) \| (.*) \| (.*) \|$');
   List<String> split(String cell) => [
     for (final part in cell.split(','))

@@ -326,14 +326,6 @@
   "exercisesFilterAllMuscles": "Tous les muscles",
   "exercisesEmpty": "Aucun exercice ne correspond à ta recherche.",
   "exerciseCustomBadge": "Perso",
-  "exerciseDifficulty": "{level, plural, =1{Débutant} =2{Intermédiaire} =3{Avancé} other{Niveau {level}}}",
-  "@exerciseDifficulty": {
-    "placeholders": {
-      "level": {
-        "type": "int"
-      }
-    }
-  },
   "exerciseNotFound": "Exercice introuvable",
   "exerciseInfoTitle": "En bref",
   "exerciseInstructionsTitle": "Consignes",

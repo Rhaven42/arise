@@ -1,6 +1,7 @@
 import 'package:arise/core/anatomy/muscle.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/exercises/domain/stat_id.dart';
+import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 
 /// Libellés traduits des notions liées aux exercices.
@@ -10,6 +11,10 @@ extension ExerciseLabels on AppLocalizations {
   String stat(StatId stat) => statName(stat.name);
 
   String exerciseTypeLabel(ExerciseType type) => exerciseType(type.name);
+
+  /// Difficulté (1 à 3), avec les libellés de niveau du questionnaire.
+  String exerciseDifficulty(int difficulty) =>
+      levelLabel(FitnessLevel.values[(difficulty - 1).clamp(0, 2)].name);
 
   /// Résumé de la répartition des stats, par exemple « Endurance 70 % ».
   String statSplit(Exercise exercise) {
