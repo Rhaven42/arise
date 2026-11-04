@@ -27,9 +27,23 @@ abstract class ExerciseFilter with _$ExerciseFilter {
 /// Normalise un texte pour la recherche (minuscules, sans accents).
 String normalizeForSearch(String text) {
   const accents = {
-    'à': 'a', 'â': 'a', 'ä': 'a', 'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e',
-    'î': 'i', 'ï': 'i', 'ô': 'o', 'ö': 'o', 'ù': 'u', 'û': 'u', 'ü': 'u',
-    'ç': 'c', 'œ': 'oe', 'æ': 'ae',
+    'à': 'a',
+    'â': 'a',
+    'ä': 'a',
+    'é': 'e',
+    'è': 'e',
+    'ê': 'e',
+    'ë': 'e',
+    'î': 'i',
+    'ï': 'i',
+    'ô': 'o',
+    'ö': 'o',
+    'ù': 'u',
+    'û': 'u',
+    'ü': 'u',
+    'ç': 'c',
+    'œ': 'oe',
+    'æ': 'ae',
   };
   final lower = text.toLowerCase();
   final buffer = StringBuffer();
@@ -49,23 +63,24 @@ List<Exercise> filterExercises(
   final query = normalizeForSearch(filter.query);
   final muscle = filter.muscle;
   final stat = filter.stat;
-  final result = exercises.where((exercise) {
-    if (!exercise.isPublishable) return false;
-    if (query.isNotEmpty &&
-        !normalizeForSearch(exercise.name).contains(query)) {
-      return false;
-    }
-    if (muscle != null && !exercise.muscleRoles.containsKey(muscle)) {
-      return false;
-    }
-    if (stat != null && !exercise.stats.containsKey(stat)) return false;
-    if (filter.onlyAvailable && !exercise.isAvailableWith(ownedEquipment)) {
-      return false;
-    }
-    return true;
-  }).toList()
-    ..sort(
-      (a, b) => normalizeForSearch(a.name).compareTo(normalizeForSearch(b.name)),
-    );
+  final result =
+      exercises.where((exercise) {
+        if (!exercise.isPublishable) return false;
+        if (query.isNotEmpty &&
+            !normalizeForSearch(exercise.name).contains(query)) {
+          return false;
+        }
+        if (muscle != null && !exercise.muscleRoles.containsKey(muscle)) {
+          return false;
+        }
+        if (stat != null && !exercise.stats.containsKey(stat)) return false;
+        if (filter.onlyAvailable && !exercise.isAvailableWith(ownedEquipment)) {
+          return false;
+        }
+        return true;
+      }).toList()..sort(
+        (a, b) =>
+            normalizeForSearch(a.name).compareTo(normalizeForSearch(b.name)),
+      );
   return result;
 }

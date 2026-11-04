@@ -15,7 +15,11 @@ void main() {
   test('toutes les animations se décodent avec au moins deux poses', () {
     expect(motions, isNotEmpty);
     for (final entry in motions.entries) {
-      expect(entry.value.keys.length, greaterThanOrEqualTo(2), reason: entry.key);
+      expect(
+        entry.value.keys.length,
+        greaterThanOrEqualTo(2),
+        reason: entry.key,
+      );
       expect(entry.value.cycleSeconds, greaterThan(0), reason: entry.key);
     }
   });
@@ -24,7 +28,10 @@ void main() {
     final squat = motions['squat']!;
     for (final key in squat.keys) {
       final j = computeJoints(key.angles, squat.view, key.root);
-      expect(_distance(j['root']!, j['neck']!), closeTo(FigureProportions.torso, 1e-9));
+      expect(
+        _distance(j['root']!, j['neck']!),
+        closeTo(FigureProportions.torso, 1e-9),
+      );
       expect(
         _distance(j['hip_n']!, j['knee_n']!),
         closeTo(FigureProportions.thigh, 1e-9),

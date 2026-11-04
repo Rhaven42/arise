@@ -172,8 +172,9 @@ class AppDatabase extends _$AppDatabase {
     return query.watch().map((rows) => [for (final r in rows) r.json]);
   }
 
-  Future<List<String>> readCustomExerciseJson() async =>
-      [for (final r in await select(customExercises).get()) r.json];
+  Future<List<String>> readCustomExerciseJson() async => [
+    for (final r in await select(customExercises).get()) r.json,
+  ];
 
   Future<void> saveCustomExerciseJson(
     String id,
@@ -200,8 +201,9 @@ class AppDatabase extends _$AppDatabase {
     return query.watch().map((rows) => [for (final r in rows) r.json]);
   }
 
-  Future<List<String>> readProgramJson() async =>
-      [for (final r in await select(programs).get()) r.json];
+  Future<List<String>> readProgramJson() async => [
+    for (final r in await select(programs).get()) r.json,
+  ];
 
   Future<void> saveProgramJson(
     String id,
@@ -220,8 +222,9 @@ class AppDatabase extends _$AppDatabase {
   /// Supprime un programme et les séances planifiées qui l'utilisent.
   Future<void> deleteProgram(String id) {
     return transaction(() async {
-      await (delete(plannedSessions)..where((t) => t.programId.equals(id)))
-          .go();
+      await (delete(
+        plannedSessions,
+      )..where((t) => t.programId.equals(id))).go();
       await (delete(programs)..where((t) => t.id.equals(id))).go();
     });
   }
@@ -234,8 +237,9 @@ class AppDatabase extends _$AppDatabase {
     return query.watch().map((rows) => [for (final r in rows) r.json]);
   }
 
-  Future<List<String>> readPlannedSessionJson() async =>
-      [for (final r in await select(plannedSessions).get()) r.json];
+  Future<List<String>> readPlannedSessionJson() async => [
+    for (final r in await select(plannedSessions).get()) r.json,
+  ];
 
   Future<void> savePlannedSessionJson(
     String id, {

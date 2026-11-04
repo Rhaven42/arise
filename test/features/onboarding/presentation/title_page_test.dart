@@ -5,9 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../../helpers/test_app.dart';
 
 void main() {
-  testWidgets('un nouveau joueur peut commencer ou restaurer', (
-    tester,
-  ) async {
+  testWidgets('un nouveau joueur peut commencer ou restaurer', (tester) async {
     await tester.pumpAriseApp(createTestContainer());
 
     expect(find.text('ARISE'), findsOneWidget);

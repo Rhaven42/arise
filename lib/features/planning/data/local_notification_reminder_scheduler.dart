@@ -70,8 +70,7 @@ class LocalNotificationReminderScheduler implements ReminderScheduler {
             .resolvePlatformSpecificImplementation<
               IOSFlutterLocalNotificationsPlugin
             >();
-        return await ios?.requestPermissions(alert: true, sound: true) ??
-            false;
+        return await ios?.requestPermissions(alert: true, sound: true) ?? false;
       case TargetPlatform.fuchsia ||
           TargetPlatform.linux ||
           TargetPlatform.macOS ||

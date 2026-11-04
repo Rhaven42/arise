@@ -1,4 +1,3 @@
-
 import 'package:arise/core/config/game_config.dart';
 import 'package:arise/core/database/app_database.dart';
 import 'package:arise/core/utils/clock.dart';
@@ -79,11 +78,17 @@ class DisplayedWeek extends _$DisplayedWeek {
   @override
   DateTime build() => startOfWeek(ref.read(clockProvider)().toLocal());
 
-  void previous() =>
-      state = DateTime(state.year, state.month, state.day - DateTime.daysPerWeek);
+  void previous() => state = DateTime(
+    state.year,
+    state.month,
+    state.day - DateTime.daysPerWeek,
+  );
 
-  void next() =>
-      state = DateTime(state.year, state.month, state.day + DateTime.daysPerWeek);
+  void next() => state = DateTime(
+    state.year,
+    state.month,
+    state.day + DateTime.daysPerWeek,
+  );
 
   void today() => state = startOfWeek(ref.read(clockProvider)().toLocal());
 }

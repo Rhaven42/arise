@@ -53,9 +53,8 @@ Future<bool> runRestoreFlow(BuildContext context, WidgetRef ref) async {
       _notify(context, l10n.backupErrorMessage(error.name));
       return false;
     case BackupPickReady(:final data):
-      final date = MaterialLocalizations.of(
-        context,
-      ).formatFullDate(data.exportedAt.toLocal());
+      final date = MaterialLocalizations.of(context)
+          .formatFullDate(data.exportedAt.toLocal());
       final confirmed = await _confirm(
         context,
         title: l10n.restoreConfirmTitle,

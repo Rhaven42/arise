@@ -26,20 +26,22 @@ class AriseButton extends StatelessWidget {
     final iconWidget = icon == null ? null : Icon(icon, size: 20);
 
     return switch (variant) {
-      AriseButtonVariant.primary => iconWidget == null
-          ? FilledButton(onPressed: onPressed, child: text)
-          : FilledButton.icon(
-              onPressed: onPressed,
-              icon: iconWidget,
-              label: text,
-            ),
-      AriseButtonVariant.secondary => iconWidget == null
-          ? OutlinedButton(onPressed: onPressed, child: text)
-          : OutlinedButton.icon(
-              onPressed: onPressed,
-              icon: iconWidget,
-              label: text,
-            ),
+      AriseButtonVariant.primary =>
+        iconWidget == null
+            ? FilledButton(onPressed: onPressed, child: text)
+            : FilledButton.icon(
+                onPressed: onPressed,
+                icon: iconWidget,
+                label: text,
+              ),
+      AriseButtonVariant.secondary =>
+        iconWidget == null
+            ? OutlinedButton(onPressed: onPressed, child: text)
+            : OutlinedButton.icon(
+                onPressed: onPressed,
+                icon: iconWidget,
+                label: text,
+              ),
     };
   }
 }

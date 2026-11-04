@@ -34,9 +34,7 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('avec un profil, la Fenêtre du Système s’ouvre', (
-    tester,
-  ) async {
+  testWidgets('avec un profil, la Fenêtre du Système s’ouvre', (tester) async {
     final container = createTestContainer();
     await container.read(profileRepositoryProvider).saveProfile(sampleProfile);
     await tester.pumpAriseApp(container);

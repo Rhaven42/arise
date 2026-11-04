@@ -6,10 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 extension PumpProviderApp on WidgetTester {
   /// Affiche [widget] dans un `ProviderScope` relié à [container].
-  Future<void> pumpWithContainer(
-    ProviderContainer container,
-    Widget widget,
-  ) {
+  Future<void> pumpWithContainer(ProviderContainer container, Widget widget) {
     return pumpWidget(
       UncontrolledProviderScope(
         container: container,

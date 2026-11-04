@@ -23,7 +23,10 @@ Map<String, ({List<String> primary, List<String> secondary})> _anatomyTable() {
   return {
     for (final line in section.split('\n'))
       if (row.firstMatch(line) case final m? when m.group(1) != 'id')
-        m.group(1)!: (primary: split(m.group(2)!), secondary: split(m.group(3)!)),
+        m.group(1)!: (
+          primary: split(m.group(2)!),
+          secondary: split(m.group(3)!),
+        ),
   };
 }
 
@@ -88,9 +91,9 @@ void main() {
   });
 
   test('chaque exercice a une fiche complète et une animation existante', () {
-    final motions =
-        jsonDecode(File('assets/animations/motions.json').readAsStringSync())
-            as Map<String, dynamic>;
+    final motions = jsonDecode(
+      File('assets/animations/motions.json').readAsStringSync(),
+    ) as Map<String, dynamic>;
     for (final e in catalog) {
       expect(e.name, isNotEmpty, reason: e.id);
       expect(e.instructions, isNotEmpty, reason: e.id);

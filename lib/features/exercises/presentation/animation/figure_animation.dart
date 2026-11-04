@@ -121,7 +121,11 @@ class _FigureAnimationState extends ConsumerState<FigureAnimation>
 
 /// Dessin du mannequin à l'instant [t] de l'animation.
 class FigurePainter extends CustomPainter {
-  FigurePainter({required this.motion, required this.t, required this.highlights});
+  FigurePainter({
+    required this.motion,
+    required this.t,
+    required this.highlights,
+  });
 
   final FigureMotion motion;
   final double t;
@@ -137,7 +141,11 @@ class FigurePainter extends CustomPainter {
       const samples = 24;
       for (var i = 0; i < samples; i++) {
         final pose = motion.poseAt(i / samples);
-        for (final p in computeJoints(pose.angles, motion.view, pose.root).values) {
+        for (final p in computeJoints(
+          pose.angles,
+          motion.view,
+          pose.root,
+        ).values) {
           final point = Rect.fromCircle(
             center: Offset(p.x, p.y),
             radius: FigureProportions.headRadius + 0.06,
@@ -162,7 +170,10 @@ class FigurePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final bounds = boundsOf(motion);
-    final scale = math.min(size.width / bounds.width, size.height / bounds.height);
+    final scale = math.min(
+      size.width / bounds.width,
+      size.height / bounds.height,
+    );
     final offset = Offset(
       (size.width - bounds.width * scale) / 2 - bounds.left * scale,
       (size.height - bounds.height * scale) / 2 - bounds.top * scale,
@@ -182,7 +193,13 @@ class FigurePainter extends CustomPainter {
         ..strokeWidth = 2,
     );
 
-    void bone(String a, String b, FigureSegment segment, double width, {required bool far}) {
+    void bone(
+      String a,
+      String b,
+      FigureSegment segment,
+      double width, {
+      required bool far,
+    }) {
       final from = at(j[a]!);
       final to = at(j[b]!);
       canvas
@@ -211,7 +228,13 @@ class FigurePainter extends CustomPainter {
     }
 
     void arm(String side, {required bool far}) {
-      bone('shoulder_$side', 'elbow_$side', FigureSegment.upperArm, 0.08, far: far);
+      bone(
+        'shoulder_$side',
+        'elbow_$side',
+        FigureSegment.upperArm,
+        0.08,
+        far: far,
+      );
       bone('elbow_$side', 'hand_$side', FigureSegment.forearm, 0.065, far: far);
     }
 
@@ -220,7 +243,11 @@ class FigurePainter extends CustomPainter {
     arm('f', far: !front);
     bone('root', 'neck', FigureSegment.torso, 0.17, far: false);
     canvas
-      ..drawCircle(at(j['root']!), 0.1 * scale, Paint()..color = AriseColors.abyss)
+      ..drawCircle(
+        at(j['root']!),
+        0.1 * scale,
+        Paint()..color = AriseColors.abyss,
+      )
       ..drawCircle(
         at(j['root']!),
         0.085 * scale,
@@ -229,7 +256,11 @@ class FigurePainter extends CustomPainter {
     limbs('n', far: false);
     for (final side in front ? const ['n', 'f'] : const ['n']) {
       canvas
-        ..drawCircle(at(j['shoulder_$side']!), 0.075 * scale, Paint()..color = AriseColors.abyss)
+        ..drawCircle(
+          at(j['shoulder_$side']!),
+          0.075 * scale,
+          Paint()..color = AriseColors.abyss,
+        )
         ..drawCircle(
           at(j['shoulder_$side']!),
           0.06 * scale,

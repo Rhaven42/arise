@@ -12,9 +12,9 @@ class DriftCustomExerciseRepository implements CustomExerciseRepository {
   final DateTime Function() _clock;
 
   @override
-  Stream<List<Exercise>> watchAll() => _database
-      .watchCustomExerciseJson()
-      .map((rows) => [for (final json in rows) decode(json)]);
+  Stream<List<Exercise>> watchAll() => _database.watchCustomExerciseJson().map(
+    (rows) => [for (final json in rows) decode(json)],
+  );
 
   @override
   Future<void> save(Exercise exercise) => _database.saveCustomExerciseJson(

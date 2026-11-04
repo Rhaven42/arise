@@ -25,9 +25,7 @@ void main() {
     handle.dispose();
   });
 
-  testWidgets('reste lisible avec une grande taille de police', (
-    tester,
-  ) async {
+  testWidgets('reste lisible avec une grande taille de police', (tester) async {
     tester.platformDispatcher.textScaleFactorTestValue = 2;
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
 

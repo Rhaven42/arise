@@ -27,14 +27,15 @@ void main() {
   });
 
   test('construit un exercice personnalisé valide', () {
-    final draft = const CustomExerciseDraft(
-      name: '  Gainage dynamique ',
-      type: ExerciseType.duration,
-      stat: StatId.vitality,
-    )
-        .cycleMuscle(MuscleId.rectusAbdominis)
-        .cycleMuscle(MuscleId.obliques)
-        .cycleMuscle(MuscleId.obliques);
+    final draft =
+        const CustomExerciseDraft(
+              name: '  Gainage dynamique ',
+              type: ExerciseType.duration,
+              stat: StatId.vitality,
+            )
+            .cycleMuscle(MuscleId.rectusAbdominis)
+            .cycleMuscle(MuscleId.obliques)
+            .cycleMuscle(MuscleId.obliques);
 
     expect(draft.isValid, isTrue);
     final exercise = draft.toExercise(id: 'custom-1');

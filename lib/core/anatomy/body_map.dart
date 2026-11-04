@@ -152,50 +152,46 @@ void paintMuscleZone(Canvas canvas, Path path, MuscleRole? role) {
 }
 
 Color _fillFor(MuscleRole? role) => switch (role) {
-    MuscleRole.primary => AriseColors.musclePrimary,
-    MuscleRole.secondary => AriseColors.muscleSecondary,
-    null => AriseColors.muscleIdle,
-  };
+  MuscleRole.primary => AriseColors.musclePrimary,
+  MuscleRole.secondary => AriseColors.muscleSecondary,
+  null => AriseColors.muscleIdle,
+};
 
 /// Hachures (principal) ou points (secondaire), en plus de la couleur.
 void _drawPattern(Canvas canvas, Path path, MuscleRole role) {
-    final bounds = path.getBounds();
-    canvas
-      ..save()
-      ..clipPath(path);
-    switch (role) {
-      case MuscleRole.primary:
-        final paint = Paint()
-          ..color = AriseColors.musclePrimaryPattern
-          ..strokeWidth = 0.9;
-        const step = 4.0;
-        for (
-          var x = bounds.left - bounds.height;
-          x < bounds.right;
-          x += step
-        ) {
-          canvas.drawLine(
-            Offset(x, bounds.bottom),
-            Offset(x + bounds.height, bounds.top),
-            paint,
-          );
-        }
-      case MuscleRole.secondary:
-        final points = <Offset>[];
-        const step = 4.0;
-        for (var y = bounds.top + 2; y < bounds.bottom; y += step) {
-          for (var x = bounds.left + 2; x < bounds.right; x += step) {
-            points.add(Offset(x, y));
-          }
-        }
-        canvas.drawPoints(
-          ui.PointMode.points,
-          points,
-          Paint()
-            ..color = AriseColors.muscleSecondaryPattern
-            ..strokeWidth = 1.4
-            ..strokeCap = StrokeCap.round,
+  final bounds = path.getBounds();
+  canvas
+    ..save()
+    ..clipPath(path);
+  switch (role) {
+    case MuscleRole.primary:
+      final paint = Paint()
+        ..color = AriseColors.musclePrimaryPattern
+        ..strokeWidth = 0.9;
+      const step = 4.0;
+      for (var x = bounds.left - bounds.height; x < bounds.right; x += step) {
+        canvas.drawLine(
+          Offset(x, bounds.bottom),
+          Offset(x + bounds.height, bounds.top),
+          paint,
         );
-    }
+      }
+    case MuscleRole.secondary:
+      final points = <Offset>[];
+      const step = 4.0;
+      for (var y = bounds.top + 2; y < bounds.bottom; y += step) {
+        for (var x = bounds.left + 2; x < bounds.right; x += step) {
+          points.add(Offset(x, y));
+        }
+      }
+      canvas.drawPoints(
+        ui.PointMode.points,
+        points,
+        Paint()
+          ..color = AriseColors.muscleSecondaryPattern
+          ..strokeWidth = 1.4
+          ..strokeCap = StrokeCap.round,
+      );
+  }
   canvas.restore();
 }

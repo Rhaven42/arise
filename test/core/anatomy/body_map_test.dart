@@ -60,9 +60,9 @@ void main() {
     await tester.pump();
 
     final origin = tester.getTopLeft(find.byType(CustomPaint).last);
-    final center = pathFrom(
-      shapes.zones[MuscleId.quadriceps]!.first,
-    ).getBounds().center;
+    final center = pathFrom(shapes.zones[MuscleId.quadriceps]!.first)
+        .getBounds()
+        .center;
     await tester.tapAt(origin + center);
 
     expect(tapped, [MuscleId.quadriceps]);

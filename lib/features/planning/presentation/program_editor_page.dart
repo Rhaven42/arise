@@ -37,10 +37,7 @@ class ProgramEditorPage extends ConsumerWidget {
     final existing = id == null
         ? null
         : programs.value!.where((p) => p.id == id).firstOrNull;
-    return _ProgramEditor(
-      existing: existing,
-      exercisesById: exercises.value!,
-    );
+    return _ProgramEditor(existing: existing, exercisesById: exercises.value!);
   }
 }
 
@@ -193,8 +190,7 @@ class _ProgramEditorState extends ConsumerState<_ProgramEditor> {
             const SizedBox(height: AriseSpacing.md),
             _IntervalSettingsEditor(
               settings: interval,
-              onChanged: (value) =>
-                  _update(_program.copyWith(interval: value)),
+              onChanged: (value) => _update(_program.copyWith(interval: value)),
             ),
           ],
           const SizedBox(height: AriseSpacing.md),
@@ -412,7 +408,9 @@ class _ProgramItemCard extends StatelessWidget {
           stepper(
             label: l10n.programDuration,
             value: item.durationSeconds ?? 30,
-            display: l10n.duration(Duration(seconds: item.durationSeconds ?? 30)),
+            display: l10n.duration(
+              Duration(seconds: item.durationSeconds ?? 30),
+            ),
             step: 5,
             range: ProgramLimits.durationSeconds,
             apply: (v) => item.copyWith(durationSeconds: v.toInt()),
@@ -450,7 +448,9 @@ class _ProgramItemCard extends StatelessWidget {
           stepper(
             label: l10n.programDuration,
             value: item.durationSeconds ?? 1200,
-            display: l10n.duration(Duration(seconds: item.durationSeconds ?? 1200)),
+            display: l10n.duration(
+              Duration(seconds: item.durationSeconds ?? 1200),
+            ),
             step: 300,
             range: ProgramLimits.durationSeconds,
             apply: (v) => item.copyWith(durationSeconds: v.toInt()),

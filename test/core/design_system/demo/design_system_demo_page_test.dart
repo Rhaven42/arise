@@ -33,9 +33,7 @@ void main() {
     expect(find.byType(SystemWindow), findsOneWidget);
   });
 
-  testWidgets('respecte les consignes d’accessibilité Flutter', (
-    tester,
-  ) async {
+  testWidgets('respecte les consignes d’accessibilité Flutter', (tester) async {
     final handle = tester.ensureSemantics();
     await tester.pumpApp(const DesignSystemDemoPage());
 

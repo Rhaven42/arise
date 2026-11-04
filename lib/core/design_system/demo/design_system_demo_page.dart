@@ -56,10 +56,7 @@ class DesignSystemDemoPage extends StatelessWidget {
                   l10n.typographyDisplaySample,
                   style: textTheme.displaySmall,
                 ),
-                Text(
-                  l10n.typographyTitleSample,
-                  style: textTheme.titleLarge,
-                ),
+                Text(l10n.typographyTitleSample, style: textTheme.titleLarge),
                 const SizedBox(height: AriseSpacing.sm),
                 Text(l10n.typographyBodySample, style: textTheme.bodyLarge),
                 const SizedBox(height: AriseSpacing.sm),
@@ -87,10 +84,7 @@ class DesignSystemDemoPage extends StatelessWidget {
                   onPressed: () {},
                 ),
                 const SizedBox(height: AriseSpacing.sm),
-                AriseButton(
-                  label: l10n.buttonDisabledSample,
-                  onPressed: null,
-                ),
+                AriseButton(label: l10n.buttonDisabledSample, onPressed: null),
               ],
             ),
           ),
@@ -119,10 +113,7 @@ class DesignSystemDemoPage extends StatelessWidget {
                   variant: AriseButtonVariant.secondary,
                   onPressed: () {},
                 ),
-                AriseButton(
-                  label: l10n.buttonPrimarySample,
-                  onPressed: () {},
-                ),
+                AriseButton(label: l10n.buttonPrimarySample, onPressed: () {}),
               ],
               child: Text(l10n.sampleQuestBody, style: textTheme.bodyLarge),
             ),
@@ -164,9 +155,8 @@ class _Section extends StatelessWidget {
             header: true,
             child: Text(
               title,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: AriseColors.gold,
-              ),
+              style: Theme.of(context).textTheme.headlineSmall
+                  ?.copyWith(color: AriseColors.gold),
             ),
           ),
           const Divider(height: AriseSpacing.lg),

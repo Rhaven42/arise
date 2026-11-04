@@ -46,10 +46,8 @@ GoRouter appRouter(Ref ref) {
   final router = GoRouter(
     initialLocation: AppRoutes.title,
     refreshListenable: status,
-    redirect: (_, state) => resolveRedirect(
-      location: state.matchedLocation,
-      status: status.value,
-    ),
+    redirect: (_, state) =>
+        resolveRedirect(location: state.matchedLocation, status: status.value),
     routes: [
       GoRoute(
         path: AppRoutes.title,
@@ -65,10 +63,7 @@ GoRouter appRouter(Ref ref) {
         path: AppRoutes.onboarding,
         builder: (_, _) => const OnboardingPage(),
       ),
-      GoRoute(
-        path: AppRoutes.restore,
-        builder: (_, _) => const RestorePage(),
-      ),
+      GoRoute(path: AppRoutes.restore, builder: (_, _) => const RestorePage()),
       GoRoute(
         path: AppRoutes.systemHome,
         builder: (_, _) => const SystemHomePage(),
@@ -93,9 +88,8 @@ GoRouter appRouter(Ref ref) {
               ),
               GoRoute(
                 path: ':id',
-                builder: (_, state) => ExerciseDetailPage(
-                  exerciseId: state.pathParameters['id']!,
-                ),
+                builder: (_, state) =>
+                    ExerciseDetailPage(exerciseId: state.pathParameters['id']!),
                 routes: [
                   GoRoute(
                     path: 'edit',
@@ -117,9 +111,8 @@ GoRouter appRouter(Ref ref) {
               ),
               GoRoute(
                 path: ':id',
-                builder: (_, state) => ProgramEditorPage(
-                  programId: state.pathParameters['id'],
-                ),
+                builder: (_, state) =>
+                    ProgramEditorPage(programId: state.pathParameters['id']),
               ),
             ],
           ),

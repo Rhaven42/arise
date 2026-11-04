@@ -23,10 +23,9 @@ void main() {
       final levels = [for (final rank in gameConfig.ranks) rank.minLevel];
       expect(levels.first, 1);
       expect(_isStrictlyIncreasing(levels), isTrue);
-      expect(
-        {for (final rank in gameConfig.ranks) rank.id},
-        RankId.values.toSet(),
-      );
+      expect({
+        for (final rank in gameConfig.ranks) rank.id,
+      }, RankId.values.toSet());
     });
 
     test('le dernier rang est atteignable avant le niveau maximum', () {

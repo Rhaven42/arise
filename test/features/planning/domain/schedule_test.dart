@@ -49,7 +49,10 @@ void main() {
     test('ignore une séance ponctuelle d’une autre semaine', () {
       final next = DateTime(2026, 11, 9);
       expect(
-        [for (final o in occurrencesForWeek([weekly, oneOff], next)) o.session.id],
+        [
+          for (final o in occurrencesForWeek([weekly, oneOff], next))
+            o.session.id,
+        ],
         ['a'],
       );
     });
@@ -164,7 +167,10 @@ void main() {
 
   test('l’identifiant de notification est stable et positif', () {
     expect(notificationIdFor('session-1'), notificationIdFor('session-1'));
-    expect(notificationIdFor('session-1'), isNot(notificationIdFor('session-2')));
+    expect(
+      notificationIdFor('session-1'),
+      isNot(notificationIdFor('session-2')),
+    );
     expect(notificationIdFor('session-1'), greaterThanOrEqualTo(0));
   });
 }

@@ -65,8 +65,7 @@ class FigureMotion {
   final MotionView view;
   final List<MotionKey> keys;
 
-  double get cycleSeconds =>
-      keys.fold(0, (total, key) => total + key.hold);
+  double get cycleSeconds => keys.fold(0, (total, key) => total + key.hold);
 
   /// Pose à l'instant [t] du cycle (0 ≤ t < 1), avec un lissage doux.
   ({Point2 root, Map<String, double> angles}) poseAt(double t) {
@@ -76,12 +75,17 @@ class FigureMotion {
       final from = keys[i];
       if (elapsed <= from.hold || i == keys.length - 1) {
         final to = keys[(i + 1) % keys.length];
-        final raw = from.hold == 0 ? 0 : (elapsed / from.hold).clamp(0, 1).toDouble();
+        final raw = from.hold == 0
+            ? 0
+            : (elapsed / from.hold).clamp(0, 1).toDouble();
         final k = 0.5 - math.cos(raw * math.pi) / 2;
         double lerp(double a, double b) => a + (b - a) * k;
         final angles = {
           for (final name in from.angles.keys)
-            name: lerp(from.angles[name]!, to.angles[name] ?? from.angles[name]!),
+            name: lerp(
+              from.angles[name]!,
+              to.angles[name] ?? from.angles[name]!,
+            ),
         };
         // Même ancrage aux deux poses : on recalcule le bassin pour que
         // l'articulation ancrée reste immobile (pas de pieds qui flottent).
@@ -99,7 +103,10 @@ class FigureMotion {
           }
         }
         return (
-          root: (x: lerp(from.root.x, to.root.x), y: lerp(from.root.y, to.root.y)),
+          root: (
+            x: lerp(from.root.x, to.root.x),
+            y: lerp(from.root.y, to.root.y),
+          ),
           angles: angles,
         );
       }
@@ -156,12 +163,18 @@ Map<String, Point2> computeJoints(
     final hip = front ? (x: root.x + sign * p.frontHipDx, y: root.y) : root;
     joints['shoulder_$side'] = s;
     joints['elbow_$side'] = _step(s, mirror(a('ua_$side')), p.upperArm);
-    joints['hand_$side'] =
-        _step(joints['elbow_$side']!, mirror(a('fa_$side')), p.forearm);
+    joints['hand_$side'] = _step(
+      joints['elbow_$side']!,
+      mirror(a('fa_$side')),
+      p.forearm,
+    );
     joints['hip_$side'] = hip;
     joints['knee_$side'] = _step(hip, mirror(a('th_$side')), p.thigh);
-    joints['ankle_$side'] =
-        _step(joints['knee_$side']!, mirror(a('sh_$side')), p.shin);
+    joints['ankle_$side'] = _step(
+      joints['knee_$side']!,
+      mirror(a('sh_$side')),
+      p.shin,
+    );
     joints['toe_$side'] = front
         ? _step(joints['ankle_$side']!, 0, p.frontFoot)
         : _step(joints['ankle_$side']!, a('ft_$side'), p.foot);
@@ -170,7 +183,16 @@ Map<String, Point2> computeJoints(
 }
 
 /// Segment visible du mannequin.
-enum FigureSegment { head, torso, shoulder, upperArm, forearm, pelvis, thigh, shin }
+enum FigureSegment {
+  head,
+  torso,
+  shoulder,
+  upperArm,
+  forearm,
+  pelvis,
+  thigh,
+  shin,
+}
 
 /// Muscles représentés par chaque segment du mannequin (répartition
 /// purement graphique, indépendante des exercices).

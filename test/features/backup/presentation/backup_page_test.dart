@@ -64,10 +64,7 @@ void main() {
 
     await tester.tap(find.text('Annuler'));
     await tester.pumpAndSettle();
-    expect(
-      container.read(playerProfileProvider).value,
-      isNotNull,
-    );
+    expect(container.read(playerProfileProvider).value, isNotNull);
 
     await tester.tap(find.text('Effacer toutes mes données'));
     await tester.pumpAndSettle();
@@ -75,10 +72,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(TitlePage), findsOneWidget);
-    expect(
-      container.read(playerProfileProvider).value,
-      isNull,
-    );
+    expect(container.read(playerProfileProvider).value, isNull);
     await tester.unmountApp();
   });
 

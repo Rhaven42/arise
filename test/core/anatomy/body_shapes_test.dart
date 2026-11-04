@@ -12,10 +12,10 @@ void main() {
         final svg = File(bodyShapeAssets[view]!).readAsStringSync();
         final shapes = BodyShapesParser.parse(svg, view);
 
-        expect(
-          shapes.zones.keys.toSet(),
-          {for (final m in MuscleId.values) if (m.view == view) m},
-        );
+        expect(shapes.zones.keys.toSet(), {
+          for (final m in MuscleId.values)
+            if (m.view == view) m,
+        });
         expect(shapes.outline, isNotEmpty);
         for (final paths in shapes.zones.values) {
           expect(paths, isNotEmpty);
@@ -26,9 +26,7 @@ void main() {
 
   group('parsePathData', () {
     test('décode les commandes M, L, C et Z', () {
-      final data = BodyShapesParser.parsePathData(
-        'M1 2 L3.5 4 C1 2 3 4 5 6 Z',
-      );
+      final data = BodyShapesParser.parsePathData('M1 2 L3.5 4 C1 2 3 4 5 6 Z');
       expect([for (final c in data) c.op], ['M', 'L', 'C', 'Z']);
       expect(data[2].args, [1, 2, 3, 4, 5, 6]);
     });

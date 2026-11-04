@@ -57,10 +57,7 @@ void main() {
     });
 
     test('le rappel de prudence doit être lu', () {
-      expect(
-        complete.copyWith(safetyAcknowledged: false).canProceed,
-        isFalse,
-      );
+      expect(complete.copyWith(safetyAcknowledged: false).canProceed, isFalse);
       expect(complete.canProceed, isTrue);
     });
   });
@@ -88,10 +85,7 @@ void main() {
 
   group('création du profil', () {
     test('renvoie null tant qu’une réponse manque', () {
-      expect(
-        const OnboardingDraft().toProfile(DateTime.utc(2026)),
-        isNull,
-      );
+      expect(const OnboardingDraft().toProfile(DateTime.utc(2026)), isNull);
     });
 
     test('reprend toutes les réponses', () {

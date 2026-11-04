@@ -21,9 +21,8 @@ void main() {
   test('la restauration remplace toutes les données locales', () async {
     final database = createTestDatabase();
     final repository = DriftBackupRepository(database);
-    await DriftProfileRepository(
-      database,
-    ).saveProfile(sampleProfile.copyWith(healthConsent: true));
+    await DriftProfileRepository(database)
+        .saveProfile(sampleProfile.copyWith(healthConsent: true));
     await database.saveDraft(key: 'x', json: '{}', updatedAt: testNow);
 
     await repository.restore(

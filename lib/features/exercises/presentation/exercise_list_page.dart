@@ -117,9 +117,7 @@ class _FilterBar extends ConsumerWidget {
                 value: filter.muscle,
                 hint: Text(l10n.exercisesFilterAllMuscles),
                 items: [
-                  DropdownMenuItem(
-                    child: Text(l10n.exercisesFilterAllMuscles),
-                  ),
+                  DropdownMenuItem(child: Text(l10n.exercisesFilterAllMuscles)),
                   for (final muscle in muscles)
                     DropdownMenuItem(
                       value: muscle,

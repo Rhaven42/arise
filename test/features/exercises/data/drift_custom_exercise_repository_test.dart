@@ -26,10 +26,7 @@ void main() {
     expect(await repository.watchAll().first, [exercise]);
 
     await repository.save(exercise.copyWith(name: 'Gainage'));
-    expect(
-      (await repository.watchAll().first).single.name,
-      'Gainage',
-    );
+    expect((await repository.watchAll().first).single.name, 'Gainage');
 
     await repository.delete('custom-1');
     expect(await repository.watchAll().first, isEmpty);

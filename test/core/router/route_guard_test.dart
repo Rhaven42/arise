@@ -11,10 +11,7 @@ void main() {
           AppRoutes.designSystem,
           AppRoutes.restore,
         ]) {
-          expect(
-            resolveRedirect(location: location, status: status),
-            isNull,
-          );
+          expect(resolveRedirect(location: location, status: status), isNull);
         }
       }
     });

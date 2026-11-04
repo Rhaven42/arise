@@ -50,9 +50,8 @@ extension OnboardingDraftRules on OnboardingDraft {
       RestDaysRule.isValid(restDays) &&
       safetyAcknowledged;
 
-  OnboardingDraft next() => isLastStep
-      ? this
-      : copyWith(step: OnboardingStep.values[step.index + 1]);
+  OnboardingDraft next() =>
+      isLastStep ? this : copyWith(step: OnboardingStep.values[step.index + 1]);
 
   OnboardingDraft previous() => isFirstStep
       ? this

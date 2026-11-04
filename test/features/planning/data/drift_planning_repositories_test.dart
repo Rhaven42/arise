@@ -14,7 +14,9 @@ void main() {
       id: 'p1',
       name: 'Haut du corps',
       format: ProgramFormat.strength,
-      items: [ProgramItem(exerciseId: 'push_up', sets: 3, reps: 12, restSeconds: 60)],
+      items: [
+        ProgramItem(exerciseId: 'push_up', sets: 3, reps: 12, restSeconds: 60),
+      ],
     );
     const session = PlannedSession(
       id: 's1',

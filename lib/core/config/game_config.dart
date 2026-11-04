@@ -4,15 +4,7 @@
 // écrit ailleurs. Les règles du jeu (couche domain) lisent ces valeurs.
 
 /// Identifiant stable d'un rang.
-enum RankId {
-  e,
-  d,
-  c,
-  b,
-  a,
-  s,
-  monarch,
-}
+enum RankId { e, d, c, b, a, s, monarch }
 
 /// Seuil d'entrée d'un rang.
 class RankThreshold {

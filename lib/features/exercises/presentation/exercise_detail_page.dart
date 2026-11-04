@@ -86,9 +86,7 @@ class _ExerciseDetail extends ConsumerWidget {
                 child: player.build(
                   motionId: exercise.motion,
                   highlights: roles,
-                  semanticLabel: l10n.exerciseAnimationSemantics(
-                    exercise.name,
-                  ),
+                  semanticLabel: l10n.exerciseAnimationSemantics(exercise.name),
                 ),
               ),
             ),
@@ -101,7 +99,10 @@ class _ExerciseDetail extends ConsumerWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      Text(l10n.bodyViewLabel(view.name), style: textTheme.labelMedium),
+                      Text(
+                        l10n.bodyViewLabel(view.name),
+                        style: textTheme.labelMedium,
+                      ),
                       const SizedBox(height: AriseSpacing.xs),
                       SizedBox(
                         height: 260,
@@ -134,7 +135,8 @@ class _ExerciseDetail extends ConsumerWidget {
               l10n.statSplit(exercise),
               l10n.exerciseTypeLabel(exercise.type),
               l10n.equipmentSummary(exercise),
-              if (!exercise.isCustom) l10n.exerciseDifficulty(exercise.difficulty),
+              if (!exercise.isCustom)
+                l10n.exerciseDifficulty(exercise.difficulty),
             ],
           ),
           if (exercise.description.isNotEmpty)

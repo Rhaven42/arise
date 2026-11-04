@@ -41,7 +41,8 @@ bool _within(num? value, ({num min, num max}) range) =>
 Set<ProgramIssue> validateProgram(Program program) {
   final issues = <ProgramIssue>{};
   final name = program.name.trim();
-  if (name.length < ProgramLimits.nameMin) issues.add(ProgramIssue.nameTooShort);
+  if (name.length < ProgramLimits.nameMin)
+    issues.add(ProgramIssue.nameTooShort);
   if (name.length > ProgramLimits.nameMax) issues.add(ProgramIssue.nameTooLong);
   if (program.items.isEmpty) issues.add(ProgramIssue.noExercise);
 

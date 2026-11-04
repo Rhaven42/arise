@@ -38,13 +38,7 @@ List<SessionOccurrence> occurrencesForWeek(
     }
     result.add((
       session: session,
-      start: DateTime(
-        day.year,
-        day.month,
-        day.day,
-        0,
-        session.minuteOfDay,
-      ),
+      start: DateTime(day.year, day.month, day.day, 0, session.minuteOfDay),
     ));
   }
   return result..sort((a, b) => a.start.compareTo(b.start));
@@ -132,8 +126,7 @@ class ReminderRequest {
       other.time == time;
 
   @override
-  int get hashCode =>
-      Object.hash(notificationId, sessionId, programName, time);
+  int get hashCode => Object.hash(notificationId, sessionId, programName, time);
 }
 
 /// Identifiant de notification stable (31 bits) dérivé de l'identifiant de

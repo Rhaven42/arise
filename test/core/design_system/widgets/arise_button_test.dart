@@ -9,7 +9,9 @@ void main() {
   testWidgets('déclenche l’action au toucher', (tester) async {
     var taps = 0;
     await tester.pumpApp(
-      Center(child: AriseButton(label: 'Valider', onPressed: () => taps++)),
+      Center(
+        child: AriseButton(label: 'Valider', onPressed: () => taps++),
+      ),
     );
 
     await tester.tap(find.text('Valider'));

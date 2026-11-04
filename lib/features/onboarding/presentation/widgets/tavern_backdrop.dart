@@ -73,10 +73,7 @@ class _TavernPainter extends CustomPainter {
     final beamTop = Rect.fromLTWH(0, size.height * 0.08, size.width, 22);
     canvas
       ..drawRect(beamTop, beam)
-      ..drawRect(
-        Rect.fromLTWH(0, beamTop.top, size.width, 3),
-        highlight,
-      );
+      ..drawRect(Rect.fromLTWH(0, beamTop.top, size.width, 3), highlight);
     for (final x in [size.width * 0.08, size.width * 0.92 - 20]) {
       final post = Rect.fromLTWH(x, beamTop.bottom, 20, size.height);
       canvas
@@ -159,11 +156,12 @@ class _TavernPainter extends CustomPainter {
             Rect.fromCenter(center: body, width: 16, height: 22),
             const Radius.circular(4),
           ),
-          Paint()..color = Color.lerp(
-            AriseColors.stoneLight,
-            AriseColors.goldBright,
-            glow,
-          )!,
+          Paint()
+            ..color = Color.lerp(
+              AriseColors.stoneLight,
+              AriseColors.goldBright,
+              glow,
+            )!,
         );
     }
   }

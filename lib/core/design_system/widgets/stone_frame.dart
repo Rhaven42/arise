@@ -57,9 +57,7 @@ class StoneFrame extends StatelessWidget {
           padding: padding,
           decoration: BoxDecoration(
             color: AriseColors.stone.withValues(alpha: 0.85),
-            border: Border.all(
-              color: AriseColors.gold.withValues(alpha: 0.6),
-            ),
+            border: Border.all(color: AriseColors.gold.withValues(alpha: 0.6)),
             borderRadius: BorderRadius.circular(AriseSpacing.radius / 2),
           ),
           child: child,

@@ -59,16 +59,26 @@ void main() {
 
     test('exige un nom et au moins un exercice', () {
       final program = newProgram(id: 'p', format: ProgramFormat.cardio);
-      expect(
-        validateProgram(program),
-        {ProgramIssue.nameTooShort, ProgramIssue.noExercise},
-      );
+      expect(validateProgram(program), {
+        ProgramIssue.nameTooShort,
+        ProgramIssue.noExercise,
+      });
     });
 
     test('refuse les valeurs hors limites', () {
       final program = _program(ProgramFormat.strength, [
-        const ProgramItem(exerciseId: 'squat', sets: 0, reps: 10, restSeconds: 60),
-        const ProgramItem(exerciseId: 'squat', sets: 3, reps: 10, restSeconds: -1),
+        const ProgramItem(
+          exerciseId: 'squat',
+          sets: 0,
+          reps: 10,
+          restSeconds: 60,
+        ),
+        const ProgramItem(
+          exerciseId: 'squat',
+          sets: 3,
+          reps: 10,
+          restSeconds: -1,
+        ),
         const ProgramItem(exerciseId: 'squat', sets: 3, restSeconds: 60),
       ]);
       expect(validateProgram(program), {
@@ -96,9 +106,7 @@ void main() {
       expect(validateProgram(program), isEmpty);
       expect(
         validateProgram(
-          program.copyWith(
-            interval: program.interval!.copyWith(rounds: 0),
-          ),
+          program.copyWith(interval: program.interval!.copyWith(rounds: 0)),
         ),
         {ProgramIssue.invalidInterval},
       );
@@ -112,7 +120,10 @@ void main() {
     final mobility = changeFormat(program, ProgramFormat.mobility, {
       'squat': _squat,
     });
-    expect(mobility.items.single, const ProgramItem(exerciseId: 'squat', holdSeconds: 30));
+    expect(
+      mobility.items.single,
+      const ProgramItem(exerciseId: 'squat', holdSeconds: 30),
+    );
     expect(mobility.interval, isNull);
     final interval = changeFormat(program, ProgramFormat.interval, {
       'squat': _squat,
@@ -130,7 +141,12 @@ void main() {
 
     test('musculation : séries, répétitions et repos', () {
       final program = _program(ProgramFormat.strength, [
-        const ProgramItem(exerciseId: 'squat', sets: 3, reps: 10, restSeconds: 60),
+        const ProgramItem(
+          exerciseId: 'squat',
+          sets: 3,
+          reps: 10,
+          restSeconds: 60,
+        ),
       ]);
       // 3 × 10 rép. × 3 s + 2 repos de 60 s.
       expect(estimateDuration(program), const Duration(seconds: 210));

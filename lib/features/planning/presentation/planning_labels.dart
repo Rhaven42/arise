@@ -11,11 +11,16 @@ extension PlanningLabels on AppLocalizations {
     final minutes = duration.inMinutes;
     if (duration.inSeconds < 60) return durationSeconds(duration.inSeconds);
     if (minutes < 60) return durationMinutes(minutes);
-    return durationHours(minutes ~/ 60, (minutes % 60).toString().padLeft(2, '0'));
+    return durationHours(
+      minutes ~/ 60,
+      (minutes % 60).toString().padLeft(2, '0'),
+    );
   }
 
   String distance(int meters) => meters >= 1000
-      ? distanceKilometers((meters / 1000).toStringAsFixed(meters % 1000 == 0 ? 0 : 1))
+      ? distanceKilometers(
+          (meters / 1000).toStringAsFixed(meters % 1000 == 0 ? 0 : 1),
+        )
       : distanceMeters(meters);
 
   /// Heure lisible à partir d'une minute de la journée : « 18:30 ».

@@ -79,23 +79,17 @@ void main() {
         equipment: const {Equipment.dumbbells},
         primary: const [MuscleId.latissimusDorsi],
       ),
-      _exercise(
-        'run',
-        'Élan',
-        stats: const {StatId.endurance: 1},
-      ),
+      _exercise('run', 'Élan', stats: const {StatId.endurance: 1}),
       _exercise('hidden', 'Caché', status: ReviewStatus.pendingReview),
     ];
 
-    List<String> ids(ExerciseFilter filter, {Set<Equipment> owned = const {}}) =>
-        [
-          for (final e in filterExercises(
-            exercises,
-            filter,
-            ownedEquipment: owned,
-          ))
-            e.id,
-        ];
+    List<String> ids(
+      ExerciseFilter filter, {
+      Set<Equipment> owned = const {},
+    }) => [
+      for (final e in filterExercises(exercises, filter, ownedEquipment: owned))
+        e.id,
+    ];
 
     test('trie par nom et masque les exercices à relire', () {
       expect(ids(const ExerciseFilter()), ['run', 'row', 'squat']);
@@ -106,10 +100,9 @@ void main() {
     });
 
     test('filtre par muscle, stat et équipement possédé', () {
-      expect(
-        ids(const ExerciseFilter(muscle: MuscleId.latissimusDorsi)),
-        ['row'],
-      );
+      expect(ids(const ExerciseFilter(muscle: MuscleId.latissimusDorsi)), [
+        'row',
+      ]);
       expect(ids(const ExerciseFilter(stat: StatId.endurance)), ['run']);
       expect(ids(const ExerciseFilter(onlyAvailable: true)), ['run', 'squat']);
       expect(

@@ -39,19 +39,17 @@ class DriftPlanningRepository implements PlanningRepository {
   final DateTime Function() _clock;
 
   @override
-  Stream<List<PlannedSession>> watchAll() =>
-      _database.watchPlannedSessionJson().map(
-        (rows) => [for (final json in rows) decodeSession(json)],
-      );
+  Stream<List<PlannedSession>> watchAll() => _database
+      .watchPlannedSessionJson()
+      .map((rows) => [for (final json in rows) decodeSession(json)]);
 
   @override
-  Future<void> save(PlannedSession session) =>
-      _database.savePlannedSessionJson(
-        session.id,
-        programId: session.programId,
-        json: jsonEncode(session.toJson()),
-        updatedAt: _clock(),
-      );
+  Future<void> save(PlannedSession session) => _database.savePlannedSessionJson(
+    session.id,
+    programId: session.programId,
+    json: jsonEncode(session.toJson()),
+    updatedAt: _clock(),
+  );
 
   @override
   Future<void> delete(String id) => _database.deletePlannedSession(id);

@@ -49,10 +49,7 @@ void main() {
     await _tapText(tester, 'Entrer dans Arisia');
 
     expect(find.byType(SystemHomePage), findsOneWidget);
-    expect(
-      container.read(playerProfileProvider).value,
-      sampleProfile,
-    );
+    expect(container.read(playerProfileProvider).value, sampleProfile);
     await tester.unmountApp();
   });
 

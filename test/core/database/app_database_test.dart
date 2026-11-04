@@ -52,15 +52,9 @@ void main() {
       );
 
       await pumpEventQueue();
-      await database.saveProfileJson(
-        '{"v":1}',
-        updatedAt: DateTime.utc(2026),
-      );
+      await database.saveProfileJson('{"v":1}', updatedAt: DateTime.utc(2026));
       await pumpEventQueue();
-      await database.saveProfileJson(
-        '{"v":2}',
-        updatedAt: DateTime.utc(2026),
-      );
+      await database.saveProfileJson('{"v":2}', updatedAt: DateTime.utc(2026));
       await expectation;
     });
 

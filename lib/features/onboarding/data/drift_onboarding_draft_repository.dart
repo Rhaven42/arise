@@ -17,9 +17,7 @@ class DriftOnboardingDraftRepository implements OnboardingDraftRepository {
     final json = await _database.readDraft(draftKey);
     if (json == null) return null;
     try {
-      return OnboardingDraft.fromJson(
-        jsonDecode(json) as Map<String, dynamic>,
-      );
+      return OnboardingDraft.fromJson(jsonDecode(json) as Map<String, dynamic>);
     } on Object {
       // Brouillon illisible (ancienne version) : on repart de zéro.
       return null;

@@ -88,9 +88,11 @@ class PlanningPage extends ConsumerWidget {
             child: ListView(
               padding: const EdgeInsets.all(AriseSpacing.md),
               children: [
-                for (var weekday = DateTime.monday;
-                    weekday <= DateTime.sunday;
-                    weekday++)
+                for (
+                  var weekday = DateTime.monday;
+                  weekday <= DateTime.sunday;
+                  weekday++
+                )
                   _DayColumn(
                     weekday: weekday,
                     date: dayOfWeek(weekStart, weekday),
@@ -145,9 +147,8 @@ class _DayColumn extends ConsumerWidget {
       return;
     }
     if (!canPlanOn(program: program, weekday: weekday, restDays: restDays)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.planningRestDayRefused)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.planningRestDayRefused)));
       return;
     }
     await ref
@@ -168,7 +169,9 @@ class _DayColumn extends ConsumerWidget {
       builder: (context, candidates, _) => Padding(
         padding: const EdgeInsets.only(bottom: AriseSpacing.sm),
         child: StoneFrame(
-          material: candidates.isEmpty ? FrameMaterial.stone : FrameMaterial.wood,
+          material: candidates.isEmpty
+              ? FrameMaterial.stone
+              : FrameMaterial.wood,
           padding: const EdgeInsets.all(AriseSpacing.sm),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -187,7 +190,9 @@ class _DayColumn extends ConsumerWidget {
                       label: Text(l10n.planningRestDay),
                     ),
                   IconButton(
-                    tooltip: l10n.planningAddSession(l10n.weekdayLong(weekdayKey(weekday))),
+                    tooltip: l10n.planningAddSession(
+                      l10n.weekdayLong(weekdayKey(weekday)),
+                    ),
                     icon: const Icon(Icons.add),
                     onPressed: programs.isEmpty
                         ? () => context.go(AppRoutes.programNew)
@@ -260,8 +265,10 @@ class _SessionChip extends StatelessWidget {
         subtitle: Text(
           [
             if (program != null) l10n.format(program!.format),
-            if (session.recurring) l10n.planningRecurring
-            else l10n.planningOneOff,
+            if (session.recurring)
+              l10n.planningRecurring
+            else
+              l10n.planningOneOff,
           ].join(' · '),
         ),
         trailing: Icon(
@@ -281,7 +288,10 @@ class _SessionChip extends StatelessWidget {
         data: session,
         feedback: Material(
           color: Colors.transparent,
-          child: SizedBox(width: 280, child: Opacity(opacity: 0.9, child: tile)),
+          child: SizedBox(
+            width: 280,
+            child: Opacity(opacity: 0.9, child: tile),
+          ),
         ),
         childWhenDragging: Opacity(opacity: 0.4, child: tile),
         child: tile,
