@@ -3,7 +3,6 @@ import 'package:arise/core/design_system/demo/design_system_demo_page.dart';
 import 'package:arise/core/design_system/widgets/rank_badge.dart';
 import 'package:arise/core/design_system/widgets/system_window.dart';
 import 'package:arise/core/design_system/widgets/xp_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/pump_app.dart';
