@@ -20,18 +20,18 @@ enum ProgramIssue {
 abstract final class ProgramLimits {
   static const nameMin = 3;
   static const nameMax = 40;
-  static const sets = (min: 1, max: 20);
-  static const reps = (min: 1, max: 500);
-  static const durationSeconds = (min: 5, max: 4 * 3600);
-  static const distanceMeters = (min: 10, max: 200000);
-  static const restSeconds = (min: 0, max: 900);
-  static const holdSeconds = (min: 5, max: 600);
-  static const loadKg = (min: 0.0, max: 500.0);
-  static const workSeconds = (min: 5, max: 600);
-  static const intervalRestSeconds = (min: 0, max: 600);
-  static const rounds = (min: 1, max: 50);
-  static const cycles = (min: 1, max: 10);
-  static const restBetweenCyclesSeconds = (min: 0, max: 900);
+  static const ({int min, int max}) sets = (min: 1, max: 20);
+  static const ({int min, int max}) reps = (min: 1, max: 500);
+  static const ({int min, int max}) durationSeconds = (min: 5, max: 4 * 3600);
+  static const ({int min, int max}) distanceMeters = (min: 10, max: 200000);
+  static const ({int min, int max}) restSeconds = (min: 0, max: 900);
+  static const ({int min, int max}) holdSeconds = (min: 5, max: 600);
+  static const ({double min, double max}) loadKg = (min: 0, max: 500);
+  static const ({int min, int max}) workSeconds = (min: 5, max: 600);
+  static const ({int min, int max}) intervalRestSeconds = (min: 0, max: 600);
+  static const ({int min, int max}) rounds = (min: 1, max: 50);
+  static const ({int min, int max}) cycles = (min: 1, max: 10);
+  static const ({int min, int max}) restBetweenCyclesSeconds = (min: 0, max: 900);
 }
 
 bool _within(num? value, ({num min, num max}) range) =>
@@ -41,9 +41,12 @@ bool _within(num? value, ({num min, num max}) range) =>
 Set<ProgramIssue> validateProgram(Program program) {
   final issues = <ProgramIssue>{};
   final name = program.name.trim();
-  if (name.length < ProgramLimits.nameMin)
+  if (name.length < ProgramLimits.nameMin) {
     issues.add(ProgramIssue.nameTooShort);
-  if (name.length > ProgramLimits.nameMax) issues.add(ProgramIssue.nameTooLong);
+  }
+  if (name.length > ProgramLimits.nameMax) {
+    issues.add(ProgramIssue.nameTooLong);
+  }
   if (program.items.isEmpty) issues.add(ProgramIssue.noExercise);
 
   for (final item in program.items) {

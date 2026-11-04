@@ -160,8 +160,8 @@ class _DayColumn extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
-    final dayLabel =
-        '${l10n.weekdayLong(weekdayKey(weekday))} ${DateFormat.MMMd('fr').format(date)}';
+    final dayName = l10n.weekdayLong(weekdayKey(weekday));
+    final dayLabel = '$dayName ${DateFormat.MMMd('fr').format(date)}';
 
     return DragTarget<PlannedSession>(
       onAcceptWithDetails: (details) =>

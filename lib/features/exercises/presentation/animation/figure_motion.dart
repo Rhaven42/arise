@@ -148,36 +148,35 @@ Map<String, Point2> computeJoints(
   Point2 root,
 ) {
   double a(String name) => angles[name] ?? 0;
-  const p = FigureProportions;
   final joints = <String, Point2>{'root': root};
   final torso = a('t');
-  joints['neck'] = _step(root, torso, p.torso);
-  joints['head'] = _step(joints['neck']!, torso, p.neck);
-  final shoulder = _step(root, torso, p.torso * p.shoulderAt);
+  joints['neck'] = _step(root, torso, FigureProportions.torso);
+  joints['head'] = _step(joints['neck']!, torso, FigureProportions.neck);
+  final shoulder = _step(root, torso, FigureProportions.torso * FigureProportions.shoulderAt);
   for (final (side, sign) in const [('n', 1.0), ('f', -1.0)]) {
     final front = view == MotionView.front;
     double mirror(double degrees) => front ? degrees * sign : degrees;
     final s = front
-        ? (x: shoulder.x + sign * p.frontShoulderDx, y: shoulder.y)
+        ? (x: shoulder.x + sign * FigureProportions.frontShoulderDx, y: shoulder.y)
         : shoulder;
-    final hip = front ? (x: root.x + sign * p.frontHipDx, y: root.y) : root;
+    final hip = front ? (x: root.x + sign * FigureProportions.frontHipDx, y: root.y) : root;
     joints['shoulder_$side'] = s;
-    joints['elbow_$side'] = _step(s, mirror(a('ua_$side')), p.upperArm);
+    joints['elbow_$side'] = _step(s, mirror(a('ua_$side')), FigureProportions.upperArm);
     joints['hand_$side'] = _step(
       joints['elbow_$side']!,
       mirror(a('fa_$side')),
-      p.forearm,
+      FigureProportions.forearm,
     );
     joints['hip_$side'] = hip;
-    joints['knee_$side'] = _step(hip, mirror(a('th_$side')), p.thigh);
+    joints['knee_$side'] = _step(hip, mirror(a('th_$side')), FigureProportions.thigh);
     joints['ankle_$side'] = _step(
       joints['knee_$side']!,
       mirror(a('sh_$side')),
-      p.shin,
+      FigureProportions.shin,
     );
     joints['toe_$side'] = front
-        ? _step(joints['ankle_$side']!, 0, p.frontFoot)
-        : _step(joints['ankle_$side']!, a('ft_$side'), p.foot);
+        ? _step(joints['ankle_$side']!, 0, FigureProportions.frontFoot)
+        : _step(joints['ankle_$side']!, a('ft_$side'), FigureProportions.foot);
   }
   return joints;
 }

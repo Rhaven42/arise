@@ -9,7 +9,9 @@ import 'package:arise/core/router/app_router.dart';
 import 'package:arise/core/utils/clock.dart';
 import 'package:arise/features/backup/presentation/backup_controller.dart';
 import 'package:arise/features/exercises/data/asset_exercise_catalog_repository.dart';
+import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/exercises/presentation/animation/figure_animation.dart';
+import 'package:arise/features/exercises/presentation/animation/figure_motion.dart';
 import 'package:arise/features/exercises/presentation/exercise_providers.dart';
 import 'package:arise/features/planning/presentation/planning_providers.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
@@ -37,11 +39,11 @@ final sampleProfile = PlayerProfile(
 
 /// Contenus embarqués lus directement sur le disque (évite les chargements
 /// asynchrones d'assets dans les tests de widgets).
-final testCatalog = AssetExerciseCatalogRepository.decodeCatalog(
+final List<Exercise> testCatalog = AssetExerciseCatalogRepository.decodeCatalog(
   File(AssetExerciseCatalogRepository.assetPath).readAsStringSync(),
 );
-final testMotions = decodeMotions(File(motionsAsset).readAsStringSync());
-final testBodyShapes = {
+final Map<String, FigureMotion> testMotions = decodeMotions(File(motionsAsset).readAsStringSync());
+final Map<BodyView, BodyShapes> testBodyShapes = {
   for (final view in BodyView.values)
     view: BodyShapesParser.parse(
       File(bodyShapeAssets[view]!).readAsStringSync(),

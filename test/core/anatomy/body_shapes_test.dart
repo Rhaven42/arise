@@ -44,9 +44,12 @@ void main() {
   });
 
   test('refuse un muscle inconnu', () {
-    const svg =
-        '<svg viewBox="0 0 10 10"><path id="outline" d="M0 0 Z"/>'
-        '<g id="nope"><path d="M0 0 Z"/></g></svg>';
+    final svg = [
+      '<svg viewBox="0 0 10 10">',
+      '<path id="outline" d="M0 0 Z"/>',
+      '<g id="nope"><path d="M0 0 Z"/></g>',
+      '</svg>',
+    ].join();
     expect(
       () => BodyShapesParser.parse(svg, BodyView.front),
       throwsA(isA<BodyShapesFormatException>()),

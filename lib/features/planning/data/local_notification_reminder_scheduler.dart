@@ -15,21 +15,18 @@ typedef ReminderTexts = ({String title, String body});
 /// par le système, sans serveur.
 class LocalNotificationReminderScheduler implements ReminderScheduler {
   LocalNotificationReminderScheduler({
-    required FlutterLocalNotificationsPlugin plugin,
-    required ReminderTexts Function(String programName) texts,
-    required String channelName,
-    required String channelDescription,
-  }) : _plugin = plugin,
-       _texts = texts,
-       _channelName = channelName,
-       _channelDescription = channelDescription;
+    required this.plugin,
+    required this.texts,
+    required this.channelName,
+    required this.channelDescription,
+  });
 
   static const _channelId = 'planned_sessions';
 
-  final FlutterLocalNotificationsPlugin _plugin;
-  final ReminderTexts Function(String programName) _texts;
-  final String _channelName;
-  final String _channelDescription;
+  final FlutterLocalNotificationsPlugin plugin;
+  final ReminderTexts Function(String programName) texts;
+  final String channelName;
+  final String channelDescription;
   Future<void>? _initialization;
 
   Future<void> _ensureInitialized() => _initialization ??= _initialize();
@@ -43,7 +40,7 @@ class LocalNotificationReminderScheduler implements ReminderScheduler {
       // Fuseau inconnu de la base : on garde l'UTC plutôt que d'échouer.
       tz.setLocalLocation(tz.UTC);
     }
-    await _plugin.initialize(
+    await plugin.initialize(
       settings: const InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
         iOS: DarwinInitializationSettings(
@@ -60,13 +57,13 @@ class LocalNotificationReminderScheduler implements ReminderScheduler {
     await _ensureInitialized();
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        final android = _plugin
+        final android = plugin
             .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin
             >();
         return await android?.requestNotificationsPermission() ?? false;
       case TargetPlatform.iOS:
-        final ios = _plugin
+        final ios = plugin
             .resolvePlatformSpecificImplementation<
               IOSFlutterLocalNotificationsPlugin
             >();
@@ -82,18 +79,18 @@ class LocalNotificationReminderScheduler implements ReminderScheduler {
   @override
   Future<void> replaceAll(List<ReminderRequest> reminders) async {
     await _ensureInitialized();
-    await _plugin.cancelAll();
+    await plugin.cancelAll();
     final now = tz.TZDateTime.now(tz.local);
     final details = NotificationDetails(
       android: AndroidNotificationDetails(
         _channelId,
-        _channelName,
-        channelDescription: _channelDescription,
+        channelName,
+        channelDescription: channelDescription,
       ),
       iOS: const DarwinNotificationDetails(),
     );
     for (final reminder in reminders) {
-      final texts = _texts(reminder.programName);
+      final texts = texts(reminder.programName);
       final (date, match) = switch (reminder.time) {
         WeeklyReminderTime(:final weekday, :final minuteOfDay) => (
           _nextWeekly(now, weekday, minuteOfDay),
@@ -112,7 +109,7 @@ class LocalNotificationReminderScheduler implements ReminderScheduler {
         ),
       };
       if (!date.isAfter(now)) continue;
-      await _plugin.zonedSchedule(
+      await plugin.zonedSchedule(
         id: reminder.notificationId,
         scheduledDate: date,
         notificationDetails: details,

@@ -46,7 +46,7 @@ enum MuscleId {
   gastrocnemius('gastrocnemius', BodyView.back),
   soleus('soleus', BodyView.back);
 
-  const MuscleId(this.key, this.view);
+  MuscleId(this.key, this.view);
 
   final String key;
   final BodyView view;

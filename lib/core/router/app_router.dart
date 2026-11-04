@@ -8,11 +8,11 @@ import 'package:arise/features/exercises/presentation/exercise_detail_page.dart'
 import 'package:arise/features/exercises/presentation/exercise_list_page.dart';
 import 'package:arise/features/onboarding/presentation/onboarding_page.dart';
 import 'package:arise/features/onboarding/presentation/title_page.dart';
-import 'package:arise/features/profile/domain/player_profile.dart';
-import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:arise/features/planning/presentation/planning_page.dart';
 import 'package:arise/features/planning/presentation/program_editor_page.dart';
 import 'package:arise/features/planning/presentation/programs_page.dart';
+import 'package:arise/features/profile/domain/player_profile.dart';
+import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:arise/features/progression/presentation/system_home_page.dart';
 import 'package:arise/features/settings/presentation/settings_page.dart';
 import 'package:flutter/foundation.dart';

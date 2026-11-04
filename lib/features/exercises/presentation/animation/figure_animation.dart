@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
@@ -67,7 +66,7 @@ class _FigureAnimationState extends ConsumerState<FigureAnimation>
     if (_controller.duration != duration) _controller.duration = duration;
     final shouldRun = !_paused && !reduceMotion;
     if (shouldRun && !_controller.isAnimating) {
-      unawaited(_controller.repeat());
+      _controller.repeat();
     } else if (!shouldRun && _controller.isAnimating) {
       _controller.stop();
     }

@@ -3,6 +3,7 @@ import 'package:arise/features/planning/domain/planned_session.dart';
 import 'package:arise/features/planning/domain/program.dart';
 import 'package:arise/features/planning/presentation/planning_providers.dart';
 import 'package:arise/features/planning/presentation/programs_page.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

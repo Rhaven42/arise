@@ -1,5 +1,8 @@
 import 'package:arise/features/planning/domain/planned_session.dart';
 import 'package:arise/features/planning/domain/program.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'schedule.freezed.dart';
 
 /// Jour local sans heure.
 DateTime dateOnly(DateTime local) =>
@@ -68,65 +71,27 @@ PlannedSession moveSession(
 }
 
 /// Moment d'un rappel.
-sealed class ReminderTime {
-  const ReminderTime();
-}
+@freezed
+sealed class ReminderTime with _$ReminderTime {
+  /// Rappel chaque semaine, le jour [weekday] à [minuteOfDay].
+  const factory ReminderTime.weekly({
+    required int weekday,
+    required int minuteOfDay,
+  }) = WeeklyReminderTime;
 
-/// Rappel chaque semaine, le jour [weekday] à [minuteOfDay].
-final class WeeklyReminderTime extends ReminderTime {
-  const WeeklyReminderTime({required this.weekday, required this.minuteOfDay});
-
-  final int weekday;
-  final int minuteOfDay;
-
-  @override
-  bool operator ==(Object other) =>
-      other is WeeklyReminderTime &&
-      other.weekday == weekday &&
-      other.minuteOfDay == minuteOfDay;
-
-  @override
-  int get hashCode => Object.hash(weekday, minuteOfDay);
-}
-
-/// Rappel unique, à une date et une heure locales.
-final class OneOffReminderTime extends ReminderTime {
-  const OneOffReminderTime(this.at);
-
-  final DateTime at;
-
-  @override
-  bool operator ==(Object other) =>
-      other is OneOffReminderTime && other.at == at;
-
-  @override
-  int get hashCode => at.hashCode;
+  /// Rappel unique, à une date et une heure locales.
+  const factory ReminderTime.oneOff(DateTime at) = OneOffReminderTime;
 }
 
 /// Rappel à programmer sur le téléphone.
-class ReminderRequest {
-  const ReminderRequest({
-    required this.notificationId,
-    required this.sessionId,
-    required this.programName,
-    required this.time,
-  });
-
-  final int notificationId;
-  final String sessionId;
-  final String programName;
-  final ReminderTime time;
-
-  @override
-  bool operator ==(Object other) =>
-      other is ReminderRequest &&
-      other.notificationId == notificationId &&
-      other.sessionId == sessionId &&
-      other.programName == programName &&
-      other.time == time;
-
-  @override
-  int get hashCode => Object.hash(notificationId, sessionId, programName, time);
+@freezed
+abstract class ReminderRequest with _$ReminderRequest {
+  const factory ReminderRequest({
+    required int notificationId,
+    required String sessionId,
+    required String programName,
+    required ReminderTime time,
+  }) = _ReminderRequest;
 }
 
 /// Identifiant de notification stable (31 bits) dérivé de l'identifiant de

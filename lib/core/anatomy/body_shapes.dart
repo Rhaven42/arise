@@ -45,9 +45,9 @@ class BodyShapesFormatException implements Exception {
 /// commandes absolues M, L, C et Z.
 abstract final class BodyShapesParser {
   static final _viewBox = RegExp(r'viewBox="0 0 ([\d.]+) ([\d.]+)"');
-  static final _outline = RegExp(r'<path id="outline" d="([^"]+)"');
-  static final _group = RegExp(r'<g id="([a-z_]+)">(.*?)</g>', dotAll: true);
-  static final _pathData = RegExp(r'<path d="([^"]+)"');
+  static final _outline = RegExp('<path id="outline" d="([^"]+)"');
+  static final _group = RegExp('<g id="([a-z_]+)">(.*?)</g>', dotAll: true);
+  static final _pathData = RegExp('<path d="([^"]+)"');
   static final _token = RegExp(r'[MLCZ]|-?\d+(?:\.\d+)?');
 
   static BodyShapes parse(String svg, BodyView view) {
