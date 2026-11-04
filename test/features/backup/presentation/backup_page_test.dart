@@ -4,6 +4,7 @@ import 'package:arise/features/backup/domain/backup_codec.dart';
 import 'package:arise/features/onboarding/presentation/title_page.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:arise/features/progression/presentation/system_home_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -94,7 +95,7 @@ void main() {
 
     await tester.tap(find.text('Restaurer une sauvegarde'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Restaurer une sauvegarde').last);
+    await tester.tap(find.byIcon(Icons.folder_open));
     await tester.pumpAndSettle();
     expect(find.text('Restaurer cette sauvegarde ?'), findsOneWidget);
     await tester.tap(find.text('Restaurer'));
