@@ -95,8 +95,28 @@ docs/                # SPEC, ANATOMY, ROADMAP, ASSETS
 - Catalogues (`exercises`, `items`, `achievementsCatalog`, `trialsCatalog`) : lecture seule pour tous.
 - Caméra : aucune image stockée ni envoyée ; seul le nombre de répétitions validées est transmis.
 
-## 8. Outils et commandes (à compléter en phase 0 avec les commandes réelles)
-- `dart run build_runner build --delete-conflicting-outputs`
-- `flutter analyze` / `flutter test`
-- `cd functions && npm run lint && npm test`
-- `firebase emulators:start` (Auth, Firestore, Functions, Storage)
+## 8. Outils et commandes
+Versions : Flutter 3.47 / Dart 3.13, Node 20, Java 21 (émulateurs).
+
+| Action | Commande |
+|---|---|
+| Dépendances | `flutter pub get` |
+| Traductions (ARB → `lib/l10n/generated/`) | `flutter gen-l10n` |
+| Code généré (freezed, riverpod, drift) | `dart run build_runner build --delete-conflicting-outputs` |
+| Analyse | `flutter analyze --fatal-infos --fatal-warnings` |
+| Tests Flutter | `flutter test` |
+| Serveur | `cd functions && npm run lint && npm run typecheck && npm test` |
+| Règles Firestore | `firebase emulators:exec --only firestore --project demo-arise "npm --prefix functions run test:rules"` |
+| Émulateurs | `firebase emulators:start` (Auth 9099, Firestore 8080, Functions 5001, Storage 9199, UI 4000) |
+
+- Les fichiers générés (`*.g.dart`, `*.freezed.dart`, `lib/l10n/generated/`) ne sont pas versionnés : la CI les régénère.
+- Firebase : projet de démonstration `demo-arise` (émulateurs uniquement) via `DemoFirebaseOptions`, à remplacer par `flutterfire configure` quand le projet réel existera. Région des fonctions : `europe-west1`.
+- Paramètres d'exécution : `--dart-define=USE_FIREBASE_EMULATORS=true|false`, `--dart-define=FIREBASE_EMULATOR_HOST=<ip>`.
+- Configuration de jeu : toute modification se fait dans `lib/core/config/game_config.dart`, `functions/src/config/gameConfig.ts` **et** `shared/game_config.snapshot.json` (tests de parité des deux côtés).
+- CI : `.github/workflows/ci.yml` (analyse, absence de TODO, tests Flutter, APK de debug en artefact, tests Functions, tests des règles sur émulateur).
+
+## 9. Choix techniques de la phase 0
+- Lint : `very_good_analysis` 11, avec deux règles désactivées : `public_member_api_docs` (pas de doc obligatoire sur chaque membre) et `unnecessary_type_name_in_constructor` (on garde la syntaxe classique des constructeurs, compatible avec freezed et drift).
+- Typographie : Cinzel pour les titres et les boutons, IM Fell English pour les textes d'ambiance, police du système pour le corps de texte (lisibilité).
+- Le routeur (`core/router`) est la racine de composition de la navigation : il est le seul élément de `core` autorisé à importer des écrans de fonctionnalités.
+- Les dossiers de fonctionnalités sont créés au fil des phases (Git ne versionne pas les dossiers vides).
