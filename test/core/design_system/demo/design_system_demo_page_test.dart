@@ -12,20 +12,26 @@ void main() {
   testWidgets('présente toutes les sections du design system', (tester) async {
     await tester.pumpApp(const DesignSystemDemoPage());
 
-    for (final title in ['Couleurs', 'Typographie', 'Boutons', 'Cadres']) {
+    for (final title in [
+      'Couleurs',
+      'Typographie',
+      'Boutons',
+      'Cadres',
+      'Progression',
+      'Rangs',
+    ]) {
+      await tester.scrollUntilVisible(find.text(title), 300);
       expect(find.text(title), findsOneWidget);
     }
 
-    await tester.scrollUntilVisible(find.byType(SystemWindow), 300);
-    expect(find.byType(SystemWindow), findsOneWidget);
+    await tester.scrollUntilVisible(find.byType(RankBadge).last, 300);
+    expect(find.byType(RankBadge), findsNWidgets(RankId.values.length));
 
-    await tester.scrollUntilVisible(find.byType(XpBar), 300);
+    await tester.scrollUntilVisible(find.byType(XpBar), -300);
     expect(find.byType(XpBar), findsOneWidget);
 
-    await tester.scrollUntilVisible(find.byType(RankBadge).first, 300);
-    await tester.drag(find.byType(ListView), const Offset(0, -400));
-    await tester.pumpAndSettle();
-    expect(find.byType(RankBadge), findsNWidgets(RankId.values.length));
+    await tester.scrollUntilVisible(find.byType(SystemWindow), -300);
+    expect(find.byType(SystemWindow), findsOneWidget);
   });
 
   testWidgets('respecte les consignes d’accessibilité Flutter', (
