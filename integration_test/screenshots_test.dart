@@ -80,6 +80,10 @@ void main() {
     await binding.takeScreenshot('11_fiche_pompes');
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
+    // Le champ doit reprendre le focus après le retour de la fiche pour que
+    // la saisie soit prise en compte sur l'appareil.
+    await tester.tap(find.byType(TextField).first);
+    await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'squat');
     await tester.pumpAndSettle();
     if (find.text('Squat').evaluate().isEmpty) {
