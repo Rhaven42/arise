@@ -50,7 +50,7 @@ void main() {
 
     expect(find.byType(SystemHomePage), findsOneWidget);
     expect(
-      await container.read(profileRepositoryProvider).watchProfile().first,
+      container.read(playerProfileProvider).value,
       sampleProfile,
     );
     await tester.unmountApp();

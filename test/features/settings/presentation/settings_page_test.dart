@@ -19,10 +19,7 @@ void main() {
     await tester.tap(find.byType(Switch));
     await tester.pumpAndSettle();
 
-    final profile = await container
-        .read(profileRepositoryProvider)
-        .watchProfile()
-        .first;
+    final profile = container.read(playerProfileProvider).value;
     expect(profile?.healthConsent, isTrue);
     await tester.unmountApp();
   });

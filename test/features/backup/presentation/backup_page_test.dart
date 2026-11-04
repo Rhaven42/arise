@@ -64,7 +64,7 @@ void main() {
     await tester.tap(find.text('Annuler'));
     await tester.pumpAndSettle();
     expect(
-      await container.read(profileRepositoryProvider).watchProfile().first,
+      container.read(playerProfileProvider).value,
       isNotNull,
     );
 
@@ -75,7 +75,7 @@ void main() {
 
     expect(find.byType(TitlePage), findsOneWidget);
     expect(
-      await container.read(profileRepositoryProvider).watchProfile().first,
+      container.read(playerProfileProvider).value,
       isNull,
     );
     await tester.unmountApp();

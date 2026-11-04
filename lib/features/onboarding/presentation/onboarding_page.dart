@@ -336,13 +336,18 @@ class _HealthStep extends ConsumerWidget {
             children: [
               Text(l10n.safetyBody, style: textTheme.bodyLarge),
               const SizedBox(height: AriseSpacing.sm),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                value: draft.safetyAcknowledged,
-                onChanged: (value) =>
-                    controller.setSafetyAcknowledged(value: value ?? false),
-                title: Text(l10n.safetyAcknowledge),
-                controlAffinity: ListTileControlAffinity.leading,
+              // Material transparent : la case est posée sur le fond décoré
+              // de la fenêtre du Système.
+              Material(
+                type: MaterialType.transparency,
+                child: CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: draft.safetyAcknowledged,
+                  onChanged: (value) =>
+                      controller.setSafetyAcknowledged(value: value ?? false),
+                  title: Text(l10n.safetyAcknowledge),
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
               ),
             ],
           ),
