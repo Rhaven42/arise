@@ -236,5 +236,7 @@
       }
     }
   },
-  "errorGeneric": "Une erreur est survenue. Réessaie."
+  "errorGeneric": "Une erreur est survenue. Réessaie.",
+  "settingsBackupTile": "Sauvegarde et données",
+  "settingsBackupTileHint": "Exporter, restaurer ou effacer ta progression."
 }

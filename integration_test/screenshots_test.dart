@@ -39,12 +39,13 @@ void main() {
     await tapText(tester, "J'ai lu et compris ce rappel");
     await binding.takeScreenshot('06_sante');
     await tapText(tester, 'Entrer dans Arisia');
+    await tester.pumpAndSettle(const Duration(seconds: 1));
     await binding.takeScreenshot('07_fenetre_du_systeme');
 
     await tester.tap(find.byIcon(Icons.settings_outlined));
     await tester.pumpAndSettle();
     await binding.takeScreenshot('08_parametres');
-    await tester.tap(find.text('Sauvegarde').last);
+    await tester.tap(find.text('Sauvegarde et données'));
     await tester.pumpAndSettle();
     await binding.takeScreenshot('09_sauvegarde');
   });

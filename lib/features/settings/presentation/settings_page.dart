@@ -36,8 +36,8 @@ class SettingsPage extends ConsumerWidget {
           _SectionHeader(l10n.settingsBackupSection),
           ListTile(
             leading: const Icon(Icons.save_alt, color: AriseColors.gold),
-            title: Text(l10n.settingsBackupSection),
-            subtitle: Text(l10n.settingsBackupHint),
+            title: Text(l10n.settingsBackupTile),
+            subtitle: Text(l10n.settingsBackupTileHint),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.go(AppRoutes.backup),
           ),
