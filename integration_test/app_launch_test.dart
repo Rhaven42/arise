@@ -56,9 +56,9 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Consignes'), findsOneWidget);
-    await tester.pageBack();
+    await tester.binding.handlePopRoute();
     await _pumpFor(tester, 800);
-    await tester.pageBack();
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
 
     // Programme de Tabata.
@@ -73,7 +73,7 @@ void main() {
     expect(find.text('Durée estimée : 4 min'), findsOneWidget);
     await _tapText(tester, 'Enregistrer');
     expect(find.text('Tabata express'), findsOneWidget);
-    await tester.pageBack();
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
 
     // Planning : séance le lundi, sans rappel (évite la demande

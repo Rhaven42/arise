@@ -48,9 +48,9 @@ void main() {
     await tester.tap(find.text('Sauvegarde et données'));
     await tester.pumpAndSettle();
     await binding.takeScreenshot('09_sauvegarde');
-    await tester.pageBack();
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
-    await tester.pageBack();
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
 
     Future<void> pumpFor(int milliseconds) async {
@@ -65,19 +65,19 @@ void main() {
     await tester.tap(find.text('Pompes'));
     await pumpFor(1200);
     await binding.takeScreenshot('11_fiche_pompes');
-    await tester.pageBack();
+    await tester.binding.handlePopRoute();
     await pumpFor(800);
     await tester.tap(find.text('Squat'));
     await pumpFor(1700);
     await binding.takeScreenshot('12_fiche_squat');
-    await tester.pageBack();
+    await tester.binding.handlePopRoute();
     await pumpFor(800);
     await tester.tap(find.byTooltip('Créer un exercice'));
     await pumpFor(800);
     await binding.takeScreenshot('13_exercice_perso');
-    await tester.pageBack();
+    await tester.binding.handlePopRoute();
     await pumpFor(800);
-    await tester.pageBack();
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
 
     await tapText(tester, 'Programmes');
@@ -92,7 +92,7 @@ void main() {
     await tester.pumpAndSettle();
     await binding.takeScreenshot('14_programme');
     await tapText(tester, 'Enregistrer');
-    await tester.pageBack();
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
 
     await tapText(tester, 'Planning');
