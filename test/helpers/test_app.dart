@@ -42,7 +42,9 @@ final sampleProfile = PlayerProfile(
 final List<Exercise> testCatalog = AssetExerciseCatalogRepository.decodeCatalog(
   File(AssetExerciseCatalogRepository.assetPath).readAsStringSync(),
 );
-final Map<String, FigureMotion> testMotions = decodeMotions(File(motionsAsset).readAsStringSync());
+final Map<String, FigureMotion> testMotions = decodeMotions(
+  File(motionsAsset).readAsStringSync(),
+);
 final Map<BodyView, BodyShapes> testBodyShapes = {
   for (final view in BodyView.values)
     view: BodyShapesParser.parse(

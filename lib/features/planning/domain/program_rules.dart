@@ -31,7 +31,10 @@ abstract final class ProgramLimits {
   static const ({int min, int max}) intervalRestSeconds = (min: 0, max: 600);
   static const ({int min, int max}) rounds = (min: 1, max: 50);
   static const ({int min, int max}) cycles = (min: 1, max: 10);
-  static const ({int min, int max}) restBetweenCyclesSeconds = (min: 0, max: 900);
+  static const ({int min, int max}) restBetweenCyclesSeconds = (
+    min: 0,
+    max: 900,
+  );
 }
 
 bool _within(num? value, ({num min, num max}) range) =>
