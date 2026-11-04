@@ -50,6 +50,11 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Squat'));
     await _pumpFor(tester, 1500);
+    await tester.scrollUntilVisible(
+      find.text('Consignes'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Consignes'), findsOneWidget);
     await tester.pageBack();
     await _pumpFor(tester, 800);
