@@ -1122,7 +1122,7 @@
   },
   "analysisMusclesTitle": "Détail par muscle",
   "analysisLegendTitle": "Légende",
-  "coinGold": "{count, plural, =1{1 pièce d'or} other{{count} pièces d'or}}",
+  "coinGold": "{count, plural, =0{0 pièce d'or} =1{1 pièce d'or} other{{count} pièces d'or}}",
   "@coinGold": {
     "placeholders": {
       "count": {
@@ -1130,7 +1130,7 @@
       }
     }
   },
-  "coinSilver": "{count, plural, =1{1 pièce d'argent} other{{count} pièces d'argent}}",
+  "coinSilver": "{count, plural, =0{0 pièce d'argent} =1{1 pièce d'argent} other{{count} pièces d'argent}}",
   "@coinSilver": {
     "placeholders": {
       "count": {
@@ -1138,7 +1138,7 @@
       }
     }
   },
-  "coinBronze": "{count, plural, =1{1 pièce de bronze} other{{count} pièces de bronze}}",
+  "coinBronze": "{count, plural, =0{0 pièce de bronze} =1{1 pièce de bronze} other{{count} pièces de bronze}}",
   "@coinBronze": {
     "placeholders": {
       "count": {
