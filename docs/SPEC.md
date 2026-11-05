@@ -291,3 +291,15 @@ Décision de la propriétaire du projet : pas de forfait Firebase Blaze, pas de 
 5. **Plafond quotidien** : l'effort actif (repos et pauses exclus) est cumulé sur la journée locale ; la part au-delà de 120 min rapporte moitié moins d'XP, au prorata, avec un message de prudence dans le bilan.
 6. **Signaux** : bips originaux générés par `tool/sounds.py`, vibrations, voix (synthèse vocale du téléphone, hors ligne, désactivée par défaut) ; réglables dans les paramètres. L'écran reste allumé pendant la séance. Une erreur de son ou de voix n'interrompt jamais la séance.
 7. **Volume par muscle** (points de la heatmap) : calculé en phase 5 à partir des séances enregistrées ; le bilan de la phase 3 affiche seulement les muscles sollicités (principal / secondaire).
+
+## 24. Décisions de la phase 4 (05/11/2026)
+1. **XP finale d'une séance** = XP de base (§23.4) × bonus de série (+5 % par jour de série acquis avant la séance, plafonné à +50 %) × 0,8 si la Zone de Pénalité est active. Le bonus de classe s'ajoutera en phase 8.
+2. **Niveaux** : 100 XP pour 0 → 1 (Éveil), puis `round(100 × n^1,5)`. Chaque niveau donne 3 points de stat libres et (5 + niveau) cristaux. Niveau maximum 100.
+3. **Blocage de rang** : au dernier niveau d'un rang (9, 19, 34, 49, 69, 89), la barre se remplit puis l'XP en trop est perdue tant que le boss du rang n'est pas vaincu ; la victoire fait passer le niveau immédiatement.
+4. **Stats** : valeur = points placés + 1 point par tranche de 50 XP attribuée à la stat (répartition des exercices, provisoire). La Volonté vient uniquement de la régularité : +1 par jour de série validé (provisoire).
+5. **Jour validé** : une séance complète (tous les efforts réalisés). Les jours de repos déclarés et les jours de maladie sont neutres : ils ne prolongent ni ne cassent la série. Coffres de série : 20, 60, 200 et 700 cristaux à 7, 30, 100 et 365 jours (provisoire).
+6. **Bascule quotidienne** à l'ouverture et avant chaque séance : chaque jour écoulé est évalué en date civile (insensible aux changements d'heure). Jour manqué : un bouclier protège la série, sinon elle repart à zéro ; le malus de −20 % dure 24 h et ne se cumule pas. Jamais de perte de niveau, d'objet ni de cristaux. Le jour de création du profil n'est jamais compté comme manqué.
+7. **Boucliers** : +1 tous les 14 jours écoulés (stock de 2). **Quête de pénalité** (en attendant les quêtes de la phase 8) : terminer une séance pendant le malus le lève.
+8. **Mode maladie** : 1 à 14 jours à partir d'aujourd'hui, lève le malus en cours ; y mettre fin laisse le jour en cours neutre.
+9. **Joueurs existants** : à la première ouverture avec la progression, l'XP des séances déjà enregistrées est rejouée, sans pénalité rétroactive.
+

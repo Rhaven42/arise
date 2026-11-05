@@ -53,16 +53,16 @@
 - [x] Parcours sur émulateur : lancement depuis le planning et arrêt de prudence
 
 ## Phase 4 — Moteur de progression
-- [ ] Calcul de l'XP par série (formule complète, plafond 120 min)
-- [ ] Niveaux, points de stat, cristaux par niveau
-- [ ] Rangs avec blocage au dernier niveau sans boss
-- [ ] Stats automatiques et répartition des points libres
-- [ ] Séries de jours, jours de repos, coffres 7/30/100/365
-- [ ] Boucliers, Zone de Pénalité, quête de pénalité
-- [ ] Mode maladie / blessure (≤ 14 jours)
-- [ ] Bascule quotidienne (`RunDailyRollover`) à l'ouverture, jours manqués inclus
-- [ ] Tests exhaustifs : fuseaux horaires, changement d'heure, cas limites
-- [ ] Fenêtre du Système (tableau de bord)
+- [x] Calcul de l'XP par séance (bonus de série, malus de pénalité, plafond 120 min)
+- [x] Niveaux, points de stat, cristaux par niveau
+- [x] Rangs avec blocage au dernier niveau sans boss
+- [x] Stats automatiques et répartition des points libres
+- [x] Séries de jours, jours de repos, coffres 7/30/100/365
+- [x] Boucliers, Zone de Pénalité, quête de pénalité (version simple : terminer une séance)
+- [x] Mode maladie / blessure (≤ 14 jours)
+- [x] Bascule quotidienne à l'ouverture, jours manqués inclus
+- [x] Tests : changements d'heure, jours manqués multiples, boucliers, maladie, base v5 et sauvegarde v4
+- [x] Fenêtre du Système (tableau de bord)
 
 ## Phase 5 — Analyse musculaire
 - [ ] Silhouettes SVG face et dos (33 zones identifiées)

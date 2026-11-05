@@ -156,5 +156,12 @@ void main() {
     await tester.tap(find.text('Arrêter'));
     await pumpFor(2000);
     await binding.takeScreenshot('19_bilan');
+
+    // Phase 4 : la Fenêtre du Système après la séance.
+    await tester.tap(find.text('Retour'));
+    await pumpFor(800);
+    await tester.binding.handlePopRoute();
+    await pumpFor(1200);
+    await binding.takeScreenshot('20_fenetre_apres_seance');
   });
 }
