@@ -84,15 +84,6 @@ Format : **principaux** (P) puis **secondaires** (S). « Faiblement » est conse
 | Course (`running`) | quadriceps, hamstrings, gluteus_maximus, gastrocnemius, soleus, tibialis_anterior, hip_flexors | — |
 | Vélo (`cycling`) | quadriceps, gluteus_maximus | hamstrings, gastrocnemius, soleus |
 | Corde à sauter (`jump_rope`) | gastrocnemius, soleus | quadriceps, deltoid_lateral, forearm_flexors |
-
-27 exercices de référence (hip thrust et pont fessier comptés séparément).
-
-## 2 bis. Propositions à relire (lot 1 sur 6)
-
-> ⚠️ **Statut : à relire** (`pending_review`). Ces correspondances sont des **propositions** de Claude (SPEC §20.1). Elles ne sont utilisées ni dans le catalogue ni dans les calculs tant que la propriétaire du projet ne les a pas validées. Une fois validée, une ligne rejoint le tableau du §2.
-
-| Exercice (`id`) | Principaux | Secondaires |
-|---|---|---|
 | Pompes inclinées, mains surélevées (`incline_push_up`) | pectoralis_mid_lower, deltoid_anterior, triceps_brachii | serratus_anterior, rectus_abdominis |
 | Pompes piquées (`pike_push_up`) | deltoid_anterior, deltoid_lateral, triceps_brachii | trapezius_upper, pectoralis_upper, serratus_anterior |
 | Tractions en supination (`chin_up`) | latissimus_dorsi, biceps_brachii, brachialis | teres_major, rhomboids, trapezius_mid_lower, forearm_flexors |
@@ -103,6 +94,12 @@ Format : **principaux** (P) puis **secondaires** (S). « Faiblement » est conse
 | Bird dog (`bird_dog`) | erector_spinae, gluteus_maximus | transversus_abdominis, obliques, deltoid_anterior |
 | Crunch vélo (`bicycle_crunch`) | obliques, rectus_abdominis | hip_flexors |
 | Curl marteau (`hammer_curl`) | brachialis, brachioradialis | biceps_brachii |
+
+37 exercices validés : les 27 exercices de référence (hip thrust et pont fessier comptés séparément) et le lot 1 (10 exercices, validé par la propriétaire du projet le 05/11/2026).
+
+## 2 bis. Propositions à relire
+
+> Lot 1 sur 6 **validé le 05/11/2026** et intégré au §2. Les lots 2 à 6 (43 exercices, pour atteindre 80) seront proposés ici, avec le statut `pending_review`, et n'entreront dans le catalogue qu'après validation.
 
 ## 3. Règles de conversion du volume
 

@@ -34,7 +34,7 @@
 
 ## Phase 2 — Exercices et planning
 - [x] Catalogue des 27 exercices de référence conforme à ANATOMY.md, vérifié par un test
-- [ ] Catalogue complété à 80 exercices (lots de 10 à valider — lot 1 proposé dans ANATOMY.md §2 bis)
+- [ ] Catalogue complété à 80 exercices (lots de 10 à valider — lot 1 validé et intégré : 37 exercices)
 - [x] `ExerciseAnimationPlayer` + animations 2D de substitution (24 mouvements, muscles colorés)
 - [x] Silhouettes SVG face et dos (33 zones), motifs + libellés pour les daltoniens
 - [x] Fiche exercice (consignes, erreurs fréquentes, muscles, animation en boucle)

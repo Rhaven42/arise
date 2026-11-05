@@ -920,6 +920,344 @@
     "Sauter trop haut.",
     "Faire tourner la corde avec les épaules."
    ]
+  },
+  {
+   "id": "incline_push_up",
+   "motion": "push_up",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "pectoralis_mid_lower",
+    "deltoid_anterior",
+    "triceps_brachii"
+   ],
+   "secondaryMuscles": [
+    "serratus_anterior",
+    "rectus_abdominis"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Pompes inclinées",
+   "description": "Pompes mains surélevées : la version accessible pour apprendre le mouvement.",
+   "instructions": [
+    "Pose les mains sur un support stable (banc, table, plan de travail).",
+    "Corps gainé, aligné de la tête aux talons.",
+    "Approche la poitrine du support, puis pousse."
+   ],
+   "mistakes": [
+    "Laisser tomber les hanches.",
+    "Choisir un support qui glisse."
+   ]
+  },
+  {
+   "id": "pike_push_up",
+   "motion": "push_up",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "deltoid_anterior",
+    "deltoid_lateral",
+    "triceps_brachii"
+   ],
+   "secondaryMuscles": [
+    "trapezius_upper",
+    "pectoralis_upper",
+    "serratus_anterior"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Pompes piquées",
+   "description": "Pompes hanches hautes, qui travaillent surtout les épaules.",
+   "instructions": [
+    "Forme un V inversé : hanches hautes, mains au sol largeur d'épaules.",
+    "Plie les coudes pour approcher le haut de la tête du sol.",
+    "Pousse pour revenir en V."
+   ],
+   "mistakes": [
+    "Descendre trop vite sur la tête.",
+    "Écarter les coudes sur les côtés."
+   ]
+  },
+  {
+   "id": "chin_up",
+   "motion": "pull_up",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "latissimus_dorsi",
+    "biceps_brachii",
+    "brachialis"
+   ],
+   "secondaryMuscles": [
+    "teres_major",
+    "rhomboids",
+    "trapezius_mid_lower",
+    "forearm_flexors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "pullUpBar"
+   ],
+   "difficulty": 3,
+   "reviewStatus": "validated",
+   "name": "Tractions en supination",
+   "description": "Tirage vertical à la barre, paumes vers soi.",
+   "instructions": [
+    "Mains largeur d'épaules, paumes tournées vers toi.",
+    "Tire les coudes vers le bas jusqu'au menton au-dessus de la barre.",
+    "Redescends bras tendus en contrôlant."
+   ],
+   "mistakes": [
+    "Se balancer pour s'aider.",
+    "Ne pas descendre jusqu'en bas."
+   ]
+  },
+  {
+   "id": "inverted_row",
+   "motion": "row",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "latissimus_dorsi",
+    "rhomboids",
+    "trapezius_mid_lower"
+   ],
+   "secondaryMuscles": [
+    "deltoid_posterior",
+    "biceps_brachii",
+    "brachialis"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Rowing inversé",
+   "description": "Tirage horizontal au poids du corps, sous une barre basse.",
+   "instructions": [
+    "Sous une barre basse ou une table très solide, mains largeur d'épaules.",
+    "Corps gainé, talons au sol.",
+    "Tire la poitrine vers la barre, puis redescends."
+   ],
+   "mistakes": [
+    "Laisser les hanches tomber.",
+    "Utiliser un support instable."
+   ]
+  },
+  {
+   "id": "bulgarian_split_squat",
+   "motion": "lunge",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "quadriceps",
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "gluteus_medius",
+    "adductors",
+    "hamstrings"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "bench"
+   ],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Squat bulgare",
+   "description": "Fente arrière pied posé sur un banc, une jambe à la fois.",
+   "instructions": [
+    "Pose le dessus du pied arrière sur un banc.",
+    "Descends en pliant la jambe avant, buste droit.",
+    "Remonte en poussant sur le talon avant, puis change de jambe."
+   ],
+   "mistakes": [
+    "Placer le pied avant trop près du banc.",
+    "Laisser le genou avant rentrer vers l'intérieur."
+   ]
+  },
+  {
+   "id": "sumo_squat",
+   "motion": "squat",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "quadriceps",
+    "gluteus_maximus",
+    "adductors"
+   ],
+   "secondaryMuscles": [
+    "hamstrings",
+    "erector_spinae"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Squat sumo",
+   "description": "Squat pieds très écartés, pointes ouvertes, pour l'intérieur des cuisses.",
+   "instructions": [
+    "Pieds bien plus larges que les épaules, pointes vers l'extérieur.",
+    "Descends en gardant le buste droit et les genoux dans l'axe des pieds.",
+    "Remonte en serrant les fessiers."
+   ],
+   "mistakes": [
+    "Laisser les genoux rentrer.",
+    "Pencher le buste en avant."
+   ]
+  },
+  {
+   "id": "step_up",
+   "motion": "lunge",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "quadriceps",
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "gluteus_medius",
+    "hamstrings",
+    "gastrocnemius"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "bench"
+   ],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Montées sur banc",
+   "description": "Montée sur un banc ou une marche, une jambe à la fois.",
+   "instructions": [
+    "Pose tout le pied sur un banc stable.",
+    "Pousse sur la jambe posée pour monter, sans t'aider de l'autre.",
+    "Redescends en contrôlant, puis change de jambe."
+   ],
+   "mistakes": [
+    "Pousser avec la jambe restée au sol.",
+    "Choisir un support trop haut."
+   ]
+  },
+  {
+   "id": "bird_dog",
+   "motion": "superman",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "vitality": 1
+   },
+   "primaryMuscles": [
+    "erector_spinae",
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "transversus_abdominis",
+    "obliques",
+    "deltoid_anterior"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Bird dog",
+   "description": "Gainage à quatre pattes en tendant le bras et la jambe opposés.",
+   "instructions": [
+    "À quatre pattes, mains sous les épaules, genoux sous les hanches.",
+    "Tends en même temps un bras devant et la jambe opposée derrière.",
+    "Tiens une seconde, reviens, puis change de côté."
+   ],
+   "mistakes": [
+    "Cambrer le bas du dos.",
+    "Faire pivoter les hanches."
+   ]
+  },
+  {
+   "id": "bicycle_crunch",
+   "motion": "crunch",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "obliques",
+    "rectus_abdominis"
+   ],
+   "secondaryMuscles": [
+    "hip_flexors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Crunch vélo",
+   "description": "Crunch avec rotation, coude vers le genou opposé.",
+   "instructions": [
+    "Allongé, mains derrière la tête sans tirer, jambes en l'air.",
+    "Amène un coude vers le genou opposé en tendant l'autre jambe.",
+    "Alterne lentement les côtés."
+   ],
+   "mistakes": [
+    "Tirer sur la nuque.",
+    "Aller trop vite sans contrôle."
+   ]
+  },
+  {
+   "id": "hammer_curl",
+   "motion": "biceps_curl",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "brachialis",
+    "brachioradialis"
+   ],
+   "secondaryMuscles": [
+    "biceps_brachii"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "dumbbells"
+   ],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Curl marteau",
+   "description": "Flexion des coudes, paumes face à face.",
+   "instructions": [
+    "Haltères en main, paumes tournées vers le corps.",
+    "Coudes collés au corps, monte les haltères.",
+    "Redescends jusqu'à tendre les bras."
+   ],
+   "mistakes": [
+    "Balancer le buste.",
+    "Décoller les coudes du corps."
+   ]
   }
  ]
 }
