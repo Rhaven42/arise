@@ -188,5 +188,34 @@ void main() {
     debugPrint('Parcours : analyse affichée');
     await _expectVisible(tester, '1 séance sur cette période.');
     await _expectVisible(tester, 'Conseils du Système');
+
+    // Création du personnage : rendu 3D réel (vue web), nom, validation.
+    debugPrint('Parcours : création du personnage');
+    await tester.tap(find.byType(BackButton).first);
+    await _pumpFor(tester, 1200);
+    await _tapWithoutSettle(tester, find.text('Création du personnage'));
+    await _pumpFor(tester, 4000);
+    final name = find.byType(TextField);
+    await _waitFor(tester, name);
+    await tester.scrollUntilVisible(
+      name,
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.enterText(name, 'Aelin');
+    await _pumpFor(tester, 500);
+    FocusManager.instance.primaryFocus?.unfocus();
+    await _pumpFor(tester, 500);
+    final confirm = find.text('Valider le personnage');
+    await tester.scrollUntilVisible(
+      confirm,
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.tap(confirm);
+    await _pumpFor(tester, 1500);
+    debugPrint('Parcours : personnage enregistré');
+    await _waitFor(tester, find.text('Analyse musculaire'));
+    expect(find.text('Personnage enregistré.'), findsOneWidget);
   }, timeout: const Timeout(Duration(minutes: 8)));
 }

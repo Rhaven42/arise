@@ -53,6 +53,8 @@ flutter:
     - assets/svg/body_front.svg
     - assets/svg/body_back.svg
     - assets/sounds/
+    - assets/models/
+    - assets/viewer/
     - assets/fonts/cinzel/OFL.txt
     - assets/fonts/im_fell_english/OFL.txt
 

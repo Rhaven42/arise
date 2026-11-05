@@ -26,7 +26,7 @@ void main() {
       profile: sampleProfile,
       progression: _progression,
     );
-    expect(data.version, 4);
+    expect(data.version, BackupCodec.currentVersion);
     expect(BackupCodec.decode(BackupCodec.encode(data)), data);
   });
 

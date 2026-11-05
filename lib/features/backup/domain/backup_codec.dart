@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:arise/features/backup/domain/backup_data.dart';
+import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/planning/domain/planned_session.dart';
 import 'package:arise/features/planning/domain/program.dart';
@@ -42,8 +43,9 @@ abstract final class BackupCodec {
   /// - v1 (phase 1) : profil ;
   /// - v2 (phase 2) : exercices personnalisés, programmes et planning ;
   /// - v3 (phase 3) : séances réalisées ;
-  /// - v4 (phase 4) : progression (niveau, stats, série, cristaux).
-  static const currentVersion = 4;
+  /// - v4 (phase 4) : progression (niveau, stats, série, cristaux) ;
+  /// - v5 (phase 6) : personnage ; les cristaux deviennent des pièces.
+  static const currentVersion = 5;
 
   /// Construit une sauvegarde au format courant.
   static BackupData create({
@@ -54,6 +56,7 @@ abstract final class BackupCodec {
     List<PlannedSession> plannedSessions = const [],
     List<CompletedSession> completedSessions = const [],
     ProgressionState? progression,
+    CharacterSheet? character,
   }) {
     return BackupData(
       format: format,
@@ -65,6 +68,7 @@ abstract final class BackupCodec {
       plannedSessions: plannedSessions,
       completedSessions: completedSessions,
       progression: progression,
+      character: character,
     );
   }
 

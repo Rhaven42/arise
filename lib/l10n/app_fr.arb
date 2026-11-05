@@ -1153,5 +1153,136 @@
         "type": "String"
       }
     }
-  }
+  },
+  "characterTitle": "Création du personnage",
+  "characterHomeHint": "Race, silhouette et coiffure de ton héros",
+  "characterSex": "Sexe",
+  "characterSexName": "{sex, select, female{Femme} male{Homme} other{?}}",
+  "@characterSexName": {
+    "placeholders": {
+      "sex": {
+        "type": "String"
+      }
+    }
+  },
+  "characterRace": "Race",
+  "characterRaceName": "{key, select, human_female{Humaine} human_male{Humain} elf_female{Elfe} elf_male{Elfe} orc_female{Orque} orc_male{Orque} other{?}}",
+  "@characterRaceName": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "characterCorpulence": "Corpulence",
+  "characterCorpulenceStep": "{key, select, female_0{Élancée} female_1{Fine} female_2{Équilibrée} female_3{Pulpeuse} female_4{Généreuse} male_0{Élancé} male_1{Mince} male_2{Équilibré} male_3{Robuste} male_4{Imposant} other{?}}",
+  "@characterCorpulenceStep": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "characterMusculature": "Musculature",
+  "characterMusculatureStep": "{key, select, female_0{Légère} female_1{Tonique} female_2{Athlétique} female_3{Musclée} female_4{Puissante} male_0{Léger} male_1{Tonique} male_2{Athlétique} male_3{Musclé} male_4{Puissant} other{?}}",
+  "@characterMusculatureStep": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "characterSliderValue": "{label} : {value}",
+  "@characterSliderValue": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "characterHeight": "Taille : {cm} cm",
+  "@characterHeight": {
+    "placeholders": {
+      "cm": {
+        "type": "int"
+      }
+    }
+  },
+  "characterSkin": "Couleur de peau",
+  "characterSkinName": "{id, select, porcelain{Porcelaine} ivory{Ivoire} sand{Sable} honey{Miel} amber{Ambre} cinnamon{Cannelle} bronze{Bronze} ebony{Ébène} moss{Mousse} jade{Jade} olive{Olive} lichen{Lichen} slate{Ardoise} ash{Cendre} other{?}}",
+  "@characterSkinName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "characterHairStyle": "Coiffure",
+  "characterHairStyleName": "{id, select, h1{1 · Courte} h2{2 · Queue de cheval} h3{3 · Natte} h4{4 · Chignon} h5{5 · Longue} h6{6 · Crête} h7{7 · Rasée} h8{8 · Double natte} h9{9 · Carré} h10{10 · Crinière} other{?}}",
+  "@characterHairStyleName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "characterHairColor": "Couleur des cheveux",
+  "characterHairColorName": "{id, select, black{Noir} dark_brown{Brun} chestnut{Châtain} auburn{Auburn} copper{Cuivré} blond{Blond} ash_blond{Blond cendré} grey{Gris} white{Blanc} midnight_blue{Bleu nuit} other{?}}",
+  "@characterHairColorName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "characterName": "Nom du personnage",
+  "characterNameHint": "Entre {min} et {max} caractères",
+  "@characterNameHint": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "characterNameTooShort": "Le nom doit faire au moins {min} caractères.",
+  "@characterNameTooShort": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "characterNameTooLong": "Le nom doit faire au plus {max} caractères.",
+  "@characterNameTooLong": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "characterNameInvalid": "Lettres, espaces, tirets et apostrophes uniquement.",
+  "characterNameForbidden": "Ce nom n'est pas accepté dans Arisia. Choisis-en un autre.",
+  "characterUndo": "Annuler",
+  "characterRedo": "Rétablir",
+  "characterRandom": "Aléatoire",
+  "characterReset": "Réinitialiser",
+  "characterSheetJson": "Fiche du personnage (JSON)",
+  "characterConfirm": "Valider le personnage",
+  "characterSaved": "Personnage enregistré.",
+  "characterPreviewSemantics": "Aperçu 3D du personnage : {description}. Fais glisser pour le tourner, pince pour zoomer.",
+  "@characterPreviewSemantics": {
+    "placeholders": {
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "characterPreviewLoading": "Le Système façonne ton héros…",
+  "characterPreviewError": "Le rendu 3D n'a pas pu s'afficher sur cet appareil. Tes choix restent enregistrés."
 }

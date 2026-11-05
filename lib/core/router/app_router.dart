@@ -3,6 +3,7 @@ import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/core/router/route_guard.dart';
 import 'package:arise/features/backup/presentation/backup_page.dart';
 import 'package:arise/features/backup/presentation/restore_page.dart';
+import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
 import 'package:arise/features/exercises/presentation/custom_exercise_editor_page.dart';
 import 'package:arise/features/exercises/presentation/exercise_detail_page.dart';
 import 'package:arise/features/exercises/presentation/exercise_list_page.dart';
@@ -121,6 +122,10 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
             path: AppRoutes.analysisSegment,
             builder: (_, _) => const MuscleAnalysisPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.characterSegment,
+            builder: (_, _) => const CharacterCreatorPage(),
           ),
           GoRoute(
             path: AppRoutes.planningSegment,

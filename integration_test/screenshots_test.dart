@@ -181,5 +181,40 @@ void main() {
     );
     await pumpFor(400);
     await binding.takeScreenshot('22_analyse_conseils');
+
+    // Phase 6 : le créateur de personnage (rendu 3D réel).
+    await tester.binding.handlePopRoute();
+    await pumpFor(1200);
+    final creator = find.text('Création du personnage');
+    await tester.scrollUntilVisible(
+      creator,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(creator.last);
+    await pumpFor(6000);
+    await binding.takeScreenshot('23_createur');
+    await tester.tap(find.text('Humaine'));
+    await pumpFor(800);
+    await tester.tap(find.text('Orque').last);
+    await pumpFor(800);
+    await tester.tap(find.text('Femme'));
+    await pumpFor(800);
+    await tester.tap(find.text('Homme').last);
+    await pumpFor(5000);
+    await binding.takeScreenshot('24_createur_orque');
+    await tester.tap(find.text('Humain'));
+    await pumpFor(800);
+    await tester.tap(find.text('Elfe').last);
+    await pumpFor(5000);
+    await binding.takeScreenshot('25_createur_elfe');
+    await tester.scrollUntilVisible(
+      find.text('Fiche du personnage (JSON)'),
+      300,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.tap(find.text('Fiche du personnage (JSON)'));
+    await pumpFor(800);
+    await binding.takeScreenshot('26_createur_fiche');
   });
 }

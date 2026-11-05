@@ -124,6 +124,18 @@ class ProgressionStates extends Table {
 ///   `planned_sessions` ;
 /// - v4 (phase 3) : ajout de `completed_sessions` ;
 /// - v5 (phase 4) : ajout de `progression_states`.
+@DataClassName('CharacterSheetRow')
+class CharacterSheets extends Table {
+  IntColumn get id => integer()();
+
+  TextColumn get json => text()();
+
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
 @DriftDatabase(
   tables: [
     PendingSessions,
@@ -134,6 +146,7 @@ class ProgressionStates extends Table {
     PlannedSessions,
     CompletedSessions,
     ProgressionStates,
+    CharacterSheets,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -143,7 +156,7 @@ class AppDatabase extends _$AppDatabase {
   static const profileRowId = 1;
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -162,6 +175,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 5) {
         await migrator.createTable(progressionStates);
+      }
+      if (from < 6) {
+        await migrator.createTable(characterSheets);
       }
     },
   );
@@ -192,6 +208,7 @@ class AppDatabase extends _$AppDatabase {
   /// Efface toutes les données du joueur.
   Future<void> eraseAll() {
     return transaction(() async {
+      await delete(characterSheets).go();
       await delete(progressionStates).go();
       await delete(completedSessions).go();
       await delete(plannedSessions).go();
@@ -285,6 +302,30 @@ class AppDatabase extends _$AppDatabase {
   Future<void> saveProgressionJson(String json, {required DateTime updatedAt}) {
     return into(progressionStates).insertOnConflictUpdate(
       ProgressionStatesCompanion(
+        id: const Value(profileRowId),
+        json: Value(json),
+        updatedAt: Value(updatedAt.toUtc()),
+      ),
+    );
+  }
+
+  // --- Personnage ---------------------------------------------------------
+
+  Stream<String?> watchCharacterJson() {
+    final query = select(characterSheets)
+      ..where((t) => t.id.equals(profileRowId));
+    return query.watchSingleOrNull().map((row) => row?.json);
+  }
+
+  Future<String?> readCharacterJson() async {
+    final query = select(characterSheets)
+      ..where((t) => t.id.equals(profileRowId));
+    return (await query.getSingleOrNull())?.json;
+  }
+
+  Future<void> saveCharacterJson(String json, {required DateTime updatedAt}) {
+    return into(characterSheets).insertOnConflictUpdate(
+      CharacterSheetsCompanion(
         id: const Value(profileRowId),
         json: Value(json),
         updatedAt: Value(updatedAt.toUtc()),

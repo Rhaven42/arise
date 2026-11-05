@@ -1,3 +1,4 @@
+import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/planning/domain/planned_session.dart';
 import 'package:arise/features/planning/domain/program.dart';
@@ -29,6 +30,9 @@ abstract class BackupData with _$BackupData {
     /// Ajout du format v4 (phase 4) ; absent avant : recalculée à partir
     /// des séances.
     ProgressionState? progression,
+
+    /// Ajout du format v5 (phase 6) : fiche du personnage.
+    CharacterSheet? character,
   }) = _BackupData;
 
   factory BackupData.fromJson(Map<String, dynamic> json) =>

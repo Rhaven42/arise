@@ -160,6 +160,12 @@ class _SystemHomeBody extends ConsumerWidget {
           onTap: () => context.go(AppRoutes.planning),
         ),
         _HomeLink(
+          icon: Icons.person_outline,
+          title: l10n.characterTitle,
+          subtitle: l10n.characterHomeHint,
+          onTap: () => context.go(AppRoutes.character),
+        ),
+        _HomeLink(
           icon: Icons.accessibility_new,
           title: l10n.analysisTitle,
           subtitle: l10n.analysisHomeHint,

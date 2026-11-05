@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:arise/app.dart';
 import 'package:arise/core/anatomy/body_shapes.dart';
@@ -7,7 +8,9 @@ import 'package:arise/core/anatomy/muscle.dart';
 import 'package:arise/core/database/app_database.dart';
 import 'package:arise/core/router/app_router.dart';
 import 'package:arise/core/utils/clock.dart';
+import 'package:arise/features/avatar/presentation/character_renderer.dart';
 import 'package:arise/features/backup/presentation/backup_controller.dart';
+import 'package:arise/features/character_creation/presentation/character_providers.dart';
 import 'package:arise/features/exercises/data/asset_exercise_catalog_repository.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/exercises/presentation/animation/figure_animation.dart';
@@ -23,6 +26,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'fake_backup_file_gateway.dart';
+import 'fake_character_renderer.dart';
 import 'fake_reminder_scheduler.dart';
 import 'fake_workout_cues.dart';
 
@@ -69,6 +73,7 @@ ProviderContainer createTestContainer({
   FakeReminderScheduler? reminders,
   DateTime Function()? clock,
   FakeWorkoutCues? cues,
+  FakeCharacterRenderer? renderer,
 }) {
   return ProviderContainer.test(
     overrides: [
@@ -81,6 +86,10 @@ ProviderContainer createTestContainer({
       reminderSchedulerProvider.overrideWithValue(
         reminders ?? FakeReminderScheduler(),
       ),
+      characterRendererProvider.overrideWithValue(
+        renderer ?? FakeCharacterRenderer(),
+      ),
+      characterRandomProvider.overrideWithValue(Random(7)),
       exerciseCatalogProvider.overrideWith((_) async => testCatalog),
       figureMotionsProvider.overrideWith((_) async => testMotions),
       bodyShapesProvider.overrideWith((_) async => testBodyShapes),
