@@ -74,6 +74,7 @@ ProviderContainer createTestContainer({
   DateTime Function()? clock,
   FakeWorkoutCues? cues,
   FakeCharacterRenderer? renderer,
+  FakeSnapshotSharer? sharer,
 }) {
   return ProviderContainer.test(
     overrides: [
@@ -89,6 +90,7 @@ ProviderContainer createTestContainer({
       characterRendererProvider.overrideWithValue(
         renderer ?? FakeCharacterRenderer(),
       ),
+      snapshotSharerProvider.overrideWithValue(sharer ?? FakeSnapshotSharer()),
       characterRandomProvider.overrideWithValue(Random(7)),
       exerciseCatalogProvider.overrideWith((_) async => testCatalog),
       figureMotionsProvider.overrideWith((_) async => testMotions),

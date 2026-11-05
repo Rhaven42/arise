@@ -39,30 +39,57 @@ CharacterSheet changeRace(CharacterSheet sheet, CharacterRace race) {
   );
 }
 
-/// Change le sexe : la taille suit le nouveau modèle.
+/// Change le sexe : la taille suit le nouveau modèle ; la barbe est retirée
+/// pour un personnage féminin.
 CharacterSheet changeSex(CharacterSheet sheet, CharacterSex sex) {
   if (sheet.sex == sex) return sheet;
-  return sheet.copyWith(sex: sex, heightCm: modelHeightCm[sheet.race]![sex]!);
+  return sheet.copyWith(
+    sex: sex,
+    heightCm: modelHeightCm[sheet.race]![sex]!,
+    beardStyle: sex == CharacterSex.female ? 0 : sheet.beardStyle,
+  );
 }
 
 /// Ramène chaque valeur dans ses bornes (fiche importée ou modifiée).
 CharacterSheet sanitizeSheet(CharacterSheet sheet, {CharacterConfig? config}) {
   final c = config ?? gameConfig.character;
+  final favorites = <int>[];
+  for (final style in sheet.favoriteHairStyles) {
+    if (style >= 1 &&
+        style <= hairStyleCount &&
+        !favorites.contains(style) &&
+        favorites.length < c.favoriteHairstylesMax) {
+      favorites.add(style);
+    }
+  }
   return sheet.copyWith(
     corpulence: sheet.corpulence.clamp(0.0, 1.0),
     musculature: sheet.musculature.clamp(0.0, 1.0),
     heightCm: sheet.heightCm.clamp(c.heightMinCm, c.heightMaxCm),
     hairStyle: sheet.hairStyle.clamp(1, hairStyleCount),
+    favoriteHairStyles: favorites,
+    faceJaw: sheet.faceJaw.clamp(0.0, 1.0),
+    faceNose: sheet.faceNose.clamp(0.0, 1.0),
+    faceMouth: sheet.faceMouth.clamp(0.0, 1.0),
+    faceCheeks: sheet.faceCheeks.clamp(0.0, 1.0),
+    faceEars: sheet.faceEars.clamp(0.0, 1.0),
+    eyebrowStyle: sheet.eyebrowStyle.clamp(1, eyebrowStyleCount),
+    beardStyle: sheet.sex == CharacterSex.female
+        ? 0
+        : sheet.beardStyle.clamp(0, beardStyleCount),
+    makeupStyle: sheet.makeupStyle.clamp(0, makeupStyleCount),
   );
 }
 
 /// Palier d'un curseur (0 à 4) pour son libellé.
 int sliderStep(double value) => (value.clamp(0.0, 1.0) * 4).round();
 
-/// Personnage tiré au hasard (le nom est conservé).
+/// Personnage tiré au hasard (le nom, les favoris, la pose et la posture
+/// sont conservés : ce sont des réglages d'affichage, pas d'apparence).
 CharacterSheet randomSheet(
   Random random, {
   String name = '',
+  CharacterSheet? keep,
   CharacterConfig? config,
 }) {
   final c = config ?? gameConfig.character;
@@ -76,6 +103,7 @@ CharacterSheet randomSheet(
     c.heightMinCm,
     c.heightMaxCm,
   );
+  double face() => random.nextInt(5) / 4;
   return CharacterSheet(
     sex: sex,
     race: race,
@@ -86,5 +114,18 @@ CharacterSheet randomSheet(
     skinColor: skins[random.nextInt(skins.length)].color,
     hairColor: hairColors[random.nextInt(hairColors.length)].color,
     hairStyle: random.nextInt(hairStyleCount) + 1,
+    faceJaw: face(),
+    faceNose: face(),
+    faceMouth: face(),
+    faceCheeks: face(),
+    faceEars: face(),
+    eyeColor: eyeColors[random.nextInt(eyeColors.length)].color,
+    eyebrowStyle: random.nextInt(eyebrowStyleCount) + 1,
+    beardStyle: sex == CharacterSex.male
+        ? random.nextInt(beardStyleCount + 1)
+        : 0,
+    favoriteHairStyles: keep?.favoriteHairStyles ?? const [],
+    pose: keep?.pose ?? CharacterPose.relaxed,
+    posture: keep?.posture ?? CharacterPosture.neutral,
   );
 }

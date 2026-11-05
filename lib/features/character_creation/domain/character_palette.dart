@@ -55,3 +55,15 @@ Swatch? swatchOf(List<Swatch> swatches, int color) {
   }
   return null;
 }
+
+/// Couleurs des yeux.
+const List<Swatch> eyeColors = [
+  Swatch('dark_brown', 0xFF3A2414),
+  Swatch('brown', 0xFF5A3A22),
+  Swatch('hazel', 0xFF7A6234),
+  Swatch('green', 0xFF4C7A3E),
+  Swatch('blue', 0xFF3E6A9A),
+  Swatch('grey', 0xFF7C8690),
+  Swatch('amber', 0xFFB07A26),
+  Swatch('violet', 0xFF6A4C8C),
+];

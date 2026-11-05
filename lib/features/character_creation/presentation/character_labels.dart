@@ -49,4 +49,20 @@ String describeCharacter(AppLocalizations l10n, CharacterSheet sheet) => [
   musculatureLabel(l10n, sheet),
   l10n.characterHeight(sheet.heightCm),
   hairStyleLabel(l10n, sheet.hairStyle),
+  l10n.characterPoseName(sheet.pose.name),
 ].join(', ');
+
+String presetLabel(AppLocalizations l10n, CharacterSex sex, String id) =>
+    l10n.characterPresetName('${sex.name}_$id');
+
+String faceStepLabel(AppLocalizations l10n, double value) =>
+    l10n.characterFaceStep('s${sliderStep(value)}');
+
+String eyebrowLabel(AppLocalizations l10n, int style) =>
+    l10n.characterEyebrowName('b$style');
+
+String beardLabel(AppLocalizations l10n, int style) =>
+    l10n.characterBeardName('b$style');
+
+String makeupLabel(AppLocalizations l10n, int style) =>
+    l10n.characterMakeupName('m$style');

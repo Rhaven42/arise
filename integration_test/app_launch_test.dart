@@ -196,6 +196,13 @@ void main() {
     await _pumpFor(tester, 1200);
     await _tapWithoutSettle(tester, find.text('Création du personnage'));
     await _pumpFor(tester, 4000);
+    debugPrint('Parcours : silhouette, visage, onglet fiche');
+    await tester.tap(find.text('Athlétique'));
+    await _pumpFor(tester, 800);
+    await tester.tap(find.text('Visage'));
+    await _pumpFor(tester, 1500);
+    await tester.tap(find.text('Nom & fiche'));
+    await _pumpFor(tester, 1000);
     final name = find.byType(TextField);
     await _waitFor(tester, name);
     await tester.scrollUntilVisible(
@@ -203,7 +210,7 @@ void main() {
       200,
       scrollable: find
           .descendant(
-            of: find.byKey(CharacterCreatorPage.formKey),
+            of: find.byKey(CharacterCreatorPage.tabKey(CreatorTab.sheet)),
             matching: find.byType(Scrollable),
           )
           .first,
@@ -212,18 +219,7 @@ void main() {
     await _pumpFor(tester, 500);
     FocusManager.instance.primaryFocus?.unfocus();
     await _pumpFor(tester, 500);
-    final confirm = find.text('Valider le personnage');
-    await tester.scrollUntilVisible(
-      confirm,
-      200,
-      scrollable: find
-          .descendant(
-            of: find.byKey(CharacterCreatorPage.formKey),
-            matching: find.byType(Scrollable),
-          )
-          .first,
-    );
-    await tester.tap(confirm);
+    await tester.tap(find.text('Valider le personnage'));
     await _pumpFor(tester, 1500);
     debugPrint('Parcours : personnage enregistré');
     await _waitFor(tester, find.text('Analyse musculaire'));
