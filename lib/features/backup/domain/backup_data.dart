@@ -2,6 +2,7 @@ import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/planning/domain/planned_session.dart';
 import 'package:arise/features/planning/domain/program.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
+import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/workout_player/domain/completed_session.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -24,6 +25,10 @@ abstract class BackupData with _$BackupData {
 
     /// Ajout du format v3 (phase 3) ; absent des fichiers v1 et v2.
     @Default([]) List<CompletedSession> completedSessions,
+
+    /// Ajout du format v4 (phase 4) ; absent avant : recalculée à partir
+    /// des séances.
+    ProgressionState? progression,
   }) = _BackupData;
 
   factory BackupData.fromJson(Map<String, dynamic> json) =>

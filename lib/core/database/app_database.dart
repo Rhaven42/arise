@@ -102,6 +102,19 @@ class CompletedSessions extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
+/// Progression du joueur (une seule ligne, `id` = 1), stockée en JSON.
+@DataClassName('ProgressionRow')
+class ProgressionStates extends Table {
+  IntColumn get id => integer()();
+
+  TextColumn get json => text()();
+
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
 /// Base locale SQLite (Drift) de l'application.
 ///
 /// Historique du schéma :
@@ -109,7 +122,8 @@ class CompletedSessions extends Table {
 /// - v2 (phase 1) : ajout de `player_profiles` ;
 /// - v3 (phase 2) : ajout de `custom_exercises`, `programs` et
 ///   `planned_sessions` ;
-/// - v4 (phase 3) : ajout de `completed_sessions`.
+/// - v4 (phase 3) : ajout de `completed_sessions` ;
+/// - v5 (phase 4) : ajout de `progression_states`.
 @DriftDatabase(
   tables: [
     PendingSessions,
@@ -119,6 +133,7 @@ class CompletedSessions extends Table {
     Programs,
     PlannedSessions,
     CompletedSessions,
+    ProgressionStates,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -128,7 +143,7 @@ class AppDatabase extends _$AppDatabase {
   static const profileRowId = 1;
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -144,6 +159,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 4) {
         await migrator.createTable(completedSessions);
+      }
+      if (from < 5) {
+        await migrator.createTable(progressionStates);
       }
     },
   );
@@ -174,6 +192,7 @@ class AppDatabase extends _$AppDatabase {
   /// Efface toutes les données du joueur.
   Future<void> eraseAll() {
     return transaction(() async {
+      await delete(progressionStates).go();
       await delete(completedSessions).go();
       await delete(plannedSessions).go();
       await delete(programs).go();
@@ -247,6 +266,30 @@ class AppDatabase extends _$AppDatabase {
       )..where((t) => t.programId.equals(id))).go();
       await (delete(programs)..where((t) => t.id.equals(id))).go();
     });
+  }
+
+  // --- Progression -------------------------------------------------------
+
+  Stream<String?> watchProgressionJson() {
+    final query = select(progressionStates)
+      ..where((t) => t.id.equals(profileRowId));
+    return query.watchSingleOrNull().map((row) => row?.json);
+  }
+
+  Future<String?> readProgressionJson() async {
+    final query = select(progressionStates)
+      ..where((t) => t.id.equals(profileRowId));
+    return (await query.getSingleOrNull())?.json;
+  }
+
+  Future<void> saveProgressionJson(String json, {required DateTime updatedAt}) {
+    return into(progressionStates).insertOnConflictUpdate(
+      ProgressionStatesCompanion(
+        id: const Value(profileRowId),
+        json: Value(json),
+        updatedAt: Value(updatedAt.toUtc()),
+      ),
+    );
   }
 
   // --- Séances réalisées -------------------------------------------------

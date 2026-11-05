@@ -9,6 +9,8 @@ import 'package:arise/features/exercises/presentation/exercise_providers.dart';
 import 'package:arise/features/planning/domain/program.dart';
 import 'package:arise/features/planning/presentation/planning_providers.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
+import 'package:arise/features/progression/domain/progression_rules.dart';
+import 'package:arise/features/progression/presentation/progression_providers.dart';
 import 'package:arise/features/workout_player/data/drift_completed_session_repository.dart';
 import 'package:arise/features/workout_player/domain/completed_session.dart';
 import 'package:arise/features/workout_player/domain/completed_session_repository.dart';
@@ -52,6 +54,9 @@ abstract class WorkoutView with _$WorkoutView {
 
     /// Séance enregistrée, affichée dans le récapitulatif.
     CompletedSession? summary,
+
+    /// Effets de la séance sur la progression (niveaux, série, coffre).
+    SessionProgress? progress,
   }) = _WorkoutView;
 
   const WorkoutView._();
@@ -186,9 +191,20 @@ class WorkoutController extends _$WorkoutController {
       priorActiveSecondsToday: activeSecondsOnDay(history, view.run.startedAt),
       now: now,
     );
-    await repository.save(summary);
+    // Bonus de série, malus de pénalité, niveaux et série de jours.
+    final progress = await ref
+        .read(progressionControllerProvider.notifier)
+        .recordSession(summary);
+    final session = summary.copyWith(
+      xpEarned: progress.xpGained,
+      xpByStat: progress.xpByStat,
+      xpMultiplier: progress.multiplier,
+    );
+    await repository.save(session);
     if (!ref.mounted) return;
-    state = AsyncData(view.copyWith(summary: summary, now: now));
+    state = AsyncData(
+      view.copyWith(summary: session, progress: progress, now: now),
+    );
     unawaited(_cues?.keepScreenOn(enabled: false));
     if (_sounds) unawaited(_cues?.play(CueSound.finish));
     if (_voice) unawaited(_cues?.speak(_l10n.workoutVoiceFinish));

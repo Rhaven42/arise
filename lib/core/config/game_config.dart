@@ -25,6 +25,7 @@ class ProgressionConfig {
     required this.tutorialXp,
     required this.statPointsPerLevel,
     required this.crystalsPerLevelBase,
+    required this.statXpPerPoint,
   });
 
   final int startLevel;
@@ -35,6 +36,9 @@ class ProgressionConfig {
   final int statPointsPerLevel;
   final int crystalsPerLevelBase;
 
+  /// XP attribuée à une stat qui la fait monter d'un point automatiquement.
+  final int statXpPerPoint;
+
   Map<String, Object> toJson() => {
     'startLevel': startLevel,
     'maxLevel': maxLevel,
@@ -43,6 +47,7 @@ class ProgressionConfig {
     'tutorialXp': tutorialXp,
     'statPointsPerLevel': statPointsPerLevel,
     'crystalsPerLevelBase': crystalsPerLevelBase,
+    'statXpPerPoint': statXpPerPoint,
   };
 }
 
@@ -92,6 +97,8 @@ class StreaksConfig {
     required this.chestMilestonesDays,
     required this.shieldEveryDays,
     required this.maxShields,
+    required this.chestCrystals,
+    required this.willpowerPerStreakDay,
   });
 
   final double bonusPerDay;
@@ -100,12 +107,20 @@ class StreaksConfig {
   final int shieldEveryDays;
   final int maxShields;
 
+  /// Cristaux du coffre de chaque palier (même ordre que les paliers).
+  final List<int> chestCrystals;
+
+  /// Points de Volonté gagnés par jour de série validé.
+  final int willpowerPerStreakDay;
+
   Map<String, Object> toJson() => {
     'bonusPerDay': bonusPerDay,
     'maxBonus': maxBonus,
     'chestMilestonesDays': chestMilestonesDays,
     'shieldEveryDays': shieldEveryDays,
     'maxShields': maxShields,
+    'chestCrystals': chestCrystals,
+    'willpowerPerStreakDay': willpowerPerStreakDay,
   };
 }
 
@@ -459,6 +474,7 @@ const gameConfig = GameConfig(
     tutorialXp: 100,
     statPointsPerLevel: 3,
     crystalsPerLevelBase: 5,
+    statXpPerPoint: 50,
   ),
   intensity: IntensityConfig(
     rpeMin: 1,
@@ -486,6 +502,8 @@ const gameConfig = GameConfig(
     chestMilestonesDays: [7, 30, 100, 365],
     shieldEveryDays: 14,
     maxShields: 2,
+    chestCrystals: [20, 60, 200, 700],
+    willpowerPerStreakDay: 1,
   ),
   rest: RestConfig(
     minRestDaysPerWeek: 1,
@@ -545,6 +563,9 @@ const gameConfig = GameConfig(
     metersPerVolumeUnit: 1000,
   ),
   provisionalKeys: [
+    'progression.statXpPerPoint',
+    'streaks.chestCrystals',
+    'streaks.willpowerPerStreakDay',
     'xp.baseXpPerVolumeUnit',
     'xp.repsPerVolumeUnit',
     'xp.secondsPerVolumeUnit',

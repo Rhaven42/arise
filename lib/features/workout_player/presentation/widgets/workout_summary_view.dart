@@ -8,6 +8,7 @@ import 'package:arise/core/theme/arise_spacing.dart';
 import 'package:arise/core/theme/arise_typography.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/exercises/presentation/exercise_labels.dart';
+import 'package:arise/features/progression/domain/progression_rules.dart';
 import 'package:arise/features/workout_player/domain/completed_session.dart';
 import 'package:arise/features/workout_player/domain/session_summary.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
@@ -20,9 +21,13 @@ class WorkoutSummaryView extends StatelessWidget {
     required this.exercises,
     required this.onClose,
     super.key,
+    this.progress,
   });
 
   final CompletedSession session;
+
+  /// Effets sur la progression (absents pour un ancien enregistrement).
+  final SessionProgress? progress;
   final Map<String, Exercise> exercises;
   final VoidCallback onClose;
 
@@ -91,6 +96,8 @@ class WorkoutSummaryView extends StatelessWidget {
                 ),
                 style: textTheme.bodyLarge,
               ),
+              if (progress case final progress?)
+                ..._progressLines(l10n, textTheme, progress),
               const SizedBox(height: AriseSpacing.sm),
               Text(l10n.workoutSummaryProvisional, style: textTheme.bodySmall),
             ],
@@ -141,6 +148,54 @@ class WorkoutSummaryView extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Lignes du bilan consacrées à la progression.
+List<Widget> _progressLines(
+  AppLocalizations l10n,
+  TextTheme textTheme,
+  SessionProgress progress,
+) {
+  final highlight = textTheme.titleMedium?.copyWith(
+    color: AriseColors.goldBright,
+  );
+  final state = progress.state;
+  return [
+    const SizedBox(height: AriseSpacing.sm),
+    if (progress.multiplier > 1)
+      Text(
+        l10n.progressStreakBonus(
+          progress.multiplier.toStringAsFixed(2).replaceAll('.', ','),
+        ),
+        style: textTheme.bodyLarge,
+      ),
+    if (progress.multiplier < 1)
+      Text(l10n.progressPenaltyMalus, style: textTheme.bodyLarge),
+    if (progress.levelsGained > 0) ...[
+      Text(l10n.progressLevelUp(state.level), style: highlight),
+      Text(
+        l10n.progressRewards(
+          progress.crystalsGained,
+          progress.statPointsGained,
+        ),
+        style: textTheme.bodyLarge,
+      ),
+    ],
+    if (progress.dayValidated)
+      Text(
+        l10n.progressDayValidated(state.streakDays),
+        style: textTheme.bodyLarge,
+      ),
+    if (progress.chestCrystals > 0)
+      Text(l10n.progressChest(progress.chestCrystals), style: highlight),
+    if (progress.penaltyCleared)
+      Text(l10n.progressPenaltyCleared, style: textTheme.bodyLarge),
+    if (progress.rankLocked)
+      Text(
+        l10n.progressRankLocked(l10n.rankName(state.rank.name)),
+        style: textTheme.bodyLarge?.copyWith(color: AriseColors.mana),
+      ),
+  ];
 }
 
 /// Encadré de prudence (douleur, dépassement du plafond quotidien).

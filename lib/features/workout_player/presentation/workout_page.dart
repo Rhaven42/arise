@@ -64,6 +64,7 @@ class WorkoutPage extends ConsumerWidget {
     } else if (view.summary case final summary?) {
       body = WorkoutSummaryView(
         session: summary,
+        progress: view.progress,
         exercises: view.exercises,
         onClose: close,
       );

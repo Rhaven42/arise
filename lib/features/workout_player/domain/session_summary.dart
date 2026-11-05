@@ -43,6 +43,7 @@ CompletedSession summarizeRun({
     xpEarned: xp.total,
     completed: run.isComplete,
     plannedEfforts: run.workStepCount,
+    xpByStat: xp.byStat,
     stoppedForPain: run.stopReason == StopReason.painOrDiscomfort,
     exceededDailyCap: xp.exceededDailyCap,
   );

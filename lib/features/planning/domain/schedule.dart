@@ -47,6 +47,22 @@ List<SessionOccurrence> occurrencesForWeek(
   return result..sort((a, b) => a.start.compareTo(b.start));
 }
 
+/// Prochaine séance à venir (cette semaine ou la suivante), ou `null`.
+SessionOccurrence? nextOccurrence(
+  Iterable<PlannedSession> sessions,
+  DateTime now,
+) {
+  final local = now.toLocal();
+  final thisWeek = startOfWeek(local);
+  final nextWeek = DateTime(thisWeek.year, thisWeek.month, thisWeek.day + 7);
+  for (final week in [thisWeek, nextWeek]) {
+    for (final occurrence in occurrencesForWeek(sessions, week)) {
+      if (occurrence.start.isAfter(local)) return occurrence;
+    }
+  }
+  return null;
+}
+
 /// Vrai si [program] peut être planifié ce jour-là : les jours de repos
 /// déclarés n'acceptent que la mobilité légère (SPEC §7).
 bool canPlanOn({

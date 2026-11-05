@@ -177,7 +177,7 @@
   "safetyBody": "Arrête immédiatement l'exercice en cas de douleur, de vertige ou de fatigue extrême. Si tu as un problème de santé, demande l'avis d'un médecin avant de commencer.",
   "safetyAcknowledge": "J'ai lu et compris ce rappel",
   "systemWelcomeTitle": "Bienvenue, chasseur",
-  "systemWelcomeBody": "Le Système a enregistré ton éveil. Ton premier entraînement arrive bientôt.",
+  "systemWelcomeBody": "Le Système veille sur ta progression. Chaque séance terminée te rapproche du rang suivant.",
   "systemLevel": "Niveau {level}",
   "@systemLevel": {
     "placeholders": {
@@ -789,5 +789,217 @@
   "settingsWorkoutSection": "Lecteur de séance",
   "settingsWorkoutSounds": "Bips et vibrations",
   "settingsWorkoutVoice": "Annonces vocales",
-  "settingsWorkoutVoiceHint": "Utilise la synthèse vocale du téléphone, sans connexion."
+  "settingsWorkoutVoiceHint": "Utilise la synthèse vocale du téléphone, sans connexion.",
+  "progressStreakBonus": "Bonus de série : ×{multiplier}",
+  "@progressStreakBonus": {
+    "placeholders": {
+      "multiplier": {
+        "type": "String"
+      }
+    }
+  },
+  "progressPenaltyMalus": "Malus de la Zone de Pénalité appliqué",
+  "progressLevelUp": "Niveau {level} atteint !",
+  "@progressLevelUp": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "progressRewards": "+{crystals} cristaux · +{points} points de stat",
+  "@progressRewards": {
+    "placeholders": {
+      "crystals": {
+        "type": "int"
+      },
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "progressDayValidated": "Jour validé : série de {days} jours",
+  "@progressDayValidated": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "progressChest": "Coffre de série : +{crystals} cristaux",
+  "@progressChest": {
+    "placeholders": {
+      "crystals": {
+        "type": "int"
+      }
+    }
+  },
+  "progressPenaltyCleared": "Quête de pénalité accomplie : le malus est levé.",
+  "progressRankLocked": "Ta barre d'expérience est pleine : vaincs le boss du rang {rank} pour continuer à progresser.",
+  "@progressRankLocked": {
+    "placeholders": {
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "homeRankLabel": "Rang {rank}",
+  "@homeRankLabel": {
+    "placeholders": {
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "homeStatsTitle": "Statistiques",
+  "homeFreePoints": "{count, plural, =1{1 point à placer} other{{count} points à placer}}",
+  "@homeFreePoints": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAllocate": "Ajouter un point à {stat}",
+  "@homeAllocate": {
+    "placeholders": {
+      "stat": {
+        "type": "String"
+      }
+    }
+  },
+  "homeStatValue": "{stat} : {value}",
+  "@homeStatValue": {
+    "placeholders": {
+      "stat": {
+        "type": "String"
+      },
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "homeStreakTitle": "Série de jours",
+  "homeStreak": "{days, plural, =0{Aucun jour en cours} =1{1 jour} other{{days} jours}}",
+  "@homeStreak": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "homeBestStreak": "Record : {days} jours",
+  "@homeBestStreak": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "homeStreakBonus": "Bonus d'expérience : +{percent} %",
+  "@homeStreakBonus": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "homeShields": "Boucliers : {count} sur {max}",
+  "@homeShields": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "homeCrystals": "{count} Cristaux de Mana",
+  "@homeCrystals": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeNextSession": "Prochaine séance : {program}, {when}",
+  "@homeNextSession": {
+    "placeholders": {
+      "program": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "homeNoNextSession": "Aucune séance planifiée.",
+  "homePenaltyTitle": "Zone de Pénalité",
+  "homePenaltyBody": "Un jour d'entraînement a été manqué : l'expérience est réduite de 20 % pendant 24 heures. Quête de pénalité : termine une séance aujourd'hui, même courte, pour lever le malus.",
+  "homeSickTitle": "Mode repos forcé",
+  "homeSickBody": "Mode maladie ou blessure actif jusqu'au {date} : aucune pénalité, ta série est protégée. Prends soin de toi.",
+  "@homeSickBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "homeReportTitle": "Rapport du Système",
+  "homeReportMissed": "{days, plural, =1{1 jour manqué depuis ta dernière visite.} other{{days} jours manqués depuis ta dernière visite.}}",
+  "@homeReportMissed": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "homeReportShieldUsed": "{count, plural, =1{Un bouclier a protégé ta série.} other{{count} boucliers ont protégé ta série.}}",
+  "@homeReportShieldUsed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeReportStreakLost": "Ta série de {days} jours repart de zéro. Aucun niveau ni cristal n'est perdu.",
+  "@homeReportStreakLost": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "homeReportShieldEarned": "{count, plural, =1{Nouveau bouclier obtenu !} other{{count} nouveaux boucliers obtenus !}}",
+  "@homeReportShieldEarned": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeReportDismiss": "Compris",
+  "settingsSickSection": "Maladie ou blessure",
+  "settingsSickStart": "Activer le mode maladie ou blessure",
+  "settingsSickHint": "Met tout en pause jusqu'à 14 jours, sans pénalité ni perte de série.",
+  "settingsSickActive": "Actif jusqu'au {date}",
+  "@settingsSickActive": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsSickStop": "Reprendre l'entraînement",
+  "settingsSickDialogTitle": "Durée de la pause",
+  "settingsSickDays": "{days, plural, =1{1 jour} other{{days} jours}}",
+  "@settingsSickDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsSickConfirm": "Activer"
 }

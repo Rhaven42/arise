@@ -1,3 +1,4 @@
+import 'package:arise/features/exercises/domain/stat_id.dart';
 import 'package:arise/features/planning/domain/program.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -45,6 +46,12 @@ abstract class CompletedSession with _$CompletedSession {
     /// Nombre d'efforts prévus par le programme (0 dans les anciennes
     /// sauvegardes, où il n'était pas enregistré).
     @Default(0) int plannedEfforts,
+
+    /// XP attribuée à chaque stat (répartition des exercices, bonus compris).
+    @Default({}) Map<StatId, int> xpByStat,
+
+    /// Bonus de série × malus de pénalité appliqués à l'XP de base.
+    @Default(1.0) double xpMultiplier,
     String? programId,
     @Default(false) bool stoppedForPain,
 

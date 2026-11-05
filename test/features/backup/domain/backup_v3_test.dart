@@ -30,7 +30,7 @@ void main() {
       profile: sampleProfile,
       completedSessions: [_session],
     );
-    expect(data.version, 3);
+    expect(data.version, greaterThanOrEqualTo(3));
     expect(BackupCodec.decode(BackupCodec.encode(data)), data);
   });
 
