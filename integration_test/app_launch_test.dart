@@ -47,6 +47,19 @@ Future<void> _backTo(WidgetTester tester, String text) async {
   await tester.pumpAndSettle();
 }
 
+/// Vérifie qu'un texte est affiché, en faisant défiler la page au besoin.
+Future<void> _expectVisible(WidgetTester tester, String text) async {
+  await _waitFor(tester, find.text(text));
+  if (find.text(text).evaluate().isEmpty) {
+    await tester.scrollUntilVisible(
+      find.text(text),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+  }
+  expect(find.text(text), findsOneWidget);
+}
+
 /// Avance le temps sans attendre la fin des animations en boucle.
 Future<void> _pumpFor(WidgetTester tester, int milliseconds) async {
   for (var elapsed = 0; elapsed < milliseconds; elapsed += 100) {
@@ -109,7 +122,7 @@ void main() {
     await tester.enterText(find.byType(TextField).last, 'burpees');
     await tester.pumpAndSettle();
     await _tapText(tester, 'Burpees');
-    expect(find.text('Durée estimée : 4 min'), findsOneWidget);
+    await _expectVisible(tester, 'Durée estimée : 4 min');
     await _tapText(tester, 'Enregistrer');
     expect(find.text('Tabata express'), findsOneWidget);
     await _backTo(tester, 'Planning');
