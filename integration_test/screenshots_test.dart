@@ -220,13 +220,17 @@ void main() {
     await pumpFor(1000);
     await tester.tap(find.text('Colosse'));
     await pumpFor(800);
-    Future<void> pick(String menu, String choice) async {
+    Future<void> pick(
+      String menu,
+      String choice, {
+      CreatorTab tab = CreatorTab.body,
+    }) async {
       await tester.scrollUntilVisible(
         find.text(menu),
         200,
         scrollable: find
             .descendant(
-              of: find.byKey(CharacterCreatorPage.tabKey(CreatorTab.body)),
+              of: find.byKey(CharacterCreatorPage.tabKey(tab)),
               matching: find.byType(Scrollable),
             )
             .first,
@@ -242,9 +246,7 @@ void main() {
     await binding.takeScreenshot('27_createur_silhouette_pose');
     await tester.tap(find.text('Visage'));
     await pumpFor(800);
-    await tester.tap(find.text('Aucune'));
-    await pumpFor(800);
-    await tester.tap(find.text('Collier').last);
+    await pick('Aucune', 'Collier', tab: CreatorTab.face);
     await pumpFor(2500);
     await binding.takeScreenshot('28_createur_visage');
     await tester.tap(find.text('Coiffure'));
