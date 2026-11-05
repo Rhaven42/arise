@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -26,35 +27,65 @@ abstract interface class WorkoutCues {
 }
 
 /// Implémentation sur l'appareil.
+///
+/// Les signaux ne doivent jamais interrompre une séance : une erreur de
+/// lecture (son ou voix indisponible) est ignorée.
 class DeviceWorkoutCues implements WorkoutCues {
   DeviceWorkoutCues();
 
-  final _player = AudioPlayer();
+  /// Un lecteur par son, pour éviter les conflits entre bips rapprochés.
+  final _players = <CueSound, AudioPlayer>{};
   FlutterTts? _tts;
 
   @override
   Future<void> play(CueSound sound) async {
-    await HapticFeedback.mediumImpact();
-    await _player.stop();
-    await _player.play(AssetSource('sounds/${sound.name}.wav'));
+    try {
+      await HapticFeedback.mediumImpact();
+      var player = _players[sound];
+      if (player == null) {
+        player = _players[sound] = AudioPlayer();
+        await player.setReleaseMode(ReleaseMode.stop);
+      }
+      await player.play(
+        AssetSource('sounds/${sound.name}.wav'),
+        mode: PlayerMode.lowLatency,
+      );
+    } on Object catch (error) {
+      debugPrint('Signal sonore indisponible : $error');
+    }
   }
 
   @override
   Future<void> speak(String text) async {
-    final tts = _tts ??= FlutterTts();
-    await tts.setLanguage('fr-FR');
-    await tts.stop();
-    await tts.speak(text);
+    try {
+      final tts = _tts ??= FlutterTts();
+      await tts.setLanguage('fr-FR');
+      await tts.stop();
+      await tts.speak(text);
+    } on Object catch (error) {
+      debugPrint('Synthèse vocale indisponible : $error');
+    }
   }
 
   @override
-  Future<void> keepScreenOn({required bool enabled}) =>
-      enabled ? WakelockPlus.enable() : WakelockPlus.disable();
+  Future<void> keepScreenOn({required bool enabled}) async {
+    try {
+      await (enabled ? WakelockPlus.enable() : WakelockPlus.disable());
+    } on Object catch (error) {
+      debugPrint('Maintien de l’écran indisponible : $error');
+    }
+  }
 
   @override
   Future<void> dispose() async {
-    await _tts?.stop();
-    await _player.dispose();
+    try {
+      await _tts?.stop();
+      for (final player in _players.values) {
+        await player.dispose();
+      }
+    } on Object catch (error) {
+      debugPrint('Libération des signaux : $error');
+    }
   }
 }
 
