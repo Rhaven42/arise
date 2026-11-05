@@ -13,6 +13,8 @@ part 'progression_state.g.dart';
 @freezed
 abstract class ProgressionState with _$ProgressionState {
   const factory ProgressionState({
+    /// Dernier jour déjà évalué par la bascule quotidienne.
+    @CivilDateConverter() required CivilDate lastRolloverDay,
     @Default(0) int level,
 
     /// XP accumulée vers le niveau suivant.
@@ -45,8 +47,6 @@ abstract class ProgressionState with _$ProgressionState {
     /// Dernier jour du mode maladie ou blessure (inclus).
     @NullableCivilDateConverter() CivilDate? sickUntil,
 
-    /// Dernier jour déjà évalué par la bascule quotidienne.
-    @CivilDateConverter() required CivilDate lastRolloverDay,
     @Default({}) Set<RankId> defeatedBosses,
   }) = _ProgressionState;
 

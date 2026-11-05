@@ -1,9 +1,10 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 /// Jour du calendrier (année, mois, jour), sans heure ni fuseau.
 ///
 /// Les jours se comptent en dates civiles pour rester justes lors des
 /// changements d'heure : un jour d'été ou d'hiver reste « un jour ».
+@immutable
 class CivilDate implements Comparable<CivilDate> {
   const CivilDate(this.year, this.month, this.day);
 

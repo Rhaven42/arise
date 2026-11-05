@@ -7,7 +7,7 @@ import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // Lundi 2 novembre 2026, midi (heure locale du test).
-final _monday = DateTime(2026, 11, 2, 12);
+final DateTime _monday = DateTime(2026, 11, 2, 12);
 DateTime _day(int offset, [int hour = 12]) =>
     DateTime(_monday.year, _monday.month, _monday.day + offset, hour);
 CivilDate _civil(int offset) => CivilDate.ofLocal(_day(offset));
