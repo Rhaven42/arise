@@ -309,3 +309,14 @@ Décision de la propriétaire du projet : pas de forfait Firebase Blaze, pas de 
 3. **Heatmap** : vues mois et année exprimées en moyenne par semaine écoulée (au moins une semaine). Seuils hebdomadaires 4 / 8 / 12 et quotidiens 2 / 4 / 6 (`game_config.dart`). Chaque niveau a une couleur, un motif (hachures, points, lignes, quadrillage) et un libellé, avec une légende et un détail par muscle.
 4. **Alertes de déséquilibre** (provisoires, ANATOMY.md §6) : avant / arrière du corps et poussée / tirage, à partir d'un volume total de 4 et au-delà d'un rapport de 1,5.
 5. **Conseils du Système** : jusqu'à 3 muscles pas du tout ou pas assez travaillés, chacun avec l'exercice le plus simple du référentiel validé qui le cible comme muscle principal et que l'équipement du joueur permet. Aucun conseil sans séance sur la période.
+
+## 26. Décisions de la phase 6A (05/11/2026)
+1. **Monnaie** : les Cristaux de Mana sont remplacés par des **pièces de bronze, d'argent et d'or** (100 bronze = 1 argent, 100 argent = 1 or). Une séance rapporte du bronze selon l'XP de chaque effort et la **difficulté de l'exercice** : 1 bronze par XP (facile), 1,5 (intermédiaire), 2,5 (avancé), bonus de série et malus de pénalité compris. Un niveau donne (5 + niveau) pièces d'argent ; les coffres de série donnent 10, 40, 150 et 600 pièces d'argent. Les cristaux déjà gagnés deviennent du bronze, 1 pour 1. Valeurs provisoires (`game_config.dart`, section `coins`).
+2. **Personnage** : fiche JSON (sexe, race, nom, corpulence, musculature, taille, couleur de peau, coiffure 1 à 10, couleur des cheveux), enregistrée sur le téléphone, brouillon conservé à chaque choix, comprise dans la sauvegarde (format v5).
+3. **Races** : Humain, Elfe (plus grand, oreilles allongées), Orque (carrure et mâchoire larges, défenses, peaux vertes ou grises). Homme et femme ont chacun leur maillage.
+4. **Morphologie** : deux curseurs, avec des mots bienveillants qui changent selon le sexe — *Corpulence* : Élancée, Fine, Équilibrée, Pulpeuse, Généreuse / Élancé, Mince, Équilibré, Robuste, Imposant ; *Musculature* : Légère, Tonique, Athlétique, Musclée, Puissante / Léger, Tonique, Athlétique, Musclé, Puissant. Taille de 150 à 205 cm.
+5. **Équipements** : la tenue et les coiffures sont exportées avec les mêmes formes de morphologie que le corps ; tout futur équipement de la boutique devra suivre la même règle (docs/ASSETS.md §2).
+6. **Rendu 3D** : vue web embarquée avec three.js (licence MIT), entièrement hors ligne ; l'interface `CharacterRenderer` reste indépendante du moteur. Si le rendu échoue, le créateur reste utilisable.
+7. **Nom** : 3 à 16 caractères, lettres, espaces, tirets et apostrophes, filtre anti-insultes (variantes accentuées et chiffres compris). Sans serveur, l'unicité n'est pas vérifiée (§21.5).
+8. **Accès** : « Création du personnage » depuis la Fenêtre du Système ; le personnage reste modifiable.
+
