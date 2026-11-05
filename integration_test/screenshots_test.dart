@@ -204,7 +204,7 @@ void main() {
     await tester.tap(find.text('Homme').last);
     await pumpFor(5000);
     await binding.takeScreenshot('24_createur_orque');
-    await tester.tap(find.text('Humain'));
+    await tester.tap(find.text('Orque').first);
     await pumpFor(800);
     await tester.tap(find.text('Elfe').last);
     await pumpFor(5000);
