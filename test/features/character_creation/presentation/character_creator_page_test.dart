@@ -14,9 +14,10 @@ Future<void> _scrollTo(
   WidgetTester tester,
   Finder finder, {
   CreatorTab tab = CreatorTab.sheet,
+  double delta = 200,
 }) => tester.scrollUntilVisible(
   finder,
-  200,
+  delta,
   scrollable: find
       .descendant(
         of: find.byKey(CharacterCreatorPage.tabKey(tab)),
@@ -39,7 +40,18 @@ void main() {
 
     expect(find.text('Création du personnage'), findsOneWidget);
     expect(find.text('rendu:human_female'), findsOneWidget);
+    await _scrollTo(
+      tester,
+      find.text('Corpulence : Équilibrée'),
+      tab: CreatorTab.body,
+    );
     expect(find.text('Corpulence : Équilibrée'), findsOneWidget);
+    await _scrollTo(
+      tester,
+      find.text('Humaine'),
+      tab: CreatorTab.body,
+      delta: -200,
+    );
 
     await tester.tap(find.text('Humaine'));
     await tester.pumpAndSettle();
@@ -53,6 +65,11 @@ void main() {
     await tester.tap(find.text('Homme').last);
     await tester.pumpAndSettle();
     expect(find.text('rendu:orc_male'), findsOneWidget);
+    await _scrollTo(
+      tester,
+      find.text('Corpulence : Équilibré'),
+      tab: CreatorTab.body,
+    );
     expect(find.text('Corpulence : Équilibré'), findsOneWidget);
 
     // Annuler revient à l'orque femme, puis à l'humaine.
