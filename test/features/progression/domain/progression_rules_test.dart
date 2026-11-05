@@ -36,7 +36,7 @@ SessionProgress _session(
 
 void main() {
   group('addXp', () {
-    test('passe les niveaux avec pièces d'argent et points de stat', () {
+    test('passe les niveaux avec pièces d’argent et points de stat', () {
       final gain = addXp(_fresh(), 100 + 100 + 50);
       expect(gain.state.level, 2);
       expect(gain.state.xpInLevel, 50);
