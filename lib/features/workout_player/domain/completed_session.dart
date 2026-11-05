@@ -41,6 +41,10 @@ abstract class CompletedSession with _$CompletedSession {
 
     /// Vrai si tous les efforts prévus ont été réalisés.
     required bool completed,
+
+    /// Nombre d'efforts prévus par le programme (0 dans les anciennes
+    /// sauvegardes, où il n'était pas enregistré).
+    @Default(0) int plannedEfforts,
     String? programId,
     @Default(false) bool stoppedForPain,
 

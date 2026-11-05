@@ -57,6 +57,7 @@ void main() {
     );
 
     expect(session.completed, isTrue);
+    expect(session.plannedEfforts, 2);
     expect(session.programId, 'p1');
     expect(session.sets.first.reps, 12);
     expect(session.sets.last.activeSeconds, 30);

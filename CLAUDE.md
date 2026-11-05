@@ -28,6 +28,7 @@ ARISE est une application mobile de sport gamifiée (Android + iOS), dans l'espr
 | Données | **Drift (SQLite) sur l'appareil** : seule source de vérité |
 | Sauvegarde | Export / import d'un fichier JSON (`share_plus`, `file_picker`) |
 | Notifications | Notifications locales (ajoutées en phase 2) |
+| Lecteur de séance | `audioplayers` (bips embarqués), `flutter_tts` (voix hors ligne), `wakelock_plus` (écran allumé) |
 | Santé | package `health` (Health Connect Android, HealthKit iOS) — **lecture seule** |
 | Avatar 3D | interface abstraite `CharacterRenderer` ; MVP = modèles `.glb` originaux ; Unity plus tard |
 | Animations d'exercices | interface `ExerciseAnimationPlayer` (Rive ou `.glb` animés) |

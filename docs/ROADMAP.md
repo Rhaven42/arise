@@ -46,10 +46,11 @@
 - [x] Parcours sur émulateur : exercice, programme et planning
 
 ## Phase 3 — Lecteur de séance
-- [ ] Lecteur : minuteur visuel et sonore, voix optionnelle, animation synchronisée, compteur de séries
-- [ ] Saisie de l'intensité ressentie + avertissement douleur/fatigue
-- [ ] Enregistrement des séances dans la base locale
-- [ ] Récapitulatif (XP gagnée, muscles travaillés)
+- [x] Lecteur : minuteur visuel et sonore, voix optionnelle, animation synchronisée, compteur de séries
+- [x] Saisie de l'intensité ressentie + avertissement douleur/fatigue
+- [x] Enregistrement des séances dans la base locale (base v4, sauvegarde v3)
+- [x] Récapitulatif (XP gagnée, muscles travaillés) — XP provisoire, plafond de 120 min appliqué
+- [x] Parcours sur émulateur : lancement depuis le planning et arrêt de prudence
 
 ## Phase 4 — Moteur de progression
 - [ ] Calcul de l'XP par série (formule complète, plafond 120 min)

@@ -83,7 +83,12 @@ class WorkoutSummaryView extends StatelessWidget {
                 style: textTheme.bodyLarge,
               ),
               Text(
-                l10n.workoutSummarySets(done, session.sets.length),
+                l10n.workoutSummarySets(
+                  done,
+                  session.plannedEfforts > 0
+                      ? session.plannedEfforts
+                      : session.sets.length,
+                ),
                 style: textTheme.bodyLarge,
               ),
               const SizedBox(height: AriseSpacing.sm),

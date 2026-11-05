@@ -282,3 +282,12 @@ Décision de la propriétaire du projet : pas de forfait Firebase Blaze, pas de 
 4. **Jours de repos** : seuls les programmes de **mobilité** peuvent y être planifiés.
 5. **Rappels** : notifications locales programmées sur le téléphone, 30 minutes avant la séance (valeur provisoire dans la configuration de jeu), avec une demande d'autorisation au premier rappel activé.
 6. **Difficulté** d'un exercice : 1 à 3, affichée avec les libellés de niveau du questionnaire (Débutant, Intermédiaire, Avancé).
+
+## 23. Décisions de la phase 3 (05/11/2026)
+1. **Déroulé d'une séance** : musculation = séries puis repos prévu (pas de repos après la dernière série) ; Tabata/HIIT/circuit = rounds de travail et de repos, exercices à tour de rôle, repos entre les cycles ; cardio = un effort par exercice (durée chronométrée ou distance confirmée) ; mobilité = un maintien chronométré par exercice.
+2. **Intensité ressentie** : demandée après chaque série de musculation ; pour les autres formats, une intensité unique en fin de séance s'applique à tous les efforts. Une intensité de 10/10 affiche un message de prudence.
+3. **Bouton « Douleur ou malaise »** toujours visible : arrêt immédiat, message de prudence (repos, hydratation, 15 ou 112 en cas de signes graves), efforts déjà réalisés enregistrés.
+4. **XP d'un effort (provisoire)** : `10 × volume normalisé × multiplicateur d'intensité`, avec volume normalisé = répétitions / 10, ou distance / 1 000 m, ou secondes d'effort / 60. Le multiplicateur va linéairement de 0,8 (1/10) à 1,3 (10/10) ; sans saisie, intensité neutre (6/10). Les bonus de série de jours et de classe s'ajouteront en phase 4. Valeurs marquées provisoires dans `game_config.dart` (section `xp`).
+5. **Plafond quotidien** : l'effort actif (repos et pauses exclus) est cumulé sur la journée locale ; la part au-delà de 120 min rapporte moitié moins d'XP, au prorata, avec un message de prudence dans le bilan.
+6. **Signaux** : bips originaux générés par `tool/sounds.py`, vibrations, voix (synthèse vocale du téléphone, hors ligne, désactivée par défaut) ; réglables dans les paramètres. L'écran reste allumé pendant la séance. Une erreur de son ou de voix n'interrompt jamais la séance.
+7. **Volume par muscle** (points de la heatmap) : calculé en phase 5 à partir des séances enregistrées ; le bilan de la phase 3 affiche seulement les muscles sollicités (principal / secondaire).

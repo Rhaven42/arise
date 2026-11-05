@@ -193,6 +193,8 @@ class _RunningWorkout extends ConsumerWidget {
           if (isRest && exercise != null)
             Text(l10n.workoutNext(exercise.name), style: textTheme.bodyLarge),
           const SizedBox(height: AriseSpacing.md),
+          // Pendant un repos, seul le prochain exercice est annoncé.
+          if (!isRest)
           StoneFrame(
             padding: const EdgeInsets.all(AriseSpacing.sm),
             child: SizedBox(
@@ -200,8 +202,7 @@ class _RunningWorkout extends ConsumerWidget {
               child: exercise == null
                   ? const SizedBox.shrink()
                   : player.build(
-                      // L'animation s'arrête pendant les repos et les pauses.
-                      motionId: isRest || run.isPaused ? null : exercise.motion,
+                      motionId: exercise.motion,
                       highlights: exercise.muscleRoles,
                       semanticLabel: exercise.name,
                     ),
