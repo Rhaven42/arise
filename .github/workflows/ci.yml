@@ -99,8 +99,13 @@ jobs:
       - run: flutter pub get
       - run: flutter gen-l10n
       - run: dart run build_runner build --delete-conflicting-outputs
+      - name: Mémoire de Gradle limitée (l'émulateur partage la machine)
+        run: echo "org.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g -XX:ReservedCodeCacheSize=256m" >> android/gradle.properties
       - name: Préconstruction Android (NDK installé avant de lancer l'émulateur)
-        run: flutter build apk --debug --target=integration_test/app_launch_test.dart
+        run: |
+          flutter build apk --debug --target=integration_test/app_launch_test.dart
+          # Libère la mémoire du démon Gradle avant de démarrer l'émulateur.
+          cd android && ./gradlew --stop
       - name: Démarrage de l'application sur un émulateur
         uses: reactivecircus/android-emulator-runner@v2
         with:
