@@ -124,6 +124,7 @@ void main() {
     await _tapText(tester, 'Burpees');
     await _expectVisible(tester, 'Durée estimée : 4 min');
     await _tapText(tester, 'Enregistrer');
+    await _waitFor(tester, find.text('Tabata express'));
     expect(find.text('Tabata express'), findsOneWidget);
     await _backTo(tester, 'Planning');
 
@@ -134,6 +135,7 @@ void main() {
     await tester.pumpAndSettle();
     await _tapText(tester, 'Rappel');
     await _tapText(tester, 'Enregistrer');
+    await _waitFor(tester, find.text('Tabata express'));
     expect(find.text('Tabata express'), findsOneWidget);
 
     // Lecteur de séance lancé depuis le planning : un round, puis arrêt par
@@ -154,9 +156,12 @@ void main() {
 
     // Analyse musculaire depuis la Fenêtre du Système : la séance
     // interrompue compte dans la semaine en cours.
+    // « Retour » mène aux programmes ; la flèche de l'en-tête remonte à la
+    // Fenêtre du Système (un retour système pourrait fermer l'application).
     await tester.tap(find.text('Retour'));
-    await _pumpFor(tester, 800);
-    await tester.binding.handlePopRoute();
+    await _pumpFor(tester, 1200);
+    await _waitFor(tester, find.byType(BackButton));
+    await tester.tap(find.byType(BackButton).first);
     await _pumpFor(tester, 1200);
     final analysis = find.text('Analyse musculaire');
     await _waitFor(tester, analysis);
