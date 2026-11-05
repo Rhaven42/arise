@@ -60,7 +60,7 @@ void main() {
     await _scrollTo(tester, find.textContaining('la poussée'));
     expect(find.textContaining('la poussée'), findsOneWidget);
     await _scrollTo(tester, find.text('Conseils du Système'));
-    await _scrollTo(tester, find.textContaining('en retard, essaie'));
+    await _scrollTo(tester, find.textContaining('en retard, essaie').first);
     expect(find.textContaining('en retard, essaie'), findsWidgets);
     await _scrollTo(tester, find.text('Détail par muscle'));
     expect(find.text('Détail par muscle'), findsOneWidget);
