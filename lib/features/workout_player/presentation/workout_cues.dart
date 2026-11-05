@@ -43,7 +43,9 @@ class DeviceWorkoutCues implements WorkoutCues {
       await HapticFeedback.mediumImpact();
       var player = _players[sound];
       if (player == null) {
-        player = _players[sound] = AudioPlayer();
+        // La position de lecture n'est pas utilisée : pas de mise à jour à
+        // chaque image (économie de batterie).
+        player = _players[sound] = AudioPlayer()..positionUpdater = null;
         await player.setReleaseMode(ReleaseMode.stop);
       }
       await player.play(
