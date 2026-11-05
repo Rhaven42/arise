@@ -43,11 +43,18 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
   @override
   void initState() {
     super.initState();
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Colors.transparent)
-      ..addJavaScriptChannel('AriseViewer', onMessageReceived: _onMessage);
-    unawaited(_controller.loadFlutterAsset('assets/viewer/index.html'));
+    _controller = WebViewController();
+    unawaited(_setUp());
+  }
+
+  Future<void> _setUp() async {
+    await _controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+    await _controller.setBackgroundColor(Colors.transparent);
+    await _controller.addJavaScriptChannel(
+      'AriseViewer',
+      onMessageReceived: _onMessage,
+    );
+    await _controller.loadFlutterAsset('assets/viewer/index.html');
   }
 
   @override
@@ -131,7 +138,7 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
       children: [
         WebViewWidget(
           controller: _controller,
-          gestureRecognizers: {
+          gestureRecognizers: const {
             Factory<OneSequenceGestureRecognizer>(EagerGestureRecognizer.new),
           },
         ),

@@ -17,9 +17,6 @@ abstract class CharacterSheet with _$CharacterSheet {
   const factory CharacterSheet({
     required CharacterSex sex,
     required CharacterRace race,
-    @Default('') String name,
-    @Default(0.5) double corpulence,
-    @Default(0.5) double musculature,
 
     /// Taille en centimètres.
     required int heightCm,
@@ -27,6 +24,9 @@ abstract class CharacterSheet with _$CharacterSheet {
     /// Couleurs au format ARGB (0xAARRGGBB).
     required int skinColor,
     required int hairColor,
+    @Default('') String name,
+    @Default(0.5) double corpulence,
+    @Default(0.5) double musculature,
 
     /// Coiffure, de 1 à [hairStyleCount].
     @Default(1) int hairStyle,

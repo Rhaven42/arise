@@ -141,9 +141,9 @@ SessionProgress applySession(
   required int baseXp,
   required Map<StatId, int> baseXpByStat,
   required bool completed,
-  Map<int, int> baseXpByDifficulty = const {},
   required DateTime now,
   required Set<int> restDays,
+  Map<int, int> baseXpByDifficulty = const {},
   GameConfig config = gameConfig,
 }) {
   final day = CivilDate.ofLocal(now);

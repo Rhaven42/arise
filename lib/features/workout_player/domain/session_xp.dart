@@ -9,8 +9,8 @@ class SessionXp {
     required this.total,
     required this.byStat,
     required this.activeSeconds,
-    this.byDifficulty = const {},
     required this.secondsOverCap,
+    this.byDifficulty = const {},
   });
 
   final int total;
