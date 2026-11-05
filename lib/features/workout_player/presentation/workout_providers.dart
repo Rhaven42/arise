@@ -113,9 +113,8 @@ class WorkoutController extends _$WorkoutController {
     _update(view, run, now);
   }
 
-  void completeWork({int? reps, int? meters}) => _apply(
-    (run, now) => run.completeWork(now, reps: reps, meters: meters),
-  );
+  void completeWork({int? reps, int? meters}) =>
+      _apply((run, now) => run.completeWork(now, reps: reps, meters: meters));
 
   void submitIntensity(int rpe) =>
       _apply((run, now) => run.submitIntensity(now, rpe));
@@ -221,8 +220,9 @@ class WorkoutController extends _$WorkoutController {
     final name = view.exerciseOf(step)?.name ?? '';
     final detail = switch (step) {
       WorkoutStep(targetReps: final reps?) => l10n.workoutTargetReps(reps),
-      WorkoutStep(targetMeters: final meters?) =>
-        l10n.workoutTargetMeters(meters),
+      WorkoutStep(targetMeters: final meters?) => l10n.workoutTargetMeters(
+        meters,
+      ),
       WorkoutStep(targetSeconds: final s?) => l10n.workoutVoiceSeconds(s),
       _ => '',
     };

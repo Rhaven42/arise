@@ -17,8 +17,7 @@ class DriftCompletedSessionRepository implements CompletedSessionRepository {
 
   @override
   Future<List<CompletedSession>> readAll() async => [
-    for (final json in await _database.readCompletedSessionJson())
-      decode(json),
+    for (final json in await _database.readCompletedSessionJson()) decode(json),
   ];
 
   @override

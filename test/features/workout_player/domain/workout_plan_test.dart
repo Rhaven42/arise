@@ -5,7 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('un programme vide ne produit aucune étape', () {
-    const program = Program(id: 'p', name: 'Vide', format: ProgramFormat.cardio);
+    const program = Program(
+      id: 'p',
+      name: 'Vide',
+      format: ProgramFormat.cardio,
+    );
     expect(buildWorkoutSteps(program), isEmpty);
   });
 
@@ -28,13 +32,16 @@ void main() {
 
     test('alterne séries et repos, sans repos après la dernière série', () {
       final steps = buildWorkoutSteps(program);
-      expect([for (final s in steps) s.kind], [
-        StepKind.work,
-        StepKind.rest,
-        StepKind.work,
-        StepKind.rest,
-        StepKind.work,
-      ]);
+      expect(
+        [for (final s in steps) s.kind],
+        [
+          StepKind.work,
+          StepKind.rest,
+          StepKind.work,
+          StepKind.rest,
+          StepKind.work,
+        ],
+      );
       expect(steps.first.targetReps, 15);
       expect(steps.first.setNumber, 1);
       expect(steps.first.setCount, 2);
@@ -89,14 +96,17 @@ void main() {
       final steps = buildWorkoutSteps(program);
       final work = steps.where((s) => s.isWork).toList();
       expect(work, hasLength(6));
-      expect([for (final s in work) s.exerciseId], [
-        'burpee',
-        'jumping_jack',
-        'burpee',
-        'burpee',
-        'jumping_jack',
-        'burpee',
-      ]);
+      expect(
+        [for (final s in work) s.exerciseId],
+        [
+          'burpee',
+          'jumping_jack',
+          'burpee',
+          'burpee',
+          'jumping_jack',
+          'burpee',
+        ],
+      );
       expect(work.every((s) => s.targetSeconds == 20), isTrue);
       expect(work.any((s) => s.asksIntensity), isFalse);
     });
@@ -110,8 +120,10 @@ void main() {
       expect(rests, [10, 10, 60, 10, 10]);
       expect(steps.last.isWork, isTrue);
       // Le repos entre les cycles annonce le premier exercice du cycle.
-      expect(steps.firstWhere((s) => s.targetSeconds == 60).exerciseId,
-          'burpee');
+      expect(
+        steps.firstWhere((s) => s.targetSeconds == 60).exerciseId,
+        'burpee',
+      );
     });
 
     test('utilise les valeurs par défaut si les temps manquent', () {

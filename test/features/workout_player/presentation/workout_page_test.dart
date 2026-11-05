@@ -131,26 +131,27 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('le bouton douleur arrête la séance avec un message de prudence', (
-    tester,
-  ) async {
-    final container = await open(tester, _tabata);
+  testWidgets(
+    'le bouton douleur arrête la séance avec un message de prudence',
+    (tester) async {
+      final container = await open(tester, _tabata);
 
-    await tester.ensureVisible(find.text('Douleur ou malaise'));
-    await tester.tap(find.text('Douleur ou malaise'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
+      await tester.ensureVisible(find.text('Douleur ou malaise'));
+      await tester.tap(find.text('Douleur ou malaise'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.text('Arrête-toi maintenant'), findsOneWidget);
-    expect(find.text('Séance interrompue'), findsOneWidget);
-    final saved = await container
-        .read(completedSessionRepositoryProvider)
-        .readAll();
-    expect(saved.single.stoppedForPain, isTrue);
-    expect(saved.single.completed, isFalse);
+      expect(find.text('Arrête-toi maintenant'), findsOneWidget);
+      expect(find.text('Séance interrompue'), findsOneWidget);
+      final saved = await container
+          .read(completedSessionRepositoryProvider)
+          .readAll();
+      expect(saved.single.stoppedForPain, isTrue);
+      expect(saved.single.completed, isFalse);
 
-    await tester.unmountApp();
-  });
+      await tester.unmountApp();
+    },
+  );
 
   testWidgets('la pause gèle le minuteur', (tester) async {
     await open(tester, _tabata);

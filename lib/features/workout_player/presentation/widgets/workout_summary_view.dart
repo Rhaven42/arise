@@ -46,10 +46,7 @@ class WorkoutSummaryView extends StatelessWidget {
       padding: const EdgeInsets.all(AriseSpacing.md),
       children: [
         if (session.stoppedForPain) ...[
-          _Caution(
-            title: l10n.workoutPainTitle,
-            body: l10n.workoutPainBody,
-          ),
+          _Caution(title: l10n.workoutPainTitle, body: l10n.workoutPainBody),
           const SizedBox(height: AriseSpacing.md),
         ],
         SystemWindow(

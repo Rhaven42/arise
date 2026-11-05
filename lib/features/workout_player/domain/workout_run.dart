@@ -111,10 +111,10 @@ abstract class WorkoutRun with _$WorkoutRun {
         .add(pausedInStep)
         .add(Duration(seconds: step.targetSeconds!));
     final next = step.isWork
-        ? _completeWork(endedAt, StepResult(
-            stepIndex: index,
-            activeSeconds: step.targetSeconds!,
-          ))
+        ? _completeWork(
+            endedAt,
+            StepResult(stepIndex: index, activeSeconds: step.targetSeconds!),
+          )
         : _advance(endedAt);
     return next.tick(now);
   }
@@ -140,7 +140,10 @@ abstract class WorkoutRun with _$WorkoutRun {
     final pending = pendingIntensity;
     if (pending == null) return this;
     return copyWith(
-      results: [...results, pending.copyWith(rpe: rpe)],
+      results: [
+        ...results,
+        pending.copyWith(rpe: rpe),
+      ],
       pendingIntensity: null,
     )._advance(now);
   }

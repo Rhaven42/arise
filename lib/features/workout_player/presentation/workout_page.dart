@@ -201,9 +201,7 @@ class _RunningWorkout extends ConsumerWidget {
                   ? const SizedBox.shrink()
                   : player.build(
                       // L'animation s'arrête pendant les repos et les pauses.
-                      motionId: isRest || run.isPaused
-                          ? null
-                          : exercise.motion,
+                      motionId: isRest || run.isPaused ? null : exercise.motion,
                       highlights: exercise.muscleRoles,
                       semanticLabel: exercise.name,
                     ),
@@ -277,11 +275,7 @@ class _RunningWorkout extends ConsumerWidget {
 
 /// Effort sans minuteur : répétitions (ajustables) ou distance.
 class _ManualEffort extends StatefulWidget {
-  const _ManualEffort({
-    required this.step,
-    required this.onDone,
-    super.key,
-  });
+  const _ManualEffort({required this.step, required this.onDone, super.key});
 
   final WorkoutStep step;
   final ValueChanged<int?> onDone;

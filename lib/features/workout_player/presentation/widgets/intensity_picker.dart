@@ -72,9 +72,7 @@ class _IntensityPickerState extends State<IntensityPicker> {
             const SizedBox(height: AriseSpacing.sm),
             Text(
               l10n.workoutIntensityMaxWarning,
-              style: textTheme.bodyMedium?.copyWith(
-                color: AriseColors.danger,
-              ),
+              style: textTheme.bodyMedium?.copyWith(color: AriseColors.danger),
             ),
           ],
         ],

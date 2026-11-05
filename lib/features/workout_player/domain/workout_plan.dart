@@ -104,8 +104,8 @@ List<WorkoutStep> _intervalSteps(
         steps.add(
           WorkoutStep(
             kind: StepKind.rest,
-            exerciseId: items[isLastRound ? 0 : round % items.length]
-                .exerciseId,
+            exerciseId:
+                items[isLastRound ? 0 : round % items.length].exerciseId,
             targetSeconds: rest,
             cycle: cycle,
             cycleCount: settings.cycles,
