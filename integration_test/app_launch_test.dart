@@ -1,3 +1,4 @@
+import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
 import 'package:arise/main.dart' as app;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -200,7 +201,12 @@ void main() {
     await tester.scrollUntilVisible(
       name,
       200,
-      scrollable: find.byType(Scrollable).last,
+      scrollable: find
+          .descendant(
+            of: find.byKey(CharacterCreatorPage.formKey),
+            matching: find.byType(Scrollable),
+          )
+          .first,
     );
     await tester.enterText(name, 'Aelin');
     await _pumpFor(tester, 500);
@@ -210,7 +216,12 @@ void main() {
     await tester.scrollUntilVisible(
       confirm,
       200,
-      scrollable: find.byType(Scrollable).last,
+      scrollable: find
+          .descendant(
+            of: find.byKey(CharacterCreatorPage.formKey),
+            matching: find.byType(Scrollable),
+          )
+          .first,
     );
     await tester.tap(confirm);
     await _pumpFor(tester, 1500);

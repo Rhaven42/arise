@@ -1,3 +1,4 @@
+import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
 import 'package:arise/main.dart' as app;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -211,7 +212,12 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('Fiche du personnage (JSON)'),
       300,
-      scrollable: find.byType(Scrollable).last,
+      scrollable: find
+          .descendant(
+            of: find.byKey(CharacterCreatorPage.formKey),
+            matching: find.byType(Scrollable),
+          )
+          .first,
     );
     await tester.tap(find.text('Fiche du personnage (JSON)'));
     await pumpFor(800);

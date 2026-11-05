@@ -1,4 +1,5 @@
 import 'package:arise/core/router/app_routes.dart';
+import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
 import 'package:arise/features/character_creation/presentation/character_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

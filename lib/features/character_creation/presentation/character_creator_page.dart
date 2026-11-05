@@ -21,6 +21,9 @@ import 'package:go_router/go_router.dart';
 class CharacterCreatorPage extends ConsumerStatefulWidget {
   const CharacterCreatorPage({super.key});
 
+  /// Liste des réglages (repère pour les tests et les captures).
+  static const formKey = Key('character-form');
+
   @override
   ConsumerState<CharacterCreatorPage> createState() =>
       _CharacterCreatorPageState();
@@ -119,6 +122,7 @@ class _CreatorBody extends ConsumerWidget {
         ),
         Expanded(
           child: ListView(
+            key: CharacterCreatorPage.formKey,
             padding: const EdgeInsets.all(AriseSpacing.md),
             children: [
               Row(
