@@ -195,19 +195,19 @@ class _RunningWorkout extends ConsumerWidget {
           const SizedBox(height: AriseSpacing.md),
           // Pendant un repos, seul le prochain exercice est annoncé.
           if (!isRest)
-          StoneFrame(
-            padding: const EdgeInsets.all(AriseSpacing.sm),
-            child: SizedBox(
-              height: 180,
-              child: exercise == null
-                  ? const SizedBox.shrink()
-                  : player.build(
-                      motionId: exercise.motion,
-                      highlights: exercise.muscleRoles,
-                      semanticLabel: exercise.name,
-                    ),
+            StoneFrame(
+              padding: const EdgeInsets.all(AriseSpacing.sm),
+              child: SizedBox(
+                height: 180,
+                child: exercise == null
+                    ? const SizedBox.shrink()
+                    : player.build(
+                        motionId: exercise.motion,
+                        highlights: exercise.muscleRoles,
+                        semanticLabel: exercise.name,
+                      ),
+              ),
             ),
-          ),
           const SizedBox(height: AriseSpacing.lg),
           if (run.isPaused)
             Center(
