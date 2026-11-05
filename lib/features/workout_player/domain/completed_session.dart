@@ -50,6 +50,9 @@ abstract class CompletedSession with _$CompletedSession {
     /// XP attribuée à chaque stat (répartition des exercices, bonus compris).
     @Default({}) Map<StatId, int> xpByStat,
 
+    /// XP de base par difficulté d'exercice (1 à 3), source des pièces.
+    @Default({}) Map<int, int> xpByDifficulty,
+
     /// Bonus de série × malus de pénalité appliqués à l'XP de base.
     @Default(1.0) double xpMultiplier,
     String? programId,

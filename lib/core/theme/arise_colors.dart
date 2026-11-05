@@ -35,4 +35,9 @@ abstract final class AriseColors {
   static const heatLow = Color(0xFFE0735A);
   static const heatSome = Color(0xFFEBA543);
   static const heatPattern = Color(0xFF2A1A12);
+
+  // Pièces de la bourse.
+  static const coinGold = Color(0xFFE8BE4E);
+  static const coinSilver = Color(0xFFC9CED6);
+  static const coinBronze = Color(0xFFC07A45);
 }

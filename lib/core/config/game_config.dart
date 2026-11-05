@@ -24,7 +24,7 @@ class ProgressionConfig {
     required this.xpCurveExponent,
     required this.tutorialXp,
     required this.statPointsPerLevel,
-    required this.crystalsPerLevelBase,
+    required this.silverPerLevelBase,
     required this.statXpPerPoint,
   });
 
@@ -34,7 +34,8 @@ class ProgressionConfig {
   final double xpCurveExponent;
   final int tutorialXp;
   final int statPointsPerLevel;
-  final int crystalsPerLevelBase;
+  /// Pièces d'argent d'un passage de niveau : base + niveau atteint.
+  final int silverPerLevelBase;
 
   /// XP attribuée à une stat qui la fait monter d'un point automatiquement.
   final int statXpPerPoint;
@@ -46,7 +47,7 @@ class ProgressionConfig {
     'xpCurveExponent': xpCurveExponent,
     'tutorialXp': tutorialXp,
     'statPointsPerLevel': statPointsPerLevel,
-    'crystalsPerLevelBase': crystalsPerLevelBase,
+    'silverPerLevelBase': silverPerLevelBase,
     'statXpPerPoint': statXpPerPoint,
   };
 }
@@ -97,7 +98,7 @@ class StreaksConfig {
     required this.chestMilestonesDays,
     required this.shieldEveryDays,
     required this.maxShields,
-    required this.chestCrystals,
+    required this.chestSilver,
     required this.willpowerPerStreakDay,
   });
 
@@ -107,8 +108,8 @@ class StreaksConfig {
   final int shieldEveryDays;
   final int maxShields;
 
-  /// Cristaux du coffre de chaque palier (même ordre que les paliers).
-  final List<int> chestCrystals;
+  /// Pièces d'argent du coffre de chaque palier (même ordre que les paliers).
+  final List<int> chestSilver;
 
   /// Points de Volonté gagnés par jour de série validé.
   final int willpowerPerStreakDay;
@@ -119,8 +120,34 @@ class StreaksConfig {
     'chestMilestonesDays': chestMilestonesDays,
     'shieldEveryDays': shieldEveryDays,
     'maxShields': maxShields,
-    'chestCrystals': chestCrystals,
+    'chestSilver': chestSilver,
     'willpowerPerStreakDay': willpowerPerStreakDay,
+  };
+}
+
+/// Monnaie : pièces de bronze, d'argent et d'or (SPEC §26).
+///
+/// Le portefeuille est compté en bronze ; 100 bronze = 1 argent et
+/// 100 argent = 1 or. Les exercices difficiles rapportent davantage.
+class CoinsConfig {
+  const CoinsConfig({
+    required this.bronzePerSilver,
+    required this.silverPerGold,
+    required this.bronzePerXpByDifficulty,
+  });
+
+  final int bronzePerSilver;
+  final int silverPerGold;
+
+  /// Bronze gagné par point d'XP, selon la difficulté de l'exercice (1 à 3).
+  final List<double> bronzePerXpByDifficulty;
+
+  int get bronzePerGold => bronzePerSilver * silverPerGold;
+
+  Map<String, Object> toJson() => {
+    'bronzePerSilver': bronzePerSilver,
+    'silverPerGold': silverPerGold,
+    'bronzePerXpByDifficulty': bronzePerXpByDifficulty,
   };
 }
 
@@ -437,6 +464,7 @@ class GameConfig {
     required this.health,
     required this.planning,
     required this.xp,
+    required this.coins,
     required this.provisionalKeys,
   });
 
@@ -461,6 +489,7 @@ class GameConfig {
   final HealthConfig health;
   final PlanningConfig planning;
   final XpConfig xp;
+  final CoinsConfig coins;
 
   /// Chemins (« section.clé ») des valeurs provisoires, cf. SPEC.md §20.
   final List<String> provisionalKeys;
@@ -488,6 +517,7 @@ class GameConfig {
     'health': health.toJson(),
     'planning': planning.toJson(),
     'xp': xp.toJson(),
+    'coins': coins.toJson(),
     'provisionalKeys': provisionalKeys,
   };
 }
@@ -502,7 +532,7 @@ const gameConfig = GameConfig(
     xpCurveExponent: 1.5,
     tutorialXp: 100,
     statPointsPerLevel: 3,
-    crystalsPerLevelBase: 5,
+    silverPerLevelBase: 5,
     statXpPerPoint: 50,
   ),
   intensity: IntensityConfig(
@@ -531,7 +561,7 @@ const gameConfig = GameConfig(
     chestMilestonesDays: [7, 30, 100, 365],
     shieldEveryDays: 14,
     maxShields: 2,
-    chestCrystals: [20, 60, 200, 700],
+    chestSilver: [10, 40, 150, 600],
     willpowerPerStreakDay: 1,
   ),
   rest: RestConfig(
@@ -604,13 +634,20 @@ const gameConfig = GameConfig(
     secondsPerVolumeUnit: 60,
     metersPerVolumeUnit: 1000,
   ),
+  coins: CoinsConfig(
+    bronzePerSilver: 100,
+    silverPerGold: 100,
+    bronzePerXpByDifficulty: [1, 1.5, 2.5],
+  ),
   provisionalKeys: [
     'balance.minVolumeForAlert',
     'balance.intervalSecondaryShare',
     'balance.pushExercises',
     'balance.pullExercises',
     'progression.statXpPerPoint',
-    'streaks.chestCrystals',
+    'streaks.chestSilver',
+    'progression.silverPerLevelBase',
+    'coins.bronzePerXpByDifficulty',
     'streaks.willpowerPerStreakDay',
     'xp.baseXpPerVolumeUnit',
     'xp.repsPerVolumeUnit',

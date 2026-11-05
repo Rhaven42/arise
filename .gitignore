@@ -51,3 +51,4 @@ app.*.map.json
 *.g.dart
 *.freezed.dart
 lib/l10n/generated/
+node_modules/

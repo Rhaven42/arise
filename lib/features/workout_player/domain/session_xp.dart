@@ -9,6 +9,7 @@ class SessionXp {
     required this.total,
     required this.byStat,
     required this.activeSeconds,
+    this.byDifficulty = const {},
     required this.secondsOverCap,
   });
 
@@ -16,6 +17,9 @@ class SessionXp {
 
   /// Part de l'XP attribuée à chaque stat (répartition des exercices).
   final Map<StatId, int> byStat;
+
+  /// XP par difficulté d'exercice (1 à 3), pour les pièces gagnées.
+  final Map<int, int> byDifficulty;
   final int activeSeconds;
 
   /// Secondes d'effort au-delà du plafond quotidien (XP divisée par deux).
@@ -58,6 +62,7 @@ SessionXp computeSessionXp({
   var overCap = 0;
   var total = 0.0;
   final byStat = <StatId, double>{};
+  final byDifficulty = <int, double>{};
 
   for (final set in sets) {
     if (set.skipped) continue;
@@ -81,6 +86,11 @@ SessionXp computeSessionXp({
         1 - overShare + overShare * config.dailyEffort.overCapXpMultiplier;
     final xp = base * capFactor;
     total += xp;
+    byDifficulty.update(
+      exercise?.difficulty ?? 1,
+      (value) => value + xp,
+      ifAbsent: () => xp,
+    );
 
     final stats = exercise?.stats ?? const {};
     for (final entry in stats.entries) {
@@ -96,6 +106,10 @@ SessionXp computeSessionXp({
     total: total.round(),
     byStat: {
       for (final entry in byStat.entries) entry.key: entry.value.round(),
+    },
+    byDifficulty: {
+      for (final entry in byDifficulty.entries)
+        entry.key: entry.value.round(),
     },
     activeSeconds: cumulative - priorActiveSecondsToday,
     secondsOverCap: overCap,

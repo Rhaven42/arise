@@ -807,11 +807,11 @@
       }
     }
   },
-  "progressRewards": "+{crystals} cristaux · +{points} points de stat",
+  "progressRewards": "+{coins} · +{points} points de stat",
   "@progressRewards": {
     "placeholders": {
-      "crystals": {
-        "type": "int"
+      "coins": {
+        "type": "String"
       },
       "points": {
         "type": "int"
@@ -826,11 +826,11 @@
       }
     }
   },
-  "progressChest": "Coffre de série : +{crystals} cristaux",
+  "progressChest": "Coffre de série : +{coins}",
   "@progressChest": {
     "placeholders": {
-      "crystals": {
-        "type": "int"
+      "coins": {
+        "type": "String"
       }
     }
   },
@@ -915,11 +915,11 @@
       }
     }
   },
-  "homeCrystals": "{count} Cristaux de Mana",
-  "@homeCrystals": {
+  "homeWallet": "Bourse : {coins}",
+  "@homeWallet": {
     "placeholders": {
-      "count": {
-        "type": "int"
+      "coins": {
+        "type": "String"
       }
     }
   },
@@ -1121,5 +1121,37 @@
     }
   },
   "analysisMusclesTitle": "Détail par muscle",
-  "analysisLegendTitle": "Légende"
+  "analysisLegendTitle": "Légende",
+  "coinGold": "{count, plural, =1{1 pièce d'or} other{{count} pièces d'or}}",
+  "@coinGold": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "coinSilver": "{count, plural, =1{1 pièce d'argent} other{{count} pièces d'argent}}",
+  "@coinSilver": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "coinBronze": "{count, plural, =1{1 pièce de bronze} other{{count} pièces de bronze}}",
+  "@coinBronze": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressSessionCoins": "Butin de la séance : +{coins}",
+  "@progressSessionCoins": {
+    "placeholders": {
+      "coins": {
+        "type": "String"
+      }
+    }
+  }
 }

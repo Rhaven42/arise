@@ -17,6 +17,7 @@ import 'package:arise/features/planning/presentation/planning_providers.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
+import 'package:arise/features/progression/domain/coins.dart';
 import 'package:arise/features/progression/domain/progression_rules.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/progression/presentation/progression_labels.dart';
@@ -217,17 +218,44 @@ class _LevelPanel extends StatelessWidget {
             ),
           ),
         const SizedBox(height: AriseSpacing.sm),
-        Row(
-          children: [
-            const Icon(Icons.diamond_outlined, color: AriseColors.mana),
-            const SizedBox(width: AriseSpacing.xs),
-            Text(
-              l10n.homeCrystals(state.crystals),
-              style: textTheme.titleMedium,
-            ),
-          ],
-        ),
+        _Wallet(coins: state.wallet),
       ],
+    );
+  }
+}
+
+/// Bourse : pièces d'or, d'argent et de bronze (couleur + nom de la pièce).
+class _Wallet extends StatelessWidget {
+  const _Wallet({required this.coins});
+
+  final Coins coins;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final style = Theme.of(context).textTheme.titleMedium;
+    return Semantics(
+      label: l10n.homeWallet(formatCoins(l10n, coins)),
+      excludeSemantics: true,
+      child: Wrap(
+        spacing: AriseSpacing.md,
+        runSpacing: AriseSpacing.xs,
+        children: [
+          for (final (color, count) in [
+            (AriseColors.coinGold, coins.gold()),
+            (AriseColors.coinSilver, coins.silver()),
+            (AriseColors.coinBronze, coins.bronze()),
+          ])
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.circle, color: color, size: 18),
+                const SizedBox(width: AriseSpacing.xs),
+                Text('$count', style: style),
+              ],
+            ),
+        ],
+      ),
     );
   }
 }

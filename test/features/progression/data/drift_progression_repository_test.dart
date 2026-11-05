@@ -14,7 +14,7 @@ void main() {
     expect(await repository.read(), isNull);
 
     final state = ProgressionState.initial(const CivilDate(2026, 11, 4))
-        .copyWith(level: 3, crystals: 42);
+        .copyWith(level: 3, coins: 42);
     await repository.save(state);
     expect(await repository.read(), state);
 

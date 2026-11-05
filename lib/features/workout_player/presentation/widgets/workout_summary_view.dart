@@ -9,6 +9,7 @@ import 'package:arise/core/theme/arise_typography.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/exercises/presentation/exercise_labels.dart';
 import 'package:arise/features/progression/domain/progression_rules.dart';
+import 'package:arise/features/progression/presentation/progression_labels.dart';
 import 'package:arise/features/workout_player/domain/completed_session.dart';
 import 'package:arise/features/workout_player/domain/session_summary.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
@@ -171,11 +172,16 @@ List<Widget> _progressLines(
       ),
     if (progress.multiplier < 1)
       Text(l10n.progressPenaltyMalus, style: textTheme.bodyLarge),
+    if (!progress.sessionCoins.isZero)
+      Text(
+        l10n.progressSessionCoins(formatCoins(l10n, progress.sessionCoins)),
+        style: textTheme.bodyLarge,
+      ),
     if (progress.levelsGained > 0) ...[
       Text(l10n.progressLevelUp(state.level), style: highlight),
       Text(
         l10n.progressRewards(
-          progress.crystalsGained,
+          formatCoins(l10n, progress.levelCoins),
           progress.statPointsGained,
         ),
         style: textTheme.bodyLarge,
@@ -186,8 +192,11 @@ List<Widget> _progressLines(
         l10n.progressDayValidated(state.streakDays),
         style: textTheme.bodyLarge,
       ),
-    if (progress.chestCrystals > 0)
-      Text(l10n.progressChest(progress.chestCrystals), style: highlight),
+    if (!progress.chestCoins.isZero)
+      Text(
+        l10n.progressChest(formatCoins(l10n, progress.chestCoins)),
+        style: highlight,
+      ),
     if (progress.penaltyCleared)
       Text(l10n.progressPenaltyCleared, style: textTheme.bodyLarge),
     if (progress.rankLocked)

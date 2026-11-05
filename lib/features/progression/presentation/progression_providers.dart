@@ -100,6 +100,7 @@ class ProgressionController extends _$ProgressionController {
       rollover.state,
       baseXp: session.xpEarned,
       baseXpByStat: session.xpByStat,
+      baseXpByDifficulty: session.xpByDifficulty,
       completed: session.completed,
       now: now,
       restDays: restDays,

@@ -1,13 +1,14 @@
 import 'package:arise/core/config/game_config.dart';
 import 'package:arise/features/exercises/domain/stat_id.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
+import 'package:arise/features/progression/domain/coins.dart';
 import 'package:arise/features/progression/domain/level_curve.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'progression_state.freezed.dart';
 part 'progression_state.g.dart';
 
-/// Progression du joueur : niveau, stats, cristaux, série de jours.
+/// Progression du joueur : niveau, stats, pièces, série de jours.
 ///
 /// Toutes les règles qui la modifient sont dans `progression_rules.dart`.
 @freezed
@@ -30,7 +31,9 @@ abstract class ProgressionState with _$ProgressionState {
     /// Volonté gagnée par la régularité.
     @Default(0) int willpowerEarned,
     @Default(0) int freeStatPoints,
-    @Default(0) int crystals,
+    /// Portefeuille, compté en bronze (voir [Coins]). Les anciennes
+    /// sauvegardes stockaient des cristaux : ils deviennent du bronze.
+    @JsonKey(readValue: _readCoins) @Default(0) int coins,
 
     /// Série de jours validés en cours et record.
     @Default(0) int streakDays,
@@ -62,6 +65,8 @@ abstract class ProgressionState with _$ProgressionState {
 
   RankId get rank => rankOf(level);
 
+  Coins get wallet => Coins(coins);
+
   /// XP nécessaire pour atteindre le niveau suivant.
   int get xpForNextLevel => xpToNextLevel(level);
 
@@ -89,3 +94,7 @@ abstract class ProgressionState with _$ProgressionState {
     return until != null && !day.isAfter(until);
   }
 }
+
+/// Lit le portefeuille, ou les cristaux des sauvegardes d'avant la phase 6.
+Object? _readCoins(Map<dynamic, dynamic> json, String key) =>
+    json[key] ?? json['crystals'];

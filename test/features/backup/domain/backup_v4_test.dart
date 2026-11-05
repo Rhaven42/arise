@@ -13,7 +13,7 @@ import '../../../helpers/test_app.dart';
 final ProgressionState _progression =
     ProgressionState.initial(const CivilDate(2026, 11, 4)).copyWith(
       level: 4,
-      crystals: 33,
+      coins: 33,
       streakDays: 3,
       allocatedStats: {StatId.strength: 2},
       defeatedBosses: {RankId.e},

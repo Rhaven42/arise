@@ -1,6 +1,7 @@
 import 'package:arise/core/config/game_config.dart';
 import 'package:arise/features/exercises/domain/stat_id.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
+import 'package:arise/features/progression/domain/coins.dart';
 import 'package:arise/features/progression/domain/level_curve.dart';
 import 'package:arise/features/progression/domain/progression_rules.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
@@ -35,12 +36,13 @@ SessionProgress _session(
 
 void main() {
   group('addXp', () {
-    test('passe les niveaux avec cristaux et points de stat', () {
+    test('passe les niveaux avec pièces d'argent et points de stat', () {
       final gain = addXp(_fresh(), 100 + 100 + 50);
       expect(gain.state.level, 2);
       expect(gain.state.xpInLevel, 50);
       expect(gain.levelsGained, 2);
-      expect(gain.crystalsGained, (5 + 1) + (5 + 2));
+      expect(gain.levelCoins, Coins.of(silver: (5 + 1) + (5 + 2)));
+      expect(gain.state.coins, gain.levelCoins.bronzeTotal);
       expect(gain.statPointsGained, 6);
       expect(gain.state.freeStatPoints, 6);
       expect(gain.state.totalXp, 250);
@@ -132,7 +134,7 @@ void main() {
       expect(p.state.stat(StatId.strength), 2);
     });
 
-    test('offre le coffre de cristaux au 7e jour de série', () {
+    test('offre le coffre de pièces au 7e jour de série', () {
       var state = _fresh();
       SessionProgress? last;
       for (var d = 0; d < 7; d++) {
@@ -140,7 +142,10 @@ void main() {
         state = last.state;
       }
       expect(state.streakDays, 7);
-      expect(last!.chestCrystals, gameConfig.streaks.chestCrystals.first);
+      expect(
+        last!.chestCoins,
+        Coins.of(silver: gameConfig.streaks.chestSilver.first),
+      );
     });
 
     test('pendant la pénalité : XP réduite, puis malus levé', () {
@@ -176,9 +181,9 @@ void main() {
       expect(result.report.penaltyStarted, isTrue);
       expect(result.state.isPenaltyActive(_day(3)), isTrue);
       expect(result.state.isPenaltyActive(_day(4, 13)), isFalse);
-      // Jamais de perte de niveau ni de cristaux.
+      // Jamais de perte de niveau ni de pièces.
       expect(result.state.level, state.level);
-      expect(result.state.crystals, state.crystals);
+      expect(result.state.coins, state.coins);
     });
 
     test('un bouclier protège la série', () {

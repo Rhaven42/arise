@@ -1,0 +1,12 @@
+{
+  "name": "arise-viewer",
+  "private": true,
+  "type": "module",
+  "description": "Visualiseur 3D embarqué d'ARISE (three.js, licence MIT).",
+  "dependencies": {
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:arise/core/config/game_config.dart';
 import 'package:arise/features/exercises/domain/stat_id.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
+import 'package:arise/features/progression/domain/coins.dart';
 import 'package:arise/features/progression/domain/level_curve.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 
@@ -11,27 +12,29 @@ class XpGain {
   const XpGain({
     required this.state,
     required this.levelsGained,
-    required this.crystalsGained,
+    required this.levelCoins,
     required this.statPointsGained,
     required this.xpDiscarded,
   });
 
   final ProgressionState state;
   final int levelsGained;
-  final int crystalsGained;
+
+  /// Pièces d'argent des niveaux gagnés.
+  final Coins levelCoins;
   final int statPointsGained;
 
   /// XP perdue parce que le rang est bloqué ou le niveau maximum atteint.
   final int xpDiscarded;
 }
 
-/// Ajoute de l'XP : passages de niveau, cristaux et points de stat, avec
+/// Ajoute de l'XP : passages de niveau, pièces et points de stat, avec
 /// blocage au dernier niveau d'un rang tant que son boss n'est pas vaincu.
 XpGain addXp(ProgressionState state, int xp, {GameConfig config = gameConfig}) {
   var level = state.level;
   var inLevel = state.xpInLevel + xp;
   var levels = 0;
-  var crystals = 0;
+  var silver = 0;
   var points = 0;
   var discarded = 0;
 
@@ -52,20 +55,21 @@ XpGain addXp(ProgressionState state, int xp, {GameConfig config = gameConfig}) {
     inLevel -= need;
     level++;
     levels++;
-    crystals += config.progression.crystalsPerLevelBase + level;
+    silver += config.progression.silverPerLevelBase + level;
     points += config.progression.statPointsPerLevel;
   }
 
+  final earned = Coins.of(silver: silver, config: config.coins);
   return XpGain(
     state: state.copyWith(
       level: level,
       xpInLevel: inLevel,
       totalXp: state.totalXp + xp - discarded,
-      crystals: state.crystals + crystals,
+      coins: state.coins + earned.bronzeTotal,
       freeStatPoints: state.freeStatPoints + points,
     ),
     levelsGained: levels,
-    crystalsGained: crystals,
+    levelCoins: earned,
     statPointsGained: points,
     xpDiscarded: discarded,
   );
@@ -85,10 +89,11 @@ class SessionProgress {
     required this.xpByStat,
     required this.multiplier,
     required this.levelsGained,
-    required this.crystalsGained,
+    required this.sessionCoins,
+    required this.levelCoins,
     required this.statPointsGained,
     required this.dayValidated,
-    required this.chestCrystals,
+    required this.chestCoins,
     required this.penaltyCleared,
     required this.rankLocked,
   });
@@ -101,15 +106,21 @@ class SessionProgress {
   final double multiplier;
   final int levelsGained;
 
-  /// Cristaux des niveaux gagnés (coffre de série non compris).
-  final int crystalsGained;
+  /// Pièces gagnées par les efforts de la séance.
+  final Coins sessionCoins;
+
+  /// Pièces d'argent des niveaux gagnés.
+  final Coins levelCoins;
   final int statPointsGained;
 
   /// Vrai si la séance valide le jour (série prolongée).
   final bool dayValidated;
 
-  /// Cristaux du coffre de série obtenu, ou 0.
-  final int chestCrystals;
+  /// Pièces du coffre de série obtenu (zéro sans coffre).
+  final Coins chestCoins;
+
+  /// Total des pièces gagnées.
+  Coins get coinsGained => sessionCoins + levelCoins + chestCoins;
 
   /// Vrai si la séance accomplit la quête de pénalité.
   final bool penaltyCleared;
@@ -130,6 +141,7 @@ SessionProgress applySession(
   required int baseXp,
   required Map<StatId, int> baseXpByStat,
   required bool completed,
+  Map<int, int> baseXpByDifficulty = const {},
   required DateTime now,
   required Set<int> restDays,
   GameConfig config = gameConfig,
@@ -145,7 +157,16 @@ SessionProgress applySession(
       entry.key: (entry.value * multiplier).round(),
   };
 
+  // Pièces des efforts ; une séance sans détail par difficulté (anciennes
+  // sauvegardes) compte comme des exercices faciles.
+  final effortCoins = sessionCoins(
+    baseXpByDifficulty.isEmpty ? {1: baseXp} : baseXpByDifficulty,
+    multiplier: multiplier,
+    config: config.coins,
+  );
+
   var next = state.copyWith(
+    coins: state.coins + effortCoins.bronzeTotal,
     statXp: {
       for (final stat in StatId.values)
         if ((state.statXp[stat] ?? 0) + (xpByStat[stat] ?? 0) > 0)
@@ -157,18 +178,23 @@ SessionProgress applySession(
 
   final neutralDay = restDays.contains(day.weekday) || state.isSickOn(day);
   final validates = completed && !neutralDay && state.lastValidatedDay != day;
-  var chest = 0;
+  var chest = Coins.zero;
   if (validates) {
     final streak = state.streakDays + 1;
     final milestone = config.streaks.chestMilestonesDays.indexOf(streak);
-    if (milestone >= 0) chest = config.streaks.chestCrystals[milestone];
+    if (milestone >= 0) {
+      chest = Coins.of(
+        silver: config.streaks.chestSilver[milestone],
+        config: config.coins,
+      );
+    }
     next = next.copyWith(
       streakDays: streak,
       bestStreak: streak > next.bestStreak ? streak : next.bestStreak,
       lastValidatedDay: day,
       willpowerEarned:
           next.willpowerEarned + config.streaks.willpowerPerStreakDay,
-      crystals: next.crystals + chest,
+      coins: next.coins + chest.bronzeTotal,
     );
   }
 
@@ -181,10 +207,11 @@ SessionProgress applySession(
     xpByStat: xpByStat,
     multiplier: multiplier,
     levelsGained: gain.levelsGained,
-    crystalsGained: gain.crystalsGained,
+    sessionCoins: effortCoins,
+    levelCoins: gain.levelCoins,
     statPointsGained: gain.statPointsGained,
     dayValidated: validates,
-    chestCrystals: chest,
+    chestCoins: chest,
     penaltyCleared: penaltyCleared,
     rankLocked: next.isRankLocked && next.xpInLevel >= next.xpForNextLevel,
   );
