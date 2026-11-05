@@ -108,8 +108,7 @@ SessionXp computeSessionXp({
       for (final entry in byStat.entries) entry.key: entry.value.round(),
     },
     byDifficulty: {
-      for (final entry in byDifficulty.entries)
-        entry.key: entry.value.round(),
+      for (final entry in byDifficulty.entries) entry.key: entry.value.round(),
     },
     activeSeconds: cumulative - priorActiveSecondsToday,
     secondsOverCap: overCap,

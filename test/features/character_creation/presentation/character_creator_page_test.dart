@@ -6,12 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../../helpers/fake_character_renderer.dart';
 import '../../../helpers/test_app.dart';
 
-Future<void> _scrollTo(WidgetTester tester, Finder finder) =>
-    tester.scrollUntilVisible(
-      finder,
-      200,
-      scrollable: find.byType(Scrollable).last,
-    );
+Future<void> _scrollTo(WidgetTester tester, Finder finder) => tester
+    .scrollUntilVisible(finder, 200, scrollable: find.byType(Scrollable).last);
 
 void main() {
   testWidgets('les menus mettent à jour la fiche et le rendu', (tester) async {
@@ -50,9 +46,7 @@ void main() {
     expect(find.text('rendu:orc_female'), findsOneWidget);
 
     // Le brouillon est conservé sur le téléphone.
-    final draft = await container
-        .read(characterRepositoryProvider)
-        .readDraft();
+    final draft = await container.read(characterRepositoryProvider).readDraft();
     expect(draft?.race.name, 'orc');
     await tester.unmountApp();
   });
@@ -106,7 +100,10 @@ void main() {
     await _scrollTo(tester, find.text('Fiche du personnage (JSON)'));
     await tester.tap(find.text('Fiche du personnage (JSON)'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('"race": "${random!.race.name}"'), findsOneWidget);
+    expect(
+      find.textContaining('"race": "${random!.race.name}"'),
+      findsOneWidget,
+    );
 
     final name = find.byType(TextField);
     await _scrollTo(tester, name);
@@ -119,7 +116,10 @@ void main() {
     final saved = await container.read(characterRepositoryProvider).read();
     expect(saved?.name, 'Aelin');
     expect(saved?.race, random.race);
-    expect(await container.read(characterRepositoryProvider).readDraft(), isNull);
+    expect(
+      await container.read(characterRepositoryProvider).readDraft(),
+      isNull,
+    );
     expect(find.text('Personnage enregistré.'), findsOneWidget);
     await tester.unmountApp();
   });

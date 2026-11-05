@@ -34,6 +34,7 @@ class ProgressionConfig {
   final double xpCurveExponent;
   final int tutorialXp;
   final int statPointsPerLevel;
+
   /// Pièces d'argent d'un passage de niveau : base + niveau atteint.
   final int silverPerLevelBase;
 

@@ -251,7 +251,10 @@ void main() {
 
     expect(await database.readProgressionJson(), '{"crystals":7}');
     expect(await database.readCharacterJson(), isNull);
-    await database.saveCharacterJson('{"race":"elf"}', updatedAt: DateTime.utc(2026));
+    await database.saveCharacterJson(
+      '{"race":"elf"}',
+      updatedAt: DateTime.utc(2026),
+    );
     expect(await database.readCharacterJson(), '{"race":"elf"}');
 
     final version = await database

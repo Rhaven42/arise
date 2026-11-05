@@ -62,6 +62,8 @@ class CharacterAppearance {
     skinColor,
     hairColor,
     hairStyleId,
-    Object.hashAllUnordered(morphs.entries.map((e) => Object.hash(e.key, e.value))),
+    Object.hashAllUnordered(
+      morphs.entries.map((e) => Object.hash(e.key, e.value)),
+    ),
   );
 }

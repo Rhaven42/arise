@@ -133,9 +133,8 @@ class CharacterCreatorController extends _$CharacterCreatorController {
     String name,
   ) => history.replace(history.current.copyWith(name: name));
 
-  void randomize() => edit(
-    (s) => randomSheet(ref.read(characterRandomProvider), name: s.name),
-  );
+  void randomize() =>
+      edit((s) => randomSheet(ref.read(characterRandomProvider), name: s.name));
 
   void reset() => edit((s) => defaultSheet(sex: s.sex).copyWith(name: s.name));
 

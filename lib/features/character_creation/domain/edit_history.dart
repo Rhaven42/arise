@@ -38,12 +38,10 @@ class EditHistory<T> {
 
   EditHistory<T> undo() {
     if (!canUndo) return this;
-    return EditHistory._(
-      _past.sublist(0, _past.length - 1),
-      _past.last,
-      [current, ..._future],
-      capacity,
-    );
+    return EditHistory._(_past.sublist(0, _past.length - 1), _past.last, [
+      current,
+      ..._future,
+    ], capacity);
   }
 
   EditHistory<T> redo() {

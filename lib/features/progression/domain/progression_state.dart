@@ -31,6 +31,7 @@ abstract class ProgressionState with _$ProgressionState {
     /// Volonté gagnée par la régularité.
     @Default(0) int willpowerEarned,
     @Default(0) int freeStatPoints,
+
     /// Portefeuille, compté en bronze (voir [Coins]). Les anciennes
     /// sauvegardes stockaient des cristaux : ils deviennent du bronze.
     @JsonKey(readValue: _readCoins) @Default(0) int coins,

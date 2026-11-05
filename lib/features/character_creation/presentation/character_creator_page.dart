@@ -42,9 +42,8 @@ class _CharacterCreatorPageState extends ConsumerState<CharacterCreatorPage> {
         .read(characterCreatorControllerProvider.notifier)
         .confirm();
     if (!ok || !mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.characterSaved)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l10n.characterSaved)));
     context.go(AppRoutes.systemHome);
   }
 
@@ -112,14 +111,10 @@ class _CreatorBody extends ConsumerWidget {
     return Column(
       children: [
         Semantics(
-          label: l10n.characterPreviewSemantics(
-            describeCharacter(l10n, sheet),
-          ),
+          label: l10n.characterPreviewSemantics(describeCharacter(l10n, sheet)),
           child: SizedBox(
             height: height * 0.4,
-            child: renderer.build(
-              appearance: CharacterAppearance.of(sheet),
-            ),
+            child: renderer.build(appearance: CharacterAppearance.of(sheet)),
           ),
         ),
         Expanded(
@@ -133,9 +128,7 @@ class _CreatorBody extends ConsumerWidget {
                       key: ValueKey('sex-${sheet.sex}'),
                       initialValue: sheet.sex,
                       isExpanded: true,
-                      decoration: InputDecoration(
-                        labelText: l10n.characterSex,
-                      ),
+                      decoration: InputDecoration(labelText: l10n.characterSex),
                       items: [
                         for (final sex in CharacterSex.values)
                           DropdownMenuItem(
@@ -218,9 +211,7 @@ class _CreatorBody extends ConsumerWidget {
                 key: ValueKey('hair-${sheet.hairStyle}'),
                 initialValue: sheet.hairStyle,
                 isExpanded: true,
-                decoration: InputDecoration(
-                  labelText: l10n.characterHairStyle,
-                ),
+                decoration: InputDecoration(labelText: l10n.characterHairStyle),
                 items: [
                   for (var i = 1; i <= hairStyleCount; i++)
                     DropdownMenuItem(
@@ -283,7 +274,8 @@ class _CreatorBody extends ConsumerWidget {
                     padding: const EdgeInsets.all(AriseSpacing.sm),
                     color: AriseColors.stoneDark,
                     child: SelectableText(
-                      const JsonEncoder.withIndent('  ').convert(sheet.toJson()),
+                      const JsonEncoder.withIndent('  ')
+                          .convert(sheet.toJson()),
                       style: const TextStyle(fontFamily: 'monospace'),
                     ),
                   ),

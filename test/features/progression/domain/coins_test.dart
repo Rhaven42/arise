@@ -44,10 +44,9 @@ void main() {
   });
 
   test('les cristaux d’une ancienne sauvegarde deviennent du bronze', () {
-    final json =
-        ProgressionState.initial(const CivilDate(2026, 11, 2)).toJson()
-          ..remove('coins')
-          ..['crystals'] = 57;
+    final json = ProgressionState.initial(const CivilDate(2026, 11, 2)).toJson()
+      ..remove('coins')
+      ..['crystals'] = 57;
     expect(ProgressionState.fromJson(json).coins, 57);
   });
 }
