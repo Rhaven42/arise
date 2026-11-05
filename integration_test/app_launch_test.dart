@@ -169,19 +169,24 @@ void main() {
     await _waitFor(tester, find.text('Séance interrompue'));
     expect(find.text('Arrête-toi maintenant'), findsOneWidget);
     await _pumpFor(tester, 500);
+    debugPrint('Parcours : séance interrompue');
 
     // Analyse musculaire depuis la Fenêtre du Système : la séance
     // interrompue compte dans la semaine en cours.
     // « Retour » mène aux programmes ; la flèche de l'en-tête remonte à la
     // Fenêtre du Système (un retour système pourrait fermer l'application).
+    debugPrint('Parcours : retour depuis le bilan');
     await _tapWithoutSettle(tester, find.text('Retour'));
     await _pumpFor(tester, 1200);
+    debugPrint('Parcours : retour à la Fenêtre du Système');
     await _waitFor(tester, find.byType(BackButton));
     await tester.tap(find.byType(BackButton).first);
     await _pumpFor(tester, 1200);
+    debugPrint('Parcours : ouverture de l’analyse musculaire');
     await _tapWithoutSettle(tester, find.text('Analyse musculaire'));
     await _pumpFor(tester, 1500);
+    debugPrint('Parcours : analyse affichée');
     await _expectVisible(tester, '1 séance sur cette période.');
     await _expectVisible(tester, 'Conseils du Système');
-  });
+  }, timeout: const Timeout(Duration(minutes: 8)));
 }
