@@ -19,7 +19,14 @@ void main() {
     expect(find.text('Bienvenue, chasseur'), findsOneWidget);
     expect(find.text('Niveau 0'), findsOneWidget);
     expect(find.text('Rang E'), findsOneWidget);
-    expect(find.bySemanticsLabel('Bourse : 0 pièce de bronze'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Semantics &&
+            w.properties.label == 'Bourse : 0 pièce de bronze',
+      ),
+      findsOneWidget,
+    );
     await tester.scrollUntilVisible(
       find.text('Aucun jour en cours'),
       200,
