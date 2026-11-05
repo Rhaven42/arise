@@ -13,7 +13,7 @@ DateTime _day(int offset, [int hour = 12]) =>
 CivilDate _civil(int offset) => CivilDate.ofLocal(_day(offset));
 
 const _noRest = <int>{};
-const _sundayRest = {DateTime.sunday};
+const Set<int> _sundayRest = {DateTime.sunday};
 
 ProgressionState _fresh([int offset = 0]) =>
     ProgressionState.initial(_civil(offset));
