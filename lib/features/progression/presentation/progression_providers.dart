@@ -75,8 +75,7 @@ class ProgressionController extends _$ProgressionController {
 
   DateTime _now() => ref.read(clockProvider)();
 
-  Future<ProgressionView> _current() async =>
-      state.value ?? await future;
+  Future<ProgressionView> _current() async => state.value ?? await future;
 
   Future<Set<int>> _restDays() async =>
       (await ref.read(playerProfileProvider.future))?.restDays ?? const {};

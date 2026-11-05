@@ -2,12 +2,18 @@ import 'package:arise/features/progression/domain/civil_date.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('avance d’un jour à travers les mois, les années et les bissextiles', () {
-    expect(const CivilDate(2026, 1, 31).next, const CivilDate(2026, 2, 1));
-    expect(const CivilDate(2026, 12, 31).next, const CivilDate(2027, 1, 1));
-    expect(const CivilDate(2028, 2, 28).next, const CivilDate(2028, 2, 29));
-    expect(const CivilDate(2026, 3, 1).previous, const CivilDate(2026, 2, 28));
-  });
+  test(
+    'avance d’un jour à travers les mois, les années et les bissextiles',
+    () {
+      expect(const CivilDate(2026, 1, 31).next, const CivilDate(2026, 2, 1));
+      expect(const CivilDate(2026, 12, 31).next, const CivilDate(2027, 1, 1));
+      expect(const CivilDate(2028, 2, 28).next, const CivilDate(2028, 2, 29));
+      expect(
+        const CivilDate(2026, 3, 1).previous,
+        const CivilDate(2026, 2, 28),
+      );
+    },
+  );
 
   test('les changements d’heure ne faussent pas le compte des jours', () {
     // Passage à l'heure d'été (29 mars 2026) et d'hiver (25 octobre 2026)
@@ -32,8 +38,10 @@ void main() {
     expect(a.next.isAfter(a), isTrue);
     expect(a.toString(), '2026-11-05');
     expect(CivilDate.parse('2026-11-05'), a);
-    expect(const CivilDateConverter().fromJson('2026-01-09'),
-        const CivilDate(2026, 1, 9));
+    expect(
+      const CivilDateConverter().fromJson('2026-01-09'),
+      const CivilDate(2026, 1, 9),
+    );
   });
 
   test('prend le jour local d’un instant', () {

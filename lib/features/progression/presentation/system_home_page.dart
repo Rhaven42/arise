@@ -184,8 +184,14 @@ class _LevelPanel extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(l10n.systemLevel(state.level), style: textTheme.titleLarge),
-                  Text(l10n.homeRankLabel(rankName), style: textTheme.bodyMedium),
+                  Text(
+                    l10n.systemLevel(state.level),
+                    style: textTheme.titleLarge,
+                  ),
+                  Text(
+                    l10n.homeRankLabel(rankName),
+                    style: textTheme.bodyMedium,
+                  ),
                   const SizedBox(height: AriseSpacing.xs),
                   XpBar(
                     current: state.xpInLevel,
@@ -209,7 +215,10 @@ class _LevelPanel extends StatelessWidget {
           children: [
             const Icon(Icons.diamond_outlined, color: AriseColors.mana),
             const SizedBox(width: AriseSpacing.xs),
-            Text(l10n.homeCrystals(state.crystals), style: textTheme.titleMedium),
+            Text(
+              l10n.homeCrystals(state.crystals),
+              style: textTheme.titleMedium,
+            ),
           ],
         ),
       ],
@@ -296,7 +305,10 @@ class _StreakPanel extends StatelessWidget {
           ),
           const SizedBox(height: AriseSpacing.xs),
           Text(l10n.homeStreak(state.streakDays), style: textTheme.titleMedium),
-          Text(l10n.homeBestStreak(state.bestStreak), style: textTheme.bodyMedium),
+          Text(
+            l10n.homeBestStreak(state.bestStreak),
+            style: textTheme.bodyMedium,
+          ),
           if (percent > 0)
             Text(l10n.homeStreakBonus(percent), style: textTheme.bodyMedium),
           Text(

@@ -44,9 +44,7 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('le mode maladie se règle depuis les paramètres', (
-    tester,
-  ) async {
+  testWidgets('le mode maladie se règle depuis les paramètres', (tester) async {
     final container = createTestContainer();
     await container.read(profileRepositoryProvider).saveProfile(sampleProfile);
     await tester.pumpAriseApp(container);

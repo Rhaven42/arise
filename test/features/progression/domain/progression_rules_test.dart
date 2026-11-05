@@ -144,9 +144,7 @@ void main() {
     });
 
     test('pendant la pénalité : XP réduite, puis malus levé', () {
-      final state = _fresh().copyWith(
-        penaltyUntil: _day(0, 20).toUtc(),
-      );
+      final state = _fresh().copyWith(penaltyUntil: _day(0, 20).toUtc());
       final p = _session(state, 0, xp: 100);
       expect(p.multiplier, closeTo(0.8, 1e-9));
       expect(p.xpGained, 80);
@@ -196,11 +194,7 @@ void main() {
     test('les jours de repos et de maladie sont neutres', () {
       // Séance samedi (jour 5), repos dimanche (6), ouverture lundi (7).
       var state = _session(_fresh(5), 5, restDays: _sundayRest).state;
-      var result = runDailyRollover(
-        state,
-        now: _day(7),
-        restDays: _sundayRest,
-      );
+      var result = runDailyRollover(state, now: _day(7), restDays: _sundayRest);
       expect(result.report.missedDays, 0);
       expect(result.state.streakDays, 1);
 
@@ -218,9 +212,7 @@ void main() {
       expect(result.report.penaltyStarted, isTrue);
       expect(
         result.state.penaltyUntil,
-        _day(5).toUtc().add(
-          Duration(hours: gameConfig.penalty.durationHours),
-        ),
+        _day(5).toUtc().add(Duration(hours: gameConfig.penalty.durationHours)),
       );
       expect(result.state.lastRolloverDay, _civil(4));
     });
@@ -263,10 +255,7 @@ void main() {
   test('le mode maladie dure 14 jours au plus et lève le malus', () {
     final state = _fresh().copyWith(penaltyUntil: _day(1).toUtc());
     final sick = setSickMode(state, now: _day(0), days: 30);
-    expect(
-      sick.sickUntil,
-      _civil(gameConfig.rest.sickModeMaxDays - 1),
-    );
+    expect(sick.sickUntil, _civil(gameConfig.rest.sickModeMaxDays - 1));
     expect(sick.penaltyUntil, isNull);
     final ended = endSickMode(sick, now: _day(2));
     expect(ended.sickUntil, isNull);

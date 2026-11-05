@@ -75,7 +75,8 @@ abstract class ProgressionState with _$ProgressionState {
   int stat(StatId id) {
     final allocated = allocatedStats[id] ?? 0;
     if (id == StatId.willpower) return allocated + willpowerEarned;
-    return allocated + (statXp[id] ?? 0) ~/ gameConfig.progression.statXpPerPoint;
+    return allocated +
+        (statXp[id] ?? 0) ~/ gameConfig.progression.statXpPerPoint;
   }
 
   bool isPenaltyActive(DateTime now) {

@@ -27,11 +27,7 @@ class XpGain {
 
 /// Ajoute de l'XP : passages de niveau, cristaux et points de stat, avec
 /// blocage au dernier niveau d'un rang tant que son boss n'est pas vaincu.
-XpGain addXp(
-  ProgressionState state,
-  int xp, {
-  GameConfig config = gameConfig,
-}) {
+XpGain addXp(ProgressionState state, int xp, {GameConfig config = gameConfig}) {
   var level = state.level;
   var inLevel = state.xpInLevel + xp;
   var levels = 0;
@@ -160,8 +156,7 @@ SessionProgress applySession(
   next = gain.state;
 
   final neutralDay = restDays.contains(day.weekday) || state.isSickOn(day);
-  final validates =
-      completed && !neutralDay && state.lastValidatedDay != day;
+  final validates = completed && !neutralDay && state.lastValidatedDay != day;
   var chest = 0;
   if (validates) {
     final streak = state.streakDays + 1;
@@ -213,8 +208,7 @@ class RolloverReport {
   final int streakLost;
   final bool penaltyStarted;
 
-  bool get isEmpty =>
-      missedDays == 0 && shieldsEarned == 0 && !penaltyStarted;
+  bool get isEmpty => missedDays == 0 && shieldsEarned == 0 && !penaltyStarted;
 }
 
 /// Résultat de la bascule quotidienne.

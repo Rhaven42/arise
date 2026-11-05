@@ -37,9 +37,8 @@ void main() {
     await container
         .read(progressionRepositoryProvider)
         .save(
-          ProgressionState.initial(
-            CivilDate.ofLocal(testNow),
-          ).copyWith(level: 1, freeStatPoints: 2),
+          ProgressionState.initial(CivilDate.ofLocal(testNow))
+              .copyWith(level: 1, freeStatPoints: 2),
         );
     await tester.openWithProfile(container, AppRoutes.systemHome);
     await tester.pump(const Duration(milliseconds: 300));
@@ -56,17 +55,14 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('les jours manqués sont annoncés par le Système', (
-    tester,
-  ) async {
+  testWidgets('les jours manqués sont annoncés par le Système', (tester) async {
     final container = createTestContainer();
     // Dernière visite dimanche : lundi et mardi ont été manqués.
     await container
         .read(progressionRepositoryProvider)
         .save(
-          ProgressionState.initial(
-            const CivilDate(2026, 11, 1),
-          ).copyWith(streakDays: 4, bestStreak: 4),
+          ProgressionState.initial(const CivilDate(2026, 11, 1))
+              .copyWith(streakDays: 4, bestStreak: 4),
         );
     await tester.openWithProfile(container, AppRoutes.systemHome);
     await tester.pump(const Duration(milliseconds: 300));

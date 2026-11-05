@@ -77,8 +77,7 @@ class CivilDateConverter implements JsonConverter<CivilDate, String> {
 }
 
 /// Variante pour les dates facultatives.
-class NullableCivilDateConverter
-    implements JsonConverter<CivilDate?, String?> {
+class NullableCivilDateConverter implements JsonConverter<CivilDate?, String?> {
   const NullableCivilDateConverter();
 
   @override
