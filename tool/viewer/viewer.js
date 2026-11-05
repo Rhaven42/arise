@@ -33,17 +33,54 @@ controls.maxDistance = 5.5;
 controls.minPolarAngle = 0.35;
 controls.maxPolarAngle = 1.75;
 
-// Éclairage chaud de taverne : lumière principale, contre-jour, ambiance.
-scene.add(new THREE.HemisphereLight(0xffe2c0, 0x2a1a12, 0.9));
+// Éclairages : jour, nuit, taverne (lumière principale, contre-jour, ambiance).
+const hemi = new THREE.HemisphereLight(0xffe2c0, 0x2a1a12, 0.9);
+scene.add(hemi);
 const key = new THREE.DirectionalLight(0xffd6a8, 2.4);
 key.position.set(2, 3, 3);
 scene.add(key);
 const rim = new THREE.DirectionalLight(0xffb070, 1.6);
 rim.position.set(-1.5, 2.5, -3);
 scene.add(rim);
+const LIGHTINGS = {
+  day: { hemi: [0xfff4e6, 0x6b5a48, 1.2], key: [0xfff1dc, 2.6], rim: [0xcfe3ff, 1.0] },
+  night: { hemi: [0x7f9cd6, 0x10121c, 0.55], key: [0xa9c0ff, 1.3], rim: [0x6f8cff, 1.4] },
+  tavern: { hemi: [0xffe2c0, 0x2a1a12, 0.9], key: [0xffd6a8, 2.4], rim: [0xffb070, 1.6] },
+};
+function setLighting(name) {
+  const l = LIGHTINGS[name] || LIGHTINGS.tavern;
+  hemi.color.setHex(l.hemi[0]);
+  hemi.groundColor.setHex(l.hemi[1]);
+  hemi.intensity = l.hemi[2];
+  key.color.setHex(l.key[0]);
+  key.intensity = l.key[1];
+  rim.color.setHex(l.rim[0]);
+  rim.intensity = l.rim[1];
+}
+
+// Cadrage : corps entier ou visage.
+const FOCUS = {
+  body: { target: [0, 0.95, 0], position: [0, 1.0, 4.2] },
+  face: { target: [0, 1.55, 0], position: [0, 1.6, 1.1] },
+};
+let focusAnim = null;
+function setFocus(name, scale) {
+  const f = FOCUS[name] || FOCUS.body;
+  const s = scale || 1;
+  focusAnim = {
+    t: 0,
+    fromT: controls.target.clone(),
+    fromP: camera.position.clone(),
+    toT: new THREE.Vector3(f.target[0], f.target[1] * s, f.target[2]),
+    toP: new THREE.Vector3(f.position[0], f.position[1] * s, f.position[2] * (name === 'face' ? 1 : s)),
+  };
+}
 
 const loader = new GLTFLoader();
 const models = new Map();
+const rigs = new Map();
+const clock = new THREE.Clock();
+let currentFocus = 'body';
 let current = null;
 let pending = null;
 let buffer = null;
@@ -75,6 +112,55 @@ function setMorph(root, name, value) {
   });
 }
 
+// Poses (clips complets), posture et respiration (clips additifs).
+function buildRig(gltf) {
+  const mixer = new THREE.AnimationMixer(gltf.scene);
+  const clips = {};
+  for (const clip of gltf.animations) clips[clip.name] = clip;
+  const rest = clips.pose_a;
+  const additive = (name) => {
+    const clip = clips[name];
+    if (!clip || !rest) return null;
+    const copy = clip.clone();
+    THREE.AnimationUtils.makeClipAdditive(copy, 0, rest);
+    return copy;
+  };
+  const rig = { mixer, clips, pose: null, posture: null, postures: {} };
+  for (const name of Object.keys(clips)) {
+    if (name.startsWith('posture_')) rig.postures[name] = additive(name);
+  }
+  const breath = additive('breath');
+  if (breath) {
+    const action = mixer.clipAction(breath);
+    action.blendMode = THREE.AdditiveAnimationBlendMode;
+    action.setLoop(THREE.LoopRepeat, Infinity).play();
+  }
+  return rig;
+}
+
+function setPose(rig, poseName, postureName) {
+  const clip = rig.clips[poseName] || rig.clips.pose_a;
+  if (clip && rig.pose !== clip.name) {
+    const next = rig.mixer.clipAction(clip);
+    next.setLoop(THREE.LoopRepeat, Infinity).play();
+    if (rig.poseAction) rig.poseAction.crossFadeTo(next, 0.35, false);
+    rig.poseAction = next;
+    rig.pose = clip.name;
+  }
+  const posture = rig.postures[postureName] || null;
+  if (rig.posture !== postureName) {
+    if (rig.postureAction) rig.postureAction.fadeOut(0.3);
+    rig.postureAction = null;
+    if (posture) {
+      const action = rig.mixer.clipAction(posture);
+      action.blendMode = THREE.AdditiveAnimationBlendMode;
+      action.reset().fadeIn(0.3).setLoop(THREE.LoopRepeat, Infinity).play();
+      rig.postureAction = action;
+    }
+    rig.posture = postureName;
+  }
+}
+
 function applyState(state) {
   const model = models.get(state.model);
   if (!model) return false;
@@ -85,20 +171,34 @@ function applyState(state) {
   }
   for (const [name, value] of Object.entries(state.morphs || {})) setMorph(model, name, value);
   model.scale.setScalar(state.scale || 1);
-  const skin = new THREE.Color(state.skinColor);
-  const hair = new THREE.Color(state.hairColor);
+  const colors = {
+    skin: new THREE.Color(state.skinColor),
+    hair: new THREE.Color(state.hairColor),
+    brow: new THREE.Color(state.hairColor),
+    beard: new THREE.Color(state.beardColor || state.hairColor),
+    iris: new THREE.Color(state.eyeColor || '#4a2a14'),
+  };
+  const choice = { hair_: state.hairNode, brow_: state.browNode, beard_: state.beardNode, makeup_: state.makeupNode };
   model.traverse((o) => {
     if (!o.isMesh) return;
     const n = o.name || '';
-    if (n.startsWith('hair_')) o.visible = n === state.hairNode;
+    for (const [prefix, chosen] of Object.entries(choice)) {
+      if (n.startsWith(prefix)) o.visible = n === chosen;
+    }
     if (n.startsWith('outfit_')) o.visible = state.outfit !== false;
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     for (const m of mats) {
-      if (!m) continue;
-      if (m.name === 'skin') m.color.copy(skin);
-      if (m.name === 'hair') m.color.copy(hair);
+      if (m && colors[m.name]) m.color.copy(colors[m.name]);
     }
   });
+  const rig = rigs.get(state.model);
+  if (rig) setPose(rig, state.pose || 'pose_a', state.posture || 'posture_neutral');
+  setLighting(state.lighting);
+  const focus = state.focus || 'body';
+  if (focus !== currentFocus) {
+    currentFocus = focus;
+    setFocus(focus, state.scale);
+  }
   return true;
 }
 
@@ -125,6 +225,7 @@ window.arise = {
       '',
       (gltf) => {
         models.set(id, gltf.scene);
+        rigs.set(id, buildRig(gltf));
         post('loaded', { id });
       },
       (err) => post('error', { message: String(err) }),
@@ -139,11 +240,20 @@ window.arise = {
   },
   capture() {
     renderer.render(scene, camera);
-    return renderer.domElement.toDataURL('image/png');
+    post('capture', { data: renderer.domElement.toDataURL('image/png') });
   },
 };
 
 function loop() {
+  const delta = clock.getDelta();
+  for (const rig of rigs.values()) rig.mixer.update(delta);
+  if (focusAnim) {
+    focusAnim.t = Math.min(1, focusAnim.t + delta / 0.5);
+    const k = focusAnim.t * focusAnim.t * (3 - 2 * focusAnim.t);
+    controls.target.lerpVectors(focusAnim.fromT, focusAnim.toT, k);
+    camera.position.lerpVectors(focusAnim.fromP, focusAnim.toP, k);
+    if (focusAnim.t >= 1) focusAnim = null;
+  }
   controls.update();
   renderer.render(scene, camera);
   requestAnimationFrame(loop);
