@@ -10,8 +10,8 @@ import 'package:arise/features/workout_player/domain/completed_session.dart';
 /// Type de déséquilibre signalé.
 enum ImbalanceKind { frontBack, pushPull }
 
-/// Déséquilibre entre deux groupes : [dominant] reçoit [ratio] fois plus de
-/// volume que l'autre.
+/// Déséquilibre entre deux groupes : le groupe dominant reçoit `ratio` fois
+/// plus de volume que l'autre.
 class ImbalanceAlert {
   const ImbalanceAlert({
     required this.kind,
