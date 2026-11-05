@@ -60,6 +60,22 @@ Future<void> _expectVisible(WidgetTester tester, String text) async {
   expect(find.text(text), findsOneWidget);
 }
 
+/// Touche [finder] en faisant défiler la page au besoin, sans attendre la fin
+/// des animations (certains écrans en ont qui tournent en boucle).
+Future<void> _tapWithoutSettle(WidgetTester tester, Finder finder) async {
+  await _waitFor(tester, finder);
+  if (finder.evaluate().isEmpty) {
+    await tester.scrollUntilVisible(
+      finder,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+  }
+  await tester.ensureVisible(finder.last);
+  await tester.pump(const Duration(milliseconds: 300));
+  await tester.tap(finder.last);
+}
+
 /// Avance le temps sans attendre la fin des animations en boucle.
 Future<void> _pumpFor(WidgetTester tester, int milliseconds) async {
   for (var elapsed = 0; elapsed < milliseconds; elapsed += 100) {
@@ -158,22 +174,12 @@ void main() {
     // interrompue compte dans la semaine en cours.
     // « Retour » mène aux programmes ; la flèche de l'en-tête remonte à la
     // Fenêtre du Système (un retour système pourrait fermer l'application).
-    await tester.tap(find.text('Retour'));
+    await _tapWithoutSettle(tester, find.text('Retour'));
     await _pumpFor(tester, 1200);
     await _waitFor(tester, find.byType(BackButton));
     await tester.tap(find.byType(BackButton).first);
     await _pumpFor(tester, 1200);
-    final analysis = find.text('Analyse musculaire');
-    await _waitFor(tester, analysis);
-    if (analysis.evaluate().isEmpty) {
-      await tester.scrollUntilVisible(
-        analysis,
-        200,
-        scrollable: find.byType(Scrollable).first,
-      );
-    }
-    await tester.ensureVisible(analysis.last);
-    await tester.tap(analysis.last);
+    await _tapWithoutSettle(tester, find.text('Analyse musculaire'));
     await _pumpFor(tester, 1500);
     await _expectVisible(tester, '1 séance sur cette période.');
     await _expectVisible(tester, 'Conseils du Système');
