@@ -7,8 +7,17 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../../helpers/fake_character_renderer.dart';
 import '../../../helpers/test_app.dart';
 
-Future<void> _scrollTo(WidgetTester tester, Finder finder) => tester
-    .scrollUntilVisible(finder, 200, scrollable: find.byType(Scrollable).last);
+Future<void> _scrollTo(WidgetTester tester, Finder finder) =>
+    tester.scrollUntilVisible(
+      finder,
+      200,
+      scrollable: find
+          .descendant(
+            of: find.byKey(CharacterCreatorPage.formKey),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
 
 void main() {
   testWidgets('les menus mettent à jour la fiche et le rendu', (tester) async {
