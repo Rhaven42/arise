@@ -16,11 +16,30 @@ void main() {
     container.read(appRouterProvider).go(AppRoutes.settings);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(Switch));
+    await tester.tap(find.byType(Switch).first);
     await tester.pumpAndSettle();
 
     final profile = container.read(playerProfileProvider).value;
     expect(profile?.healthConsent, isTrue);
+    await tester.unmountApp();
+  });
+
+  testWidgets('les bips et la voix du lecteur se règlent', (tester) async {
+    final container = createTestContainer();
+    await container.read(profileRepositoryProvider).saveProfile(sampleProfile);
+    await tester.pumpAriseApp(container);
+    container.read(appRouterProvider).go(AppRoutes.settings);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Lecteur de séance'), findsOneWidget);
+    await tester.tap(find.text('Bips et vibrations'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Annonces vocales'));
+    await tester.pumpAndSettle();
+
+    final profile = container.read(playerProfileProvider).value;
+    expect(profile?.workoutSounds, isFalse);
+    expect(profile?.workoutVoice, isTrue);
     await tester.unmountApp();
   });
 }
