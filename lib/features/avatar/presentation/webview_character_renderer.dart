@@ -76,7 +76,7 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
   Future<Uint8List?> _capture() async {
     if (!_ready || !_shown) return null;
     final pending = _pendingCapture;
-    if (pending != null) return pending.future;
+    if (pending != null) return await pending.future;
     final completer = _pendingCapture = Completer<Uint8List?>();
     try {
       await _controller.runJavaScript('arise.capture()');
@@ -84,7 +84,7 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
       _pendingCapture = null;
       return null;
     }
-    return completer.future.timeout(
+    return await completer.future.timeout(
       const Duration(seconds: 5),
       onTimeout: () {
         _pendingCapture = null;

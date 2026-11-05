@@ -28,7 +28,7 @@ class CharacterSnapshotController {
   Future<Uint8List?> Function()? handler;
 
   /// Image PNG de la vue actuelle, ou `null` si le rendu n'est pas prêt.
-  Future<Uint8List?> capture() async => handler?.call();
+  Future<Uint8List?> capture() async => await handler?.call();
 }
 
 /// Moteur de rendu utilisé par l'application (remplacé dans les tests).
