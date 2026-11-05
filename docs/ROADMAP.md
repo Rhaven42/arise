@@ -65,13 +65,13 @@
 - [x] Fenêtre du Système (tableau de bord)
 
 ## Phase 5 — Analyse musculaire
-- [ ] Silhouettes SVG face et dos (33 zones identifiées)
-- [ ] Coloration post-exercice (principaux / secondaires)
-- [ ] Agrégats par période (jour, semaine, mois, année)
-- [ ] Seuils configurables + motifs + libellés (accessibilité daltonisme)
-- [ ] Indicateur de souplesse séparé
-- [ ] Suggestions basées sur le référentiel
-- [ ] Alertes poussée/tirage et avant/arrière
+- [x] Silhouettes SVG face et dos (33 zones identifiées)
+- [x] Coloration post-exercice (principaux / secondaires)
+- [x] Agrégats par période (jour, semaine, mois, année)
+- [x] Seuils configurables + motifs + libellés (accessibilité daltonisme)
+- [x] Indicateur de souplesse séparé
+- [x] Suggestions basées sur le référentiel
+- [x] Alertes poussée/tirage et avant/arrière
 
 ## Phase 6 — Création du personnage
 - [ ] Interface `CharacterRenderer` + implémentation glb

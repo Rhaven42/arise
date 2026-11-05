@@ -6,6 +6,7 @@ import 'package:arise/features/backup/presentation/restore_page.dart';
 import 'package:arise/features/exercises/presentation/custom_exercise_editor_page.dart';
 import 'package:arise/features/exercises/presentation/exercise_detail_page.dart';
 import 'package:arise/features/exercises/presentation/exercise_list_page.dart';
+import 'package:arise/features/muscle_analysis/presentation/muscle_analysis_page.dart';
 import 'package:arise/features/onboarding/presentation/onboarding_page.dart';
 import 'package:arise/features/onboarding/presentation/title_page.dart';
 import 'package:arise/features/planning/presentation/planning_page.dart';
@@ -116,6 +117,10 @@ GoRouter appRouter(Ref ref) {
                     ProgramEditorPage(programId: state.pathParameters['id']),
               ),
             ],
+          ),
+          GoRoute(
+            path: AppRoutes.analysisSegment,
+            builder: (_, _) => const MuscleAnalysisPage(),
           ),
           GoRoute(
             path: AppRoutes.planningSegment,

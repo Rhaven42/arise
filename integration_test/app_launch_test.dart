@@ -151,5 +151,26 @@ void main() {
     await _waitFor(tester, find.text('Séance interrompue'));
     expect(find.text('Arrête-toi maintenant'), findsOneWidget);
     await _pumpFor(tester, 500);
+
+    // Analyse musculaire depuis la Fenêtre du Système : la séance
+    // interrompue compte dans la semaine en cours.
+    await tester.tap(find.text('Retour'));
+    await _pumpFor(tester, 800);
+    await tester.binding.handlePopRoute();
+    await _pumpFor(tester, 1200);
+    final analysis = find.text('Analyse musculaire');
+    await _waitFor(tester, analysis);
+    if (analysis.evaluate().isEmpty) {
+      await tester.scrollUntilVisible(
+        analysis,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+    }
+    await tester.ensureVisible(analysis.last);
+    await tester.tap(analysis.last);
+    await _pumpFor(tester, 1500);
+    await _expectVisible(tester, '1 séance sur cette période.');
+    await _expectVisible(tester, 'Conseils du Système');
   });
 }

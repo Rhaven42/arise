@@ -25,6 +25,9 @@ abstract final class AppRoutes {
   static const String programNew = '$programs/$programNewSegment';
   static String programEdit(String id) => '$programs/$id';
 
+  static const analysisSegment = 'analysis';
+  static const String analysis = '$systemHome/$analysisSegment';
+
   static const workoutSegment = 'workout';
   static String workout(String programId) =>
       '$systemHome/$workoutSegment/$programId';

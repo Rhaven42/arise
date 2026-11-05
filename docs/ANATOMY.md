@@ -142,6 +142,14 @@ reviewedBy: "nom + qualification"          # requis si validated
 Un exercice `pending_review` peut exister en développement mais **ne peut pas être publié**. L'utilisateur qui crée un exercice personnalisé choisit lui-même ses muscles sur la silhouette ; ces exercices restent privés et hors référentiel.
 
 ## 6. Groupes pour les alertes de déséquilibre
-Ces regroupements sont nécessaires aux alertes poussée/tirage et avant/arrière (SPEC §11). **Ils restent à valider** (voir questions ouvertes) — aucune alerte ne sera livrée sans validation.
-- Avant / arrière : dérivé directement des vues `front` / `back` de la §1.
-- Poussée / tirage : à définir à partir des exercices (ex. pompes, dips, développé militaire = poussée ; tractions, rowing = tirage), non à partir des muscles seuls.
+
+> ⚠️ **Statut : provisoire, à relire** (phase 5). Ces choix sont rangés dans `game_config.dart` (section `balance`) et peuvent changer sans toucher au code.
+
+- **Avant / arrière** : somme des points des muscles de la vue `front` comparée à celle de la vue `back` (§1).
+- **Poussée / tirage** : séries effectives d'exercices classés par mouvement, non par muscle.
+  - Poussée : `push_up`, `decline_push_up`, `diamond_push_up`, `dips`, `overhead_press`.
+  - Tirage : `pull_up_pronated`, `row`, `biceps_curl`.
+  - Non classés (ni poussée ni tirage) : élévations latérales, jambes, gainage, cardio.
+- **Seuil** : alerte au-delà d'un rapport de 1,5 pour 1, à partir de 4 points (ou séries) au total sur la période.
+- **Tabata / HIIT** : un round vaut 0,25 point par muscle principal et 0,125 par muscle secondaire (moitié, comme en musculation).
+- **« Faiblement »** (ischio-jambiers du squat) : compté comme un secondaire ordinaire tant qu'aucun coefficient n'est validé.

@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:arise/core/anatomy/body_shapes.dart';
 import 'package:arise/core/anatomy/body_shapes_provider.dart';
+import 'package:arise/core/anatomy/heat_level.dart';
 import 'package:arise/core/anatomy/muscle.dart';
 import 'package:arise/core/theme/arise_colors.dart';
 import 'package:flutter/material.dart';
@@ -32,14 +33,19 @@ Path pathFrom(SvgPathData data) {
 class BodyMap extends ConsumerWidget {
   const BodyMap({
     required this.view,
-    required this.highlights,
     required this.semanticLabel,
     super.key,
+    this.highlights = const {},
+    this.heat,
     this.onMuscleTap,
   });
 
   final BodyView view;
   final Map<MuscleId, MuscleRole> highlights;
+
+  /// Heatmap : si fournie, chaque zone est peinte selon son niveau (et non
+  /// selon son rôle principal / secondaire).
+  final Map<MuscleId, HeatLevel>? heat;
   final String semanticLabel;
   final ValueChanged<MuscleId>? onMuscleTap;
 
@@ -59,6 +65,7 @@ class BodyMap extends ConsumerWidget {
             final painter = BodyMapPainter(
               shapes: shapes,
               highlights: highlights,
+              heat: heat,
             );
             final canvas = CustomPaint(
               painter: painter,
@@ -86,7 +93,7 @@ class BodyMap extends ConsumerWidget {
 
 /// Dessin de la silhouette et des zones musculaires.
 class BodyMapPainter extends CustomPainter {
-  BodyMapPainter({required this.shapes, required this.highlights})
+  BodyMapPainter({required this.shapes, required this.highlights, this.heat})
     : _zonePaths = {
         for (final entry in shapes.zones.entries)
           entry.key: [for (final data in entry.value) pathFrom(data)],
@@ -95,6 +102,7 @@ class BodyMapPainter extends CustomPainter {
 
   final BodyShapes shapes;
   final Map<MuscleId, MuscleRole> highlights;
+  final Map<MuscleId, HeatLevel>? heat;
   final Map<MuscleId, List<Path>> _zonePaths;
   final Path _outline;
 
@@ -124,10 +132,19 @@ class BodyMapPainter extends CustomPainter {
           ..color = AriseColors.woodLight,
       );
 
+    final heatLevels = heat;
     for (final entry in _zonePaths.entries) {
       final role = highlights[entry.key];
       for (final path in entry.value) {
-        paintMuscleZone(canvas, path, role);
+        if (heatLevels == null) {
+          paintMuscleZone(canvas, path, role);
+        } else {
+          paintHeatZone(
+            canvas,
+            path,
+            heatLevels[entry.key] ?? HeatLevel.none,
+          );
+        }
       }
     }
     canvas.restore();
@@ -135,7 +152,9 @@ class BodyMapPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant BodyMapPainter oldDelegate) =>
-      oldDelegate.shapes != shapes || oldDelegate.highlights != highlights;
+      oldDelegate.shapes != shapes ||
+      oldDelegate.highlights != highlights ||
+      oldDelegate.heat != heat;
 }
 
 /// Peint une zone musculaire : couleur, motif selon le rôle, puis contour.

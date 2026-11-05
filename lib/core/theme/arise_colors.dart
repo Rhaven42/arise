@@ -30,4 +30,9 @@ abstract final class AriseColors {
   static const muscleSecondary = Color(0xFFA8E6A3);
   static const muscleSecondaryPattern = Color(0xFF2F6A2B);
   static const muscleSelectedOutline = Color(0xFFF0CC74);
+
+  // Heatmap musculaire (5 niveaux, chacun avec un motif distinct).
+  static const heatLow = Color(0xFFE0735A);
+  static const heatSome = Color(0xFFEBA543);
+  static const heatPattern = Color(0xFF2A1A12);
 }

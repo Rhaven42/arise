@@ -163,5 +163,23 @@ void main() {
     await tester.binding.handlePopRoute();
     await pumpFor(1200);
     await binding.takeScreenshot('20_fenetre_apres_seance');
+
+    // Phase 5 : l'analyse musculaire.
+    final analysis = find.text('Analyse musculaire');
+    await tester.scrollUntilVisible(
+      analysis,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(analysis.last);
+    await pumpFor(1500);
+    await binding.takeScreenshot('21_analyse');
+    await tester.scrollUntilVisible(
+      find.text('Conseils du Système'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await pumpFor(400);
+    await binding.takeScreenshot('22_analyse_conseils');
   });
 }

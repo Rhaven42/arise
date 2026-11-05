@@ -369,11 +369,40 @@ class HeatmapConfig {
 }
 
 class BalanceConfig {
-  const BalanceConfig({required this.imbalanceRatio});
+  const BalanceConfig({
+    required this.imbalanceRatio,
+    required this.minVolumeForAlert,
+    required this.intervalSecondaryShare,
+    required this.pushExercises,
+    required this.pullExercises,
+    required this.maxSuggestions,
+  });
 
+  /// Écart (rapport) au-delà duquel un déséquilibre est signalé.
   final double imbalanceRatio;
 
-  Map<String, Object> toJson() => {'imbalanceRatio': imbalanceRatio};
+  /// Volume minimal (points) de la période avant de comparer : on ne
+  /// signale pas de déséquilibre sur deux séries.
+  final double minVolumeForAlert;
+
+  /// Tabata/HIIT : part d'un round attribuée aux muscles secondaires.
+  final double intervalSecondaryShare;
+
+  /// Classement poussée / tirage des exercices (ANATOMY.md §6).
+  final List<String> pushExercises;
+  final List<String> pullExercises;
+
+  /// Nombre maximal de suggestions affichées.
+  final int maxSuggestions;
+
+  Map<String, Object> toJson() => {
+    'imbalanceRatio': imbalanceRatio,
+    'minVolumeForAlert': minVolumeForAlert,
+    'intervalSecondaryShare': intervalSecondaryShare,
+    'pushExercises': pushExercises,
+    'pullExercises': pullExercises,
+    'maxSuggestions': maxSuggestions,
+  };
 }
 
 class HealthConfig {
@@ -553,7 +582,20 @@ const gameConfig = GameConfig(
     weeklyThresholds: [4, 8, 12],
     dailyThresholds: [2, 4, 6],
   ),
-  balance: BalanceConfig(imbalanceRatio: 1.5),
+  balance: BalanceConfig(
+    imbalanceRatio: 1.5,
+    minVolumeForAlert: 4,
+    intervalSecondaryShare: 0.5,
+    pushExercises: [
+      'push_up',
+      'decline_push_up',
+      'diamond_push_up',
+      'dips',
+      'overhead_press',
+    ],
+    pullExercises: ['pull_up_pronated', 'row', 'biceps_curl'],
+    maxSuggestions: 3,
+  ),
   health: HealthConfig(sleepBonusMinHours: 7),
   planning: PlanningConfig(reminderLeadMinutes: 30),
   xp: XpConfig(
@@ -563,6 +605,10 @@ const gameConfig = GameConfig(
     metersPerVolumeUnit: 1000,
   ),
   provisionalKeys: [
+    'balance.minVolumeForAlert',
+    'balance.intervalSecondaryShare',
+    'balance.pushExercises',
+    'balance.pullExercises',
     'progression.statXpPerPoint',
     'streaks.chestCrystals',
     'streaks.willpowerPerStreakDay',

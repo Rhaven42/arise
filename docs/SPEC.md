@@ -303,3 +303,9 @@ Décision de la propriétaire du projet : pas de forfait Firebase Blaze, pas de 
 8. **Mode maladie** : 1 à 14 jours à partir d'aujourd'hui, lève le malus en cours ; y mettre fin laisse le jour en cours neutre.
 9. **Joueurs existants** : à la première ouverture avec la progression, l'XP des séances déjà enregistrées est rejouée, sans pénalité rétroactive.
 
+## 25. Décisions de la phase 5 (05/11/2026)
+1. **Analyse musculaire** accessible depuis la Fenêtre du Système : vues jour, semaine (lundi → dimanche), mois et année, avec navigation vers les périodes passées (jamais au-delà de la période en cours).
+2. **Volume** (ANATOMY.md §3) : en musculation, une série d'intensité ≥ 6/10 vaut 1 point par muscle principal et 0,5 par secondaire ; Tabata/HIIT/circuit : 0,25 par round et par principal, la moitié pour un secondaire (provisoire) ; cardio : 1 point par 10 minutes, 3 au plus par séance et par muscle ; la mobilité alimente seulement l'indicateur de souplesse (en minutes).
+3. **Heatmap** : vues mois et année exprimées en moyenne par semaine écoulée (au moins une semaine). Seuils hebdomadaires 4 / 8 / 12 et quotidiens 2 / 4 / 6 (`game_config.dart`). Chaque niveau a une couleur, un motif (hachures, points, lignes, quadrillage) et un libellé, avec une légende et un détail par muscle.
+4. **Alertes de déséquilibre** (provisoires, ANATOMY.md §6) : avant / arrière du corps et poussée / tirage, à partir d'un volume total de 4 et au-delà d'un rapport de 1,5.
+5. **Conseils du Système** : jusqu'à 3 muscles pas du tout ou pas assez travaillés, chacun avec l'exercice le plus simple du référentiel validé qui le cible comme muscle principal et que l'équipement du joueur permet. Aucun conseil sans séance sur la période.

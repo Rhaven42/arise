@@ -1001,5 +1001,125 @@
       }
     }
   },
-  "settingsSickConfirm": "Activer"
+  "settingsSickConfirm": "Activer",
+  "analysisTitle": "Analyse musculaire",
+  "analysisHomeHint": "Les muscles que tu travailles, et ceux qui attendent",
+  "analysisPeriod": "{period, select, day{Jour} week{Semaine} month{Mois} year{Année} other{Période}}",
+  "@analysisPeriod": {
+    "placeholders": {
+      "period": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisPrevious": "Période précédente",
+  "analysisNext": "Période suivante",
+  "analysisRangeDay": "{date}",
+  "@analysisRangeDay": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisRangeSpan": "Du {start} au {end}",
+  "@analysisRangeSpan": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisUnitWeekly": "Séries effectives par semaine, en moyenne",
+  "analysisUnitDaily": "Séries effectives dans la journée",
+  "analysisSessions": "{count, plural, =0{Aucune séance sur cette période.} =1{1 séance sur cette période.} other{{count} séances sur cette période.}}",
+  "@analysisSessions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "heatLevelName": "{level, select, none{Pas du tout} low{Pas assez} some{Un peu} medium{Moyen} high{Très travaillé} other{?}}",
+  "@heatLevelName": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisMuscleValue": "{muscle} : {value} · {level}",
+  "@analysisMuscleValue": {
+    "placeholders": {
+      "muscle": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisHeatSemantics": "Silhouette de {view, select, front{face} back{dos} other{corps}}. {details}",
+  "@analysisHeatSemantics": {
+    "placeholders": {
+      "view": {
+        "type": "String"
+      },
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisFlexibility": "Souplesse : {minutes} min de mobilité et d'étirements",
+  "@analysisFlexibility": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "analysisFlexibilityHint": "Indicateur séparé : la mobilité ne compte pas dans le volume de renforcement.",
+  "analysisSuggestionsTitle": "Conseils du Système",
+  "analysisSuggestion": "{muscle} : en retard, essaie {exercise}.",
+  "@analysisSuggestion": {
+    "placeholders": {
+      "muscle": {
+        "type": "String"
+      },
+      "exercise": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisNoSuggestion": "Aucun muscle en retard : continue ainsi.",
+  "analysisAlertFrontBack": "Déséquilibre : {dominant, select, front{l'avant du corps} other{l'arrière du corps}} reçoit {ratio} fois plus de travail. Pense à équilibrer.",
+  "@analysisAlertFrontBack": {
+    "placeholders": {
+      "dominant": {
+        "type": "String"
+      },
+      "ratio": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisAlertPushPull": "Déséquilibre : {dominant, select, push{la poussée} other{le tirage}} représente {ratio} fois plus de séries. Pense à équilibrer.",
+  "@analysisAlertPushPull": {
+    "placeholders": {
+      "dominant": {
+        "type": "String"
+      },
+      "ratio": {
+        "type": "String"
+      }
+    }
+  },
+  "analysisMusclesTitle": "Détail par muscle",
+  "analysisLegendTitle": "Légende"
 }
