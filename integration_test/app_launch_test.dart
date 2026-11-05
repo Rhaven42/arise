@@ -94,7 +94,7 @@ void main() {
     await _waitFor(tester, find.text('Bienvenue, chasseur'));
 
     expect(find.text('Bienvenue, chasseur'), findsOneWidget);
-    expect(find.text('Jours de repos : Samedi'), findsOneWidget);
+    await _expectVisible(tester, 'Jours de repos : Samedi');
 
     // Catalogue : recherche et fiche animée.
     await _tapText(tester, 'Exercices');
