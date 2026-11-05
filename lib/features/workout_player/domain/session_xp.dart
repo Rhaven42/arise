@@ -66,7 +66,7 @@ SessionXp computeSessionXp({
     cumulative += seconds;
 
     // Part de l'effort au-delà du plafond (proportionnelle à la durée).
-    final over = (cumulative - capSeconds).clamp(0, seconds).toInt();
+    final over = (cumulative - capSeconds).clamp(0, seconds);
     final overShare = seconds == 0 ? 0.0 : over / seconds;
     overCap += over;
 

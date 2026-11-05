@@ -25,7 +25,7 @@ const _plank = Exercise(
   primaryMuscles: [MuscleId.rectusAbdominis],
   secondaryMuscles: [MuscleId.obliques],
 );
-const _exercises = {'push_up': _pushUp, 'plank': _plank};
+const Map<String, Exercise> _exercises = {'push_up': _pushUp, 'plank': _plank};
 const _program = Program(
   id: 'p1',
   name: 'Haut du corps',

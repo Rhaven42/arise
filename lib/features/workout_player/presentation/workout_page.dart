@@ -230,7 +230,7 @@ class _RunningWorkout extends ConsumerWidget {
           if (step.isWork && step.isTimed)
             AriseButton(
               label: l10n.workoutDoneEffort,
-              onPressed: () => controller.completeWork(),
+              onPressed: controller.completeWork,
             ),
           const SizedBox(height: AriseSpacing.sm),
           AriseButton(

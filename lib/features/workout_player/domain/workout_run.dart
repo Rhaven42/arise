@@ -184,9 +184,10 @@ abstract class WorkoutRun with _$WorkoutRun {
   WorkoutRun applySessionIntensity(int rpe) => copyWith(
     results: [
       for (final result in results)
-        result.rpe == null && !result.skipped
-            ? result.copyWith(rpe: rpe)
-            : result,
+        if (result.rpe == null && !result.skipped)
+          result.copyWith(rpe: rpe)
+        else
+          result,
     ],
   );
 

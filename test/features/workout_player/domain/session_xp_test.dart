@@ -15,7 +15,7 @@ const _burpee = Exercise(
   stats: {StatId.endurance: 0.7, StatId.strength: 0.3},
   primaryMuscles: [MuscleId.quadriceps],
 );
-const _exercises = {'burpee': _burpee};
+const Map<String, Exercise> _exercises = {'burpee': _burpee};
 
 void main() {
   group('intensityMultiplier', () {
