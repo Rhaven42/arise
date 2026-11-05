@@ -202,8 +202,10 @@ void main() {
     await tester.tap(find.byTooltip('Ajouter aux favorites').first);
     await tester.pump();
     expect(
-      find.text('Tu as déjà $max coiffures favorites. Retires-en une '
-          "d'abord."),
+      find.text(
+        'Tu as déjà $max coiffures favorites. Retires-en une '
+        "d'abord.",
+      ),
       findsOneWidget,
     );
     await tester.tap(find.text('10 · Crinière'));

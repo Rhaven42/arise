@@ -149,14 +149,14 @@ class CharacterCreatorController extends _$CharacterCreatorController {
   ) => history.replace(history.current.copyWith(name: name));
 
   void randomize() => edit(
-    (s) => randomSheet(ref.read(characterRandomProvider), name: s.name, keep: s),
+    (s) =>
+        randomSheet(ref.read(characterRandomProvider), name: s.name, keep: s),
   );
 
   void reset() => edit(
-    (s) => defaultSheet(sex: s.sex).copyWith(
-      name: s.name,
-      favoriteHairStyles: s.favoriteHairStyles,
-    ),
+    (s) =>
+        defaultSheet(sex: s.sex)
+            .copyWith(name: s.name, favoriteHairStyles: s.favoriteHairStyles),
   );
 
   void applyBodyPreset(BodyPreset preset) =>

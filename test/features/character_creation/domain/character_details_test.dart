@@ -39,9 +39,8 @@ void main() {
 
   group('coiffures', () {
     test('chaque coiffure appartient à une famille', () {
-      final all = [
-        for (final c in HairCategory.values) ...hairStylesIn(c),
-      ]..sort();
+      final all = [for (final c in HairCategory.values) ...hairStylesIn(c)]
+        ..sort();
       expect(all, [for (var i = 1; i <= hairStyleCount; i++) i]);
     });
 
