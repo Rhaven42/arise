@@ -119,3 +119,4 @@ Versions : Flutter 3.47 / Dart 3.13.
 - Typographie : Cinzel pour les titres et les boutons, IM Fell English pour les textes d'ambiance, police du système pour le corps de texte (lisibilité).
 - Le routeur (`core/router`) est la racine de composition de la navigation : il est le seul élément de `core` autorisé à importer des écrans de fonctionnalités.
 - Les dossiers de fonctionnalités sont créés au fil des phases (Git ne versionne pas les dossiers vides).
+- `.claude/` contient des extraits d'ECC (licence MIT) pour Flutter / Dart : compétences, agents de relecture et règles. Voir `.claude/ECC.md` ; ce fichier-ci l'emporte en cas de désaccord.
