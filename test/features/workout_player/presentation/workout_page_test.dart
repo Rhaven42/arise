@@ -136,7 +136,7 @@ void main() {
     (tester) async {
       final container = await open(tester, _tabata);
 
-      await tester.ensureVisible(find.text('Douleur ou malaise'));
+      await tester.scrollUntilVisible(find.text('Douleur ou malaise'), 200, scrollable: find.byType(Scrollable).first);
       await tester.tap(find.text('Douleur ou malaise'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
@@ -165,6 +165,16 @@ void main() {
     await tester.tap(find.byTooltip('Reprendre'));
     await tester.pump();
     expect(find.text('En pause'), findsNothing);
+
+    // Arrêt confirmé : les efforts réalisés sont enregistrés.
+    await tester.tap(find.byTooltip('Arrêter la séance'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('Arrêter la séance ?'), findsOneWidget);
+    await tester.tap(find.text('Arrêter'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('Séance interrompue'), findsOneWidget);
 
     await tester.unmountApp();
   });
