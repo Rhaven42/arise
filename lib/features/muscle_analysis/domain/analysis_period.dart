@@ -24,7 +24,11 @@ class PeriodRange {
       ),
       AnalysisPeriod.week => () {
         final monday = day.addDays(1 - day.weekday);
-        return PeriodRange(period: period, start: monday, end: monday.addDays(7));
+        return PeriodRange(
+          period: period,
+          start: monday,
+          end: monday.addDays(7),
+        );
       }(),
       AnalysisPeriod.month => PeriodRange(
         period: period,

@@ -60,8 +60,9 @@ class MuscleReport {
   final int sessionCount;
 
   /// Muscles du moins au plus travaillé.
-  List<MuscleId> get musclesByVolume => [...MuscleId.values]
-    ..sort((a, b) => (values[a] ?? 0).compareTo(values[b] ?? 0));
+  List<MuscleId> get musclesByVolume =>
+      [...MuscleId.values]
+        ..sort((a, b) => (values[a] ?? 0).compareTo(values[b] ?? 0));
 }
 
 /// Niveau d'un muscle selon les seuils de la vue (ANATOMY.md §4).

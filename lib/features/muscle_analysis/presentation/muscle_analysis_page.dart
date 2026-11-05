@@ -64,9 +64,8 @@ class _MuscleAnalysisPageState extends ConsumerState<MuscleAnalysisPage> {
                 child: Text(
                   _rangeLabel(l10n, range),
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AriseColors.gold,
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium
+                      ?.copyWith(color: AriseColors.gold),
                 ),
               ),
               IconButton(
@@ -376,4 +375,3 @@ class _AlertBox extends StatelessWidget {
     );
   }
 }
-

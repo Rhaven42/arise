@@ -27,12 +27,8 @@ CompletedSession _pushSession() => CompletedSession(
   completed: true,
 );
 
-Future<void> _scrollTo(WidgetTester tester, Finder finder) =>
-    tester.scrollUntilVisible(
-      finder,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+Future<void> _scrollTo(WidgetTester tester, Finder finder) => tester
+    .scrollUntilVisible(finder, 200, scrollable: find.byType(Scrollable).first);
 
 void main() {
   testWidgets('sans séance, la carte reste vide et sans conseil', (
@@ -54,9 +50,9 @@ void main() {
     tester,
   ) async {
     final container = createTestContainer();
-    await container.read(completedSessionRepositoryProvider).save(
-      _pushSession(),
-    );
+    await container
+        .read(completedSessionRepositoryProvider)
+        .save(_pushSession());
     await tester.openWithProfile(container, AppRoutes.analysis);
     await tester.pump(const Duration(milliseconds: 300));
 
@@ -75,17 +71,19 @@ void main() {
     tester,
   ) async {
     final container = createTestContainer();
-    await container.read(completedSessionRepositoryProvider).save(
-      _pushSession(),
-    );
+    await container
+        .read(completedSessionRepositoryProvider)
+        .save(_pushSession());
     await tester.openWithProfile(container, AppRoutes.analysis);
     await tester.pump(const Duration(milliseconds: 300));
 
     final next = find.byTooltip('Période suivante');
     expect(
-      tester.widget<IconButton>(
-        find.ancestor(of: next, matching: find.byType(IconButton)).first,
-      ).onPressed,
+      tester
+          .widget<IconButton>(
+            find.ancestor(of: next, matching: find.byType(IconButton)).first,
+          )
+          .onPressed,
       isNull,
     );
     await tester.tap(find.byTooltip('Période précédente'));

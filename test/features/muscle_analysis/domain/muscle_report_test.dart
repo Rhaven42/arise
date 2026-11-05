@@ -100,11 +100,9 @@ void main() {
         session(ProgramFormat.strength, [
           for (var i = 0; i < 4; i++) set('push_up'),
         ]),
-        session(
-          ProgramFormat.cardio,
-          [set('walking', seconds: 30 * 60)],
-          start: DateTime(2026, 11, 5, 8),
-        ),
+        session(ProgramFormat.cardio, [
+          set('walking', seconds: 30 * 60),
+        ], start: DateTime(2026, 11, 5, 8)),
       ],
       exercisesById: exercises,
       range: week,

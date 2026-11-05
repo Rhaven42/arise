@@ -76,11 +76,15 @@ CompletedSession session(
   );
 }
 
-CompletedSet set(String id, {int rpe = 7, int seconds = 40, bool skip = false}) =>
-    CompletedSet(
-      exerciseId: id,
-      activeSeconds: seconds,
-      reps: 10,
-      rpe: rpe,
-      skipped: skip,
-    );
+CompletedSet set(
+  String id, {
+  int rpe = 7,
+  int seconds = 40,
+  bool skip = false,
+}) => CompletedSet(
+  exerciseId: id,
+  activeSeconds: seconds,
+  reps: 10,
+  rpe: rpe,
+  skipped: skip,
+);

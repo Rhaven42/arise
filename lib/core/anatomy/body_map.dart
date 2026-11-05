@@ -139,11 +139,7 @@ class BodyMapPainter extends CustomPainter {
         if (heatLevels == null) {
           paintMuscleZone(canvas, path, role);
         } else {
-          paintHeatZone(
-            canvas,
-            path,
-            heatLevels[entry.key] ?? HeatLevel.none,
-          );
+          paintHeatZone(canvas, path, heatLevels[entry.key] ?? HeatLevel.none);
         }
       }
     }
