@@ -5,6 +5,7 @@ import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/planning/domain/planned_session.dart';
 import 'package:arise/features/planning/domain/program.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
+import 'package:arise/features/workout_player/domain/completed_session.dart';
 
 /// Raison du refus d'un fichier de sauvegarde.
 enum BackupError {
@@ -38,8 +39,9 @@ abstract final class BackupCodec {
   /// Version courante du format ; les versions antérieures restent lisibles.
   ///
   /// - v1 (phase 1) : profil ;
-  /// - v2 (phase 2) : exercices personnalisés, programmes et planning.
-  static const currentVersion = 2;
+  /// - v2 (phase 2) : exercices personnalisés, programmes et planning ;
+  /// - v3 (phase 3) : séances réalisées.
+  static const currentVersion = 3;
 
   /// Construit une sauvegarde au format courant.
   static BackupData create({
@@ -48,6 +50,7 @@ abstract final class BackupCodec {
     List<Exercise> customExercises = const [],
     List<Program> programs = const [],
     List<PlannedSession> plannedSessions = const [],
+    List<CompletedSession> completedSessions = const [],
   }) {
     return BackupData(
       format: format,
@@ -57,6 +60,7 @@ abstract final class BackupCodec {
       customExercises: customExercises,
       programs: programs,
       plannedSessions: plannedSessions,
+      completedSessions: completedSessions,
     );
   }
 

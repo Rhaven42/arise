@@ -133,5 +133,24 @@ void main() {
     await tapText(tester, 'Rappel');
     await tapText(tester, 'Enregistrer');
     await binding.takeScreenshot('15_planning');
+
+    // Phase 3 : lecteur de séance, intensité, repos et bilan.
+    await tester.tap(find.byTooltip('Lancer Haut du corps'));
+    await pumpFor(1500);
+    await binding.takeScreenshot('16_lecteur_serie');
+    await tester.ensureVisible(find.text('Série terminée'));
+    await tester.tap(find.text('Série terminée'));
+    await pumpFor(600);
+    await tester.tap(find.text('7'));
+    await pumpFor(300);
+    await binding.takeScreenshot('17_intensite');
+    await tester.tap(find.text('Valider'));
+    await pumpFor(3200);
+    await binding.takeScreenshot('18_repos');
+    await tester.tap(find.byTooltip('Arrêter la séance'));
+    await pumpFor(600);
+    await tester.tap(find.text('Arrêter'));
+    await pumpFor(2000);
+    await binding.takeScreenshot('19_bilan');
   });
 }

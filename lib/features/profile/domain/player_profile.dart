@@ -44,6 +44,12 @@ abstract class PlayerProfile with _$PlayerProfile {
     /// Consentement à la lecture des données de santé (révocable).
     required bool healthConsent,
     required DateTime createdAt,
+
+    /// Lecteur de séance : bips et vibrations (activés par défaut).
+    @Default(true) bool workoutSounds,
+
+    /// Lecteur de séance : annonces vocales (désactivées par défaut).
+    @Default(false) bool workoutVoice,
   }) = _PlayerProfile;
 
   factory PlayerProfile.fromJson(Map<String, dynamic> json) =>

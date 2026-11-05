@@ -122,5 +122,17 @@ void main() {
     await _tapText(tester, 'Rappel');
     await _tapText(tester, 'Enregistrer');
     expect(find.text('Tabata express'), findsOneWidget);
+
+    // Lecteur de séance lancé depuis le planning : un round, puis arrêt par
+    // le bouton de prudence ; la séance interrompue est enregistrée.
+    await _waitFor(tester, find.byTooltip('Lancer Tabata express'));
+    await tester.tap(find.byTooltip('Lancer Tabata express'));
+    await _pumpFor(tester, 1500);
+    expect(find.textContaining('Round 1 sur 8'), findsOneWidget);
+    await tester.ensureVisible(find.text('Douleur ou malaise'));
+    await tester.tap(find.text('Douleur ou malaise'));
+    await _waitFor(tester, find.text('Séance interrompue'));
+    expect(find.text('Arrête-toi maintenant'), findsOneWidget);
+    await _pumpFor(tester, 500);
   });
 }

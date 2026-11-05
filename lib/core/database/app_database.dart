@@ -88,13 +88,28 @@ class PlannedSessions extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
+/// Séances réalisées, stockées en JSON.
+@DataClassName('CompletedSessionRow')
+class CompletedSessions extends Table {
+  TextColumn get id => text()();
+
+  /// Début de la séance (UTC), dupliqué hors JSON pour le tri.
+  DateTimeColumn get startedAt => dateTime()();
+
+  TextColumn get json => text()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
 /// Base locale SQLite (Drift) de l'application.
 ///
 /// Historique du schéma :
 /// - v1 (phase 0) : `pending_sessions`, `local_drafts` ;
 /// - v2 (phase 1) : ajout de `player_profiles` ;
 /// - v3 (phase 2) : ajout de `custom_exercises`, `programs` et
-///   `planned_sessions`.
+///   `planned_sessions` ;
+/// - v4 (phase 3) : ajout de `completed_sessions`.
 @DriftDatabase(
   tables: [
     PendingSessions,
@@ -103,6 +118,7 @@ class PlannedSessions extends Table {
     CustomExercises,
     Programs,
     PlannedSessions,
+    CompletedSessions,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -112,7 +128,7 @@ class AppDatabase extends _$AppDatabase {
   static const profileRowId = 1;
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -125,6 +141,9 @@ class AppDatabase extends _$AppDatabase {
         await migrator.createTable(customExercises);
         await migrator.createTable(programs);
         await migrator.createTable(plannedSessions);
+      }
+      if (from < 4) {
+        await migrator.createTable(completedSessions);
       }
     },
   );
@@ -155,6 +174,7 @@ class AppDatabase extends _$AppDatabase {
   /// Efface toutes les données du joueur.
   Future<void> eraseAll() {
     return transaction(() async {
+      await delete(completedSessions).go();
       await delete(plannedSessions).go();
       await delete(programs).go();
       await delete(customExercises).go();
@@ -227,6 +247,34 @@ class AppDatabase extends _$AppDatabase {
       )..where((t) => t.programId.equals(id))).go();
       await (delete(programs)..where((t) => t.id.equals(id))).go();
     });
+  }
+
+  // --- Séances réalisées -------------------------------------------------
+
+  Stream<List<String>> watchCompletedSessionJson() {
+    final query = select(completedSessions)
+      ..orderBy([(t) => OrderingTerm.desc(t.startedAt)]);
+    return query.watch().map((rows) => [for (final r in rows) r.json]);
+  }
+
+  Future<List<String>> readCompletedSessionJson() async {
+    final query = select(completedSessions)
+      ..orderBy([(t) => OrderingTerm.desc(t.startedAt)]);
+    return [for (final r in await query.get()) r.json];
+  }
+
+  Future<void> saveCompletedSessionJson(
+    String id, {
+    required DateTime startedAt,
+    required String json,
+  }) {
+    return into(completedSessions).insertOnConflictUpdate(
+      CompletedSessionsCompanion.insert(
+        id: id,
+        startedAt: startedAt.toUtc(),
+        json: json,
+      ),
+    );
   }
 
   // --- Séances planifiées ------------------------------------------------

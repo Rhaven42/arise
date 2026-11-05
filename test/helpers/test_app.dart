@@ -16,6 +16,7 @@ import 'package:arise/features/exercises/presentation/exercise_providers.dart';
 import 'package:arise/features/planning/presentation/planning_providers.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
+import 'package:arise/features/workout_player/presentation/workout_cues.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,6 +24,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'fake_backup_file_gateway.dart';
 import 'fake_reminder_scheduler.dart';
+import 'fake_workout_cues.dart';
 
 /// Date fixe utilisée par les tests.
 final testNow = DateTime.utc(2026, 11, 4, 9);
@@ -65,11 +67,14 @@ ProviderContainer createTestContainer({
   AppDatabase? database,
   FakeBackupFileGateway? files,
   FakeReminderScheduler? reminders,
+  DateTime Function()? clock,
+  FakeWorkoutCues? cues,
 }) {
   return ProviderContainer.test(
     overrides: [
       appDatabaseProvider.overrideWithValue(database ?? createTestDatabase()),
-      clockProvider.overrideWithValue(() => testNow),
+      clockProvider.overrideWithValue(clock ?? () => testNow),
+      workoutCuesProvider.overrideWithValue(cues ?? FakeWorkoutCues()),
       backupFileGatewayProvider.overrideWithValue(
         files ?? FakeBackupFileGateway(),
       ),

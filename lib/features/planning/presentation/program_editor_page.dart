@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:arise/core/design_system/widgets/arise_button.dart';
+import 'package:arise/core/design_system/widgets/number_stepper.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/core/theme/arise_colors.dart';
 import 'package:arise/core/theme/arise_spacing.dart';
@@ -10,7 +11,6 @@ import 'package:arise/features/exercises/domain/exercise_filter.dart';
 import 'package:arise/features/exercises/presentation/exercise_providers.dart';
 import 'package:arise/features/planning/domain/program.dart';
 import 'package:arise/features/planning/domain/program_rules.dart';
-import 'package:arise/features/planning/presentation/number_stepper.dart';
 import 'package:arise/features/planning/presentation/planning_labels.dart';
 import 'package:arise/features/planning/presentation/planning_providers.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';

@@ -304,6 +304,37 @@ class PlanningConfig {
   Map<String, Object> toJson() => {'reminderLeadMinutes': reminderLeadMinutes};
 }
 
+/// Calcul de l'XP d'une série (SPEC §5) : XP de base × volume normalisé ×
+/// multiplicateur d'intensité (× bonus de série et de classe en phase 4).
+class XpConfig {
+  const XpConfig({
+    required this.baseXpPerVolumeUnit,
+    required this.repsPerVolumeUnit,
+    required this.secondsPerVolumeUnit,
+    required this.metersPerVolumeUnit,
+  });
+
+  /// XP d'une unité de volume normalisé à intensité neutre.
+  final int baseXpPerVolumeUnit;
+
+  /// Répétitions qui valent une unité de volume.
+  final int repsPerVolumeUnit;
+
+  /// Secondes d'effort (série chronométrée, maintien, round, cardio) qui
+  /// valent une unité de volume.
+  final int secondsPerVolumeUnit;
+
+  /// Mètres parcourus qui valent une unité de volume.
+  final int metersPerVolumeUnit;
+
+  Map<String, Object> toJson() => {
+    'baseXpPerVolumeUnit': baseXpPerVolumeUnit,
+    'repsPerVolumeUnit': repsPerVolumeUnit,
+    'secondsPerVolumeUnit': secondsPerVolumeUnit,
+    'metersPerVolumeUnit': metersPerVolumeUnit,
+  };
+}
+
 class HeatmapConfig {
   const HeatmapConfig({
     required this.weeklyThresholds,
@@ -361,6 +392,7 @@ class GameConfig {
     required this.balance,
     required this.health,
     required this.planning,
+    required this.xp,
     required this.provisionalKeys,
   });
 
@@ -384,6 +416,7 @@ class GameConfig {
   final BalanceConfig balance;
   final HealthConfig health;
   final PlanningConfig planning;
+  final XpConfig xp;
 
   /// Chemins (« section.clé ») des valeurs provisoires, cf. SPEC.md §20.
   final List<String> provisionalKeys;
@@ -410,6 +443,7 @@ class GameConfig {
     'balance': balance.toJson(),
     'health': health.toJson(),
     'planning': planning.toJson(),
+    'xp': xp.toJson(),
     'provisionalKeys': provisionalKeys,
   };
 }
@@ -504,7 +538,17 @@ const gameConfig = GameConfig(
   balance: BalanceConfig(imbalanceRatio: 1.5),
   health: HealthConfig(sleepBonusMinHours: 7),
   planning: PlanningConfig(reminderLeadMinutes: 30),
+  xp: XpConfig(
+    baseXpPerVolumeUnit: 10,
+    repsPerVolumeUnit: 10,
+    secondsPerVolumeUnit: 60,
+    metersPerVolumeUnit: 1000,
+  ),
   provisionalKeys: [
+    'xp.baseXpPerVolumeUnit',
+    'xp.repsPerVolumeUnit',
+    'xp.secondsPerVolumeUnit',
+    'xp.metersPerVolumeUnit',
     'intervalDefaults.restBetweenCyclesSeconds',
     'planning.reminderLeadMinutes',
     'progression.maxLevel',

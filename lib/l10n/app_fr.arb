@@ -585,5 +585,209 @@
         "type": "int"
       }
     }
-  }
+  },
+  "workoutStartTooltip": "Lancer {program}",
+  "@workoutStartTooltip": {
+    "placeholders": {
+      "program": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutStart": "Lancer la séance",
+  "workoutEmptyProgram": "Ce programme ne contient aucun exercice.",
+  "workoutProgramMissing": "Ce programme n'existe plus.",
+  "workoutProgress": "Effort {done} sur {total}",
+  "@workoutProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutSetOf": "Série {set} sur {count}",
+  "@workoutSetOf": {
+    "placeholders": {
+      "set": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRoundOf": "Round {round} sur {count} · cycle {cycle} sur {cycles}",
+  "@workoutRoundOf": {
+    "placeholders": {
+      "round": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      },
+      "cycle": {
+        "type": "int"
+      },
+      "cycles": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutRest": "Repos",
+  "workoutNext": "À suivre : {exercise}",
+  "@workoutNext": {
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutTargetReps": "{reps} répétitions",
+  "@workoutTargetReps": {
+    "placeholders": {
+      "reps": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutTargetMeters": "{meters} m",
+  "@workoutTargetMeters": {
+    "placeholders": {
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutLoad": "Charge : {kg} kg",
+  "@workoutLoad": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutRepsDone": "Répétitions réalisées",
+  "workoutDoneSet": "Série terminée",
+  "workoutDoneEffort": "Effort terminé",
+  "workoutSkipRest": "Passer le repos",
+  "workoutSkipEffort": "Passer cet effort",
+  "workoutPause": "Pause",
+  "workoutResume": "Reprendre",
+  "workoutPaused": "En pause",
+  "workoutStop": "Arrêter la séance",
+  "workoutStopConfirmTitle": "Arrêter la séance ?",
+  "workoutStopConfirmBody": "Les efforts déjà réalisés seront enregistrés.",
+  "workoutStopConfirm": "Arrêter",
+  "workoutContinue": "Continuer",
+  "workoutPainButton": "Douleur ou malaise",
+  "workoutPainTitle": "Arrête-toi maintenant",
+  "workoutPainBody": "Tu as signalé une douleur ou un malaise : la séance est arrêtée. Repose-toi, hydrate-toi et ne reprends pas si la douleur persiste. En cas de douleur thoracique, d'essoufflement anormal ou de vertige, appelle le 15 ou le 112.",
+  "workoutIntensityTitle": "Intensité ressentie",
+  "workoutIntensitySessionTitle": "Intensité ressentie sur l'ensemble de la séance",
+  "workoutIntensityHint": "1 = très facile, 10 = effort maximal.",
+  "workoutIntensityValue": "{rpe} sur 10",
+  "@workoutIntensityValue": {
+    "placeholders": {
+      "rpe": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutIntensityLabel": "{rpe, select, r1{Très facile} r2{Facile} r3{Modéré} r4{Assez modéré} r5{Soutenu} r6{Assez dur} r7{Dur} r8{Très dur} r9{Extrêmement dur} r10{Maximal} other{?}}",
+  "@workoutIntensityLabel": {
+    "placeholders": {
+      "rpe": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutIntensityMaxWarning": "Effort maximal : ralentis ou arrête si tu ressens une douleur, un vertige ou une fatigue extrême.",
+  "workoutIntensityValidate": "Valider",
+  "workoutSummaryTitle": "Séance terminée",
+  "workoutSummaryStoppedTitle": "Séance interrompue",
+  "workoutSummaryXp": "+{xp} XP",
+  "@workoutSummaryXp": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutSummaryXpSemantics": "{xp} points d'expérience gagnés",
+  "@workoutSummaryXpSemantics": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutSummaryDuration": "Effort actif : {minutes} min {seconds} s",
+  "@workoutSummaryDuration": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutSummarySets": "Efforts réalisés : {done} sur {total}",
+  "@workoutSummarySets": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutSummaryMuscles": "Muscles travaillés",
+  "workoutSummaryCapWarning": "Tu as dépassé 120 minutes d'effort aujourd'hui : l'expérience est divisée par deux au-delà. Ton corps progresse aussi pendant le repos.",
+  "workoutSummaryProvisional": "Valeurs d'expérience provisoires : elles seront ajustées avec le système de niveaux.",
+  "workoutSummaryClose": "Retour",
+  "workoutVoiceWork": "{exercise}. {detail}",
+  "@workoutVoiceWork": {
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      },
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutVoiceSeconds": "{seconds} secondes",
+  "@workoutVoiceSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutVoiceRest": "Repos, {seconds} secondes",
+  "@workoutVoiceRest": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutVoiceFinish": "Séance terminée. Bravo, chasseur.",
+  "workoutTimerSemantics": "Temps restant : {seconds} secondes",
+  "@workoutTimerSemantics": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWorkoutSection": "Lecteur de séance",
+  "settingsWorkoutSounds": "Bips et vibrations",
+  "settingsWorkoutVoice": "Annonces vocales",
+  "settingsWorkoutVoiceHint": "Utilise la synthèse vocale du téléphone, sans connexion."
 }

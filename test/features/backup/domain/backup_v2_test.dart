@@ -49,7 +49,7 @@ void main() {
       programs: const [_program],
       plannedSessions: const [_session],
     );
-    expect(data.version, 2);
+    expect(data.version, BackupCodec.currentVersion);
     expect(BackupCodec.decode(BackupCodec.encode(data)), data);
   });
 

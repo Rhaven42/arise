@@ -15,6 +15,7 @@ import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:arise/features/progression/presentation/system_home_page.dart';
 import 'package:arise/features/settings/presentation/settings_page.dart';
+import 'package:arise/features/workout_player/presentation/workout_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -119,6 +120,11 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
             path: AppRoutes.planningSegment,
             builder: (_, _) => const PlanningPage(),
+          ),
+          GoRoute(
+            path: '${AppRoutes.workoutSegment}/:programId',
+            builder: (_, state) =>
+                WorkoutPage(programId: state.pathParameters['programId']!),
           ),
         ],
       ),

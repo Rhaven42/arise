@@ -271,13 +271,24 @@ class _SessionChip extends StatelessWidget {
               l10n.planningOneOff,
           ].join(' · '),
         ),
-        trailing: Icon(
-          session.reminder
-              ? Icons.notifications_active_outlined
-              : Icons.notifications_off_outlined,
-          semanticLabel: session.reminder
-              ? l10n.planningReminderOn
-              : l10n.planningReminderOff,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              session.reminder
+                  ? Icons.notifications_active_outlined
+                  : Icons.notifications_off_outlined,
+              semanticLabel: session.reminder
+                  ? l10n.planningReminderOn
+                  : l10n.planningReminderOff,
+            ),
+            if (program case final program?)
+              IconButton(
+                tooltip: l10n.workoutStartTooltip(program.name),
+                icon: const Icon(Icons.play_circle, color: AriseColors.gold),
+                onPressed: () => context.go(AppRoutes.workout(program.id)),
+              ),
+          ],
         ),
         onTap: onTap,
       ),

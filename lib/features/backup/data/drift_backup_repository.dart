@@ -7,6 +7,7 @@ import 'package:arise/features/backup/domain/backup_repository.dart';
 import 'package:arise/features/exercises/data/drift_custom_exercise_repository.dart';
 import 'package:arise/features/planning/data/drift_planning_repositories.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
+import 'package:arise/features/workout_player/data/drift_completed_session_repository.dart';
 
 /// Sauvegarde et restauration à partir de la base locale.
 class DriftBackupRepository implements BackupRepository {
@@ -34,6 +35,10 @@ class DriftBackupRepository implements BackupRepository {
       plannedSessions: [
         for (final json in await _database.readPlannedSessionJson())
           DriftPlanningRepository.decodeSession(json),
+      ],
+      completedSessions: [
+        for (final json in await _database.readCompletedSessionJson())
+          DriftCompletedSessionRepository.decode(json),
       ],
     );
   }
@@ -70,6 +75,13 @@ class DriftBackupRepository implements BackupRepository {
           programId: session.programId,
           json: jsonEncode(session.toJson()),
           updatedAt: now,
+        );
+      }
+      for (final session in data.completedSessions) {
+        await _database.saveCompletedSessionJson(
+          session.id,
+          startedAt: session.startedAt,
+          json: jsonEncode(session.toJson()),
         );
       }
     });

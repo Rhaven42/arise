@@ -48,7 +48,11 @@ class ProgramsPage extends ConsumerWidget {
                   if (duration != null) l10n.duration(duration),
                 ].join(' · '),
               ),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: IconButton(
+                tooltip: l10n.workoutStartTooltip(program.name),
+                icon: const Icon(Icons.play_circle, color: AriseColors.gold),
+                onPressed: () => context.go(AppRoutes.workout(program.id)),
+              ),
               onTap: () => context.go(AppRoutes.programEdit(program.id)),
             );
           },

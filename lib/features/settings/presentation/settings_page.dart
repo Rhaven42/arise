@@ -33,6 +33,27 @@ class SettingsPage extends ConsumerWidget {
             subtitle: Text(l10n.settingsHealthConsentHint),
           ),
           const Divider(),
+          _SectionHeader(l10n.settingsWorkoutSection),
+          SwitchListTile(
+            value: profile?.workoutSounds ?? true,
+            onChanged: profile == null
+                ? null
+                : (value) => ref
+                      .read(profileRepositoryProvider)
+                      .saveProfile(profile.copyWith(workoutSounds: value)),
+            title: Text(l10n.settingsWorkoutSounds),
+          ),
+          SwitchListTile(
+            value: profile?.workoutVoice ?? false,
+            onChanged: profile == null
+                ? null
+                : (value) => ref
+                      .read(profileRepositoryProvider)
+                      .saveProfile(profile.copyWith(workoutVoice: value)),
+            title: Text(l10n.settingsWorkoutVoice),
+            subtitle: Text(l10n.settingsWorkoutVoiceHint),
+          ),
+          const Divider(),
           _SectionHeader(l10n.settingsBackupSection),
           ListTile(
             leading: const Icon(Icons.save_alt, color: AriseColors.gold),
