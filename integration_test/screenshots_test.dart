@@ -138,7 +138,11 @@ void main() {
     await tester.tap(find.byTooltip('Lancer Haut du corps'));
     await pumpFor(1500);
     await binding.takeScreenshot('16_lecteur_serie');
-    await tester.scrollUntilVisible(find.text('Série terminée'), 200, scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(
+      find.text('Série terminée'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Série terminée'));
     await pumpFor(600);
     await tester.tap(find.text('7'));

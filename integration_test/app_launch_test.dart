@@ -129,7 +129,11 @@ void main() {
     await tester.tap(find.byTooltip('Lancer Tabata express'));
     await _pumpFor(tester, 1500);
     expect(find.textContaining('Round 1 sur 8'), findsOneWidget);
-    await tester.scrollUntilVisible(find.text('Douleur ou malaise'), 200, scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(
+      find.text('Douleur ou malaise'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Douleur ou malaise'));
     await _waitFor(tester, find.text('Séance interrompue'));
     expect(find.text('Arrête-toi maintenant'), findsOneWidget);

@@ -136,7 +136,11 @@ void main() {
     (tester) async {
       final container = await open(tester, _tabata);
 
-      await tester.scrollUntilVisible(find.text('Douleur ou malaise'), 200, scrollable: find.byType(Scrollable).first);
+      await tester.scrollUntilVisible(
+        find.text('Douleur ou malaise'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.tap(find.text('Douleur ou malaise'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
