@@ -28,7 +28,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0, 0.95, 0);
 controls.enableDamping = true;
 controls.enablePan = false;
-controls.minDistance = 0.9;
+controls.minDistance = 0.6;
 controls.maxDistance = 5.5;
 controls.minPolarAngle = 0.35;
 controls.maxPolarAngle = 1.75;
@@ -58,21 +58,21 @@ function setLighting(name) {
   rim.intensity = l.rim[1];
 }
 
-// Cadrage : corps entier ou visage.
-const FOCUS = {
-  body: { target: [0, 0.95, 0], position: [0, 1.0, 4.2] },
-  face: { target: [0, 1.55, 0], position: [0, 1.6, 1.1] },
-};
+// Cadrage : corps entier ou visage, d'après la hauteur réelle du modèle.
 let focusAnim = null;
-function setFocus(name, scale) {
-  const f = FOCUS[name] || FOCUS.body;
-  const s = scale || 1;
+function setFocus(name, top) {
+  const h = top > 0.5 ? top : 1.8;
+  const face = name === 'face';
+  const target = new THREE.Vector3(0, face ? h * 0.93 : h * 0.53, 0);
+  const position = face
+    ? new THREE.Vector3(0, h * 0.94, 1.0)
+    : new THREE.Vector3(0, h * 0.56, h * 2.3);
   focusAnim = {
     t: 0,
     fromT: controls.target.clone(),
     fromP: camera.position.clone(),
-    toT: new THREE.Vector3(f.target[0], f.target[1] * s, f.target[2]),
-    toP: new THREE.Vector3(f.position[0], f.position[1] * s, f.position[2] * (name === 'face' ? 1 : s)),
+    toT: target,
+    toP: position,
   };
 }
 
@@ -81,6 +81,8 @@ const models = new Map();
 const rigs = new Map();
 const clock = new THREE.Clock();
 let currentFocus = 'body';
+let focusModel = null;
+let focusScale = null;
 let current = null;
 let pending = null;
 let buffer = null;
@@ -141,8 +143,9 @@ function buildRig(gltf) {
 function setPose(rig, poseName, postureName) {
   const clip = rig.clips[poseName] || rig.clips.pose_a;
   if (clip && rig.pose !== clip.name) {
+    // reset() réactive une pose déjà quittée (désactivée en fin de fondu).
     const next = rig.mixer.clipAction(clip);
-    next.setLoop(THREE.LoopRepeat, Infinity).play();
+    next.reset().setLoop(THREE.LoopRepeat, Infinity).play();
     if (rig.poseAction) rig.poseAction.crossFadeTo(next, 0.35, false);
     rig.poseAction = next;
     rig.pose = clip.name;
@@ -185,19 +188,32 @@ function applyState(state) {
     for (const [prefix, chosen] of Object.entries(choice)) {
       if (n.startsWith(prefix)) o.visible = n === chosen;
     }
-    if (n.startsWith('outfit_')) o.visible = state.outfit !== false;
+    if (n.startsWith('outfit_')) {
+      o.visible = state.outfit !== false && !(state.hiddenOutfit || []).includes(n);
+    }
+    if (n.startsWith('item_')) o.visible = (state.items || []).includes(n);
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     for (const m of mats) {
-      if (m && colors[m.name]) m.color.copy(colors[m.name]);
+      if (!m) continue;
+      if (colors[m.name]) m.color.copy(colors[m.name]);
+      if (m.name.startsWith('dye_')) {
+        // Couleur d'origine gardée pour revenir sans teinture.
+        if (!m.userData.base) m.userData.base = m.color.clone();
+        const dye = (state.dyes || {})[m.name];
+        m.color.copy(dye ? new THREE.Color(dye) : m.userData.base);
+      }
     }
   });
   const rig = rigs.get(state.model);
   if (rig) setPose(rig, state.pose || 'pose_a', state.posture || 'posture_neutral');
   setLighting(state.lighting);
   const focus = state.focus || 'body';
-  if (focus !== currentFocus) {
+  if (focus !== currentFocus || model !== focusModel || state.scale !== focusScale) {
     currentFocus = focus;
-    setFocus(focus, state.scale);
+    focusModel = model;
+    focusScale = state.scale;
+    model.updateMatrixWorld(true);
+    setFocus(focus, new THREE.Box3().setFromObject(model).max.y);
   }
   return true;
 }
