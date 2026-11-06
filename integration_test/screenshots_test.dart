@@ -225,16 +225,16 @@ void main() {
       String choice, {
       CreatorTab tab = CreatorTab.body,
     }) async {
-      await tester.scrollUntilVisible(
-        find.text(menu),
-        200,
-        scrollable: find
-            .descendant(
-              of: find.byKey(CharacterCreatorPage.tabKey(tab)),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
+      final list = find
+          .descendant(
+            of: find.byKey(CharacterCreatorPage.tabKey(tab)),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      await tester.scrollUntilVisible(find.text(menu), 200, scrollable: list);
+      // Remonte le menu au milieu de la liste pour le toucher sans gêne.
+      await tester.drag(list, const Offset(0, -150));
+      await pumpFor(600);
       await tester.tap(find.text(menu));
       await pumpFor(800);
       await tester.tap(find.text(choice).last);
