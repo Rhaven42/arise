@@ -1,4 +1,5 @@
 import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
+import 'package:arise/features/shop/presentation/shop_page.dart';
 import 'package:arise/main.dart' as app;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -253,7 +254,7 @@ void main() {
     await pumpFor(1500);
     await tester.tap(find.text('Longues'));
     await pumpFor(800);
-    await tester.tap(find.text('10 · Crinière'));
+    await tester.tap(find.text('5 · Longue'));
     await pumpFor(2500);
     await binding.takeScreenshot('29_createur_coiffures');
     await tester.tap(find.byTooltip('Éclairage'));
@@ -261,5 +262,43 @@ void main() {
     await tester.tap(find.text('Nuit'));
     await pumpFor(2500);
     await binding.takeScreenshot('30_createur_nuit');
+
+    // Phase 7 : boutique (essayages) et inventaire.
+    await tester.tap(find.text('Nom & fiche'));
+    await pumpFor(800);
+    await tester.enterText(find.byType(TextField), 'Thalion');
+    await pumpFor(500);
+    FocusManager.instance.primaryFocus?.unfocus();
+    await pumpFor(500);
+    await tester.tap(find.text('Valider le personnage'));
+    await pumpFor(2500);
+    final shop = find.text("Boutique d'Arisia");
+    await tester.scrollUntilVisible(
+      shop,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(shop);
+    await pumpFor(5000);
+    await binding.takeScreenshot('31_boutique');
+    Future<void> tryOn(String filter, int index) async {
+      await tester.dragUntilVisible(
+        find.text(filter),
+        find.byKey(ShopPage.filtersKey),
+        const Offset(-150, 0),
+      );
+      await pumpFor(300);
+      await tester.tap(find.text(filter));
+      await pumpFor(600);
+      await tester.tap(find.text('Essayer').at(index));
+      await pumpFor(3000);
+    }
+
+    await tryOn('Torse', 2);
+    await binding.takeScreenshot('32_boutique_cuirasse');
+    await tryOn('Dos', 1);
+    await binding.takeScreenshot('33_boutique_cape');
+    await tryOn('Arme', 0);
+    await binding.takeScreenshot('34_boutique_epee');
   });
 }

@@ -14,6 +14,9 @@ Lancement dans Blender (avec MPFB installé) :
     exec(open(".../tool/character/build_characters.py").read())
     build_all(r"C:/chemin/de/sortie")
 
+ou sans interface, avec le module « bpy » de PyPI (même version de Blender) :
+    python3 tool/character/build_characters.py <dossier de sortie>
+
 Aucun asset tiers : seuls le maillage de base MakeHuman (CC0) et des formes
 créées ici sont utilisés.
 """
@@ -22,11 +25,28 @@ import importlib
 import math
 import os
 
+import bpy  # avant bmesh : le module bpy de PyPI rend bmesh importable
 import bmesh
-import bpy
 from mathutils import Quaternion, Vector
 
-_MPFB = "bl_ext.blender_org.mpfb.services."
+def _mpfb_prefix():
+    """Paquet de services MPFB (installé depuis le site ou depuis un fichier)."""
+    import addon_utils
+
+    for repo in ("blender_org", "user_default"):
+        name = f"bl_ext.{repo}.mpfb"
+        try:
+            # Active l'extension si besoin (lancement sans interface).
+            if addon_utils.enable(name, default_set=True) is None:
+                continue
+            importlib.import_module(name + ".services")
+        except ImportError:
+            continue
+        return name + ".services."
+    raise RuntimeError("Extension MPFB introuvable")
+
+
+_MPFB = _mpfb_prefix()
 
 SEXES = {"female": 0.0, "male": 1.0}
 
@@ -100,14 +120,17 @@ def _services():
     return hs
 
 
-def _material(name, color=None):
+def _material(name, color=None, metallic=0.0, roughness=None):
     mat = bpy.data.materials.get(name)
     if mat is None:
         mat = bpy.data.materials.new(name)
     mat.use_nodes = True
     bsdf = next(n for n in mat.node_tree.nodes if n.bl_idname == "ShaderNodeBsdfPrincipled")
     bsdf.inputs["Base Color"].default_value = color or COLORS[name]
-    bsdf.inputs["Roughness"].default_value = 0.45 if name in ("skin", "hair", "tusk") else 0.9
+    if roughness is None:
+        roughness = 0.45 if name in ("skin", "hair", "tusk") else 0.9
+    bsdf.inputs["Roughness"].default_value = roughness
+    bsdf.inputs["Metallic"].default_value = metallic
     mat.use_backface_culling = False
     return mat
 
@@ -712,7 +735,7 @@ def _rig_and_skin(sex, race, objects, rigid):
     for obj in objects:
         obj.vertex_groups.clear()
         if obj.name in rigid:
-            group = obj.vertex_groups.new(name="head")
+            group = obj.vertex_groups.new(name=rigid[obj.name])
             group.add(range(len(obj.data.vertices)), 1.0, "REPLACE")
         else:
             bpy.ops.object.select_all(action="DESELECT")
@@ -737,6 +760,302 @@ def _rig_and_skin(sex, race, objects, rigid):
     _make_actions(arm)
     return arm
 
+
+
+# --- Équipement de la boutique (phase 7) ---------------------------------------
+#
+# Chaque objet est une pièce `item_<id>` tirée du corps (mêmes formes de
+# morphologie, mêmes poids de peau) ou, pour les armes, une pièce rigide liée à
+# la main droite et déplacée avec elle d'un état à l'autre. Les matériaux
+# `dye_<id>` peuvent être teints par l'application.
+
+ITEM_MATERIALS = {
+    # nom : (couleur linéaire, métal, rugosité)
+    "leather_brown": ((0.10, 0.045, 0.02, 1.0), 0.0, 0.75),
+    "leather_dark": ((0.03, 0.017, 0.01, 1.0), 0.0, 0.7),
+    "mail": ((0.30, 0.31, 0.33, 1.0), 0.9, 0.45),
+    "steel": ((0.55, 0.56, 0.58, 1.0), 1.0, 0.3),
+    "gold": ((0.80, 0.55, 0.18, 1.0), 1.0, 0.3),
+    "cloth_teal": ((0.03, 0.12, 0.13, 1.0), 0.0, 0.9),
+    "cloth_red": ((0.30, 0.03, 0.03, 1.0), 0.0, 0.9),
+    "cloth_violet": ((0.10, 0.05, 0.16, 1.0), 0.0, 0.9),
+    "wood": ((0.12, 0.06, 0.025, 1.0), 0.0, 0.8),
+    "ember": ((1.0, 0.28, 0.04, 1.0), 0.0, 0.4),
+}
+
+# Objets teignables : matériau de base de leur teinture.
+DYEABLE = {
+    "leather_chest": "leather_brown",
+    "leather_legs": "leather_brown",
+    "cape_wanderer": "cloth_teal",
+    "cape_dawn": "cloth_red",
+    "hood_twilight": "cloth_violet",
+}
+
+
+def _item_material(item_id, look):
+    if item_id in DYEABLE:
+        color, metal, rough = ITEM_MATERIALS[DYEABLE[item_id]]
+        return _material("dye_" + item_id, color, metal, rough)
+    color, metal, rough = ITEM_MATERIALS[look]
+    return _material("item_" + look, color, metal, rough)
+
+
+def _joints(coords, groups):
+    """Centres des articulations MPFB (cubes « joint-* »)."""
+
+    def center(name):
+        pts = [coords[i] for i in groups.get(name, ())]
+        if not pts:
+            return None
+        return sum(pts, Vector()) / len(pts)
+
+    j = {}
+    for side in ("l", "r"):
+        for key, name in (
+            ("shoulder", "shoulder"), ("elbow", "elbow"), ("wrist", "hand"),
+            ("hip", "upper-leg"), ("knee", "knee"), ("ankle", "ankle"),
+        ):
+            j[f"{key}_{side}"] = center(f"joint-{side}-{name}")
+    j["neck"] = center("joint-neck")
+    j["head"] = center("joint-head")
+    j["pelvis"] = center("joint-pelvis")
+    return j
+
+
+def _segment(c, a, b):
+    """Position (0 à 1) et distance de [c] le long du segment a-b."""
+    ab = b - a
+    t = (c - a).dot(ab) / max(ab.length_squared, 1e-9)
+    closest = a + ab * max(0.0, min(1.0, t))
+    return t, (c - closest).length
+
+
+def _part(c, j, height):
+    """Partie du corps sous un point : hand, forearm, upperarm, foot, shin,
+    thigh, head, neck ou torso."""
+    side = "l" if c.x > 0 else "r"
+    s, e, w = j[f"shoulder_{side}"], j[f"elbow_{side}"], j[f"wrist_{side}"]
+    if abs(c.x) > abs(s.x) * 0.9 and c.z < s.z + 0.04 * height:
+        t, d = _segment(c, e, w)
+        if (c - w).dot(w - e) > 0:
+            return "hand"
+        if 0 <= t <= 1 and d < 0.08 * height:
+            return "forearm"
+        t, d = _segment(c, s, e)
+        if t >= 0.12 and d < 0.09 * height:
+            return "upperarm"
+    hip, knee, ankle = j[f"hip_{side}"], j[f"knee_{side}"], j[f"ankle_{side}"]
+    if c.z < ankle.z + 0.035 * height:
+        return "foot"
+    if c.z < knee.z:
+        return "shin"
+    if c.z < hip.z - 0.02 * height and abs(c.x) > 0.012 * height:
+        return "thigh"
+    if c.z > j["head"].z - 0.03 * height:
+        return "head"
+    if c.z > j["neck"].z - 0.01 * height:
+        return "neck"
+    return "torso"
+
+
+def _item_from_body(template, groups, states, j, height, item_id, look, test, offset, flare=None):
+    base = states["base"]
+    keep = _faces_where(template, base, groups["body"], lambda c: test(c, _part(c, j, height)))
+    if not keep:
+        return None
+    obj = _extract(template, keep, "item_" + item_id, states, offset=offset, flare=flare)
+    obj.data.materials.append(_item_material(item_id, look))
+    return obj
+
+
+def _drop_face_keys(obj):
+    """Les formes du visage ne bougent pas les pièces du corps : on les retire
+    pour alléger le fichier."""
+    keys = obj.data.shape_keys
+    if keys is None:
+        return
+    for block in list(keys.key_blocks):
+        if block.name.startswith("face_"):
+            obj.shape_key_remove(block)
+
+
+def _rigid_item(item_id, parts, anchor_of, states, look_of):
+    """Pièce rigide (arme) : jointe, matériaux par pièce, déplacée avec la main
+    dans chaque état (formes de morphologie)."""
+    bpy.ops.object.select_all(action="DESELECT")
+    for part in parts:
+        part.select_set(True)
+    bpy.context.view_layer.objects.active = parts[0]
+    bpy.ops.object.join()
+    obj = bpy.context.active_object
+    obj.name = "item_" + item_id
+    obj.data.name = obj.name
+    for poly in obj.data.polygons:
+        poly.use_smooth = False
+    base = anchor_of(states["base"])
+    obj.shape_key_add(name="Basis")
+    for state_name, *_ in STATES[1:]:
+        key = obj.shape_key_add(name=state_name)
+        delta = anchor_of(states[state_name]) - base
+        for i, v in enumerate(obj.data.vertices):
+            key.data[i].co = v.co + delta
+    _drop_face_keys(obj)
+    return obj
+
+
+def _cylinder(name, start, end, radius, vertices=12, mat=None):
+    direction = end - start
+    bpy.ops.mesh.primitive_cylinder_add(vertices=vertices, radius=radius, depth=direction.length, location=(start + end) / 2)
+    obj = bpy.context.active_object
+    obj.name = name
+    obj.rotation_mode = "QUATERNION"
+    obj.rotation_quaternion = Vector((0, 0, 1)).rotation_difference(direction.normalized())
+    bpy.ops.object.transform_apply(rotation=True)
+    if mat:
+        obj.data.materials.append(mat)
+    return obj
+
+
+def _box(name, center, size, mat=None):
+    bpy.ops.mesh.primitive_cube_add(size=1, location=center)
+    obj = bpy.context.active_object
+    obj.name = name
+    obj.scale = size
+    bpy.ops.object.transform_apply(scale=True)
+    if mat:
+        obj.data.materials.append(mat)
+    return obj
+
+
+def _cape(item_id, look, groups, states, j, height, length, flare):
+    """Cape : nappe tendue entre les épaules et le bas du dos, posée derrière
+    le corps et recalculée pour chaque état."""
+    rows, cols = 14, 12
+    body = list(groups["body"])
+
+    def grid(coords, joints):
+        top = (joints["shoulder_l"].z + joints["neck"].z) / 2
+        half = abs(joints["shoulder_l"].x - joints["shoulder_r"].x) / 2 * 1.05
+        bottom = top - length * height
+        verts = []
+        for r in range(rows):
+            z = top - (top - bottom) * r / (rows - 1)
+            band = [coords[i] for i in body if abs(coords[i].z - z) < 0.02 * height and abs(coords[i].x) < half * 0.9]
+            back = max((p.y for p in band), default=0.05)
+            spread = half * (1 + flare * r / (rows - 1))
+            for k in range(cols):
+                x = -spread + 2 * spread * k / (cols - 1)
+                curve = (1 - (x / spread) ** 2) * 0.03 * height
+                verts.append(Vector((x, back + 0.025 * height + curve * 0.4 + 0.02 * height * r / (rows - 1), z)))
+        return verts
+
+    faces = []
+    for r in range(rows - 1):
+        for k in range(cols - 1):
+            a = r * cols + k
+            faces.append((a, a + 1, a + cols + 1, a + cols))
+    name = "item_" + item_id
+    mesh = bpy.data.meshes.new(name)
+    mesh.from_pydata(grid(states["base"], j), [], faces)
+    mesh.update()
+    obj = bpy.data.objects.new(name, mesh)
+    bpy.context.collection.objects.link(obj)
+    obj.shape_key_add(name="Basis")
+    for state_name, *_ in STATES[1:]:
+        key = obj.shape_key_add(name=state_name)
+        joints = _joints(states[state_name], groups)
+        for i, co in enumerate(grid(states[state_name], joints)):
+            key.data[i].co = co
+    for poly in mesh.polygons:
+        poly.use_smooth = True
+    obj.data.materials.append(_item_material(item_id, look))
+    _drop_face_keys(obj)
+    return obj
+
+
+def _equipment(template, groups, states, marks):
+    """Les trois ensembles, les capes, la capuche et les armes d'apparat.
+    Renvoie les pièces rigides et l'os qui les porte."""
+    base = states["base"]
+    height = max(base[i].z for i in groups["body"])
+    j = _joints(base, groups)
+    H = height
+    neck_z = j["neck"].z
+
+    def torso(top, bottom, arms=()):
+        return lambda c, p: (p == "torso" and bottom * H < c.z) or (p == "neck" and c.z < top * H) or p in arms
+
+    def face_open(c):
+        # Ouverture du visage pour les coiffes : devant, sous le front.
+        return _front(c, marks) and c.z < marks["eyes"][0].z + 0.035 and abs(c.x) < 0.055
+
+    items = [
+        # Cuir de l'Éveillé.
+        ("leather_chest", "leather_brown", torso(0, 0.555, ("upperarm",)), 0.02, None),
+        ("leather_hands", "leather_dark", lambda c, p: p == "hand" or (p == "forearm" and _segment(c, j["elbow_l" if c.x > 0 else "elbow_r"], j["wrist_l" if c.x > 0 else "wrist_r"])[0] > 0.6), 0.006, None),
+        ("leather_legs", "leather_brown", lambda c, p: p in ("thigh", "shin") or (p == "torso" and c.z < 0.57 * H), 0.013, None),
+        ("leather_feet", "leather_dark", lambda c, p: p == "foot" or (p == "shin" and c.z < j["ankle_l"].z + 0.09 * H), 0.016, None),
+        # Maille du Veilleur.
+        ("mail_head", "mail", lambda c, p: (p == "head" and not face_open(c)) or (p == "neck"), 0.012, None),
+        ("mail_chest", "mail", torso(0, 0.47, ("upperarm",)), 0.024, (0.53 * H, 0.9)),
+        ("mail_hands", "mail", lambda c, p: p == "hand", 0.009, None),
+        ("mail_legs", "mail", lambda c, p: p in ("thigh", "shin"), 0.017, None),
+        ("mail_feet", "steel", lambda c, p: p == "foot", 0.02, None),
+        # Plates de l'Aube.
+        ("plate_head", "steel", lambda c, p: p == "head" and not face_open(c), 0.026, None),
+        ("plate_shoulders", "gold", lambda c, p: p in ("upperarm", "torso") and abs(c.x) > abs(j["shoulder_l"].x) * 0.55 and c.z > j["shoulder_l"].z - 0.045 * H and c.z < neck_z, 0.045, None),
+        ("plate_chest", "steel", torso(0, 0.585), 0.04, None),
+        ("plate_hands", "steel", lambda c, p: p == "hand" or p == "forearm", 0.016, None),
+        ("plate_belt", "gold", lambda c, p: p in ("torso", "thigh") and 0.47 * H < c.z < 0.585 * H, 0.05, (0.56 * H, 1.6)),
+        ("plate_legs", "steel", lambda c, p: p in ("thigh", "shin") and c.z > j["ankle_l"].z + 0.07 * H, 0.03, None),
+        ("plate_feet", "steel", lambda c, p: p == "foot" or (p == "shin" and c.z < j["ankle_l"].z + 0.1 * H), 0.028, None),
+        # Capuche du Crépuscule : tête, nuque et haut des épaules.
+        ("hood_twilight", "cloth_violet", lambda c, p: (p == "head" and not face_open(c)) or p == "neck" or (p == "torso" and c.z > j["shoulder_l"].z and abs(c.x) < abs(j["shoulder_l"].x)), 0.032, None),
+    ]
+    for item_id, look, test, offset, flare in items:
+        obj = _item_from_body(template, groups, states, j, H, item_id, look, test, offset, flare)
+        if obj is not None and not item_id.endswith("_head") and not item_id.startswith("hood"):
+            _drop_face_keys(obj)
+
+    belt_band = [i for i in groups["body"] if 0.578 < base[i].z / H < 0.597 and _part(base[i], j, H) == "torso"]
+    belt = _ring("item_leather_belt", belt_band, states, 0.045, 0.012, sides=4)
+    belt.data.materials.append(_item_material("leather_belt", "leather_dark"))
+    _drop_face_keys(belt)
+
+    _cape("cape_wanderer", "cloth_teal", groups, states, j, H, 0.5, 0.5)
+    _cape("cape_dawn", "cloth_red", groups, states, j, H, 0.68, 0.8)
+
+    # Armes tenues dans la main droite, pointe vers le bas.
+    def hand_r(coords):
+        joints = _joints(coords, groups)
+        w, e = joints["wrist_r"], joints["elbow_r"]
+        return w + (w - e).normalized() * 0.045 * H
+
+    grip = hand_r(base)
+    steel = _item_material("sword_dawn", "steel")
+    gold = _item_material("sword_dawn", "gold")
+    leather = _item_material("sword_dawn", "leather_dark")
+    blade_end = grip + Vector((0, 0, -0.42 * H))
+    sword = [
+        _cylinder("grip", grip + Vector((0, 0, 0.05 * H)), grip - Vector((0, 0, 0.02 * H)), 0.012, mat=leather),
+        _box("guard", grip - Vector((0, 0, 0.03 * H)), (0.11 * H, 0.02, 0.015), mat=gold),
+        _box("blade", (grip + blade_end) / 2 - Vector((0, 0, 0.02 * H)), (0.035, 0.008, 0.40 * H), mat=steel),
+        _blob("pommel", grip + Vector((0, 0, 0.06 * H)), (0.018, 0.018, 0.018)),
+    ]
+    sword[-1].data.materials.append(gold)
+    _rigid_item("sword_dawn", sword, hand_r, states, None)
+
+    wood = _item_material("staff_ember", "wood")
+    ember = _item_material("staff_ember", "ember")
+    staff = [
+        _cylinder("shaft", grip + Vector((0, 0, -0.5 * H)), grip + Vector((0, 0, 0.5 * H)), 0.016, mat=wood),
+        _blob("orb", grip + Vector((0, 0, 0.53 * H)), (0.04, 0.04, 0.05)),
+        _cylinder("band", grip + Vector((0, 0, 0.44 * H)), grip + Vector((0, 0, 0.47 * H)), 0.022, mat=gold),
+    ]
+    staff[1].data.materials.append(ember)
+    _rigid_item("staff_ember", staff, hand_r, states, None)
+    return {"item_sword_dawn": "hand_r", "item_staff_ember": "hand_r"}
 
 
 def _clear_scene():
@@ -825,10 +1144,12 @@ def build(sex, race, out_dir):
             tusk.data.materials.append(mats["tusk"])
 
     _hair_styles(template, groups, states, mats["hair"])
+    held = _equipment(template, groups, states, marks)
     bpy.data.meshes.remove(template)
 
     meshes = [o for o in bpy.data.objects if o.type == "MESH"]
-    rigid = {o.name for o in meshes if o.name.startswith(("hair_", "tusks", "eye_"))}
+    rigid = {o.name: "head" for o in meshes if o.name.startswith(("hair_", "tusks", "eye_"))}
+    rigid.update(held)
     _rig_and_skin(sex, race, meshes, rigid)
 
     os.makedirs(out_dir, exist_ok=True)
@@ -894,3 +1215,9 @@ def render_preview(path, hair="hair_01", skin=None, morph=None, width=500, heigh
     scene.render.filepath = path
     bpy.ops.render.render(write_still=True)
     return path
+
+
+if __name__ == "__main__":
+    import sys
+
+    build_all(sys.argv[1])

@@ -191,7 +191,10 @@ function applyState(state) {
     if (n.startsWith('outfit_')) {
       o.visible = state.outfit !== false && !(state.hiddenOutfit || []).includes(n);
     }
-    if (n.startsWith('item_')) o.visible = (state.items || []).includes(n);
+    if (n.startsWith('item_')) {
+      // Une pièce à plusieurs matériaux devient « item_x_1 », « item_x_2 »…
+      o.visible = (state.items || []).some((i) => n === i || n.startsWith(i + '_'));
+    }
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     for (const m of mats) {
       if (!m) continue;
@@ -213,7 +216,9 @@ function applyState(state) {
     focusModel = model;
     focusScale = state.scale;
     model.updateMatrixWorld(true);
-    setFocus(focus, new THREE.Box3().setFromObject(model).max.y);
+    // Hauteur du corps seul : les pièces masquées (bâton…) ne comptent pas.
+    const body = model.getObjectByName('body') || model;
+    setFocus(focus, new THREE.Box3().setFromObject(body).max.y);
   }
   return true;
 }

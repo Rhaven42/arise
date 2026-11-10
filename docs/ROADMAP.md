@@ -91,12 +91,12 @@
 - [x] Scène : 4 poses, 3 éclairages, capture, avant / après
 - [x] `docs/ASSETS.md` complété (squelette, poses, équipements de la boutique)
 
-## Phase 7 — Boutique et inventaire
-- [ ] Boutique (catégories, raretés, essayage)
-- [ ] Achat en pièces (bronze, argent, or)
-- [ ] Inventaire et équipement par emplacement
-- [ ] Teinture
-- [ ] Coupes de cheveux verrouillées
+## Phase 7 — Boutique et inventaire (livré)
+- [x] Boutique (catégories, raretés, essayage)
+- [x] Achat en pièces (bronze, argent, or)
+- [x] Inventaire et équipement par emplacement
+- [x] Teinture
+- [x] Coupes de cheveux verrouillées
 
 ## Phase 8 — Quêtes, boss, donjons, classes
 - [ ] Quête quotidienne générée par le moteur de jeu

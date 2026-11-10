@@ -14,6 +14,9 @@ import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/character_creation/domain/hair_styles.dart';
 import 'package:arise/features/character_creation/presentation/character_labels.dart';
 import 'package:arise/features/character_creation/presentation/character_providers.dart';
+import 'package:arise/features/inventory/domain/inventory.dart';
+import 'package:arise/features/inventory/domain/inventory_rules.dart';
+import 'package:arise/features/inventory/presentation/inventory_providers.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -185,6 +188,7 @@ class _CharacterCreatorPageState extends ConsumerState<CharacterCreatorPage>
                       _FaceTab(sheet: value.sheet),
                       _HairTab(
                         sheet: value.sheet,
+                        worn: value.saved?.hairStyle,
                         onToggleFavorite: _toggleFavorite,
                       ),
                       _SheetTab(state: value, nameController: _name),
@@ -526,10 +530,17 @@ class _FaceTab extends ConsumerWidget {
 enum _HairFilter { favorites, short, tied, long }
 
 class _HairTab extends ConsumerStatefulWidget {
-  const _HairTab({required this.sheet, required this.onToggleFavorite});
+  const _HairTab({
+    required this.sheet,
+    required this.onToggleFavorite,
+    this.worn,
+  });
 
   final CharacterSheet sheet;
   final ValueChanged<int> onToggleFavorite;
+
+  /// Coiffure du personnage enregistré (toujours utilisable).
+  final int? worn;
 
   @override
   ConsumerState<_HairTab> createState() => _HairTabState();
@@ -561,6 +572,24 @@ class _HairTabState extends ConsumerState<_HairTab> {
     final sheet = widget.sheet;
     final filter = _current;
     final styles = _styles(filter);
+    final inventory = ref.watch(inventoryProvider).value ?? const Inventory();
+    bool locked(int style) => !hairStyleAvailable(
+      inventory,
+      style,
+      worn: widget.worn ?? sheet.hairStyle,
+    );
+    void showLocked() {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.characterHairLocked),
+          action: SnackBarAction(
+            label: l10n.characterGoToShop,
+            onPressed: () => context.go(AppRoutes.shop),
+          ),
+        ),
+      );
+    }
+
     return ListView(
       key: CharacterCreatorPage.tabKey(CreatorTab.hair),
       padding: const EdgeInsets.all(AriseSpacing.md),
@@ -596,12 +625,17 @@ class _HairTabState extends ConsumerState<_HairTab> {
             contentPadding: EdgeInsets.zero,
             selected: style == sheet.hairStyle,
             leading: Icon(
-              style == sheet.hairStyle
+              locked(style)
+                  ? Icons.lock_outline
+                  : style == sheet.hairStyle
                   ? Icons.radio_button_checked
                   : Icons.radio_button_unchecked,
             ),
             title: Text(hairStyleLabel(l10n, style)),
-            onTap: () => controller.edit((s) => s.copyWith(hairStyle: style)),
+            subtitle: locked(style) ? Text(l10n.characterHairLocked) : null,
+            onTap: locked(style)
+                ? showLocked
+                : () => controller.edit((s) => s.copyWith(hairStyle: style)),
             trailing: IconButton(
               tooltip: sheet.favoriteHairStyles.contains(style)
                   ? l10n.characterFavoriteRemove

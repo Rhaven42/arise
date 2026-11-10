@@ -40,4 +40,11 @@ abstract final class AriseColors {
   static const coinGold = Color(0xFFE8BE4E);
   static const coinSilver = Color(0xFFC9CED6);
   static const coinBronze = Color(0xFFC07A45);
+
+  // Raretés (toujours accompagnées d'un libellé et d'une icône).
+  static const rarityCommon = Color(0xFFB9A98E);
+  static const rarityRare = Color(0xFF5FA8E8);
+  static const rarityEpic = Color(0xFFB98AF0);
+  static const rarityLegendary = Color(0xFFF0A040);
+  static const rarityMythic = Color(0xFFF07A8A);
 }

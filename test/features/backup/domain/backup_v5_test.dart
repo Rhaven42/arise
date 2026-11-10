@@ -22,7 +22,7 @@ void main() {
       profile: sampleProfile,
       character: _hero,
     );
-    expect(data.version, 5);
+    expect(data.version, BackupCodec.currentVersion);
     expect(BackupCodec.decode(BackupCodec.encode(data)), data);
   });
 

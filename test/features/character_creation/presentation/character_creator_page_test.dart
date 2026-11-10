@@ -225,9 +225,14 @@ void main() {
       ),
       findsOneWidget,
     );
+    // Les coiffures de la boutique sont verrouillées.
     await tester.tap(find.text('10 · Crinière'));
     await tester.pump();
-    expect(sheet().hairStyle, 10);
+    expect(sheet().hairStyle, isNot(10));
+    expect(find.text('Coiffure à débloquer dans la boutique.'), findsWidgets);
+    await tester.tap(find.text('5 · Longue'));
+    await tester.pump();
+    expect(sheet().hairStyle, 5);
 
     // Avant / après : l'aperçu montre la fiche d'ouverture.
     await tester.tap(find.byTooltip('Avant / après'));
@@ -236,7 +241,7 @@ void main() {
     expect(renderer.last?.hairStyleId, 'hair_01');
     await tester.tap(find.byTooltip('Avant / après'));
     await tester.pump();
-    expect(renderer.last?.hairStyleId, 'hair_10');
+    expect(renderer.last?.hairStyleId, 'hair_05');
 
     // Éclairage de nuit.
     await tester.tap(find.byTooltip('Éclairage'));

@@ -1,4 +1,5 @@
 import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
+import 'package:arise/features/shop/presentation/shop_page.dart';
 import 'package:arise/main.dart' as app;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -224,5 +225,52 @@ void main() {
     debugPrint('Parcours : personnage enregistré');
     await _waitFor(tester, find.text('Analyse musculaire'));
     expect(find.text('Personnage enregistré.'), findsOneWidget);
+
+    // Boutique : essayage d'une cape sur le vrai rendu 3D, puis inventaire.
+    debugPrint('Parcours : boutique');
+    await _pumpFor(tester, 1500);
+    await tester.scrollUntilVisible(
+      find.text("Boutique d'Arisia"),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await _tapWithoutSettle(tester, find.text("Boutique d'Arisia"));
+    await _pumpFor(tester, 4000);
+    await _waitFor(tester, find.text('Dos'));
+    await tester.dragUntilVisible(
+      find.text('Dos'),
+      find.byKey(ShopPage.filtersKey),
+      const Offset(-150, 0),
+    );
+    await _pumpFor(tester, 300);
+    await tester.tap(find.text('Dos'));
+    await _pumpFor(tester, 500);
+    await tester.tap(find.text('Essayer').first);
+    await _pumpFor(tester, 4000);
+    expect(
+      find.text(
+        "Le rendu 3D n'a pas pu s'afficher sur cet appareil. Tes choix "
+        'restent enregistrés.',
+      ),
+      findsNothing,
+    );
+    debugPrint('Parcours : inventaire');
+    await tester.tap(find.byType(BackButton).first);
+    await _pumpFor(tester, 1200);
+    await tester.scrollUntilVisible(
+      find.text('Inventaire'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await _tapWithoutSettle(tester, find.text('Inventaire'));
+    await _pumpFor(tester, 3000);
+    await _waitFor(
+      tester,
+      find.text('Ton inventaire est vide. Passe à la boutique !'),
+    );
+    expect(
+      find.text('Ton inventaire est vide. Passe à la boutique !'),
+      findsOneWidget,
+    );
   }, timeout: const Timeout(Duration(minutes: 8)));
 }

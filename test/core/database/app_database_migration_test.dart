@@ -260,6 +260,69 @@ void main() {
     final version = await database
         .customSelect('PRAGMA user_version')
         .getSingle();
-    expect(version.read<int>('user_version'), 6);
+    expect(version.read<int>('user_version'), database.schemaVersion);
+  });
+
+  test('la migration v6 → v7 ajoute l’inventaire sans perte', () async {
+    final database = AppDatabase(
+      NativeDatabase.memory(
+        setup: (raw) {
+          for (final table in [
+            'player_profiles',
+            'progression_states',
+            'character_sheets',
+          ]) {
+            raw.execute(
+              'CREATE TABLE $table (id INTEGER NOT NULL PRIMARY KEY, '
+              'json TEXT NOT NULL, updated_at INTEGER NOT NULL)',
+            );
+          }
+          for (final table in ['custom_exercises', 'programs']) {
+            raw.execute(
+              'CREATE TABLE $table (id TEXT NOT NULL PRIMARY KEY, '
+              'json TEXT NOT NULL, updated_at INTEGER NOT NULL)',
+            );
+          }
+          raw
+            ..execute(
+              'CREATE TABLE pending_sessions (id TEXT NOT NULL PRIMARY '
+              'KEY, payload_json TEXT NOT NULL, created_at INTEGER NOT '
+              'NULL, attempt_count INTEGER NOT NULL DEFAULT 0)',
+            )
+            ..execute(
+              'CREATE TABLE local_drafts (draft_key TEXT NOT NULL PRIMARY '
+              'KEY, json TEXT NOT NULL, updated_at INTEGER NOT NULL)',
+            )
+            ..execute(
+              'CREATE TABLE planned_sessions (id TEXT NOT NULL PRIMARY '
+              'KEY, program_id TEXT NOT NULL, json TEXT NOT NULL, '
+              'updated_at INTEGER NOT NULL)',
+            )
+            ..execute(
+              'CREATE TABLE completed_sessions (id TEXT NOT NULL PRIMARY '
+              'KEY, started_at INTEGER NOT NULL, json TEXT NOT NULL)',
+            )
+            ..execute(
+              'INSERT INTO character_sheets VALUES '
+              "(1, '{\"race\":\"orc\"}', 0)",
+            )
+            ..userVersion = 6;
+        },
+      ),
+    );
+    addTearDown(database.close);
+
+    expect(await database.readCharacterJson(), '{"race":"orc"}');
+    expect(await database.readInventoryJson(), isNull);
+    await database.saveInventoryJson(
+      '{"owned":["leather_belt"]}',
+      updatedAt: DateTime.utc(2026),
+    );
+    expect(await database.readInventoryJson(), '{"owned":["leather_belt"]}');
+
+    final version = await database
+        .customSelect('PRAGMA user_version')
+        .getSingle();
+    expect(version.read<int>('user_version'), 7);
   });
 }

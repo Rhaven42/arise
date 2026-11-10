@@ -123,9 +123,24 @@ class ProgressionStates extends Table {
 /// - v3 (phase 2) : ajout de `custom_exercises`, `programs` et
 ///   `planned_sessions` ;
 /// - v4 (phase 3) : ajout de `completed_sessions` ;
-/// - v5 (phase 4) : ajout de `progression_states`.
+/// - v5 (phase 4) : ajout de `progression_states` ;
+/// - v6 (phase 6A) : ajout de `character_sheets` ;
+/// - v7 (phase 7) : ajout de `inventory_states`.
 @DataClassName('CharacterSheetRow')
 class CharacterSheets extends Table {
+  IntColumn get id => integer()();
+
+  TextColumn get json => text()();
+
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+/// Inventaire du joueur (une seule ligne, `id` = 1), stocké en JSON.
+@DataClassName('InventoryRow')
+class InventoryStates extends Table {
   IntColumn get id => integer()();
 
   TextColumn get json => text()();
@@ -147,6 +162,7 @@ class CharacterSheets extends Table {
     CompletedSessions,
     ProgressionStates,
     CharacterSheets,
+    InventoryStates,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -156,7 +172,7 @@ class AppDatabase extends _$AppDatabase {
   static const profileRowId = 1;
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -178,6 +194,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 6) {
         await migrator.createTable(characterSheets);
+      }
+      if (from < 7) {
+        await migrator.createTable(inventoryStates);
       }
     },
   );
@@ -208,6 +227,7 @@ class AppDatabase extends _$AppDatabase {
   /// Efface toutes les données du joueur.
   Future<void> eraseAll() {
     return transaction(() async {
+      await delete(inventoryStates).go();
       await delete(characterSheets).go();
       await delete(progressionStates).go();
       await delete(completedSessions).go();
@@ -331,6 +351,54 @@ class AppDatabase extends _$AppDatabase {
         updatedAt: Value(updatedAt.toUtc()),
       ),
     );
+  }
+
+  // --- Inventaire ----------------------------------------------------------
+
+  Stream<String?> watchInventoryJson() {
+    final query = select(inventoryStates)
+      ..where((t) => t.id.equals(profileRowId));
+    return query.watchSingleOrNull().map((row) => row?.json);
+  }
+
+  Future<String?> readInventoryJson() async {
+    final query = select(inventoryStates)
+      ..where((t) => t.id.equals(profileRowId));
+    return (await query.getSingleOrNull())?.json;
+  }
+
+  Future<void> saveInventoryJson(String json, {required DateTime updatedAt}) {
+    return into(inventoryStates).insertOnConflictUpdate(
+      InventoryStatesCompanion(
+        id: const Value(profileRowId),
+        json: Value(json),
+        updatedAt: Value(updatedAt.toUtc()),
+      ),
+    );
+  }
+
+  /// Lit progression et inventaire, applique [change] puis enregistre les
+  /// deux ensemble : un achat ne peut jamais débiter sans livrer.
+  Future<T> updateProgressionAndInventory<T>(
+    Future<({String? progression, String inventory, T result})> Function(
+      String? progression,
+      String? inventory,
+    )
+    change, {
+    required DateTime updatedAt,
+  }) {
+    return transaction(() async {
+      final next = await change(
+        await readProgressionJson(),
+        await readInventoryJson(),
+      );
+      final progression = next.progression;
+      if (progression != null) {
+        await saveProgressionJson(progression, updatedAt: updatedAt);
+      }
+      await saveInventoryJson(next.inventory, updatedAt: updatedAt);
+      return next.result;
+    });
   }
 
   // --- Séances réalisées -------------------------------------------------

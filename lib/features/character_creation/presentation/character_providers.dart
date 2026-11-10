@@ -11,6 +11,9 @@ import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/character_creation/domain/edit_history.dart';
 import 'package:arise/features/character_creation/domain/hair_styles.dart';
 import 'package:arise/features/character_creation/domain/name_rules.dart';
+import 'package:arise/features/inventory/domain/inventory.dart';
+import 'package:arise/features/inventory/domain/inventory_rules.dart';
+import 'package:arise/features/inventory/presentation/inventory_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'character_providers.g.dart';
@@ -148,10 +151,24 @@ class CharacterCreatorController extends _$CharacterCreatorController {
     String name,
   ) => history.replace(history.current.copyWith(name: name));
 
-  void randomize() => edit(
-    (s) =>
-        randomSheet(ref.read(characterRandomProvider), name: s.name, keep: s),
-  );
+  /// Tirage au hasard parmi les coiffures utilisables (les coiffures de la
+  /// boutique doivent avoir été achetées).
+  void randomize() {
+    final inventory = ref.read(inventoryProvider).value ?? const Inventory();
+    final worn = _state?.saved?.hairStyle;
+    edit(
+      (s) => randomSheet(
+        ref.read(characterRandomProvider),
+        name: s.name,
+        keep: s,
+        hairStyles: availableHairStyles(
+          inventory,
+          count: hairStyleCount,
+          worn: worn,
+        ),
+      ),
+    );
+  }
 
   void reset() => edit(
     (s) =>

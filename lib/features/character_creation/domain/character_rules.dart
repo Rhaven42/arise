@@ -84,12 +84,14 @@ CharacterSheet sanitizeSheet(CharacterSheet sheet, {CharacterConfig? config}) {
 /// Palier d'un curseur (0 à 4) pour son libellé.
 int sliderStep(double value) => (value.clamp(0.0, 1.0) * 4).round();
 
-/// Personnage tiré au hasard (le nom, les favoris, la pose et la posture
+/// Personnage tiré au hasard, parmi les coiffures [hairStyles] si elles
+/// sont données (le nom, les favoris, la pose et la posture
 /// sont conservés : ce sont des réglages d'affichage, pas d'apparence).
 CharacterSheet randomSheet(
   Random random, {
   String name = '',
   CharacterSheet? keep,
+  List<int>? hairStyles,
   CharacterConfig? config,
 }) {
   final c = config ?? gameConfig.character;
@@ -113,7 +115,9 @@ CharacterSheet randomSheet(
     heightCm: height,
     skinColor: skins[random.nextInt(skins.length)].color,
     hairColor: hairColors[random.nextInt(hairColors.length)].color,
-    hairStyle: random.nextInt(hairStyleCount) + 1,
+    hairStyle: hairStyles == null || hairStyles.isEmpty
+        ? random.nextInt(hairStyleCount) + 1
+        : hairStyles[random.nextInt(hairStyles.length)],
     faceJaw: face(),
     faceNose: face(),
     faceMouth: face(),
