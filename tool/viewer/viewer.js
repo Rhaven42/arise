@@ -216,7 +216,9 @@ function applyState(state) {
     focusModel = model;
     focusScale = state.scale;
     model.updateMatrixWorld(true);
-    setFocus(focus, new THREE.Box3().setFromObject(model).max.y);
+    // Hauteur du corps seul : les pièces masquées (bâton…) ne comptent pas.
+    const body = model.getObjectByName('body') || model;
+    setFocus(focus, new THREE.Box3().setFromObject(body).max.y);
   }
   return true;
 }
