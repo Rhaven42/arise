@@ -209,18 +209,57 @@ void main() {
     await tester.tap(find.text('Elfe').last);
     await pumpFor(5000);
     await binding.takeScreenshot('25_createur_elfe');
-    await tester.scrollUntilVisible(
-      find.text('Fiche du personnage (JSON)'),
-      300,
-      scrollable: find
-          .descendant(
-            of: find.byKey(CharacterCreatorPage.formKey),
-            matching: find.byType(Scrollable),
-          )
-          .first,
-    );
+    await tester.tap(find.text('Nom & fiche'));
+    await pumpFor(1000);
     await tester.tap(find.text('Fiche du personnage (JSON)'));
     await pumpFor(800);
     await binding.takeScreenshot('26_createur_fiche');
+
+    // Phase 6B : silhouettes, visage, coiffures, poses et éclairages.
+    await tester.tap(find.text('Corps'));
+    await pumpFor(1000);
+    await tester.tap(find.text('Colosse'));
+    await pumpFor(800);
+    Future<void> pick(
+      String menu,
+      String choice, {
+      CreatorTab tab = CreatorTab.body,
+    }) async {
+      final list = find
+          .descendant(
+            of: find.byKey(CharacterCreatorPage.tabKey(tab)),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      await tester.scrollUntilVisible(find.text(menu), 200, scrollable: list);
+      // Remonte le menu au milieu de la liste pour le toucher sans gêne.
+      await tester.drag(list, const Offset(0, -150));
+      await pumpFor(600);
+      await tester.tap(find.text(menu));
+      await pumpFor(800);
+      await tester.tap(find.text(choice).last);
+      await pumpFor(800);
+    }
+
+    await pick('Détendue', 'Héroïque');
+    await pumpFor(2500);
+    await binding.takeScreenshot('27_createur_silhouette_pose');
+    await tester.tap(find.text('Visage'));
+    await pumpFor(800);
+    await pick('Aucune', 'Collier', tab: CreatorTab.face);
+    await pumpFor(2500);
+    await binding.takeScreenshot('28_createur_visage');
+    await tester.tap(find.text('Coiffure'));
+    await pumpFor(1500);
+    await tester.tap(find.text('Longues'));
+    await pumpFor(800);
+    await tester.tap(find.text('10 · Crinière'));
+    await pumpFor(2500);
+    await binding.takeScreenshot('29_createur_coiffures');
+    await tester.tap(find.byTooltip('Éclairage'));
+    await pumpFor(800);
+    await tester.tap(find.text('Nuit'));
+    await pumpFor(2500);
+    await binding.takeScreenshot('30_createur_nuit');
   });
 }

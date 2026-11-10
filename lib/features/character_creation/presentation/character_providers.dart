@@ -4,10 +4,12 @@ import 'dart:math';
 import 'package:arise/core/database/app_database.dart';
 import 'package:arise/core/utils/clock.dart';
 import 'package:arise/features/character_creation/data/drift_character_repository.dart';
+import 'package:arise/features/character_creation/domain/body_presets.dart';
 import 'package:arise/features/character_creation/domain/character_repository.dart';
 import 'package:arise/features/character_creation/domain/character_rules.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/character_creation/domain/edit_history.dart';
+import 'package:arise/features/character_creation/domain/hair_styles.dart';
 import 'package:arise/features/character_creation/domain/name_rules.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -30,7 +32,12 @@ Random characterRandom(Ref ref) => Random();
 
 /// État du créateur : historique d'édition et dernier contrôle du nom.
 class CreatorState {
-  const CreatorState({required this.history, this.nameIssue, this.saved});
+  const CreatorState({
+    required this.history,
+    required this.origin,
+    this.nameIssue,
+    this.saved,
+  });
 
   final EditHistory<CharacterSheet> history;
   final NameIssue? nameIssue;
@@ -40,6 +47,9 @@ class CreatorState {
 
   CharacterSheet get sheet => history.current;
 
+  /// Fiche d'ouverture du créateur, pour la comparaison avant / après.
+  final CharacterSheet origin;
+
   CreatorState copyWith({
     EditHistory<CharacterSheet>? history,
     NameIssue? nameIssue,
@@ -47,6 +57,7 @@ class CreatorState {
     CharacterSheet? saved,
   }) => CreatorState(
     history: history ?? this.history,
+    origin: origin,
     nameIssue: clearIssue ? null : nameIssue ?? this.nameIssue,
     saved: saved ?? this.saved,
   );
@@ -61,7 +72,11 @@ class CharacterCreatorController extends _$CharacterCreatorController {
     final saved = await repository.read();
     final draft = await repository.readDraft();
     final start = draft ?? saved ?? defaultSheet();
-    return CreatorState(history: EditHistory.start(start), saved: saved);
+    return CreatorState(
+      history: EditHistory.start(start),
+      origin: saved ?? start,
+      saved: saved,
+    );
   }
 
   CreatorState? get _state => state.value;
@@ -133,10 +148,32 @@ class CharacterCreatorController extends _$CharacterCreatorController {
     String name,
   ) => history.replace(history.current.copyWith(name: name));
 
-  void randomize() =>
-      edit((s) => randomSheet(ref.read(characterRandomProvider), name: s.name));
+  void randomize() => edit(
+    (s) =>
+        randomSheet(ref.read(characterRandomProvider), name: s.name, keep: s),
+  );
 
-  void reset() => edit((s) => defaultSheet(sex: s.sex).copyWith(name: s.name));
+  void reset() => edit(
+    (s) =>
+        defaultSheet(sex: s.sex)
+            .copyWith(name: s.name, favoriteHairStyles: s.favoriteHairStyles),
+  );
+
+  void applyBodyPreset(BodyPreset preset) =>
+      edit((s) => applyPreset(s, preset));
+
+  /// Étoile d'une coiffure ; renvoie le résultat pour prévenir quand la
+  /// liste des favorites est pleine. Hors historique (préférence, pas
+  /// apparence).
+  FavoriteToggle toggleFavorite(int style) {
+    final current = _state;
+    if (current == null) return FavoriteToggle.full;
+    final toggled = toggleFavoriteHairStyle(current.sheet, style);
+    if (toggled.result != FavoriteToggle.full) {
+      _set(current.history.replace(toggled.sheet));
+    }
+    return toggled.result;
+  }
 
   /// Valide le personnage ; renvoie `false` si le nom est refusé.
   Future<bool> confirm() async {

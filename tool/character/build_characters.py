@@ -24,7 +24,7 @@ import os
 
 import bmesh
 import bpy
-from mathutils import Vector
+from mathutils import Quaternion, Vector
 
 _MPFB = "bl_ext.blender_org.mpfb.services."
 
@@ -37,14 +37,33 @@ RACES = {
     "orc": {"height": 0.65, "proportions": 0.35},
 }
 
-# États de morphologie : (nom de la forme, poids, musculature).
+# États de morphologie : (nom de la forme, poids, musculature, cibles MPFB).
+# Le visage utilise des cibles MPFB à pleine valeur ; chaque curseur pilote
+# une forme « basse » et une forme « haute ».
+FACE_TARGETS = {
+    "face_jaw": (["chin-width-decr"], ["chin-width-incr"]),
+    "face_nose": (["nose-volume-decr"], ["nose-volume-incr"]),
+    "face_mouth": (["mouth-scale-horiz-decr"], ["mouth-scale-horiz-incr"]),
+    "face_cheeks": (
+        ["l-cheek-bones-decr", "r-cheek-bones-decr"],
+        ["l-cheek-bones-incr", "r-cheek-bones-incr"],
+    ),
+    "face_ears": (
+        ["l-ear-scale-decr", "r-ear-scale-decr"],
+        ["l-ear-scale-incr", "r-ear-scale-incr"],
+    ),
+}
+
 STATES = [
-    ("base", 0.5, 0.5),
-    ("corp_low", 0.0, 0.5),
-    ("corp_high", 1.0, 0.5),
-    ("musc_low", 0.5, 0.0),
-    ("musc_high", 0.5, 1.0),
+    ("base", 0.5, 0.5, []),
+    ("corp_low", 0.0, 0.5, []),
+    ("corp_high", 1.0, 0.5, []),
+    ("musc_low", 0.5, 0.0, []),
+    ("musc_high", 0.5, 1.0, []),
 ]
+for _name, (_low, _high) in FACE_TARGETS.items():
+    STATES.append((_name + "_low", 0.5, 0.5, _low))
+    STATES.append((_name + "_high", 0.5, 0.5, _high))
 
 HAIR_STYLES = [
     "hair_01",  # court
@@ -68,6 +87,11 @@ COLORS = {
     "wool": (0.07, 0.04, 0.022, 1.0),
     "leather": (0.035, 0.018, 0.01, 1.0),
     "rope": (0.30, 0.20, 0.09, 1.0),
+    "sclera": (0.85, 0.83, 0.80, 1.0),
+    "iris": (0.25, 0.14, 0.06, 1.0),
+    "pupil": (0.01, 0.01, 0.01, 1.0),
+    "brow": (0.12, 0.03, 0.01, 1.0),
+    "beard": (0.12, 0.03, 0.01, 1.0),
 }
 
 
@@ -76,19 +100,19 @@ def _services():
     return hs
 
 
-def _material(name):
+def _material(name, color=None):
     mat = bpy.data.materials.get(name)
     if mat is None:
         mat = bpy.data.materials.new(name)
     mat.use_nodes = True
     bsdf = next(n for n in mat.node_tree.nodes if n.bl_idname == "ShaderNodeBsdfPrincipled")
-    bsdf.inputs["Base Color"].default_value = COLORS[name]
+    bsdf.inputs["Base Color"].default_value = color or COLORS[name]
     bsdf.inputs["Roughness"].default_value = 0.45 if name in ("skin", "hair", "tusk") else 0.9
     mat.use_backface_culling = False
     return mat
 
 
-def _state_coords(sex, race, weight, muscle):
+def _state_coords(sex, race, weight, muscle, targets=()):
     """Coordonnées (formes MPFB appliquées) du maillage complet, aides comprises."""
     hs = _services()
     macro = {
@@ -103,6 +127,9 @@ def _state_coords(sex, race, weight, muscle):
         "race": {"asian": 0.33, "caucasian": 0.33, "african": 0.33},
     }
     human = hs.create_human(macro_detail_dict=macro)
+    ts = importlib.import_module(_MPFB + "targetservice").TargetService
+    for target in targets:
+        ts.load_target(human, ts.target_full_path(target), weight=1.0)
     for mod in human.modifiers:
         mod.show_viewport = False
     evaluated = human.evaluated_get(bpy.context.evaluated_depsgraph_get())
@@ -158,7 +185,7 @@ def _race_deform(race, coords, groups):
     return out
 
 
-def _extract(template, keep, name, states, offset=0.0, flare=None, normal_source=None):
+def _extract(template, keep, name, states, offset=0.0, flare=None, refine=None):
     """Crée un objet à partir des faces de [keep], avec une forme par état."""
     bm = bmesh.new()
     bm.from_mesh(template)
@@ -201,10 +228,22 @@ def _extract(template, keep, name, states, offset=0.0, flare=None, normal_source
     for v, co in zip(mesh.vertices, positions(base)):
         v.co = co
     obj.shape_key_add(name="Basis")
-    for state_name, _, _ in STATES[1:]:
+    for state_name, *_ in STATES[1:]:
         key = obj.shape_key_add(name=state_name)
         for i, co in enumerate(positions(states[state_name])):
             key.data[i].co = co
+    if refine is not None:
+        # Contour plus net pour les petites pièces (sourcils, barbes,
+        # maquillages) : on subdivise puis on retire les faces hors zone.
+        # Les formes de morphologie sont interpolées par bmesh.
+        bm = bmesh.new()
+        bm.from_mesh(mesh)
+        bmesh.ops.subdivide_edges(bm, edges=bm.edges[:], cuts=3, use_grid_fill=True)
+        outside = [f for f in bm.faces if not refine(f.calc_center_median())]
+        bmesh.ops.delete(bm, geom=outside, context="FACES")
+        bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
+        bm.to_mesh(mesh)
+        bm.free()
     for poly in mesh.polygons:
         poly.use_smooth = True
     return obj
@@ -256,7 +295,7 @@ def _ring(name, band, states, gap, radius, segments=40, sides=6):
     obj = bpy.data.objects.new(name, mesh)
     bpy.context.collection.objects.link(obj)
     obj.shape_key_add(name="Basis")
-    for state_name, _, _ in STATES[1:]:
+    for state_name, *_ in STATES[1:]:
         key = obj.shape_key_add(name=state_name)
         for i, co in enumerate(ring_points(states[state_name])):
             key.data[i].co = co
@@ -363,9 +402,351 @@ def _hair_styles(template, groups, states, hair_mat):
     return styles
 
 
+# --- Visage : yeux, sourcils, barbes, maquillages ---------------------------
+
+EYEBROW_STYLES = {
+    # nom : (bas, haut, demi-largeur, arc, décalage vers le nez)
+    "brow_01": (0.013, 0.022, 0.026, 0.003, 0.0),  # fins
+    "brow_02": (0.011, 0.026, 0.027, 0.002, 0.0),  # épais
+    "brow_03": (0.013, 0.023, 0.026, 0.007, 0.0),  # arqués
+    "brow_04": (0.012, 0.022, 0.028, 0.0, 0.0),  # droits
+    "brow_05": (0.012, 0.022, 0.017, 0.002, 0.008),  # courts
+    "brow_06": (0.010, 0.028, 0.031, 0.003, 0.0),  # broussailleux
+}
+
+MAKEUP_COLORS = {
+    "makeup_01": (0.02, 0.015, 0.015, 1.0),  # khôl
+    "makeup_02": (0.45, 0.04, 0.06, 1.0),  # lèvres
+    "makeup_03": (0.70, 0.30, 0.30, 1.0),  # fard à joues
+    "makeup_04": (0.55, 0.22, 0.05, 1.0),  # peinture de guerre
+}
+
+
+def _faces_where(template, coords, candidates, test):
+    """Sommets des faces dont le centre (état de base) vérifie [test]."""
+    keep = set()
+    for poly in template.polygons:
+        verts = poly.vertices
+        if not all(v in candidates for v in verts):
+            continue
+        n = len(verts)
+        c = Vector((
+            sum(coords[v].x for v in verts) / n,
+            sum(coords[v].y for v in verts) / n,
+            sum(coords[v].z for v in verts) / n,
+        ))
+        if test(c):
+            keep.update(verts)
+    return keep
+
+
+def _landmarks(coords, groups):
+    """Repères du visage, calculés sur l'état de base."""
+
+    def center(name):
+        pts = [coords[i] for i in groups.get(name, set())]
+        n = max(len(pts), 1)
+        return Vector((sum(p.x for p in pts) / n, sum(p.y for p in pts) / n, sum(p.z for p in pts) / n))
+
+    eye_l, eye_r = center("helper-l-eye"), center("helper-r-eye")
+    eye_radius = max((coords[i] - eye_l).length for i in groups.get("helper-l-eye", {0}))
+    lips = [coords[i] for i in groups.get("lips", set())]
+    lips_center = center("lips")
+    lips_bottom = min(p.z for p in lips)
+    lips_top = max(p.z for p in lips)
+    head = [coords[i] for i in groups["body"] if coords[i].z > lips_bottom - 0.09]
+    chin = min((p for p in head if abs(p.x) < 0.01 and p.y < lips_center.y + 0.03), key=lambda p: p.z)
+    ears = [coords[i] for i in groups.get("ears", set())]
+    ear_x = min(abs(p.x) for p in ears) if ears else 0.07
+    ear_y = sum(p.y for p in ears) / max(len(ears), 1) if ears else 0.0
+    ear_z = sum(p.z for p in ears) / max(len(ears), 1) if ears else eye_l.z
+    return {
+        "eyes": (eye_l, eye_r),
+        "eye_radius": eye_radius,
+        "lips_center": lips_center,
+        "lips_bottom": lips_bottom,
+        "lips_top": lips_top,
+        "chin": chin,
+        "ear_x": ear_x,
+        "ear_y": ear_y,
+        "ear_z": ear_z,
+    }
+
+
+def _front(c, marks):
+    # Face avant de la tête : devant les oreilles.
+    return c.y < marks["ear_y"] - 0.01
+
+
+def _eye_parts(template, groups, states, mats):
+    """Yeux en trois matériaux : blanc, iris (couleur réglable) et pupille."""
+    co = states["base"]
+    objs = []
+    eyes = []
+    for side in ("helper-l-eye", "helper-r-eye"):
+        verts = groups.get(side, set())
+        if verts:
+            n = len(verts)
+            c = Vector((sum(co[i].x for i in verts) / n, sum(co[i].y for i in verts) / n, sum(co[i].z for i in verts) / n))
+            eyes.append((verts, c))
+
+    def zone(limit):
+        keep = set()
+        for verts, c in eyes:
+            # Le regard est dirigé vers -Y (l'avant du corps).
+            keep |= _faces_where(template, co, verts, lambda p, c=c: -(p - c).normalized().y > limit)
+        return keep
+
+    all_eyes = set().union(*(v for v, _ in eyes)) if eyes else set()
+    for name, keep, offset, mat in (
+        ("eye_sclera", all_eyes, 0.0, "sclera"),
+        ("eye_iris", zone(0.80), 0.0004, "iris"),
+        ("eye_pupil", zone(0.95), 0.0008, "pupil"),
+    ):
+        if not keep:
+            continue
+        obj = _extract(template, keep, name, states, offset=offset)
+        obj.data.materials.append(mats[mat])
+        objs.append(obj)
+    return objs
+
+
+def _eyebrows(template, groups, states, marks, mat):
+    co = states["base"]
+    body = groups["body"]
+    objs = []
+    for name, (low, high, half, arch, inner) in EYEBROW_STYLES.items():
+
+        def test(c, low=low, high=high, half=half, arch=arch, inner=inner):
+            if not _front(c, marks):
+                return False
+            for eye in marks["eyes"]:
+                cx = eye.x - (inner if eye.x > 0 else -inner)
+                dx = (c.x - cx) / half
+                if abs(dx) > 1 or c.y > eye.y:
+                    continue
+                lift = arch * (1 - dx * dx)
+                if eye.z + low + lift < c.z < eye.z + high + lift:
+                    return True
+            return False
+
+        keep = _faces_where(template, co, body, test)
+        if not keep:
+            continue
+        obj = _extract(template, keep, name, states, offset=0.0015)
+        obj.data.materials.append(mat)
+        objs.append(obj)
+    return objs
+
+
+def _beards(template, groups, states, marks, mat):
+    co = states["base"]
+    body = groups["body"]
+    lc = marks["lips_center"]
+    lb, lt = marks["lips_bottom"], marks["lips_top"]
+    chin = marks["chin"]
+    ex = marks["ear_x"]
+    lips = groups.get("lips", set())
+
+    def face(c):
+        return _front(c, marks) and abs(c.x) < ex + 0.005
+
+    def full(c):
+        return face(c) and chin.z - 0.02 < c.z < lt + 0.012 and not (abs(c.x) < 0.028 and lb - 0.004 < c.z < lt + 0.004)
+
+    styles = {
+        "beard_01": (lambda c: full(c) and c.z < lc.z + 0.004 or (full(c) and abs(c.x) < 0.03 and c.z > lt), 0.002),
+        "beard_02": (lambda c: face(c) and abs(c.x) < 0.026 and chin.z - 0.01 < c.z < lb - 0.003, 0.0025),
+        "beard_03": (lambda c: face(c) and abs(c.x) < 0.032 and lt + 0.002 < c.z < lt + 0.016, 0.002),
+        "beard_04": (lambda c: full(c) and c.z < lb - 0.012, 0.002),
+        "beard_05": (lambda c: full(c), 0.006),
+        "beard_06": (lambda c: _front(c, marks) and ex - 0.012 < abs(c.x) < ex + 0.004 and marks["ear_z"] - 0.03 < c.z < marks["ear_z"] + 0.012 and c.y < marks["ear_y"] - 0.004, 0.002),
+    }
+    objs = []
+    for name, (test, offset) in styles.items():
+        keep = _faces_where(template, co, body - lips, test)
+        if not keep:
+            continue
+        obj = _extract(template, keep, name, states, offset=offset)
+        if name == "beard_05":
+            # Barbe longue : une pointe qui descend sous le menton.
+            tip = _tube(name + "_tip", [(0, chin.y - 0.004, chin.z + 0.01), (0, chin.y - 0.008, chin.z - 0.03), (0, chin.y - 0.004, chin.z - 0.07)], [0.028, 0.022, 0.006])
+            obj = _join_rigid(obj, [tip])
+            obj.name = name
+        obj.data.materials.clear()
+        obj.data.materials.append(mat)
+        objs.append(obj)
+    return objs
+
+
+def _makeups(template, groups, states, marks):
+    co = states["base"]
+    body = groups["body"]
+    r = marks["eye_radius"]
+    objs = []
+    tests = {
+        "makeup_01": lambda c: any(_front(c, marks) and r + 0.0005 < ((c.x - e.x) ** 2 + (c.z - e.z) ** 2) ** 0.5 < r + 0.005 for e in marks["eyes"]),
+        "makeup_02": None,
+        "makeup_03": lambda c: any(_front(c, marks) and ((c.x - e.x * 1.15) ** 2 + (c.z - (e.z - 0.028)) ** 2) ** 0.5 < 0.009 for e in marks["eyes"]),
+        "makeup_04": lambda c: _front(c, marks) and abs(c.x) < abs(marks["eyes"][0].x) + 0.03 and abs(c.z - marks["eyes"][0].z) < 0.007 and all(((c.x - e.x) ** 2 + (c.z - e.z) ** 2) ** 0.5 > r + 0.0005 for e in marks["eyes"]),
+    }
+    for name, test in tests.items():
+        keep = set(groups.get("lips", set())) if test is None else _faces_where(template, co, body, test)
+        if not keep:
+            continue
+        obj = _extract(template, keep, name, states, offset=0.0006)
+        obj.data.materials.append(_material(name, MAKEUP_COLORS[name]))
+        objs.append(obj)
+    return objs
+
+
+# --- Squelette et poses -------------------------------------------------------
+
+# Rotations (os, axe dans le repère du corps au repos, degrés). L'axe X fait
+# avancer un membre vers l'arrière pour les bras et les jambes, et pencher le
+# buste ou la tête vers l'avant ; l'axe Y rapproche le bras gauche du corps.
+POSES = {
+    "pose_a": [],
+    "pose_relaxed": [
+        ("upperarm_l", (0, 1, 0), 40), ("upperarm_r", (0, -1, 0), 40),
+        ("lowerarm_l", (1, 0, 0), -15), ("lowerarm_r", (1, 0, 0), -15),
+        ("spine_03", (1, 0, 0), 3), ("head", (1, 0, 0), 3),
+    ],
+    "pose_heroic": [
+        ("upperarm_l", (0, 1, 0), 24), ("upperarm_r", (0, -1, 0), 24),
+        ("upperarm_l", (1, 0, 0), 8), ("upperarm_r", (1, 0, 0), 8),
+        ("lowerarm_l", (1, 0, 0), -12), ("lowerarm_r", (1, 0, 0), -12),
+        ("spine_03", (1, 0, 0), -8), ("head", (1, 0, 0), -6),
+        ("thigh_l", (0, -1, 0), 6), ("thigh_r", (0, 1, 0), 6),
+    ],
+    "pose_combat": [
+        ("upperarm_l", (0, 1, 0), 55), ("upperarm_r", (0, -1, 0), 55),
+        ("upperarm_l", (1, 0, 0), -30), ("upperarm_r", (1, 0, 0), -25),
+        ("lowerarm_l", (0, 0, -1), 72), ("lowerarm_r", (0, 0, 1), 78),
+        ("spine_02", (1, 0, 0), 8), ("head", (1, 0, 0), -5),
+        ("thigh_l", (1, 0, 0), -16), ("calf_l", (1, 0, 0), 18),
+        ("thigh_r", (1, 0, 0), 12), ("calf_r", (1, 0, 0), 22),
+    ],
+}
+
+# Postures et respiration, ajoutées par-dessus la pose (animations additives).
+POSTURES = {
+    "posture_neutral": [],
+    "posture_upright": [("spine_03", (1, 0, 0), -5), ("neck_01", (1, 0, 0), -4)],
+    "posture_slouched": [("spine_02", (1, 0, 0), 9), ("spine_03", (1, 0, 0), 9), ("neck_01", (1, 0, 0), 8)],
+    "posture_arched": [("spine_03", (1, 0, 0), -12), ("head", (1, 0, 0), -6)],
+}
+
+
+def _rotate(arm, name, axis, degrees):
+    pose_bone = arm.pose.bones[name]
+    pose_bone.rotation_mode = "QUATERNION"
+    bone = arm.data.bones[name]
+    local = (bone.matrix_local.inverted().to_3x3() @ Vector(axis)).normalized()
+    pose_bone.rotation_quaternion = Quaternion(local, math.radians(degrees)) @ pose_bone.rotation_quaternion
+
+
+def _reset_pose(arm):
+    for pose_bone in arm.pose.bones:
+        pose_bone.rotation_mode = "QUATERNION"
+        pose_bone.rotation_quaternion = (1, 0, 0, 0)
+        pose_bone.location = (0, 0, 0)
+
+
+def _key_all(arm, frame):
+    for pose_bone in arm.pose.bones:
+        pose_bone.keyframe_insert("rotation_quaternion", frame=frame)
+
+
+def _make_actions(arm):
+    arm.animation_data_create()
+    actions = []
+    for name, ops in {**POSES, **POSTURES}.items():
+        _reset_pose(arm)
+        action = bpy.data.actions.new(name)
+        arm.animation_data.action = action
+        for bone, axis, degrees in ops:
+            _rotate(arm, bone, axis, degrees)
+        _key_all(arm, 1)
+        _key_all(arm, 2)
+        action.use_fake_user = True
+        actions.append(action)
+    # Respiration : la poitrine se soulève légèrement, en boucle sur 4 s.
+    action = bpy.data.actions.new("breath")
+    arm.animation_data.action = action
+    for frame, amount in ((1, 0.0), (49, 1.0), (97, 0.0)):
+        _reset_pose(arm)
+        _rotate(arm, "spine_03", (1, 0, 0), -2.2 * amount)
+        _rotate(arm, "clavicle_l", (0, 1, 0), -1.5 * amount)
+        _rotate(arm, "clavicle_r", (0, -1, 0), -1.5 * amount)
+        _key_all(arm, frame)
+    action.use_fake_user = True
+    actions.append(action)
+    _reset_pose(arm)
+    arm.animation_data.action = None
+    # Chaque action devient une piste NLA pour être exportée séparément.
+    for action in actions:
+        track = arm.animation_data.nla_tracks.new()
+        track.name = action.name
+        track.strips.new(action.name, 1, action)
+        track.mute = True
+    return actions
+
+
+def _rig_and_skin(sex, race, objects, rigid):
+    """Ajoute le squelette MPFB « game_engine » et les poids de peau."""
+    hs = _services()
+    macro = {
+        "gender": SEXES[sex], "age": 0.5, "muscle": 0.5, "weight": 0.5,
+        "proportions": RACES[race]["proportions"], "height": RACES[race]["height"],
+        "cupsize": 0.5, "firmness": 0.5,
+        "race": {"asian": 0.33, "caucasian": 0.33, "african": 0.33},
+    }
+    source = hs.create_human(macro_detail_dict=macro)
+    hs.add_builtin_rig(source, "game_engine")
+    arm = source.parent if source.parent and source.parent.type == "ARMATURE" else next(o for o in bpy.data.objects if o.type == "ARMATURE")
+    arm.name = "rig"
+    for mod in list(source.modifiers):
+        if mod.type == "MASK":
+            mod.show_viewport = False
+    for obj in objects:
+        obj.vertex_groups.clear()
+        if obj.name in rigid:
+            group = obj.vertex_groups.new(name="head")
+            group.add(range(len(obj.data.vertices)), 1.0, "REPLACE")
+        else:
+            bpy.ops.object.select_all(action="DESELECT")
+            obj.select_set(True)
+            source.select_set(True)
+            bpy.context.view_layer.objects.active = source
+            bpy.ops.object.data_transfer(
+                use_reverse_transfer=False,
+                data_type="VGROUP_WEIGHTS",
+                vert_mapping="POLYINTERP_NEAREST",
+                layers_select_src="ALL",
+                layers_select_dst="NAME",
+            )
+            bones = {b.name for b in arm.data.bones}
+            for group in list(obj.vertex_groups):
+                if group.name not in bones:
+                    obj.vertex_groups.remove(group)
+        mod = obj.modifiers.new("rig", "ARMATURE")
+        mod.object = arm
+        obj.parent = arm
+    bpy.data.objects.remove(source, do_unlink=True)
+    _make_actions(arm)
+    return arm
+
+
+
 def _clear_scene():
     for obj in list(bpy.data.objects):
         bpy.data.objects.remove(obj, do_unlink=True)
+    for action in list(bpy.data.actions):
+        bpy.data.actions.remove(action)
+    for armature in list(bpy.data.armatures):
+        if armature.users == 0:
+            bpy.data.armatures.remove(armature)
     for collection in (bpy.data.meshes, bpy.data.curves, bpy.data.cameras, bpy.data.lights):
         for block in list(collection):
             if block.users == 0:
@@ -377,8 +758,8 @@ def build(sex, race, out_dir):
     states = {}
     groups = None
     template = None
-    for state_name, weight, muscle in STATES:
-        coords, membership, mesh = _state_coords(sex, race, weight, muscle)
+    for state_name, weight, muscle, targets in STATES:
+        coords, membership, mesh = _state_coords(sex, race, weight, muscle, targets)
         groups = groups or membership
         template = template or mesh
         states[state_name] = _race_deform(race, coords, groups)
@@ -388,9 +769,12 @@ def build(sex, race, out_dir):
 
     body = _extract(template, groups["body"], "body", states)
     body.data.materials.append(mats["skin"])
-    eyes = groups.get("helper-l-eye", set()) | groups.get("helper-r-eye", set())
-    eye_obj = _extract(template, eyes, "eyes", states)
-    eye_obj.data.materials.append(mats["eyes"])
+    marks = _landmarks(states["base"], groups)
+    _eye_parts(template, groups, states, mats)
+    _eyebrows(template, groups, states, marks, mats["brow"])
+    if sex == "male":
+        _beards(template, groups, states, marks, mats["beard"])
+    _makeups(template, groups, states, marks)
 
     tights = groups["helper-tights"]
     co = states["base"]
@@ -400,7 +784,7 @@ def build(sex, race, out_dir):
     x = {i: abs(co[i].x) / height for i in tights}
     legs = {i for i in tights if z[i] < 0.39 or x[i] < 0.138}
     pieces = [
-        ("outfit_tunic", {i for i in tights if 0.585 < z[i] < 0.86 and x[i] < 0.157}, 0.014, None, "linen"),
+        ("outfit_tunic", {i for i in tights if 0.585 < z[i] < 0.835 and x[i] < 0.157}, 0.014, None, "linen"),
         ("outfit_pants", {i for i in legs if 0.17 < z[i] < 0.62}, 0.008, None, "wool"),
         ("outfit_boots", {i for i in tights if z[i] < 0.207}, 0.012, None, "leather"),
     ]
@@ -443,6 +827,10 @@ def build(sex, race, out_dir):
     _hair_styles(template, groups, states, mats["hair"])
     bpy.data.meshes.remove(template)
 
+    meshes = [o for o in bpy.data.objects if o.type == "MESH"]
+    rigid = {o.name for o in meshes if o.name.startswith(("hair_", "tusks", "eye_"))}
+    _rig_and_skin(sex, race, meshes, rigid)
+
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, f"{race}_{sex}.glb")
     bpy.ops.object.select_all(action="SELECT")
@@ -456,6 +844,10 @@ def build(sex, race, out_dir):
         export_materials="EXPORT",
         export_texcoords=False,
         export_yup=True,
+        export_skins=True,
+        export_animations=True,
+        export_animation_mode="NLA_TRACKS",
+        export_try_sparse_sk=True,
     )
     return path
 

@@ -1284,5 +1284,122 @@
     }
   },
   "characterPreviewLoading": "Le Système façonne ton héros…",
-  "characterPreviewError": "Le rendu 3D n'a pas pu s'afficher sur cet appareil. Tes choix restent enregistrés."
+  "characterPreviewError": "Le rendu 3D n'a pas pu s'afficher sur cet appareil. Tes choix restent enregistrés.",
+  "characterTabBody": "Corps",
+  "characterTabFace": "Visage",
+  "characterTabHair": "Coiffure",
+  "characterTabSheet": "Nom & fiche",
+  "characterPresets": "Silhouettes",
+  "characterPresetsHint": "Un point de départ, ajustable ensuite avec les curseurs.",
+  "characterPresetName": "{id, select, female_delicate{Délicate} female_slender{Svelte} female_athletic{Athlétique} female_swimmer{Nageuse} female_sprinter{Sprinteuse} female_muscular{Musclée} female_bodybuilder{Culturiste} female_warrior{Guerrière} female_round{Ronde} female_sturdy{Costaude} female_generous{Généreuse} female_hourglass{Sablier} male_thin{Fin} male_slender{Svelte} male_athletic{Athlétique} male_swimmer{Nageur} male_sprinter{Sprinteur} male_muscular{Musclé} male_bodybuilder{Culturiste} male_colossus{Colosse} male_robust{Robuste} male_stocky{Costaud} male_imposing{Imposant} male_v_shape{En V} other{?}}",
+  "@characterPresetName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "characterPose": "Pose",
+  "characterPosture": "Posture",
+  "characterPoseName": "{id, select, a{En A} relaxed{Détendue} heroic{Héroïque} combat{Combat} other{?}}",
+  "@characterPoseName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "characterPostureName": "{id, select, neutral{Neutre} upright{Droite} slouched{Voûtée} arched{Bombée} other{?}}",
+  "@characterPostureName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "characterFaceJaw": "Mâchoire",
+  "characterFaceNose": "Nez",
+  "characterFaceMouth": "Bouche",
+  "characterFaceCheeks": "Pommettes",
+  "characterFaceEars": "Oreilles",
+  "characterFaceStep": "{step, select, s0{Très fine} s1{Fine} s2{Moyenne} s3{Marquée} s4{Très marquée} other{?}}",
+  "@characterFaceStep": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "characterEyeColor": "Couleur des yeux",
+  "characterEyeColorName": "{id, select, dark_brown{Brun foncé} brown{Marron} hazel{Noisette} green{Vert} blue{Bleu} grey{Gris} amber{Ambre} violet{Violet} other{?}}",
+  "@characterEyeColorName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "characterEyebrows": "Sourcils",
+  "characterEyebrowName": "{id, select, b1{Fins} b2{Épais} b3{Arqués} b4{Droits} b5{Courts} b6{Broussailleux} other{?}}",
+  "@characterEyebrowName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "characterBeard": "Barbe",
+  "characterBeardName": "{id, select, b0{Aucune} b1{Collier} b2{Bouc} b3{Moustache} b4{Courte} b5{Longue tressée} b6{Favoris} other{?}}",
+  "@characterBeardName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "characterBeardColor": "Couleur de la barbe",
+  "characterBeardColorSame": "Comme les cheveux",
+  "characterMakeup": "Maquillage",
+  "characterMakeupName": "{id, select, m0{Aucun} m1{Khôl} m2{Lèvres} m3{Joues} m4{Peinture de guerre} other{?}}",
+  "@characterMakeupName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "characterHairCategory": "Famille",
+  "characterHairCategoryName": "{id, select, favorites{Favorites} short{Courtes} tied{Attachées} long{Longues} other{?}}",
+  "@characterHairCategoryName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "characterHairFavoritesEmpty": "Aucune favorite : touche l'étoile d'une coiffure pour la garder sous la main.",
+  "characterFavoriteAdd": "Ajouter aux favorites",
+  "characterFavoriteRemove": "Retirer des favorites",
+  "characterFavoritesFull": "Tu as déjà {max} coiffures favorites. Retires-en une d'abord.",
+  "@characterFavoritesFull": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "characterLighting": "Éclairage",
+  "characterLightingName": "{id, select, day{Jour} night{Nuit} tavern{Taverne} other{?}}",
+  "@characterLightingName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "characterBeforeAfter": "Avant / après",
+  "characterShowingBefore": "Aperçu : avant tes changements",
+  "characterShare": "Partager une capture",
+  "characterShareFailed": "La capture n'est pas prête. Réessaie dans un instant.",
+  "characterSnapshotFileName": "arise_heros.png"
 }

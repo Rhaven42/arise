@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:arise/features/avatar/domain/character_appearance.dart';
+import 'package:arise/features/avatar/domain/character_scene.dart';
 import 'package:arise/features/avatar/presentation/character_renderer.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/foundation.dart';
@@ -16,17 +17,33 @@ class WebViewCharacterRenderer implements CharacterRenderer {
   const WebViewCharacterRenderer();
 
   @override
-  Widget build({required CharacterAppearance appearance, Key? key}) =>
-      _WebViewCharacter(appearance: appearance, key: key);
+  Widget build({
+    required CharacterAppearance appearance,
+    CharacterScene scene = const CharacterScene(),
+    CharacterSnapshotController? snapshots,
+    Key? key,
+  }) => _WebViewCharacter(
+    appearance: appearance,
+    scene: scene,
+    snapshots: snapshots,
+    key: key,
+  );
 }
 
 /// Taille des morceaux de modèle envoyés à la vue web (caractères base64).
 const int _chunkLength = 262144;
 
 class _WebViewCharacter extends StatefulWidget {
-  const _WebViewCharacter({required this.appearance, super.key});
+  const _WebViewCharacter({
+    required this.appearance,
+    required this.scene,
+    this.snapshots,
+    super.key,
+  });
 
   final CharacterAppearance appearance;
+  final CharacterScene scene;
+  final CharacterSnapshotController? snapshots;
 
   @override
   State<_WebViewCharacter> createState() => _WebViewCharacterState();
@@ -39,12 +56,41 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
   bool _ready = false;
   bool _failed = false;
   bool _shown = false;
+  Completer<Uint8List?>? _pendingCapture;
 
   @override
   void initState() {
     super.initState();
     _controller = WebViewController();
+    widget.snapshots?.handler = _capture;
     unawaited(_setUp());
+  }
+
+  @override
+  void dispose() {
+    if (widget.snapshots?.handler == _capture) widget.snapshots?.handler = null;
+    _pendingCapture?.complete(null);
+    super.dispose();
+  }
+
+  Future<Uint8List?> _capture() async {
+    if (!_ready || !_shown) return null;
+    final pending = _pendingCapture;
+    if (pending != null) return await pending.future;
+    final completer = _pendingCapture = Completer<Uint8List?>();
+    try {
+      await _controller.runJavaScript('arise.capture()');
+    } on Object {
+      _pendingCapture = null;
+      return null;
+    }
+    return await completer.future.timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        _pendingCapture = null;
+        return null;
+      },
+    );
   }
 
   Future<void> _setUp() async {
@@ -60,7 +106,16 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
   @override
   void didUpdateWidget(covariant _WebViewCharacter oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.appearance != widget.appearance) unawaited(_sync());
+    if (oldWidget.snapshots != widget.snapshots) {
+      if (oldWidget.snapshots?.handler == _capture) {
+        oldWidget.snapshots?.handler = null;
+      }
+      widget.snapshots?.handler = _capture;
+    }
+    if (oldWidget.appearance != widget.appearance ||
+        oldWidget.scene != widget.scene) {
+      unawaited(_sync());
+    }
   }
 
   void _onMessage(JavaScriptMessage message) {
@@ -81,6 +136,19 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
         unawaited(_sync());
       case 'applied':
         if (mounted && !_shown) setState(() => _shown = true);
+      case 'capture':
+        final completer = _pendingCapture;
+        _pendingCapture = null;
+        if (completer == null || completer.isCompleted) return;
+        final url = '${data['data']}';
+        final comma = url.indexOf(',');
+        try {
+          completer.complete(
+            comma < 0 ? null : base64Decode(url.substring(comma + 1)),
+          );
+        } on FormatException {
+          completer.complete(null);
+        }
       case 'error':
         _loading = null;
         if (mounted) setState(() => _failed = true);
@@ -116,6 +184,15 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
         'skinColor': _hex(appearance.skinColor),
         'hairColor': _hex(appearance.hairColor),
         'hairNode': appearance.hairStyleId,
+        'eyeColor': _hex(appearance.eyeColor),
+        'beardColor': _hex(appearance.beardColor),
+        'browNode': appearance.eyebrowId,
+        'beardNode': appearance.beardId,
+        'makeupNode': appearance.makeupId,
+        'pose': appearance.poseId,
+        'posture': appearance.postureId,
+        'lighting': widget.scene.lighting.name,
+        'focus': widget.scene.focus.name,
         'outfit': true,
       });
       await _controller.runJavaScript('arise.apply(${jsonEncode(state)})');

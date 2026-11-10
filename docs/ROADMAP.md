@@ -84,12 +84,12 @@
 - [x] Monnaie bronze / argent / or (gains selon la difficulté, niveaux, coffres) ; cristaux convertis
 - [x] Parcours sur émulateur avec le vrai rendu 3D
 
-## Phase 6B — Créateur avancé
-- [ ] Morphotype, posture, 12 préréglages par sexe
-- [ ] Écrans visage, yeux, sourcils, barbe, maquillage
-- [ ] Coiffures : catégories, favoris, verrouillage (boutique)
-- [ ] Scène : 4 poses, 3 éclairages, capture, avant / après
-- [ ] `docs/ASSETS.md` complété (squelette, poses, équipements de la boutique)
+## Phase 6B — Créateur avancé (livré)
+- [x] Morphotype, posture, 12 préréglages par sexe
+- [x] Écrans visage, yeux, sourcils, barbe, maquillage
+- [x] Coiffures : catégories, favoris (verrouillage livré avec la boutique, phase 7)
+- [x] Scène : 4 poses, 3 éclairages, capture, avant / après
+- [x] `docs/ASSETS.md` complété (squelette, poses, équipements de la boutique)
 
 ## Phase 7 — Boutique et inventaire
 - [ ] Boutique (catégories, raretés, essayage)

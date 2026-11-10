@@ -320,3 +320,13 @@ Décision de la propriétaire du projet : pas de forfait Firebase Blaze, pas de 
 7. **Nom** : 3 à 16 caractères, lettres, espaces, tirets et apostrophes, filtre anti-insultes (variantes accentuées et chiffres compris). Sans serveur, l'unicité n'est pas vérifiée (§21.5).
 8. **Accès** : « Création du personnage » depuis la Fenêtre du Système ; le personnage reste modifiable.
 
+## 27. Décisions de la phase 6B (05/11/2026)
+1. **Silhouettes** : 12 préréglages par sexe, qui ne règlent que corpulence et musculature (ajustables ensuite) — *Femme* : Délicate, Svelte, Athlétique, Nageuse, Sprinteuse, Musclée, Culturiste, Guerrière, Ronde, Costaude, Généreuse, Sablier ; *Homme* : Fin, Svelte, Athlétique, Nageur, Sprinteur, Musclé, Culturiste, Colosse, Robuste, Costaud, Imposant, En V.
+2. **Visage** : cinq curseurs (mâchoire, nez, bouche, pommettes, oreilles ; libellés de « Très fine » à « Très marquée »), 8 couleurs d'yeux, 6 sourcils, 6 barbes (hommes uniquement, couleur des cheveux par défaut ou couleur propre), 4 maquillages (khôl, lèvres, joues, peinture de guerre). L'onglet Visage cadre la caméra sur la tête.
+3. **Coiffures** : trois familles (courtes, attachées, longues) et jusqu'à 5 favorites (`favoriteHairstylesMax`). Les coiffures verrouillées arrivent avec la boutique (phase 7).
+4. **Poses et posture** : 4 poses (en A, détendue, héroïque, combat), 4 postures (neutre, droite, voûtée, bombée) ajoutées à la pose, respiration discrète permanente. Pose et posture sont enregistrées dans la fiche.
+5. **Scène** : éclairages jour, nuit et taverne ; comparaison avant / après (fiche à l'ouverture du créateur) ; capture PNG partagée par la feuille de partage du téléphone, uniquement sur action de l'utilisateur (§5 règle 10).
+6. **Créateur** : quatre onglets (Corps, Visage, Coiffure, Nom & fiche), bouton « Valider » toujours visible.
+7. **Compatibilité** : les nouveaux champs de la fiche ont tous une valeur par défaut ; une fiche ou une sauvegarde v5 se relit sans migration de la base (la fiche est stockée en JSON).
+8. **Limite connue** : sourcils, barbes et maquillages des modèles de substitution sont des pièces grossières découpées dans le maillage ; la version définitive est attendue de l'artiste (docs/ASSETS.md §2).
+

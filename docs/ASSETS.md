@@ -18,22 +18,26 @@ Mannequin 2D original dessiné par le code (`lib/features/exercises/presentation
 ### Intégration côté code
 Une nouvelle implémentation de `ExerciseAnimationPlayer` lira le `.glb`, jouera l'animation dont le nom vaut `exercise.motion` et colorera les maillages des muscles de l'exercice. Aucun écran n'a besoin d'être modifié.
 
-## 2. Personnage (phase 6A)
+## 2. Personnage (phases 6A et 6B)
 
 ### État actuel
 Six modèles de substitution originaux, générés par `tool/character/build_characters.py` dans Blender avec l'extension MPFB (maillage de base MakeHuman, licence CC0) : `assets/models/{human,elf,orc}_{female,male}.glb`. Aucun asset tiers protégé. Chaque fichier contient :
 - `body` (matériau `skin`), `eyes`, et `tusks` pour les orques ;
 - `outfit_tunic`, `outfit_tunic_skirt`, `outfit_pants`, `outfit_boots`, `outfit_belt` (tenue de départ) ;
 - `hair_01` à `hair_10` (une seule visible à la fois, matériau `hair`) ;
-- quatre formes (morph targets) sur tous ces maillages : `corp_low`, `corp_high`, `musc_low`, `musc_high`.
+- `eye_sclera`, `eye_iris` (matériau `iris`, coloré), `eye_pupil` ;
+- `brow_01` à `brow_06` (matériau `brow`, couleur des cheveux), `beard_01` à `beard_06` (hommes, matériau `beard`), `makeup_01` à `makeup_04` (couleurs fixes) — une seule pièce visible par famille ;
+- formes (morph targets) sur tous ces maillages : `corp_low`, `corp_high`, `musc_low`, `musc_high`, et pour le visage `face_jaw_*`, `face_nose_*`, `face_mouth_*`, `face_cheeks_*`, `face_ears_*` (`_low` / `_high`) ;
+- un squelette (os `Root`, `pelvis`, `spine_01`–`03`, `clavicle`, `upperarm`, `lowerarm`, `hand`, doigts, `neck_01`, `head`, `thigh`, `calf`, `foot`, `ball`, suffixes `_l` / `_r`) et des animations : poses `pose_a`, `pose_relaxed`, `pose_heroic`, `pose_combat` ; postures `posture_neutral`, `posture_upright`, `posture_slouched`, `posture_arched` (jouées en additif par rapport à `pose_a`) ; boucle `breath` (additive).
 
-Le code colore `skin` et `hair`, choisit la coiffure par son nom, règle les formes et l'échelle (taille). Environ 1,8 Mo par modèle.
+Le code colore `skin`, `hair`, `brow`, `beard` et `iris`, choisit les pièces par leur nom, règle les formes, l'échelle (taille), la pose et la posture. Environ 3 Mo par modèle. Sourcils, barbes et maquillages sont des découpes grossières du maillage : à remplacer en priorité.
 
 ### Livrable attendu (version définitive)
 - **Six personnages** (3 races × 2 sexes) de style fantasy héroïque semi-réaliste, homme et femme sur des **maillages distincts**, conformes à SPEC §3.1.
-- **Mêmes noms d'objets, de matériaux et de formes** que ci-dessus, pour que le code fonctionne sans modification. D'autres formes pourront s'ajouter en phase 6B (visage, morphotype, posture).
+- **Mêmes noms d'objets, de matériaux, de formes, d'os et d'animations** que ci-dessus, pour que le code fonctionne sans modification.
 - **Règle des équipements** : toute pièce de tenue, armure ou coiffure livrée pour la boutique doit porter les **quatre mêmes formes** (`corp_low`, `corp_high`, `musc_low`, `musc_high`), calculées sur le corps de la même race et du même sexe, pour suivre les proportions sans traverser le corps. Un exemplaire par race et par sexe.
-- **Squelette humanoïde** compatible Mixamo, doigts compris (poses de l'éditeur en phase 6B).
+- **Squelette humanoïde** aux noms ci-dessus, doigts compris, avec les huit animations de pose et de posture et la boucle de respiration.
+- **Équipements de la boutique** (phase 7) : chaque pièce est liée au même squelette (poids de peau) **et** porte les formes du corps, pour suivre à la fois la pose et la morphologie.
 - **Budget mobile** : 25 000 triangles au plus pour le corps, 8 000 par pièce d'équipement, textures 2048 × 2048 au plus.
 - **Licence** : créations originales ou licences compatibles avec une publication commerciale ; pour les achats sur Fab, licence standard ou professionnelle uniquement (pas « Reference Only » ni l'ancienne licence Marketplace), avec la source et la licence de chaque asset notées ici.
 
