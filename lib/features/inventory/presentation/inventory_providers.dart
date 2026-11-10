@@ -21,7 +21,7 @@ Stream<Inventory> inventory(Ref ref) =>
     ref.watch(inventoryRepositoryProvider).watch();
 
 /// Porter ou retirer un objet.
-@riverpod
+@Riverpod(keepAlive: true)
 class InventoryController extends _$InventoryController {
   @override
   void build() {}

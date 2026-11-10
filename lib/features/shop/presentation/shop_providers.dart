@@ -16,7 +16,7 @@ ShopRepository shopRepository(Ref ref) => DriftShopRepository(
 
 /// Achats et teintures ; la bourse affichée est rechargée après chaque
 /// dépense.
-@riverpod
+@Riverpod(keepAlive: true)
 class ShopController extends _$ShopController {
   @override
   void build() {}
