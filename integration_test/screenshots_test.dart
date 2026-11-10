@@ -1,4 +1,5 @@
 import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
+import 'package:arise/features/shop/presentation/shop_page.dart';
 import 'package:arise/main.dart' as app;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -281,7 +282,11 @@ void main() {
     await pumpFor(5000);
     await binding.takeScreenshot('31_boutique');
     Future<void> tryOn(String filter, int index) async {
-      await tester.ensureVisible(find.text(filter));
+      await tester.dragUntilVisible(
+        find.text(filter),
+        find.byKey(ShopPage.filtersKey),
+        const Offset(-150, 0),
+      );
       await pumpFor(300);
       await tester.tap(find.text(filter));
       await pumpFor(600);

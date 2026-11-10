@@ -1,4 +1,5 @@
 import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
+import 'package:arise/features/shop/presentation/shop_page.dart';
 import 'package:arise/main.dart' as app;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -236,7 +237,11 @@ void main() {
     await _tapWithoutSettle(tester, find.text("Boutique d'Arisia"));
     await _pumpFor(tester, 4000);
     await _waitFor(tester, find.text('Dos'));
-    await tester.ensureVisible(find.text('Dos'));
+    await tester.dragUntilVisible(
+      find.text('Dos'),
+      find.byKey(ShopPage.filtersKey),
+      const Offset(-150, 0),
+    );
     await _pumpFor(tester, 300);
     await tester.tap(find.text('Dos'));
     await _pumpFor(tester, 500);

@@ -28,6 +28,9 @@ class ShopPage extends ConsumerStatefulWidget {
   /// Liste des articles (repère pour les tests).
   static const listKey = Key('shop-list');
 
+  /// Filtres par emplacement (repère pour les tests).
+  static const filtersKey = Key('shop-filters');
+
   @override
   ConsumerState<ShopPage> createState() => _ShopPageState();
 }
@@ -105,6 +108,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
           SizedBox(
             height: 48,
             child: ListView(
+              key: ShopPage.filtersKey,
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: AriseSpacing.md),
               children: [

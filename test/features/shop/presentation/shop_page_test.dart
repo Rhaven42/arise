@@ -42,6 +42,11 @@ void main() {
     expect(find.textContaining('Ta bourse'), findsOneWidget);
 
     // Filtre « Dos » puis essayage de la cape.
+    await tester.dragUntilVisible(
+      find.text('Dos'),
+      find.byKey(ShopPage.filtersKey),
+      const Offset(-150, 0),
+    );
     await tester.tap(find.text('Dos'));
     await tester.pump();
     expect(find.text('Cape du Vagabond'), findsOneWidget);
