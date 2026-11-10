@@ -151,10 +151,24 @@ class CharacterCreatorController extends _$CharacterCreatorController {
     String name,
   ) => history.replace(history.current.copyWith(name: name));
 
-  void randomize() => edit(
-    (s) =>
-        randomSheet(ref.read(characterRandomProvider), name: s.name, keep: s),
-  );
+  /// Tirage au hasard parmi les coiffures utilisables (les coiffures de la
+  /// boutique doivent avoir été achetées).
+  void randomize() {
+    final inventory = ref.read(inventoryProvider).value ?? const Inventory();
+    final worn = _state?.saved?.hairStyle;
+    edit(
+      (s) => randomSheet(
+        ref.read(characterRandomProvider),
+        name: s.name,
+        keep: s,
+        hairStyles: availableHairStyles(
+          inventory,
+          count: hairStyleCount,
+          worn: worn,
+        ),
+      ),
+    );
+  }
 
   void reset() => edit(
     (s) =>

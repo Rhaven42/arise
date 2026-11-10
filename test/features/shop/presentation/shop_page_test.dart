@@ -45,7 +45,7 @@ void main() {
     await tester.tap(find.text('Dos'));
     await tester.pump();
     expect(find.text('Cape du Vagabond'), findsOneWidget);
-    expect(find.text('Veste de cuir de l\'Éveillé'), findsNothing);
+    expect(find.text("Veste de cuir de l'Éveillé"), findsNothing);
     await tester.tap(find.text('Essayer').first);
     await tester.pump();
     expect(renderer.last?.itemNodes, ['item_cape_wanderer']);
@@ -53,7 +53,7 @@ void main() {
     // Achat confirmé : 10 pièces d'argent.
     await tester.tap(find.text('Acheter').first);
     await tester.pumpAndSettle();
-    expect(find.text('Confirmer l\'achat'), findsOneWidget);
+    expect(find.text("Confirmer l'achat"), findsOneWidget);
     await tester.tap(find.widgetWithText(FilledButton, 'Acheter').last);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));

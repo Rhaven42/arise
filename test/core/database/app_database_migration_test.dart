@@ -303,7 +303,8 @@ void main() {
               'KEY, started_at INTEGER NOT NULL, json TEXT NOT NULL)',
             )
             ..execute(
-              "INSERT INTO character_sheets VALUES (1, '{\"race\":\"orc\"}', 0)",
+              'INSERT INTO character_sheets VALUES '
+              "(1, '{\"race\":\"orc\"}', 0)",
             )
             ..userVersion = 6;
         },
