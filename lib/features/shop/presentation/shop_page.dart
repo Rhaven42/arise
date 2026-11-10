@@ -67,14 +67,14 @@ class _ShopPageState extends ConsumerState<ShopPage> {
     messenger
       ..removeCurrentSnackBar()
       ..showSnackBar(
-      SnackBar(
-        content: Text(
-          issue == null
-              ? l10n.shopBought(name)
-              : purchaseIssueLabel(l10n, issue),
+        SnackBar(
+          content: Text(
+            issue == null
+                ? l10n.shopBought(name)
+                : purchaseIssueLabel(l10n, issue),
+          ),
         ),
-      ),
-    );
+      );
   }
 
   @override

@@ -95,12 +95,14 @@ class InventoryPage extends ConsumerWidget {
     messenger
       ..removeCurrentSnackBar()
       ..showSnackBar(
-      SnackBar(
-        content: Text(
-          issue == null ? l10n.inventoryDyed : purchaseIssueLabel(l10n, issue),
+        SnackBar(
+          content: Text(
+            issue == null
+                ? l10n.inventoryDyed
+                : purchaseIssueLabel(l10n, issue),
+          ),
         ),
-      ),
-    );
+      );
   }
 
   @override
