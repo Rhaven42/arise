@@ -33,8 +33,9 @@ enum EquipIssue { notOwned, unknownItem }
   String itemId,
 ) {
   final item = itemById(itemId);
-  if (item == null)
+  if (item == null) {
     return (inventory: inventory, issue: EquipIssue.unknownItem);
+  }
   if (!inventory.owned.contains(itemId)) {
     return (inventory: inventory, issue: EquipIssue.notOwned);
   }
