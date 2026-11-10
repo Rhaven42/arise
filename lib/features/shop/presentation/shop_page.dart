@@ -60,9 +60,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
       ),
     );
     if (confirmed != true) return;
-    final issue = await ref
-        .read(shopControllerProvider.notifier)
-        .buy(article);
+    final issue = await ref.read(shopControllerProvider.notifier).buy(article);
     messenger.showSnackBar(
       SnackBar(
         content: Text(
@@ -77,8 +75,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final inventory =
-        ref.watch(inventoryProvider).value ?? const Inventory();
+    final inventory = ref.watch(inventoryProvider).value ?? const Inventory();
     final wallet =
         ref.watch(progressionControllerProvider).value?.state.wallet ??
         Coins.zero;
@@ -109,9 +106,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
             height: 48,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AriseSpacing.md,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: AriseSpacing.md),
               children: [
                 _FilterChip(
                   label: l10n.shopAll,
@@ -178,7 +173,8 @@ class _ShopPageState extends ConsumerState<ShopPage> {
   }
 
   bool _matches(ShopArticle article) => switch (article) {
-    ItemArticle(:final item) => !_hairFilter && (_slot == null || item.slot == _slot),
+    ItemArticle(:final item) =>
+      !_hairFilter && (_slot == null || item.slot == _slot),
     HairStyleArticle() => _hairFilter || _slot == null,
   };
 
@@ -255,9 +251,7 @@ class _TryOnPreview extends ConsumerWidget {
     );
     return SizedBox(
       height: height,
-      child: ref
-          .watch(characterRendererProvider)
-          .build(appearance: appearance),
+      child: ref.watch(characterRendererProvider).build(appearance: appearance),
     );
   }
 }
@@ -291,7 +285,11 @@ class _ArticleTile extends StatelessWidget {
           if (item.setId != null) l10n.equipmentSetName(item.setId!),
         ].join(' · '),
       ),
-      HairStyleArticle() => (Rarity.rare, Icons.content_cut, l10n.shopHairStyles),
+      HairStyleArticle() => (
+        Rarity.rare,
+        Icons.content_cut,
+        l10n.shopHairStyles,
+      ),
     };
     return Card(
       color: trying ? AriseColors.stoneLight : null,
@@ -332,7 +330,9 @@ class _ArticleTile extends StatelessWidget {
                 if (onTryOn != null)
                   TextButton.icon(
                     onPressed: onTryOn,
-                    icon: Icon(trying ? Icons.visibility : Icons.visibility_outlined),
+                    icon: Icon(
+                      trying ? Icons.visibility : Icons.visibility_outlined,
+                    ),
                     label: Text(trying ? l10n.shopTryingOn : l10n.shopTryOn),
                   ),
                 const SizedBox(width: AriseSpacing.sm),

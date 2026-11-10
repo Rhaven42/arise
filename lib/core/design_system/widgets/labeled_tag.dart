@@ -21,7 +21,9 @@ class LabeledTag extends StatelessWidget {
       children: [
         Icon(icon, size: 16, color: color),
         const SizedBox(width: 4),
-        Flexible(child: Text(label, style: TextStyle(color: color))),
+        Flexible(
+          child: Text(label, style: TextStyle(color: color)),
+        ),
       ],
     );
   }

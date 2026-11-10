@@ -33,7 +33,8 @@ enum EquipIssue { notOwned, unknownItem }
   String itemId,
 ) {
   final item = itemById(itemId);
-  if (item == null) return (inventory: inventory, issue: EquipIssue.unknownItem);
+  if (item == null)
+    return (inventory: inventory, issue: EquipIssue.unknownItem);
   if (!inventory.owned.contains(itemId)) {
     return (inventory: inventory, issue: EquipIssue.notOwned);
   }
@@ -46,8 +47,8 @@ enum EquipIssue { notOwned, unknownItem }
 }
 
 /// Retire l'objet d'un emplacement.
-Inventory unequip(Inventory inventory, EquipmentSlot slot) => inventory
-    .copyWith(equipped: {...inventory.equipped}..remove(slot));
+Inventory unequip(Inventory inventory, EquipmentSlot slot) =>
+    inventory.copyWith(equipped: {...inventory.equipped}..remove(slot));
 
 /// La coiffure est-elle utilisable ? Les coiffures vendues doivent avoir été
 /// achetées, sauf celle déjà portée par le personnage enregistré.

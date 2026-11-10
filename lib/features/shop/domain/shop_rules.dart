@@ -24,9 +24,10 @@ class HairStyleArticle extends ShopArticle {
 Coins priceOf(ShopArticle article, {GameConfig? config}) {
   final c = config ?? gameConfig;
   final silver = switch (article) {
-    ItemArticle(:final item) => item.rarity == Rarity.common
-        ? c.shop.commonPriceSilverBySlot[item.slot.name]!
-        : c.shop.rarityPriceSilver[item.rarity.name]!,
+    ItemArticle(:final item) =>
+      item.rarity == Rarity.common
+          ? c.shop.commonPriceSilverBySlot[item.slot.name]!
+          : c.shop.rarityPriceSilver[item.rarity.name]!,
     HairStyleArticle() => c.shop.hairStylePriceSilver,
   };
   return Coins.of(silver: silver, config: c.coins);
@@ -85,7 +86,6 @@ PurchaseResult purchase({
   };
   return (balance: balance - price, inventory: next, issue: null);
 }
-
 
 /// Teint un objet possédé, pour quelques pièces de bronze.
 PurchaseResult dyeItem({

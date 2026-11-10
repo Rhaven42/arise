@@ -31,9 +31,8 @@ void main() {
     await container
         .read(progressionRepositoryProvider)
         .save(
-          ProgressionState.initial(
-            const CivilDate(2026, 11, 4),
-          ).copyWith(coins: 1250),
+          ProgressionState.initial(const CivilDate(2026, 11, 4))
+              .copyWith(coins: 1250),
         );
     await container.read(characterRepositoryProvider).save(defaultSheet());
     await tester.openWithProfile(container, AppRoutes.shop);
@@ -99,10 +98,9 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('Teinture appliquée.'), findsOneWidget);
-    expect(
-      (await container.read(inventoryRepositoryProvider).read()).dyes,
-      {'cape_wanderer': 0xFF3E6B34},
-    );
+    expect((await container.read(inventoryRepositoryProvider).read()).dyes, {
+      'cape_wanderer': 0xFF3E6B34,
+    });
     expect(
       (await container.read(progressionRepositoryProvider).read())?.coins,
       200,
@@ -110,9 +108,7 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('sans personnage, la boutique invite à le créer', (
-    tester,
-  ) async {
+  testWidgets('sans personnage, la boutique invite à le créer', (tester) async {
     final container = createTestContainer();
     await tester.openWithProfile(container, AppRoutes.shop);
     await tester.pump(const Duration(milliseconds: 300));

@@ -89,13 +89,21 @@ void main() {
     expect(ok.balance, 0);
     expect(ok.inventory.dyes, {'cape_wanderer': 0xFF7A1E1E});
     expect(
-      dyeItem(balance: cost, inventory: bag, itemId: 'mail_chest', color: 1)
-          .issue,
+      dyeItem(
+        balance: cost,
+        inventory: bag,
+        itemId: 'mail_chest',
+        color: 1,
+      ).issue,
       PurchaseIssue.notForSale,
     );
     expect(
-      dyeItem(balance: cost, inventory: bag, itemId: 'cape_dawn', color: 1)
-          .issue,
+      dyeItem(
+        balance: cost,
+        inventory: bag,
+        itemId: 'cape_dawn',
+        color: 1,
+      ).issue,
       PurchaseIssue.notOwned,
     );
     expect(

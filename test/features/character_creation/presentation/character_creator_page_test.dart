@@ -229,10 +229,7 @@ void main() {
     await tester.tap(find.text('10 · Crinière'));
     await tester.pump();
     expect(sheet().hairStyle, isNot(10));
-    expect(
-      find.text('Coiffure à débloquer dans la boutique.'),
-      findsWidgets,
-    );
+    expect(find.text('Coiffure à débloquer dans la boutique.'), findsWidgets);
     await tester.tap(find.text('5 · Longue'));
     await tester.pump();
     expect(sheet().hairStyle, 5);

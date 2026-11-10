@@ -259,7 +259,10 @@ void main() {
     );
     await _tapWithoutSettle(tester, find.text('Inventaire'));
     await _pumpFor(tester, 3000);
-    await _waitFor(tester, find.text('Ton inventaire est vide. Passe à la boutique !'));
+    await _waitFor(
+      tester,
+      find.text('Ton inventaire est vide. Passe à la boutique !'),
+    );
     expect(
       find.text('Ton inventaire est vide. Passe à la boutique !'),
       findsOneWidget,

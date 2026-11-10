@@ -81,6 +81,7 @@ class CharacterAppearance {
   final double scale;
   final int skinColor;
   final int hairColor;
+
   /// Coiffure visible (vide si un casque ou une capuche la cache).
   final String hairStyleId;
   final int eyeColor;
@@ -142,7 +143,9 @@ class CharacterAppearance {
     postureId,
     Object.hashAll(itemNodes),
     Object.hashAll(hiddenOutfit),
-    Object.hashAllUnordered(dyes.entries.map((e) => Object.hash(e.key, e.value))),
+    Object.hashAllUnordered(
+      dyes.entries.map((e) => Object.hash(e.key, e.value)),
+    ),
     Object.hashAllUnordered(
       morphs.entries.map((e) => Object.hash(e.key, e.value)),
     ),

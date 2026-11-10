@@ -21,9 +21,8 @@ void main() {
     final price = priceOf(cape).bronzeTotal;
 
     await progression.save(
-      ProgressionState.initial(
-        const CivilDate(2026, 11, 4),
-      ).copyWith(coins: price + 70),
+      ProgressionState.initial(const CivilDate(2026, 11, 4))
+          .copyWith(coins: price + 70),
     );
     expect(await shop.buy(cape), isNull);
     expect((await progression.read())?.coins, 70);

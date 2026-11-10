@@ -57,10 +57,7 @@ void main() {
     expect(hairStyleAvailable(empty, 1), isTrue);
     expect(hairStyleAvailable(empty, locked), isFalse);
     expect(hairStyleAvailable(empty, locked, worn: locked), isTrue);
-    expect(
-      hairStyleAvailable(Inventory(hairStyles: [locked]), locked),
-      isTrue,
-    );
+    expect(hairStyleAvailable(Inventory(hairStyles: [locked]), locked), isTrue);
     expect(
       availableHairStyles(empty, count: 10),
       hasLength(10 - gameConfig.shop.lockedHairStyles.length),

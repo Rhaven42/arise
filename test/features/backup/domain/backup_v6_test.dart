@@ -29,11 +29,10 @@ void main() {
   test('une sauvegarde v5 reste lisible, sans inventaire', () {
     final json =
         jsonDecode(
-              BackupCodec.encode(
-                BackupCodec.create(exportedAt: testNow, profile: sampleProfile),
-              ),
-            )
-            as Map<String, dynamic>
+            BackupCodec.encode(
+              BackupCodec.create(exportedAt: testNow, profile: sampleProfile),
+            ),
+          ) as Map<String, dynamic>
           ..['version'] = 5
           ..remove('inventory');
     expect(BackupCodec.decode(jsonEncode(json)).inventory, isNull);

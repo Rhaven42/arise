@@ -32,30 +32,30 @@ class DriftShopRepository implements ShopRepository {
 
   Future<PurchaseIssue?> _apply(
     PurchaseResult Function(int balance, Inventory inventory) rule,
-  ) => _database.updateProgressionAndInventory<PurchaseIssue?>(
-    (progressionJson, inventoryJson) async {
-      final progression = progressionJson == null
-          ? null
-          : ProgressionState.fromJson(
-              jsonDecode(progressionJson) as Map<String, dynamic>,
-            );
-      final inventory = inventoryJson == null
-          ? const Inventory()
-          : sanitizeInventory(
-              Inventory.fromJson(
-                jsonDecode(inventoryJson) as Map<String, dynamic>,
-              ),
-            );
-      final result = rule(progression?.coins ?? 0, inventory);
-      final paid = result.issue == null && progression != null;
-      return (
-        progression: paid
-            ? jsonEncode(progression.copyWith(coins: result.balance).toJson())
-            : null,
-        inventory: jsonEncode(result.inventory.toJson()),
-        result: result.issue,
-      );
-    },
-    updatedAt: _clock(),
-  );
+  ) => _database.updateProgressionAndInventory<PurchaseIssue?>((
+    progressionJson,
+    inventoryJson,
+  ) async {
+    final progression = progressionJson == null
+        ? null
+        : ProgressionState.fromJson(
+            jsonDecode(progressionJson) as Map<String, dynamic>,
+          );
+    final inventory = inventoryJson == null
+        ? const Inventory()
+        : sanitizeInventory(
+            Inventory.fromJson(
+              jsonDecode(inventoryJson) as Map<String, dynamic>,
+            ),
+          );
+    final result = rule(progression?.coins ?? 0, inventory);
+    final paid = result.issue == null && progression != null;
+    return (
+      progression: paid
+          ? jsonEncode(progression.copyWith(coins: result.balance).toJson())
+          : null,
+      inventory: jsonEncode(result.inventory.toJson()),
+      result: result.issue,
+    );
+  }, updatedAt: _clock());
 }

@@ -50,10 +50,7 @@ class InventoryPage extends ConsumerWidget {
               ),
               Text(
                 l10n.inventoryDyeCost(
-                  formatCoins(
-                    l10n,
-                    Coins(gameConfig.shop.dyeCostBronze),
-                  ),
+                  formatCoins(l10n, Coins(gameConfig.shop.dyeCostBronze)),
                 ),
               ),
               const SizedBox(height: AriseSpacing.sm),

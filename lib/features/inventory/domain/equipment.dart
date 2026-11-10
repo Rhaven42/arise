@@ -1,5 +1,15 @@
 /// Emplacements d'équipement du personnage.
-enum EquipmentSlot { head, shoulders, chest, hands, belt, legs, feet, back, weapon }
+enum EquipmentSlot {
+  head,
+  shoulders,
+  chest,
+  hands,
+  belt,
+  legs,
+  feet,
+  back,
+  weapon,
+}
 
 /// Rareté d'un objet (du plus courant au plus rare).
 enum Rarity { common, rare, epic, legendary, mythic }
