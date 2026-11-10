@@ -1401,5 +1401,124 @@
   "characterShowingBefore": "Aperçu : avant tes changements",
   "characterShare": "Partager une capture",
   "characterShareFailed": "La capture n'est pas prête. Réessaie dans un instant.",
-  "characterSnapshotFileName": "arise_heros.png"
+  "characterSnapshotFileName": "arise_heros.png",
+  "shopTitle": "Boutique d'Arisia",
+  "shopHomeHint": "Armures, capes et coiffures, contre tes pièces",
+  "inventoryTitle": "Inventaire",
+  "inventoryHomeHint": "Équipe, retire et teins tes objets",
+  "shopAll": "Tout",
+  "shopHairStyles": "Coiffures",
+  "shopOwned": "Possédé",
+  "shopTryOn": "Essayer",
+  "shopTryingOn": "Essayé",
+  "shopBuy": "Acheter",
+  "shopNoCharacter": "Crée ton personnage pour essayer les objets.",
+  "shopNoRealMoney": "Tout s'achète avec les pièces gagnées en t'entraînant. Jamais d'argent réel.",
+  "shopConfirmTitle": "Confirmer l'achat",
+  "shopCancel": "Annuler",
+  "shopBought": "Achat réussi : {name}.",
+  "shopNotEnough": "Pas assez de pièces. Continue de t'entraîner !",
+  "shopAlreadyOwned": "Tu possèdes déjà cet article.",
+  "shopNotForSale": "Cet article n'est pas en vente.",
+  "shopNotOwned": "Achète d'abord cet objet.",
+  "shopFilter": "Emplacement",
+  "inventoryEmpty": "Ton inventaire est vide. Passe à la boutique !",
+  "inventoryEquip": "Équiper",
+  "inventoryUnequip": "Retirer",
+  "inventoryEquipped": "Porté",
+  "inventoryDye": "Teindre",
+  "inventoryDyeTitle": "Teinture",
+  "inventoryDyed": "Teinture appliquée.",
+  "characterHairLocked": "Coiffure à débloquer dans la boutique.",
+  "characterGoToShop": "Boutique",
+  "shopConfirmBody": "Acheter {name} pour {price} ?",
+  "@shopConfirmBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "@shopBought": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "inventoryDyeCost": "Chaque teinture coûte {price}.",
+  "@inventoryDyeCost": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "shopPrice": "Prix : {price}",
+  "@shopPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "shopWallet": "Ta bourse : {coins}",
+  "@shopWallet": {
+    "placeholders": {
+      "coins": {
+        "type": "String"
+      }
+    }
+  },
+  "equipmentSlotName": "{id, select, head{Tête} shoulders{Épaules} chest{Torse} hands{Mains} belt{Ceinture} legs{Jambes} feet{Pieds} back{Dos} weapon{Arme} other{?}}",
+  "@equipmentSlotName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "rarityName": "{id, select, common{Commune} rare{Rare} epic{Épique} legendary{Légendaire} mythic{Mythique} other{?}}",
+  "@rarityName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "equipmentSetName": "{id, select, awakened_leather{Cuir de l'Éveillé} warden_mail{Maille du Veilleur} dawn_plate{Plates de l'Aube} other{?}}",
+  "@equipmentSetName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "itemName": "{id, select, leather_chest{Veste de cuir de l'Éveillé} leather_hands{Gants de cuir de l'Éveillé} leather_belt{Ceinturon de l'Éveillé} leather_legs{Chausses de cuir de l'Éveillé} leather_feet{Bottes de l'Éveillé} mail_head{Camail du Veilleur} mail_chest{Haubert du Veilleur} mail_hands{Mitons de maille du Veilleur} mail_legs{Chausses de maille du Veilleur} mail_feet{Solerets du Veilleur} plate_head{Heaume de l'Aube} plate_shoulders{Spallières de l'Aube} plate_chest{Cuirasse de l'Aube} plate_hands{Gantelets de l'Aube} plate_belt{Tassette de l'Aube} plate_legs{Cuissards de l'Aube} plate_feet{Grèves de l'Aube} cape_wanderer{Cape du Vagabond} cape_dawn{Cape de l'Aube} hood_twilight{Capuche du Crépuscule} sword_dawn{Épée d'apparat de l'Aube} staff_ember{Bâton de Braise} other{?}}",
+  "@itemName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "shopHairStyleArticle": "Coiffure : {name}",
+  "@shopHairStyleArticle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dyeColorName": "{id, select, crimson{Pourpre} rust{Rouille} ochre{Ocre} forest{Forêt} teal{Sarcelle} night{Nuit} amethyst{Améthyste} umber{Terre d'ombre} charcoal{Charbon} linen{Lin} other{?}}",
+  "@dyeColorName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  }
 }

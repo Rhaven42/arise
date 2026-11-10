@@ -7,6 +7,7 @@ import 'package:arise/features/character_creation/presentation/character_creator
 import 'package:arise/features/exercises/presentation/custom_exercise_editor_page.dart';
 import 'package:arise/features/exercises/presentation/exercise_detail_page.dart';
 import 'package:arise/features/exercises/presentation/exercise_list_page.dart';
+import 'package:arise/features/inventory/presentation/inventory_page.dart';
 import 'package:arise/features/muscle_analysis/presentation/muscle_analysis_page.dart';
 import 'package:arise/features/onboarding/presentation/onboarding_page.dart';
 import 'package:arise/features/onboarding/presentation/title_page.dart';
@@ -17,6 +18,7 @@ import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:arise/features/progression/presentation/system_home_page.dart';
 import 'package:arise/features/settings/presentation/settings_page.dart';
+import 'package:arise/features/shop/presentation/shop_page.dart';
 import 'package:arise/features/workout_player/presentation/workout_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
@@ -126,6 +128,14 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
             path: AppRoutes.characterSegment,
             builder: (_, _) => const CharacterCreatorPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.shopSegment,
+            builder: (_, _) => const ShopPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.inventorySegment,
+            builder: (_, _) => const InventoryPage(),
           ),
           GoRoute(
             path: AppRoutes.planningSegment,

@@ -6,6 +6,8 @@ import 'package:arise/features/backup/domain/backup_data.dart';
 import 'package:arise/features/backup/domain/backup_repository.dart';
 import 'package:arise/features/character_creation/data/drift_character_repository.dart';
 import 'package:arise/features/exercises/data/drift_custom_exercise_repository.dart';
+import 'package:arise/features/inventory/data/drift_inventory_repository.dart';
+import 'package:arise/features/inventory/domain/inventory_rules.dart';
 import 'package:arise/features/planning/data/drift_planning_repositories.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/progression/data/drift_progression_repository.dart';
@@ -48,6 +50,10 @@ class DriftBackupRepository implements BackupRepository {
       },
       character: switch (await _database.readCharacterJson()) {
         final json? => DriftCharacterRepository.decode(json),
+        null => null,
+      },
+      inventory: switch (await _database.readInventoryJson()) {
+        final json? => DriftInventoryRepository.decode(json),
         null => null,
       },
     );
@@ -98,6 +104,13 @@ class DriftBackupRepository implements BackupRepository {
       if (character != null) {
         await _database.saveCharacterJson(
           jsonEncode(character.toJson()),
+          updatedAt: now,
+        );
+      }
+      final inventory = data.inventory;
+      if (inventory != null) {
+        await _database.saveInventoryJson(
+          jsonEncode(sanitizeInventory(inventory).toJson()),
           updatedAt: now,
         );
       }

@@ -191,7 +191,10 @@ function applyState(state) {
     if (n.startsWith('outfit_')) {
       o.visible = state.outfit !== false && !(state.hiddenOutfit || []).includes(n);
     }
-    if (n.startsWith('item_')) o.visible = (state.items || []).includes(n);
+    if (n.startsWith('item_')) {
+      // Une pièce à plusieurs matériaux devient « item_x_1 », « item_x_2 »…
+      o.visible = (state.items || []).some((i) => n === i || n.startsWith(i + '_'));
+    }
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     for (const m of mats) {
       if (!m) continue;

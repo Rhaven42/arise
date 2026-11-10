@@ -11,6 +11,9 @@ import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/character_creation/domain/edit_history.dart';
 import 'package:arise/features/character_creation/domain/hair_styles.dart';
 import 'package:arise/features/character_creation/domain/name_rules.dart';
+import 'package:arise/features/inventory/domain/inventory.dart';
+import 'package:arise/features/inventory/domain/inventory_rules.dart';
+import 'package:arise/features/inventory/presentation/inventory_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'character_providers.g.dart';

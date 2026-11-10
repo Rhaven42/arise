@@ -152,6 +152,41 @@ class CoinsConfig {
   };
 }
 
+/// Prix de la boutique, en pièces d'argent.
+class ShopConfig {
+  const ShopConfig({
+    required this.commonPriceSilverBySlot,
+    required this.rarityPriceSilver,
+    required this.hairStylePriceSilver,
+    required this.lockedHairStyles,
+    required this.dyeCostBronze,
+  });
+
+  /// Objets communs : le prix dépend de l'emplacement (1 à 3 pièces).
+  final Map<String, int> commonPriceSilverBySlot;
+
+  /// Autres raretés : un prix par rareté (`rare`, `epic`, `legendary`,
+  /// `mythic`).
+  final Map<String, int> rarityPriceSilver;
+
+  /// Coiffure à débloquer.
+  final int hairStylePriceSilver;
+
+  /// Coiffures vendues en boutique (numéros de 1 à 10).
+  final List<int> lockedHairStyles;
+
+  /// Teinture d'un objet, en pièces de bronze.
+  final int dyeCostBronze;
+
+  Map<String, Object> toJson() => {
+    'commonPriceSilverBySlot': commonPriceSilverBySlot,
+    'rarityPriceSilver': rarityPriceSilver,
+    'hairStylePriceSilver': hairStylePriceSilver,
+    'lockedHairStyles': lockedHairStyles,
+    'dyeCostBronze': dyeCostBronze,
+  };
+}
+
 class RestConfig {
   const RestConfig({
     required this.minRestDaysPerWeek,
@@ -466,6 +501,7 @@ class GameConfig {
     required this.planning,
     required this.xp,
     required this.coins,
+    required this.shop,
     required this.provisionalKeys,
   });
 
@@ -491,6 +527,7 @@ class GameConfig {
   final PlanningConfig planning;
   final XpConfig xp;
   final CoinsConfig coins;
+  final ShopConfig shop;
 
   /// Chemins (« section.clé ») des valeurs provisoires, cf. SPEC.md §20.
   final List<String> provisionalKeys;
@@ -519,6 +556,7 @@ class GameConfig {
     'planning': planning.toJson(),
     'xp': xp.toJson(),
     'coins': coins.toJson(),
+    'shop': shop.toJson(),
     'provisionalKeys': provisionalKeys,
   };
 }
@@ -640,7 +678,33 @@ const gameConfig = GameConfig(
     silverPerGold: 100,
     bronzePerXpByDifficulty: [1, 1.5, 2.5],
   ),
+  shop: ShopConfig(
+    commonPriceSilverBySlot: {
+      'head': 2,
+      'shoulders': 2,
+      'chest': 3,
+      'hands': 1,
+      'belt': 1,
+      'legs': 2,
+      'feet': 1,
+      'back': 3,
+      'weapon': 3,
+    },
+    rarityPriceSilver: {
+      'rare': 10,
+      'epic': 40,
+      'legendary': 150,
+      'mythic': 500,
+    },
+    hairStylePriceSilver: 10,
+    lockedHairStyles: [6, 8, 10],
+    dyeCostBronze: 50,
+  ),
   provisionalKeys: [
+    'shop.commonPriceSilverBySlot',
+    'shop.rarityPriceSilver',
+    'shop.hairStylePriceSilver',
+    'shop.dyeCostBronze',
     'balance.minVolumeForAlert',
     'balance.intervalSecondaryShare',
     'balance.pushExercises',

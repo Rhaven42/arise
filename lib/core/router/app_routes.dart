@@ -31,6 +31,12 @@ abstract final class AppRoutes {
   static const characterSegment = 'character';
   static const String character = '$systemHome/$characterSegment';
 
+  static const shopSegment = 'shop';
+  static const String shop = '$systemHome/$shopSegment';
+
+  static const inventorySegment = 'inventory';
+  static const String inventory = '$systemHome/$inventorySegment';
+
   static const workoutSegment = 'workout';
   static String workout(String programId) =>
       '$systemHome/$workoutSegment/$programId';

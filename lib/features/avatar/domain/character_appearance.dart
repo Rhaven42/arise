@@ -1,5 +1,6 @@
 import 'package:arise/features/character_creation/domain/character_rules.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
+import 'package:arise/features/inventory/domain/inventory_rules.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 /// Apparence à afficher, indépendante du moteur de rendu.
@@ -22,11 +23,19 @@ class CharacterAppearance {
     this.makeupId,
     this.poseId = 'pose_relaxed',
     this.postureId = 'posture_neutral',
+    this.itemNodes = const [],
+    this.hiddenOutfit = const [],
+    this.dyes = const {},
   });
 
   /// Construit l'apparence d'une fiche : chaque curseur pilote deux formes
   /// (vers le bas et vers le haut), la taille donne l'échelle du modèle.
-  factory CharacterAppearance.of(CharacterSheet sheet) {
+  /// L'équipement porté ([loadout]) s'affiche par-dessus le corps et masque
+  /// les pièces de la tenue de départ qu'il remplace.
+  factory CharacterAppearance.of(
+    CharacterSheet sheet, {
+    Loadout loadout = Loadout.none,
+  }) {
     double low(double v) => v < 0.5 ? (0.5 - v) * 2 : 0;
     double high(double v) => v > 0.5 ? (v - 0.5) * 2 : 0;
     String two(int n) => n.toString().padLeft(2, '0');
@@ -51,7 +60,7 @@ class CharacterAppearance {
       scale: sheet.heightCm / modelHeightCm[sheet.race]![sheet.sex]!,
       skinColor: sheet.skinColor,
       hairColor: sheet.hairColor,
-      hairStyleId: 'hair_${two(sheet.hairStyle)}',
+      hairStyleId: loadout.hidesHair ? '' : 'hair_${two(sheet.hairStyle)}',
       eyeColor: sheet.eyeColor,
       beardColor: sheet.beardColor ?? sheet.hairColor,
       eyebrowId: 'brow_${two(sheet.eyebrowStyle)}',
@@ -61,6 +70,9 @@ class CharacterAppearance {
           : null,
       poseId: 'pose_${sheet.pose.name}',
       postureId: 'posture_${sheet.posture.name}',
+      itemNodes: loadout.itemNodes,
+      hiddenOutfit: loadout.hiddenOutfit,
+      dyes: loadout.dyes,
     );
   }
 
@@ -69,6 +81,7 @@ class CharacterAppearance {
   final double scale;
   final int skinColor;
   final int hairColor;
+  /// Coiffure visible (vide si un casque ou une capuche la cache).
   final String hairStyleId;
   final int eyeColor;
   final int beardColor;
@@ -81,6 +94,15 @@ class CharacterAppearance {
   final String? makeupId;
   final String poseId;
   final String postureId;
+
+  /// Pièces d'équipement visibles.
+  final List<String> itemNodes;
+
+  /// Pièces de la tenue de départ masquées.
+  final List<String> hiddenOutfit;
+
+  /// Couleur par matériau teint.
+  final Map<String, int> dyes;
 
   @override
   bool operator ==(Object other) =>
@@ -97,6 +119,10 @@ class CharacterAppearance {
       other.makeupId == makeupId &&
       other.poseId == poseId &&
       other.postureId == postureId &&
+      _sameList(other.itemNodes, itemNodes) &&
+      _sameList(other.hiddenOutfit, hiddenOutfit) &&
+      other.dyes.length == dyes.length &&
+      dyes.entries.every((e) => other.dyes[e.key] == e.value) &&
       other.morphs.length == morphs.length &&
       morphs.entries.every((e) => other.morphs[e.key] == e.value);
 
@@ -114,8 +140,19 @@ class CharacterAppearance {
     makeupId,
     poseId,
     postureId,
+    Object.hashAll(itemNodes),
+    Object.hashAll(hiddenOutfit),
+    Object.hashAllUnordered(dyes.entries.map((e) => Object.hash(e.key, e.value))),
     Object.hashAllUnordered(
       morphs.entries.map((e) => Object.hash(e.key, e.value)),
     ),
   );
+}
+
+bool _sameList(List<String> a, List<String> b) {
+  if (a.length != b.length) return false;
+  for (var i = 0; i < a.length; i++) {
+    if (a[i] != b[i]) return false;
+  }
+  return true;
 }

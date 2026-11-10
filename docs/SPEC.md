@@ -330,3 +330,14 @@ Décision de la propriétaire du projet : pas de forfait Firebase Blaze, pas de 
 7. **Compatibilité** : les nouveaux champs de la fiche ont tous une valeur par défaut ; une fiche ou une sauvegarde v5 se relit sans migration de la base (la fiche est stockée en JSON).
 8. **Limite connue** : sourcils, barbes et maquillages des modèles de substitution sont des pièces grossières découpées dans le maillage ; la version définitive est attendue de l'artiste (docs/ASSETS.md §2).
 
+## 28. Décisions de la phase 7 (10/11/2026)
+1. **Boutique** : 22 objets originaux et 3 coiffures, tous cosmétiques (aucun avantage de jeu). Ensembles *Cuir de l'Éveillé* (commun), *Maille du Veilleur* (rare), *Plates de l'Aube* (épique) ; capes du Vagabond (rare) et de l'Aube (légendaire), capuche du Crépuscule (épique) ; épée d'apparat de l'Aube (légendaire) et bâton de Braise (mythique).
+2. **Emplacements** : tête, épaules, torse, mains, ceinture, jambes, pieds, dos, arme. Un objet par emplacement ; un objet de torse, de jambes, de pieds ou de ceinture masque la pièce correspondante de la tenue de départ ; casque, camail et capuche masquent la coiffure.
+3. **Prix** (provisoires, `game_config.dart`, section `shop`) : communs de 1 à 3 pièces d'argent selon l'emplacement, rare 10 argent, épique 40 argent, légendaire 1 or 50 argent, mythique 5 or ; coiffure 10 argent ; teinture 50 bronze. **Jamais d'argent réel.**
+4. **Achat** : confirmation obligatoire ; le débit des pièces et la livraison sont enregistrés dans une seule transaction de la base (jamais de débit sans objet).
+5. **Essayage** : en boutique, l'article choisi s'affiche sur le personnage enregistré par-dessus sa tenue, sans achat.
+6. **Teinture** : capes, capuche, veste et chausses de cuir ; 10 teintes nommées.
+7. **Coiffures verrouillées** : Crête, Double natte et Crinière s'achètent en boutique ; une coiffure déjà portée par le personnage enregistré reste utilisable ; le tirage aléatoire ne propose que les coiffures disponibles.
+8. **Données** : base v7 (table `inventory_states`), sauvegarde v6 (`inventory`) ; un inventaire relu est nettoyé (objets inconnus, objets portés non possédés, teintures d'objets non teignables).
+9. **Modèles** : les objets sont inclus dans les six fichiers `.glb` (mêmes formes de morphologie et mêmes poids de peau que le corps ; armes liées à la main droite). Environ 6 à 7 Mo par modèle. Ce sont des pièces de substitution, à remplacer par l'artiste (docs/ASSETS.md §3).
+
