@@ -92,7 +92,9 @@ class InventoryPage extends ConsumerWidget {
     final issue = await ref
         .read(shopControllerProvider.notifier)
         .dye(item.id, color);
-    messenger.showSnackBar(
+    messenger
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
       SnackBar(
         content: Text(
           issue == null ? l10n.inventoryDyed : purchaseIssueLabel(l10n, issue),

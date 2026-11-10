@@ -64,7 +64,9 @@ class _ShopPageState extends ConsumerState<ShopPage> {
     );
     if (confirmed != true) return;
     final issue = await ref.read(shopControllerProvider.notifier).buy(article);
-    messenger.showSnackBar(
+    messenger
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
       SnackBar(
         content: Text(
           issue == null
