@@ -207,6 +207,10 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
     }
   }
 
+  static const _gestures = {
+    Factory<OneSequenceGestureRecognizer>(EagerGestureRecognizer.new),
+  };
+
   static String _hex(int argb) =>
       '#${(argb & 0xFFFFFF).toRadixString(16).padLeft(6, '0')}';
 
@@ -216,12 +220,7 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        WebViewWidget(
-          controller: _controller,
-          gestureRecognizers: const {
-            Factory<OneSequenceGestureRecognizer>(EagerGestureRecognizer.new),
-          },
-        ),
+        WebViewWidget(controller: _controller, gestureRecognizers: _gestures),
         if (_failed)
           Center(
             child: Padding(

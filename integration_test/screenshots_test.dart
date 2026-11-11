@@ -285,9 +285,10 @@ void main() {
       await tester.ensureVisible(button);
       await pumpFor(300);
       await tester.tap(button);
-      // Le premier rendu d'un modèle est lent sur l'émulateur (rendu
-      // logiciel) : on attend la fin du chargement avant la capture.
-      for (var t = 0; t < 20000; t += 500) {
+      // Le premier rendu d'un modèle dans une nouvelle vue web est très lent
+      // sur l'émulateur (rendu logiciel, sans carte graphique : shaders et
+      // textures préparés par le processeur) : on attend qu'il soit dessiné.
+      for (var t = 0; t < 60000; t += 500) {
         if (find.text('Le Système façonne ton héros…').evaluate().isEmpty) {
           break;
         }
