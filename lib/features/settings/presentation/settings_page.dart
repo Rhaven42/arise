@@ -63,6 +63,16 @@ class SettingsPage extends ConsumerWidget {
             title: Text(l10n.settingsWorkoutVoice),
             subtitle: Text(l10n.settingsWorkoutVoiceHint),
           ),
+          SwitchListTile(
+            value: profile?.music ?? true,
+            onChanged: profile == null
+                ? null
+                : (value) => ref
+                      .read(profileRepositoryProvider)
+                      .saveProfile(profile.copyWith(music: value)),
+            title: Text(l10n.settingsMusic),
+            subtitle: Text(l10n.settingsMusicHint),
+          ),
           const Divider(),
           _SectionHeader(l10n.settingsBackupSection),
           ListTile(

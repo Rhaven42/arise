@@ -36,6 +36,7 @@
 - [x] Catalogue des 27 exercices de référence conforme à ANATOMY.md, vérifié par un test
 - [ ] Catalogue complété à 80 exercices (lots de 10 à valider — lot 1 validé et intégré : 37 exercices)
 - [x] `ExerciseAnimationPlayer` + animations 2D de substitution (24 mouvements, muscles colorés)
+- [x] Démonstration des exercices par le personnage 3D du joueur (clips `ex_<mouvement>` générés depuis les poses 2D)
 - [x] Silhouettes SVG face et dos (33 zones), motifs + libellés pour les daltoniens
 - [x] Fiche exercice (consignes, erreurs fréquentes, muscles, animation en boucle)
 - [x] Exercices personnalisés avec sélection des muscles sur la silhouette
@@ -127,7 +128,7 @@
 - [ ] Saisie manuelle de l'hydratation
 
 ## Phase 12 — Finitions et publication
-- [ ] Sons et ambiance
+- [x] Sons et ambiance (musiques et jingle fournis par la propriétaire du projet, 11/11/2026)
 - [ ] Performances (profilage, temps de démarrage)
 - [ ] Audit d'accessibilité
 - [ ] Audit de confidentialité (aucune donnée ne quitte le téléphone sans action de l'utilisateur)

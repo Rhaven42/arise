@@ -193,6 +193,10 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
         'makeupNode': appearance.makeupId,
         'lighting': widget.scene.lighting.name,
         'focus': widget.scene.focus.name,
+        'motion': widget.scene.motion,
+        'view': widget.scene.focus == SceneFocus.exerciseFront
+            ? 'front'
+            : 'side',
         'outfit': true,
         'items': appearance.itemNodes,
         'hiddenOutfit': appearance.hiddenOutfit,

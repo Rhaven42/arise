@@ -5,7 +5,13 @@
 ## 1. Animations des exercices (phase 2)
 
 ### État actuel
-Mannequin 2D original dessiné par le code (`lib/features/exercises/presentation/animation/`), à partir des poses de `assets/animations/motions.json` (24 mouvements). Les silhouettes face/dos (`assets/svg/body_front.svg`, `body_back.svg`) portent une zone par muscle, identifiée par l'id du référentiel.
+Le **personnage du joueur** (ou un personnage par défaut tant qu'il n'a pas été créé) exécute l'exercice en 3D, avec son équipement : `CharacterAnimationPlayer` (`lib/features/exercises/presentation/animation/`) joue en boucle le clip `ex_<mouvement>` des modèles `assets/models/*.glb`, vu de profil ou de face selon le mouvement.
+
+Les clips sont générés par `tool/character/build_characters.py` à partir des poses 2D de `assets/animations/motions.json` (24 mouvements) : chaque segment de la figure oriente l'os correspondant (bassin, cuisses, jambes, pieds, bras, avant-bras), l'articulation d'appui reste fixée au sol, le corps bascule pour que le second appui (mains, pieds) touche aussi le sol et les mains se posent à plat. Seuls les os qui bougent sont animés (quelques Ko par clip).
+
+Le mannequin 2D original reste utilisé quand le système demande de réduire les animations (il peut être mis en pause) ; il colore les muscles travaillés. Les silhouettes face/dos (`assets/svg/body_front.svg`, `body_back.svg`) portent une zone par muscle, identifiée par l'id du référentiel.
+
+Limites : les mouvements sont des poses clés interpolées (pas de capture de mouvement) ; pas de rotation du buste ni des poignets en dehors des appuis au sol ; les muscles ne sont pas colorés sur le personnage 3D (la fiche les montre sur les silhouettes).
 
 ### Livrable attendu (version 3D)
 - **Un modèle anatomique** homme et un modèle femme, « écorché » ou semi-réaliste, avec **un maillage séparé par muscle** pour les 33 muscles de docs/ANATOMY.md §1. Chaque maillage est nommé exactement comme l'identifiant (`pectoralis_upper`, `gluteus_medius`…), y compris les côtés gauche et droit (`_l` / `_r`).
@@ -71,3 +77,14 @@ Les six objets exclusifs réutilisent une pièce de la boutique avec leur propre
 - Une pièce propre par objet, nommée `item_<id>` (par exemple `item_guardian_jacket`), avec les mêmes exigences que le §3 (squelette, formes de morphologie, matériau `dye_<id>`, budget). Il suffira alors de retirer `baseId` de l'objet dans le catalogue.
 - Une vignette `assets/items/<id>.png` par objet (rendu de l'objet seul, comme pour la boutique).
 - Une courte cinématique de victoire par boss (silhouette du boss, effet de lumière), en remplacement de la fenêtre animée du bilan.
+
+## 5. Musiques et jingles
+
+### État actuel
+Créations de la propriétaire du projet, générées avec Suno sous abonnement payant (usage commercial autorisé) le 06/11/2026, puis normalisées en volume et compressées (MP3 112 kbit/s, fondu de fin pour la boucle) :
+- `assets/music/title.mp3` (« Kingdoms of Aethelgard ») : écran titre et questionnaire ;
+- `assets/music/system.mp3` (« Ascension of the Hero ») : Fenêtre du Système et écrans de jeu ;
+- `assets/music/shop.mp3` (« Merchant's Warmth ») : boutique et inventaire ;
+- `assets/sounds/level_up.mp3` (« Level Up! ») : jingle de passage de niveau, la musique s'efface dessous.
+
+Les bips du lecteur de séance (`countdown`, `start`, `rest`, `finish`) restent générés par `tool/sounds.py`. Pas de musique pendant une séance. La musique se mélange aux autres sons du téléphone, respecte le mode silencieux et se règle dans Paramètres → Musique.

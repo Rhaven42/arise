@@ -99,7 +99,70 @@ Format : **principaux** (P) puis **secondaires** (S). « Faiblement » est conse
 
 ## 2 bis. Propositions à relire
 
-> Lot 1 sur 6 **validé le 05/11/2026** et intégré au §2. Les lots 2 à 6 (43 exercices, pour atteindre 80) seront proposés ici, avec le statut `pending_review`, et n'entreront dans le catalogue qu'après validation.
+> Lot 1 sur 6 **validé le 05/11/2026** et intégré au §2. Les lots 2 à 6 ci-dessous (43 exercices, pour atteindre 80) sont proposés le 11/11/2026 avec le statut `pending_review` : ils n'entreront dans le catalogue qu'après validation par la propriétaire du projet. Colonne « Règle » : règle de volume du §3 (`mobility` = indicateur de souplesse, jamais le volume de renforcement).
+
+### Lot 2 — Mobilité et étirements (10)
+| Exercice (`id`) | Principaux | Secondaires | Règle |
+|---|---|---|---|
+| Chat-vache (`cat_cow`) | erector_spinae, rectus_abdominis | obliques, trapezius_mid_lower | mobility |
+| Posture de l'enfant (`child_pose`) | latissimus_dorsi, erector_spinae | gluteus_maximus, deltoid_posterior | mobility |
+| Étirement des fléchisseurs de hanche (`hip_flexor_stretch`) | hip_flexors, quadriceps | rectus_abdominis | mobility |
+| Étirement des ischio-jambiers (`hamstring_stretch`) | hamstrings | gastrocnemius, erector_spinae | mobility |
+| Étirement des quadriceps debout (`quad_stretch`) | quadriceps | hip_flexors | mobility |
+| Étirement des mollets au mur (`calf_stretch`) | gastrocnemius, soleus | — | mobility |
+| Étirement des pectoraux contre un mur (`chest_stretch`) | pectoralis_mid_lower, pectoralis_upper | deltoid_anterior, biceps_brachii | mobility |
+| Étirement de l'épaule, bras croisé (`shoulder_stretch`) | deltoid_posterior, rotator_cuff | trapezius_mid_lower, rhomboids | mobility |
+| Cobra (`cobra_stretch`) | rectus_abdominis, hip_flexors | pectoralis_mid_lower | mobility |
+| Fente avec rotation (`lunge_twist_stretch`) | hip_flexors, hamstrings, obliques | gluteus_maximus, adductors | mobility |
+
+### Lot 3 — Mobilité et échauffement (8)
+| Exercice (`id`) | Principaux | Secondaires | Règle |
+|---|---|---|---|
+| Papillon (`butterfly_stretch`) | adductors | hip_flexors | mobility |
+| Pigeon (`pigeon_stretch`) | gluteus_maximus, gluteus_medius | hip_flexors | mobility |
+| Rotation thoracique à quatre pattes (`thoracic_rotation`) | obliques, erector_spinae | rhomboids, trapezius_mid_lower | mobility |
+| Chien tête en bas (`downward_dog`) | hamstrings, gastrocnemius, latissimus_dorsi | deltoid_anterior, erector_spinae | mobility |
+| Mobilité de la nuque (`neck_mobility`) | sternocleidomastoid, trapezius_upper | — | mobility |
+| Cercles de bras (`arm_circles`) | deltoid_anterior, deltoid_lateral, deltoid_posterior | rotator_cuff, trapezius_upper | mobility |
+| Cercles de hanches (`hip_circles`) | hip_flexors, gluteus_medius | obliques, adductors | mobility |
+| Squat profond tenu (`deep_squat_hold`) | adductors, quadriceps | gluteus_maximus, soleus, erector_spinae | mobility |
+
+### Lot 4 — Poids du corps : haut du corps et gainage (9)
+| Exercice (`id`) | Principaux | Secondaires | Règle |
+|---|---|---|---|
+| Pompes sur les genoux (`knee_push_up`) | pectoralis_mid_lower, deltoid_anterior, triceps_brachii | pectoralis_upper, serratus_anterior | strength |
+| Pompes larges (`wide_push_up`) | pectoralis_mid_lower, pectoralis_upper | deltoid_anterior, triceps_brachii | strength |
+| Dips sur banc (`bench_dips`) | triceps_brachii | deltoid_anterior, pectoralis_mid_lower | strength |
+| Planche avec touches d'épaule (`plank_shoulder_taps`) | rectus_abdominis, transversus_abdominis, obliques | deltoid_anterior, serratus_anterior | strength |
+| Rotations russes (`russian_twist`) | obliques | rectus_abdominis, hip_flexors | strength |
+| Dead bug (`dead_bug`) | transversus_abdominis, rectus_abdominis | hip_flexors, obliques | strength |
+| Hollow hold (`hollow_hold`) | rectus_abdominis, transversus_abdominis | hip_flexors | strength |
+| Battements de jambes (`flutter_kicks`) | hip_flexors, rectus_abdominis | quadriceps | strength |
+| Chaise contre le mur (`wall_sit`) | quadriceps | gluteus_maximus, adductors | strength |
+
+### Lot 5 — Poids du corps : bas du corps et cardio (9)
+| Exercice (`id`) | Principaux | Secondaires | Règle |
+|---|---|---|---|
+| Fentes arrière (`reverse_lunge`) | quadriceps, gluteus_maximus | hamstrings, gluteus_medius, adductors | strength |
+| Fentes latérales (`side_lunge`) | adductors, quadriceps, gluteus_maximus | gluteus_medius, hamstrings | strength |
+| Pont fessier sur une jambe (`single_leg_glute_bridge`) | gluteus_maximus | hamstrings, gluteus_medius, erector_spinae | strength |
+| Ruades à quatre pattes (`donkey_kick`) | gluteus_maximus | hamstrings, erector_spinae | strength |
+| Abductions à quatre pattes (`fire_hydrant`) | gluteus_medius, abductors | gluteus_maximus | strength |
+| Squats sautés (`squat_jump`) | quadriceps, gluteus_maximus | gastrocnemius, soleus, hamstrings | strength |
+| Montées de genoux (`high_knees`) | hip_flexors, quadriceps | gastrocnemius, soleus, rectus_abdominis | cardio |
+| Talons-fesses (`butt_kicks`) | hamstrings | quadriceps, gastrocnemius | cardio |
+| Sauts du patineur (`skater_jump`) | gluteus_medius, quadriceps | adductors, gastrocnemius, gluteus_maximus | cardio |
+
+### Lot 6 — Avec matériel et coordination (7)
+| Exercice (`id`) | Principaux | Secondaires | Règle |
+|---|---|---|---|
+| Shadow boxing (`shadow_boxing`) | deltoid_anterior, obliques | triceps_brachii, serratus_anterior, gastrocnemius | cardio |
+| Oiseau, élévations postérieures (`reverse_fly`) | deltoid_posterior, rhomboids | trapezius_mid_lower, rotator_cuff | strength |
+| Squat gobelet (`goblet_squat`) | quadriceps, gluteus_maximus | adductors, erector_spinae, rectus_abdominis | strength |
+| Kettlebell swing (`kettlebell_swing`) | gluteus_maximus, hamstrings | erector_spinae, deltoid_anterior, forearm_flexors | strength |
+| Haussements d'épaules (`shrug`) | trapezius_upper | forearm_flexors | strength |
+| Extension des triceps au-dessus de la tête (`triceps_extension`) | triceps_brachii | — | strength |
+| Écartés à l'élastique (`band_pull_apart`) | deltoid_posterior, rhomboids, trapezius_mid_lower | rotator_cuff | strength |
 
 ## 3. Règles de conversion du volume
 

@@ -2027,5 +2027,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "settingsMusic": "Musique",
+  "settingsMusicHint": "Musiques d'ambiance et jingle de niveau (mode silencieux respecté)"
 }

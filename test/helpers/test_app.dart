@@ -5,6 +5,7 @@ import 'package:arise/app.dart';
 import 'package:arise/core/anatomy/body_shapes.dart';
 import 'package:arise/core/anatomy/body_shapes_provider.dart';
 import 'package:arise/core/anatomy/muscle.dart';
+import 'package:arise/core/audio/music.dart';
 import 'package:arise/core/database/app_database.dart';
 import 'package:arise/core/router/app_router.dart';
 import 'package:arise/core/utils/clock.dart';
@@ -27,6 +28,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'fake_backup_file_gateway.dart';
 import 'fake_character_renderer.dart';
+import 'fake_music_player.dart';
 import 'fake_reminder_scheduler.dart';
 import 'fake_workout_cues.dart';
 
@@ -75,6 +77,7 @@ ProviderContainer createTestContainer({
   FakeWorkoutCues? cues,
   FakeCharacterRenderer? renderer,
   FakeSnapshotSharer? sharer,
+  FakeMusicPlayer? music,
 }) {
   return ProviderContainer.test(
     overrides: [
@@ -92,6 +95,7 @@ ProviderContainer createTestContainer({
       ),
       snapshotSharerProvider.overrideWithValue(sharer ?? FakeSnapshotSharer()),
       characterRandomProvider.overrideWithValue(Random(7)),
+      musicPlayerProvider.overrideWithValue(music ?? FakeMusicPlayer()),
       exerciseCatalogProvider.overrideWith((_) async => testCatalog),
       figureMotionsProvider.overrideWith((_) async => testMotions),
       bodyShapesProvider.overrideWith((_) async => testBodyShapes),
