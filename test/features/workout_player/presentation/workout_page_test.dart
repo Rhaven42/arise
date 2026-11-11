@@ -80,11 +80,16 @@ void main() {
 
     expect(find.text('Séance terminée'), findsOneWidget);
     expect(find.textContaining('XP'), findsWidgets);
-    expect(find.text('Muscles travaillés'), findsOneWidget);
     // Première séance : la fenêtre du Système annonce le haut fait.
     expect(find.text('Haut fait débloqué'), findsOneWidget);
     expect(find.text('Premier pas'), findsOneWidget);
     expect(find.text("Titre obtenu : L'Éveillé"), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Muscles travaillés'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Muscles travaillés'), findsOneWidget);
     expect(cues.sounds.last, CueSound.finish);
     expect(cues.screenOn, isFalse);
 
