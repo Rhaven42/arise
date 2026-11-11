@@ -85,15 +85,18 @@ Future<QuestView> _questView(
   );
 }
 
+/// Profil du joueur : il ne change pas pendant une séance, sa valeur déjà
+/// connue suffit (sinon on attend la première lecture).
+Future<PlayerProfile?> _profile(Ref ref) async =>
+    ref.read(playerProfileProvider).value ??
+    await ref.read(playerProfileProvider.future);
+
 /// Données lues directement dans la base, sans attendre un provider : un
 /// provider écouté seulement par une page cachée (la Fenêtre du Système
 /// sous le lecteur de séance) est mis en pause par Riverpod et ne se
 /// reconstruirait pas avant le retour sur cette page.
 Future<QuestView?> _questViewFromStorage(Ref ref) async {
-  final profile = await ref
-      .read(profileRepositoryProvider)
-      .watchProfile()
-      .first;
+  final profile = await _profile(ref);
   if (profile == null) return null;
   final sessions = await ref.read(completedSessionRepositoryProvider).readAll();
   final now = ref.read(clockProvider)();
@@ -132,10 +135,7 @@ class QuestController extends _$QuestController {
   Future<QuestOutcome?> evaluate() async {
     final view = await _questViewFromStorage(ref);
     if (view == null) return null;
-    final profile = await ref
-        .read(profileRepositoryProvider)
-        .watchProfile()
-        .first;
+    final profile = await _profile(ref);
     final now = ref.read(clockProvider)();
     final progression =
         await ref.read(progressionRepositoryProvider).read() ??

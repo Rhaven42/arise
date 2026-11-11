@@ -279,6 +279,17 @@ void main() {
     debugPrint('Parcours : quête du jour');
     await tester.tap(find.byType(BackButton).first);
     await _pumpFor(tester, 1200);
+    await _waitFor(tester, find.text('Quête du jour'));
+    if (find.text('Quête du jour').evaluate().isEmpty) {
+      // Aide au diagnostic : textes affichés si le panneau manque.
+      final texts = find
+          .byType(Text)
+          .evaluate()
+          .map((element) => (element.widget as Text).data)
+          .whereType<String>()
+          .join(' | ');
+      debugPrint('Textes visibles : $texts');
+    }
     await _expectVisible(tester, 'Quête du jour');
     debugPrint('Parcours : épreuve de rang');
     await _tapWithoutSettle(tester, find.text("Voir l'épreuve"));
