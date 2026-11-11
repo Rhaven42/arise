@@ -126,11 +126,6 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
       return;
     }
     if (data is! Map<String, dynamic>) return;
-    // Journal de la visionneuse (builds de debug seulement, sans données
-    // personnelles : taille de la vue, état WebGL, caméra).
-    if (kDebugMode && data['type'] != 'capture') {
-      debugPrint('AriseViewer ${message.message}');
-    }
     switch (data['type']) {
       case 'ready':
         _ready = true;

@@ -4,7 +4,6 @@ import 'package:arise/main.dart' as app;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 // Captures d'écran de référence, prises sur un émulateur Android
 // (workflow « screenshots », lancé avec « flutter drive »).
@@ -286,12 +285,15 @@ void main() {
       await tester.ensureVisible(button);
       await pumpFor(300);
       await tester.tap(button);
-      await pumpFor(8000);
-      debugPrint(
-        'Diagnostic $shot : chargement='
-        '${find.text('Le Système façonne ton héros…').evaluate().length} '
-        'webviews=${find.byType(WebViewWidget).evaluate().length}',
-      );
+      // Le premier rendu d'un modèle est lent sur l'émulateur (rendu
+      // logiciel) : on attend la fin du chargement avant la capture.
+      for (var t = 0; t < 20000; t += 500) {
+        if (find.text('Le Système façonne ton héros…').evaluate().isEmpty) {
+          break;
+        }
+        await pumpFor(500);
+      }
+      await pumpFor(1500);
       await binding.takeScreenshot(shot);
       await tester.tap(find.byTooltip('Fermer'));
       await pumpFor(800);
