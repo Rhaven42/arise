@@ -5,13 +5,14 @@
 ## 1. Animations des exercices (phase 2)
 
 ### État actuel
-Le **personnage du joueur** (ou un personnage par défaut tant qu'il n'a pas été créé) exécute l'exercice en 3D, avec son équipement : `CharacterAnimationPlayer` (`lib/features/exercises/presentation/animation/`) joue en boucle le clip `ex_<mouvement>` des modèles `assets/models/*.glb`, vu de profil ou de face selon le mouvement.
+Démonstration par **photos d'un athlète** (11/11/2026, à la demande de la propriétaire du projet : les mouvements du personnage 3D n'étaient pas assez justes ni lisibles) : pour 65 des 80 exercices, la photo de départ et celle d'arrivée alternent en fondu (`ExercisePhotoDemo`, 3:2, pause possible ; côte à côte quand le système réduit les animations).
 
-Les clips sont générés par `tool/character/build_characters.py` à partir des poses 2D de `assets/animations/motions.json` (61 mouvements pour 80 exercices) : chaque segment de la figure oriente l'os correspondant (ligne bassin → cou, cuisses, jambes, pieds, bras, avant-bras ; inclinaison de la tête `hd` et épaules haussées `sl`), l'articulation d'appui (pieds, genoux, mains) reste fixée au sol, le corps bascule pour que le second appui touche aussi le sol (40° au plus) et les mains d'appui se posent à plat ; la pose la plus basse du cycle est posée au sol (exercices allongés, assis, sauts). Les pistes immobiles sont supprimées à la compression (`tool/viewer/trim_clips.mjs`).
+- Source : [free-exercise-db](https://github.com/yuhonas/free-exercise-db), **domaine public** (Unlicense), crédité dans Paramètres → Crédits.
+- Correspondance exercice → photos : `tool/exercise_photos/mapping.json` ; import et conversion WebP (640 px) : `node tool/viewer/exercise_photos.mjs <clone de free-exercise-db>` → `assets/exercise_photos/<exercice>_<0|1>.webp` (2,1 Mo au total).
+- Variantes proches : étirement des quadriceps pied arrière sur un banc, fentes latérales et squat bulgare avec charge, papillon mains derrière la tête.
+- **Sans photo** (rien de fidèle dans la base) : burpees, pompes piquées, bird dog, cobra, pigeon, rotation thoracique, chien tête en bas, squat profond tenu, pompes sur les genoux, planche avec touches d'épaule, hollow hold, chaise contre le mur, abductions à quatre pattes, montées de genoux, shadow boxing : le mannequin 2D (`assets/animations/motions.json`) les montre. Livrable attendu : deux photos (départ, arrivée) par exercice, même cadrage, licence CC0 ou CC BY.
 
-Le mannequin 2D original reste utilisé quand le système demande de réduire les animations (il peut être mis en pause) ; il colore les muscles travaillés. Les silhouettes face/dos (`assets/svg/body_front.svg`, `body_back.svg`) portent une zone par muscle, identifiée par l'id du référentiel.
-
-Limites : les mouvements sont des poses clés interpolées (pas de capture de mouvement) ; ils restent dans un plan (profil ou face) : pas de rotation du buste (rotations russes, rotation thoracique), les abductions à quatre pattes reprennent les ruades, les pompes sur les genoux reprennent les pompes ; les muscles ne sont pas colorés sur le personnage 3D (la fiche les montre sur les silhouettes).
+Les clips 3D `ex_<mouvement>` restent dans les modèles et le visualiseur, inutilisés par les écrans.
 
 ### Livrable attendu (version 3D)
 - **Un modèle anatomique** homme et un modèle femme, « écorché » ou semi-réaliste, avec **un maillage séparé par muscle** pour les 33 muscles de docs/ANATOMY.md §1. Chaque maillage est nommé exactement comme l'identifiant (`pectoralis_upper`, `gluteus_medius`…), y compris les côtés gauche et droit (`_l` / `_r`).

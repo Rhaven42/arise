@@ -14,6 +14,7 @@ import 'package:arise/features/backup/presentation/backup_controller.dart';
 import 'package:arise/features/character_creation/presentation/character_providers.dart';
 import 'package:arise/features/exercises/data/asset_exercise_catalog_repository.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
+import 'package:arise/features/exercises/presentation/animation/exercise_photo_demo.dart';
 import 'package:arise/features/exercises/presentation/animation/figure_animation.dart';
 import 'package:arise/features/exercises/presentation/animation/figure_motion.dart';
 import 'package:arise/features/exercises/presentation/exercise_providers.dart';
@@ -50,6 +51,14 @@ final sampleProfile = PlayerProfile(
 final List<Exercise> testCatalog = AssetExerciseCatalogRepository.decodeCatalog(
   File(AssetExerciseCatalogRepository.assetPath).readAsStringSync(),
 );
+
+/// Exercices qui ont leurs photos dans `assets/exercise_photos`.
+final Set<String> testPhotoIds = {
+  for (final file in Directory(exercisePhotoFolder).listSync())
+    if (file.path.endsWith('_0.webp'))
+      file.uri.pathSegments.last.replaceAll('_0.webp', ''),
+};
+
 final Map<String, FigureMotion> testMotions = decodeMotions(
   File(motionsAsset).readAsStringSync(),
 );
@@ -98,6 +107,7 @@ ProviderContainer createTestContainer({
       musicPlayerProvider.overrideWithValue(music ?? FakeMusicPlayer()),
       exerciseCatalogProvider.overrideWith((_) async => testCatalog),
       figureMotionsProvider.overrideWith((_) async => testMotions),
+      exercisePhotoIdsProvider.overrideWith((_) async => testPhotoIds),
       bodyShapesProvider.overrideWith((_) async => testBodyShapes),
     ],
   );

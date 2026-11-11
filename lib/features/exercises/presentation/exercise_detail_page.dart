@@ -78,12 +78,15 @@ class _ExerciseDetail extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(AriseSpacing.md),
         children: [
+          // Exercice personnalisé sans mouvement : pas de démonstration.
           if (exercise.motion != null) ...[
             StoneFrame(
               padding: const EdgeInsets.all(AriseSpacing.sm),
-              child: SizedBox(
-                height: 220,
+              // Format des photos (3:2), sur toute la largeur.
+              child: AspectRatio(
+                aspectRatio: 3 / 2,
                 child: player.build(
+                  exerciseId: exercise.id,
                   motionId: exercise.motion,
                   highlights: roles,
                   semanticLabel: l10n.exerciseAnimationSemantics(exercise.name),
@@ -92,6 +95,7 @@ class _ExerciseDetail extends ConsumerWidget {
             ),
             const SizedBox(height: AriseSpacing.md),
           ],
+
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

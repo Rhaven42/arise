@@ -1,5 +1,5 @@
 /// Licence d'une ressource tierce incluse dans l'application.
-enum CreditLicense { ccBy, cc0, mit, ofl }
+enum CreditLicense { ccBy, cc0, publicDomain, mit, ofl }
 
 /// Ressource tierce créditée (nom de l'œuvre et auteur tels que publiés).
 class Credit {
@@ -96,6 +96,12 @@ const List<Credit> ccByCredits = [
 
 /// Autres ressources (mention non obligatoire, faite par courtoisie).
 const List<Credit> otherCredits = [
+  Credit(
+    work: 'Photos de démonstration des exercices (free-exercise-db)',
+    author: 'Contributeurs de free-exercise-db',
+    license: CreditLicense.publicDomain,
+    source: 'github.com/yuhonas/free-exercise-db',
+  ),
   Credit(
     work: 'MakeHuman (corps, peaux, yeux, sourcils, vêtements et cheveux CC0)',
     author: 'MakeHuman Community',

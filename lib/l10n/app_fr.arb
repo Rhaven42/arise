@@ -2017,7 +2017,7 @@
       }
     }
   },
-  "creditsLicense": "{license, select, ccBy{Licence Creative Commons Attribution (CC BY)} cc0{Domaine public (CC0)} mit{Licence MIT} ofl{SIL Open Font License} other{?}} · {source}",
+  "creditsLicense": "{license, select, ccBy{Licence Creative Commons Attribution (CC BY)} cc0{Domaine public (CC0)} publicDomain{Domaine public (Unlicense)} mit{Licence MIT} ofl{SIL Open Font License} other{?}} · {source}",
   "@creditsLicense": {
     "placeholders": {
       "license": {
@@ -2194,5 +2194,7 @@
       }
     }
   },
-  "titlesSeeAll": "Titres et auras"
+  "titlesSeeAll": "Titres et auras",
+  "exercisePhotoStart": "Départ",
+  "exercisePhotoEnd": "Arrivée"
 }
