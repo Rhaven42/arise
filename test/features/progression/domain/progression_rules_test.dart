@@ -96,6 +96,22 @@ void main() {
       expect(p.state.stat(StatId.willpower), 1);
     });
 
+    test('les Ombres augmentent la part de leur stat', () {
+      final p = applySession(
+        _fresh(),
+        baseXp: 200,
+        baseXpByStat: {StatId.strength: 100, StatId.agility: 100},
+        completed: true,
+        now: _day(0),
+        restDays: _noRest,
+        statMultipliers: {StatId.agility: 1.02 * 1.02},
+      );
+      expect(p.xpByStat[StatId.strength], 100);
+      expect(p.xpByStat[StatId.agility], 104);
+      expect(p.shadowXp, 4);
+      expect(p.xpGained, 204);
+    });
+
     test('une deuxième séance le même jour ne compte pas deux fois', () {
       final first = _session(_fresh(), 0).state;
       final second = _session(first, 0);

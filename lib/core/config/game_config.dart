@@ -258,9 +258,14 @@ class ShadowsConfig {
     required this.maxActive,
     required this.maxActiveNecromancer,
     required this.necromancerBonusMultiplier,
+    required this.dungeonThemeStats,
   });
 
   final RankId unlockRank;
+
+  /// Stat renforcée par une Ombre de donjon, selon le thème (noms de
+  /// `DungeonTheme` → noms de `StatId`).
+  final Map<String, String> dungeonThemeStats;
   final double passiveStatBonus;
   final int maxActive;
   final int maxActiveNecromancer;
@@ -272,6 +277,7 @@ class ShadowsConfig {
     'maxActive': maxActive,
     'maxActiveNecromancer': maxActiveNecromancer,
     'necromancerBonusMultiplier': necromancerBonusMultiplier,
+    'dungeonThemeStats': dungeonThemeStats,
   };
 }
 
@@ -617,6 +623,155 @@ class HealthConfig {
 }
 
 /// Configuration complète du jeu.
+/// Catégorie d'un haut fait (SPEC §14.2).
+enum AchievementCategory {
+  regularity,
+  volume,
+  stats,
+  bosses,
+  exploration,
+  balance,
+  secret,
+}
+
+/// Mesure suivie par un haut fait (calculée par
+/// `features/achievements/domain`).
+enum AchievementMetric {
+  sessionsCompleted,
+  bestStreak,
+  dailyQuests,
+  activeMinutes,
+  totalReps,
+  effectiveSets,
+  longSessions,
+  level,
+  strength,
+  endurance,
+  agility,
+  vitality,
+  willpower,
+  lowestStat,
+  bossesDefeated,
+  firstTryBosses,
+  shadows,
+  distinctExercises,
+  customExercises,
+  programs,
+  formatsTried,
+  dungeonsCleared,
+  itemsOwned,
+  eventsCompleted,
+  legWeeksInARow,
+  balancedPushPullWeeks,
+  balancedFrontBackWeeks,
+  musclesWorked,
+  flexibilityMinutes,
+  dawnSessions,
+  eveningSessions,
+  newYearSessions,
+  restDaysRespected,
+  painStops,
+}
+
+/// Haut fait : atteint quand [metric] vaut au moins [threshold].
+class AchievementDefinition {
+  const AchievementDefinition({
+    required this.id,
+    required this.category,
+    required this.metric,
+    required this.threshold,
+    this.titleId,
+  });
+
+  final String id;
+  final AchievementCategory category;
+  final AchievementMetric metric;
+  final int threshold;
+
+  /// Titre offert (identifiant stable), le cas échéant.
+  final String? titleId;
+
+  /// Les hauts faits secrets restent masqués jusqu'à leur obtention.
+  bool get secret => category == AchievementCategory.secret;
+
+  Map<String, Object> toJson() => {
+    'id': id,
+    'category': category.name,
+    'metric': metric.name,
+    'threshold': threshold,
+    'titleId': ?titleId,
+  };
+}
+
+/// Aura cosmétique débloquée par un titre.
+class AuraDefinition {
+  const AuraDefinition({
+    required this.id,
+    required this.titleId,
+    required this.color,
+  });
+
+  final String id;
+  final String titleId;
+
+  /// Couleur ARGB de la lueur.
+  final int color;
+
+  Map<String, Object> toJson() => {
+    'id': id,
+    'titleId': titleId,
+    'color': color,
+  };
+}
+
+class AchievementsConfig {
+  const AchievementsConfig({
+    required this.definitions,
+    required this.auras,
+    required this.longSessionMinutes,
+    required this.legMuscles,
+    required this.legWeekMinPoints,
+    required this.balancedWeekMinPoints,
+    required this.dawnBeforeMinutes,
+    required this.eveningFromMinutes,
+  });
+
+  final List<AchievementDefinition> definitions;
+  final List<AuraDefinition> auras;
+
+  /// Durée d'effort actif d'une « longue séance » (sous le plafond
+  /// quotidien : aucun haut fait ne pousse au surentraînement).
+  final int longSessionMinutes;
+
+  /// Muscles des jambes (identifiants de ANATOMY.md §1).
+  final List<String> legMuscles;
+
+  /// Volume minimal des jambes pour qu'une semaine compte.
+  final double legWeekMinPoints;
+
+  /// Volume minimal de chaque côté (poussée / tirage, face / dos) pour
+  /// qu'une semaine équilibrée compte.
+  final double balancedWeekMinPoints;
+
+  /// Séance « de l'aube » : commencée avant cette heure (minutes depuis
+  /// minuit, heure locale).
+  final int dawnBeforeMinutes;
+
+  /// Séance « du soir » : commencée à partir de cette heure.
+  final int eveningFromMinutes;
+
+  Map<String, Object> toJson() => {
+    'definitions': [for (final d in definitions) d.toJson()],
+    'auras': [for (final a in auras) a.toJson()],
+    'longSessionMinutes': longSessionMinutes,
+    'legMuscles': legMuscles,
+    'legWeekMinPoints': legWeekMinPoints,
+    'balancedWeekMinPoints': balancedWeekMinPoints,
+    'dawnBeforeMinutes': dawnBeforeMinutes,
+    'eveningFromMinutes': eveningFromMinutes,
+  };
+}
+
 class GameConfig {
   const GameConfig({
     required this.version,
@@ -630,6 +785,7 @@ class GameConfig {
     required this.classes,
     required this.camera,
     required this.shadows,
+    required this.achievements,
     required this.trials,
     required this.quests,
     required this.character,
@@ -656,6 +812,7 @@ class GameConfig {
   final ClassesConfig classes;
   final CameraConfig camera;
   final ShadowsConfig shadows;
+  final AchievementsConfig achievements;
   final TrialsConfig trials;
   final QuestsConfig quests;
   final CharacterConfig character;
@@ -685,6 +842,7 @@ class GameConfig {
     'classes': classes.toJson(),
     'camera': camera.toJson(),
     'shadows': shadows.toJson(),
+    'achievements': achievements.toJson(),
     'trials': trials.toJson(),
     'quests': quests.toJson(),
     'character': character.toJson(),
@@ -762,6 +920,456 @@ const gameConfig = GameConfig(
     maxActive: 5,
     maxActiveNecromancer: 7,
     necromancerBonusMultiplier: 2,
+    dungeonThemeStats: {
+      'stoneCrypt': 'strength',
+      'echoForest': 'agility',
+      'windTower': 'endurance',
+    },
+  ),
+  achievements: AchievementsConfig(
+    definitions: [
+      AchievementDefinition(
+        id: 'first_session',
+        category: AchievementCategory.regularity,
+        metric: AchievementMetric.sessionsCompleted,
+        threshold: 1,
+        titleId: 'title_awakened',
+      ),
+      AchievementDefinition(
+        id: 'sessions_10',
+        category: AchievementCategory.regularity,
+        metric: AchievementMetric.sessionsCompleted,
+        threshold: 10,
+      ),
+      AchievementDefinition(
+        id: 'sessions_50',
+        category: AchievementCategory.regularity,
+        metric: AchievementMetric.sessionsCompleted,
+        threshold: 50,
+      ),
+      AchievementDefinition(
+        id: 'sessions_100',
+        category: AchievementCategory.regularity,
+        metric: AchievementMetric.sessionsCompleted,
+        threshold: 100,
+      ),
+      AchievementDefinition(
+        id: 'sessions_250',
+        category: AchievementCategory.regularity,
+        metric: AchievementMetric.sessionsCompleted,
+        threshold: 250,
+        titleId: 'title_veteran',
+      ),
+      AchievementDefinition(
+        id: 'streak_7',
+        category: AchievementCategory.regularity,
+        metric: AchievementMetric.bestStreak,
+        threshold: 7,
+      ),
+      AchievementDefinition(
+        id: 'streak_30',
+        category: AchievementCategory.regularity,
+        metric: AchievementMetric.bestStreak,
+        threshold: 30,
+      ),
+      AchievementDefinition(
+        id: 'streak_100',
+        category: AchievementCategory.regularity,
+        metric: AchievementMetric.bestStreak,
+        threshold: 100,
+        titleId: 'title_unshakable',
+      ),
+      AchievementDefinition(
+        id: 'daily_quests_10',
+        category: AchievementCategory.regularity,
+        metric: AchievementMetric.dailyQuests,
+        threshold: 10,
+      ),
+      AchievementDefinition(
+        id: 'daily_quests_50',
+        category: AchievementCategory.regularity,
+        metric: AchievementMetric.dailyQuests,
+        threshold: 50,
+      ),
+      AchievementDefinition(
+        id: 'minutes_60',
+        category: AchievementCategory.volume,
+        metric: AchievementMetric.activeMinutes,
+        threshold: 60,
+      ),
+      AchievementDefinition(
+        id: 'minutes_600',
+        category: AchievementCategory.volume,
+        metric: AchievementMetric.activeMinutes,
+        threshold: 600,
+      ),
+      AchievementDefinition(
+        id: 'minutes_3000',
+        category: AchievementCategory.volume,
+        metric: AchievementMetric.activeMinutes,
+        threshold: 3000,
+      ),
+      AchievementDefinition(
+        id: 'minutes_10000',
+        category: AchievementCategory.volume,
+        metric: AchievementMetric.activeMinutes,
+        threshold: 10000,
+        titleId: 'title_tireless',
+      ),
+      AchievementDefinition(
+        id: 'reps_1000',
+        category: AchievementCategory.volume,
+        metric: AchievementMetric.totalReps,
+        threshold: 1000,
+      ),
+      AchievementDefinition(
+        id: 'reps_10000',
+        category: AchievementCategory.volume,
+        metric: AchievementMetric.totalReps,
+        threshold: 10000,
+      ),
+      AchievementDefinition(
+        id: 'reps_50000',
+        category: AchievementCategory.volume,
+        metric: AchievementMetric.totalReps,
+        threshold: 50000,
+      ),
+      AchievementDefinition(
+        id: 'sets_500',
+        category: AchievementCategory.volume,
+        metric: AchievementMetric.effectiveSets,
+        threshold: 500,
+      ),
+      AchievementDefinition(
+        id: 'long_session',
+        category: AchievementCategory.volume,
+        metric: AchievementMetric.longSessions,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'level_5',
+        category: AchievementCategory.stats,
+        metric: AchievementMetric.level,
+        threshold: 5,
+      ),
+      AchievementDefinition(
+        id: 'level_10',
+        category: AchievementCategory.stats,
+        metric: AchievementMetric.level,
+        threshold: 10,
+      ),
+      AchievementDefinition(
+        id: 'level_25',
+        category: AchievementCategory.stats,
+        metric: AchievementMetric.level,
+        threshold: 25,
+      ),
+      AchievementDefinition(
+        id: 'level_50',
+        category: AchievementCategory.stats,
+        metric: AchievementMetric.level,
+        threshold: 50,
+        titleId: 'title_legend',
+      ),
+      AchievementDefinition(
+        id: 'level_100',
+        category: AchievementCategory.stats,
+        metric: AchievementMetric.level,
+        threshold: 100,
+      ),
+      AchievementDefinition(
+        id: 'strength_20',
+        category: AchievementCategory.stats,
+        metric: AchievementMetric.strength,
+        threshold: 20,
+        titleId: 'title_rock_breaker',
+      ),
+      AchievementDefinition(
+        id: 'endurance_20',
+        category: AchievementCategory.stats,
+        metric: AchievementMetric.endurance,
+        threshold: 20,
+      ),
+      AchievementDefinition(
+        id: 'agility_20',
+        category: AchievementCategory.stats,
+        metric: AchievementMetric.agility,
+        threshold: 20,
+      ),
+      AchievementDefinition(
+        id: 'vitality_20',
+        category: AchievementCategory.stats,
+        metric: AchievementMetric.vitality,
+        threshold: 20,
+      ),
+      AchievementDefinition(
+        id: 'willpower_20',
+        category: AchievementCategory.stats,
+        metric: AchievementMetric.willpower,
+        threshold: 20,
+      ),
+      AchievementDefinition(
+        id: 'all_stats_10',
+        category: AchievementCategory.stats,
+        metric: AchievementMetric.lowestStat,
+        threshold: 10,
+        titleId: 'title_balanced',
+      ),
+      AchievementDefinition(
+        id: 'boss_1',
+        category: AchievementCategory.bosses,
+        metric: AchievementMetric.bossesDefeated,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'boss_2',
+        category: AchievementCategory.bosses,
+        metric: AchievementMetric.bossesDefeated,
+        threshold: 2,
+      ),
+      AchievementDefinition(
+        id: 'boss_3',
+        category: AchievementCategory.bosses,
+        metric: AchievementMetric.bossesDefeated,
+        threshold: 3,
+      ),
+      AchievementDefinition(
+        id: 'boss_4',
+        category: AchievementCategory.bosses,
+        metric: AchievementMetric.bossesDefeated,
+        threshold: 4,
+      ),
+      AchievementDefinition(
+        id: 'boss_5',
+        category: AchievementCategory.bosses,
+        metric: AchievementMetric.bossesDefeated,
+        threshold: 5,
+      ),
+      AchievementDefinition(
+        id: 'boss_6',
+        category: AchievementCategory.bosses,
+        metric: AchievementMetric.bossesDefeated,
+        threshold: 6,
+      ),
+      AchievementDefinition(
+        id: 'first_try_boss',
+        category: AchievementCategory.bosses,
+        metric: AchievementMetric.firstTryBosses,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'shadow_1',
+        category: AchievementCategory.bosses,
+        metric: AchievementMetric.shadows,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'shadow_5',
+        category: AchievementCategory.bosses,
+        metric: AchievementMetric.shadows,
+        threshold: 5,
+      ),
+      AchievementDefinition(
+        id: 'exercises_10',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.distinctExercises,
+        threshold: 10,
+      ),
+      AchievementDefinition(
+        id: 'exercises_25',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.distinctExercises,
+        threshold: 25,
+      ),
+      AchievementDefinition(
+        id: 'exercises_50',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.distinctExercises,
+        threshold: 50,
+        titleId: 'title_explorer',
+      ),
+      AchievementDefinition(
+        id: 'custom_exercise',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.customExercises,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'first_program',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.programs,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'all_formats',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.formatsTried,
+        threshold: 4,
+      ),
+      AchievementDefinition(
+        id: 'dungeon_1',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.dungeonsCleared,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'dungeon_5',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.dungeonsCleared,
+        threshold: 5,
+      ),
+      AchievementDefinition(
+        id: 'first_item',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.itemsOwned,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'first_event',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.eventsCompleted,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'legs_4_weeks',
+        category: AchievementCategory.balance,
+        metric: AchievementMetric.legWeeksInARow,
+        threshold: 4,
+      ),
+      AchievementDefinition(
+        id: 'legs_12_weeks',
+        category: AchievementCategory.balance,
+        metric: AchievementMetric.legWeeksInARow,
+        threshold: 12,
+        titleId: 'title_never_skips_legs',
+      ),
+      AchievementDefinition(
+        id: 'push_pull_4_weeks',
+        category: AchievementCategory.balance,
+        metric: AchievementMetric.balancedPushPullWeeks,
+        threshold: 4,
+      ),
+      AchievementDefinition(
+        id: 'front_back_4_weeks',
+        category: AchievementCategory.balance,
+        metric: AchievementMetric.balancedFrontBackWeeks,
+        threshold: 4,
+      ),
+      AchievementDefinition(
+        id: 'muscles_15',
+        category: AchievementCategory.balance,
+        metric: AchievementMetric.musclesWorked,
+        threshold: 15,
+      ),
+      AchievementDefinition(
+        id: 'muscles_all',
+        category: AchievementCategory.balance,
+        metric: AchievementMetric.musclesWorked,
+        threshold: 33,
+        titleId: 'title_body_cartographer',
+      ),
+      AchievementDefinition(
+        id: 'flexibility_60',
+        category: AchievementCategory.balance,
+        metric: AchievementMetric.flexibilityMinutes,
+        threshold: 60,
+      ),
+      AchievementDefinition(
+        id: 'flexibility_300',
+        category: AchievementCategory.balance,
+        metric: AchievementMetric.flexibilityMinutes,
+        threshold: 300,
+        titleId: 'title_willow',
+      ),
+      AchievementDefinition(
+        id: 'dawn_10',
+        category: AchievementCategory.secret,
+        metric: AchievementMetric.dawnSessions,
+        threshold: 10,
+        titleId: 'title_dawn_monarch',
+      ),
+      AchievementDefinition(
+        id: 'evening_10',
+        category: AchievementCategory.secret,
+        metric: AchievementMetric.eveningSessions,
+        threshold: 10,
+      ),
+      AchievementDefinition(
+        id: 'new_year',
+        category: AchievementCategory.secret,
+        metric: AchievementMetric.newYearSessions,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'rest_sage',
+        category: AchievementCategory.secret,
+        metric: AchievementMetric.restDaysRespected,
+        threshold: 20,
+        titleId: 'title_rest_sage',
+      ),
+      AchievementDefinition(
+        id: 'listen_body',
+        category: AchievementCategory.secret,
+        metric: AchievementMetric.painStops,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'shadow_army',
+        category: AchievementCategory.secret,
+        metric: AchievementMetric.shadows,
+        threshold: 7,
+        titleId: 'title_shadow_master',
+      ),
+    ],
+    auras: [
+      AuraDefinition(
+        id: 'aura_dawn',
+        titleId: 'title_dawn_monarch',
+        color: 0xFFF2C14E,
+      ),
+      AuraDefinition(
+        id: 'aura_ember',
+        titleId: 'title_unshakable',
+        color: 0xFFE8743B,
+      ),
+      AuraDefinition(
+        id: 'aura_frost',
+        titleId: 'title_body_cartographer',
+        color: 0xFF7FD3F2,
+      ),
+      AuraDefinition(
+        id: 'aura_verdant',
+        titleId: 'title_willow',
+        color: 0xFF7CCB6E,
+      ),
+      AuraDefinition(
+        id: 'aura_shadow',
+        titleId: 'title_shadow_master',
+        color: 0xFF8B5CF6,
+      ),
+      AuraDefinition(
+        id: 'aura_storm',
+        titleId: 'title_stormLord',
+        color: 0xFF5B8CFF,
+      ),
+    ],
+    longSessionMinutes: 45,
+    legMuscles: [
+      'quadriceps',
+      'hamstrings',
+      'gluteus_maximus',
+      'gluteus_medius',
+      'adductors',
+      'abductors',
+      'gastrocnemius',
+      'soleus',
+      'tibialis_anterior',
+      'hip_flexors',
+    ],
+    legWeekMinPoints: 4,
+    balancedWeekMinPoints: 4,
+    dawnBeforeMinutes: 390,
+    eveningFromMinutes: 1290,
   ),
   trials: TrialsConfig(
     retryCooldownHours: 48,

@@ -48,6 +48,44 @@ void main() {
       );
     });
 
+    test('au moins 60 hauts faits, uniques, dans les 7 catégories', () {
+      final definitions = gameConfig.achievements.definitions;
+      expect(definitions.length, greaterThanOrEqualTo(60));
+      final ids = [for (final d in definitions) d.id];
+      expect(ids.toSet(), hasLength(ids.length));
+      expect({
+        for (final d in definitions) d.category,
+      }, AchievementCategory.values.toSet());
+      for (final d in definitions) {
+        expect(d.threshold, greaterThan(0), reason: d.id);
+      }
+      final titles = [
+        for (final d in definitions)
+          if (d.titleId != null) d.titleId!,
+      ];
+      expect(titles.toSet(), hasLength(titles.length));
+    });
+
+    test('chaque aura est liée à un titre qui existe', () {
+      final titles = {
+        for (final d in gameConfig.achievements.definitions) ?d.titleId,
+        for (final boss in [
+          'rockGuardian',
+          'silverStag',
+          'windDancer',
+          'basaltColossus',
+          'crimsonComet',
+          'stormLord',
+        ])
+          'title_$boss',
+      };
+      final auras = gameConfig.achievements.auras;
+      expect({for (final a in auras) a.id}, hasLength(auras.length));
+      for (final aura in auras) {
+        expect(titles, contains(aura.titleId), reason: aura.id);
+      }
+    });
+
     test('les bornes d’intensité sont cohérentes', () {
       final intensity = gameConfig.intensity;
       expect(intensity.rpeMin, lessThan(intensity.rpeMax));

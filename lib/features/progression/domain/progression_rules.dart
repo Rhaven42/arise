@@ -97,6 +97,7 @@ class SessionProgress {
     required this.chestCoins,
     required this.rankLocked,
     this.classXp = 0,
+    this.shadowXp = 0,
   });
 
   final ProgressionState state;
@@ -108,6 +109,9 @@ class SessionProgress {
 
   /// XP de base ajoutée par la classe (avant le multiplicateur).
   final int classXp;
+
+  /// XP ajoutée par les Ombres actives (après le multiplicateur).
+  final int shadowXp;
   final int levelsGained;
 
   /// Pièces gagnées par les efforts de la séance.
@@ -146,6 +150,7 @@ SessionProgress applySession(
   required DateTime now,
   required Set<int> restDays,
   Map<int, int> baseXpByDifficulty = const {},
+  Map<StatId, double> statMultipliers = const {},
   GameConfig config = gameConfig,
 }) {
   final day = CivilDate.ofLocal(now);
@@ -160,12 +165,17 @@ SessionProgress applySession(
     config: config.classes,
   );
   final classXp = classBonus.values.fold<int>(0, (sum, v) => sum + v);
-  final xp = ((baseXp + classXp) * multiplier).round();
-  final xpByStat = {
-    for (final entry in baseXpByStat.entries)
-      entry.key: ((entry.value + (classBonus[entry.key] ?? 0)) * multiplier)
-          .round(),
-  };
+  // Ombres actives (SPEC §14.3) : multiplicateur sur la part de chaque stat,
+  // cumulé avec les autres bonus par multiplication.
+  var shadowXp = 0;
+  final xpByStat = <StatId, int>{};
+  for (final entry in baseXpByStat.entries) {
+    final plain = (entry.value + (classBonus[entry.key] ?? 0)) * multiplier;
+    final boosted = (plain * (statMultipliers[entry.key] ?? 1)).round();
+    shadowXp += boosted - plain.round();
+    xpByStat[entry.key] = boosted;
+  }
+  final xp = ((baseXp + classXp) * multiplier).round() + shadowXp;
 
   // Pièces des efforts ; une séance sans détail par difficulté (anciennes
   // sauvegardes) compte comme des exercices faciles.
@@ -204,6 +214,7 @@ SessionProgress applySession(
     chestCoins: validation?.chest ?? Coins.zero,
     rankLocked: next.isRankLocked && next.xpInLevel >= next.xpForNextLevel,
     classXp: classXp,
+    shadowXp: shadowXp,
   );
 }
 

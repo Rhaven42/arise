@@ -1,3 +1,4 @@
+import 'package:arise/features/achievements/domain/achievements_state.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/inventory/domain/inventory.dart';
@@ -7,6 +8,8 @@ import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/quests/domain/daily_quest.dart';
 import 'package:arise/features/quests/domain/quest_board.dart';
+import 'package:arise/features/shadows/domain/shadows_state.dart';
+import 'package:arise/features/titles/domain/titles_state.dart';
 import 'package:arise/features/trials/domain/trials_state.dart';
 import 'package:arise/features/workout_player/domain/completed_session.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -47,6 +50,11 @@ abstract class BackupData with _$BackupData {
 
     /// Ajout du format v8 (phase 8B) : semaine, donjon, événements.
     QuestBoard? questBoard,
+
+    /// Ajouts du format v9 (phase 9) : hauts faits, titre et aura, Ombres.
+    AchievementsState? achievements,
+    TitlesState? titles,
+    ShadowsState? shadows,
   }) = _BackupData;
 
   factory BackupData.fromJson(Map<String, dynamic> json) =>
