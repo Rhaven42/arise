@@ -204,8 +204,9 @@ class _RunningWorkout extends ConsumerWidget {
           if (!isRest)
             StoneFrame(
               padding: const EdgeInsets.all(AriseSpacing.sm),
-              child: AspectRatio(
-                aspectRatio: 3 / 2,
+              // Hauteur fixe : les commandes de la séance restent visibles.
+              child: SizedBox(
+                height: 180,
                 child: exercise == null
                     ? const SizedBox.shrink()
                     : player.build(

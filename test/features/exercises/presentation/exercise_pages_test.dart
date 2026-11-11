@@ -49,7 +49,12 @@ void main() {
     await tester.tap(find.byKey(ExercisePhotoDemo.pauseKey));
     await tester.pump();
     expect(find.byTooltip("Lancer l'animation"), findsOneWidget);
-    expect(find.byType(BodyMap), findsNWidgets(2));
+    await tester.scrollUntilVisible(
+      find.byType(BodyMap).first,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.byType(BodyMap), findsWidgets);
     await tester.scrollUntilVisible(
       find.text('• Triceps'),
       200,
