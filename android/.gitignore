@@ -12,3 +12,7 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+# Clé de debug partagée (mot de passe public « android ») : les APK de
+# test s'installent par-dessus la version précédente. La clé de
+# publication (phase 12) ne sera jamais versionnée.
+!app/arise-debug.keystore

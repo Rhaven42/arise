@@ -30,6 +30,18 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        // Même clé de debug sur tous les postes et en CI : chaque nouvel APK
+        // de test met à jour l'application installée (données conservées)
+        // au lieu d'exiger une désinstallation.
+        getByName("debug") {
+            storeFile = file("arise-debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         release {
             // Signature de debug en attendant la configuration de publication (phase 12).
