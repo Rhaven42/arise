@@ -4,6 +4,7 @@ import 'package:arise/main.dart' as app;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 // Captures d'écran de référence, prises sur un émulateur Android
 // (workflow « screenshots », lancé avec « flutter drive »).
@@ -294,6 +295,11 @@ void main() {
       await pumpFor(300);
       await tester.tap(button);
       await pumpFor(5000);
+      debugPrint(
+        'Diagnostic $shot : chargement='
+        '${find.text('Le Système façonne ton héros…').evaluate().length} '
+        'webviews=${find.byType(WebViewWidget).evaluate().length}',
+      );
       await binding.takeScreenshot(shot);
       await tester.tap(find.byTooltip('Fermer'));
       await pumpFor(800);
