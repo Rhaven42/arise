@@ -52,6 +52,45 @@ void main() {
     }
   });
 
+  test('tête inclinée et épaules haussées', () {
+    const upright = {'t': 180.0};
+    final base = computeJoints(upright, MotionView.front, (x: 0, y: 0));
+    final tilted = computeJoints(
+      {...upright, 'hd': 30, 'sl': 0.06},
+      MotionView.front,
+      (x: 0, y: 0),
+    );
+    // La tête penche sans changer de distance au cou.
+    expect(tilted['head']!.x, isNot(closeTo(base['head']!.x, 1e-3)));
+    expect(
+      _distance(tilted['neck']!, tilted['head']!),
+      closeTo(FigureProportions.neck, 1e-9),
+    );
+    // Les épaules montent (y vers le bas), le cou ne bouge pas.
+    expect(
+      tilted['shoulder_n']!.y,
+      closeTo(base['shoulder_n']!.y - 0.06, 1e-9),
+    );
+    expect(tilted['neck'], base['neck']);
+  });
+
+  test('les mouvements au sol gardent leur appui pendant tout le cycle', () {
+    for (final id in ['cat_cow', 'dead_bug', 'wall_sit', 'side_lunge']) {
+      final motion = motions[id]!;
+      final anchor = motion.keys.first.anchor;
+      final first = computeJoints(
+        motion.keys.first.angles,
+        motion.view,
+        motion.keys.first.root,
+      )[anchor]!;
+      for (var i = 0; i < 10; i++) {
+        final pose = motion.poseAt(i / 10);
+        final j = computeJoints(pose.angles, motion.view, pose.root);
+        expect(_distance(j[anchor]!, first), lessThan(1e-3), reason: id);
+      }
+    }
+  });
+
   test('la pose au début du cycle est la première pose clé', () {
     final pushUp = motions['push_up']!;
     final pose = pushUp.poseAt(0);

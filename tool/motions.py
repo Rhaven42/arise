@@ -15,16 +15,18 @@ def d(a):
 def add(p, a, l):
     v = d(a); return (p[0] + v[0] * l, p[1] + v[1] * l)
 
+# hd : inclinaison de la tête par rapport au tronc (degrés) ; sl : épaules
+# haussées le long du tronc (mètres).
 DEFAULT = dict(t=180, ua_n=0, fa_n=0, ua_f=0, fa_f=0, th_n=0, sh_n=0,
-               th_f=0, sh_f=0, ft_n=90, ft_f=90)
+               th_f=0, sh_f=0, ft_n=90, ft_f=90, hd=0, sl=0)
 
 def joints(k, view, root=(0.0, 0.0)):
     k = {**DEFAULT, **k}
     j = {"root": root}
     neck = add(root, k["t"], L["torso"])
     j["neck"] = neck
-    j["head"] = add(neck, k["t"], L["neck"])
-    sh = add(root, k["t"], L["torso"] * SHOULDER_AT)
+    j["head"] = add(neck, k["t"] + k["hd"], L["neck"])
+    sh = add(root, k["t"], L["torso"] * SHOULDER_AT + k["sl"])
     for side, sgn in (("n", 1), ("f", -1)):
         mir = (lambda a: a) if view == "side" else (lambda a, s=sgn: a * s)
         s0 = sh if view == "side" else (sh[0] + sgn * FRONT_SHOULDER_DX, sh[1])
@@ -50,6 +52,13 @@ S = {}  # debout, bras le long du corps
 SQUAT_LOW = dict(t=148, th_n=82, sh_n=-22, th_f=82, sh_f=-22, ua_n=90, fa_n=90, ua_f=90, fa_f=90)
 PLANK_HANDS = dict(t=109.4, ua_n=0, fa_n=0, ua_f=0, fa_f=0, th_n=-70.6, sh_n=-70.6, th_f=-70.6, sh_f=-70.6, ft_n=15, ft_f=15)
 PUSH_DOWN = dict(t=93.7, ua_n=-100, fa_n=20, ua_f=-100, fa_f=20, th_n=-86.3, sh_n=-86.3, th_f=-86.3, sh_f=-86.3, ft_n=15, ft_f=15)
+
+# À quatre pattes : mains sous les épaules, genoux sous les hanches.
+QUAD = dict(t=103.7, ua_n=0, fa_n=0, ua_f=0, fa_f=0, th_n=0, sh_n=-90, th_f=0, sh_f=-90, ft_n=-90, ft_f=-90)
+# Allongé sur le dos, jambes tendues.
+SUPINE = dict(t=-90, ua_n=-90, fa_n=-90, ua_f=-90, fa_f=-90, th_n=90, sh_n=90, th_f=90, sh_f=90, ft_n=180, ft_f=180)
+# Garde de boxe.
+GUARD = dict(t=175, ua_n=30, fa_n=170, ua_f=20, fa_f=165, th_n=12, sh_n=-5, th_f=-12, sh_f=-15)
 
 def kf(pose, anchor="ankle_n", target=(0, 0), hold=1.0):
     return dict(pose=pose, anchor=(anchor, target), hold=hold)
@@ -130,6 +139,130 @@ MOTIONS = {
     "jump_rope": dict(view="front", keys=[
         kf(dict(ua_n=15, fa_n=70, ua_f=15, fa_f=70, th_n=2, sh_n=0, th_f=2, sh_f=0), "root", (0, 0)),
         kf(dict(ua_n=18, fa_n=55, ua_f=18, fa_f=55, th_n=2, sh_n=0, th_f=2, sh_f=0), "root", (0, -0.07))]),
+    # Lot 2 : mobilité et étirements.
+    "cat_cow": dict(view="side", keys=[
+        kf({**QUAD, "t": 107, "hd": 45}, "knee_n", hold=1.5),
+        kf({**QUAD, "t": 99, "hd": -55, "sl": 0.03}, "knee_n", hold=1.5)]),
+    "child_pose": dict(view="side", keys=[
+        kf(dict(t=80, ua_n=95, fa_n=92, ua_f=95, fa_f=92, th_n=62, sh_n=-90, th_f=62, sh_f=-90, ft_n=-90, ft_f=-90, hd=5), "knee_n", hold=2),
+        kf(dict(t=84, ua_n=99, fa_n=93, ua_f=99, fa_f=93, th_n=60, sh_n=-90, th_f=60, sh_f=-90, ft_n=-90, ft_f=-90, hd=5), "knee_n", hold=2)]),
+    "hip_flexor_stretch": dict(view="side", keys=[
+        kf(dict(ua_n=25, fa_n=60, ua_f=25, fa_f=60, th_n=87.5, sh_n=-10, th_f=-10, sh_f=-90, ft_f=-90), "knee_f", hold=1.8),
+        kf(dict(ua_n=35, fa_n=70, ua_f=35, fa_f=70, th_n=90, sh_n=-25, th_f=-30, sh_f=-90, ft_f=-90), "knee_f", hold=1.8)]),
+    "hamstring_stretch": dict(view="side", keys=[
+        kf(dict(t=95, ua_n=5, fa_n=10, ua_f=5, fa_f=10, th_n=-6, sh_n=-6, th_f=-6, sh_f=-6, hd=-20), hold=1.8),
+        kf(dict(t=82, ua_n=15, fa_n=25, ua_f=15, fa_f=25, th_n=-8, sh_n=-8, th_f=-8, sh_f=-8, hd=-20), hold=1.8)]),
+    "quad_stretch": dict(view="side", keys=[
+        kf(dict(ua_n=-30, fa_n=-150, ua_f=15, fa_f=20, th_n=-5, sh_n=-170, ft_n=-80), "ankle_f", hold=1.8),
+        kf(dict(ua_n=-35, fa_n=-155, ua_f=18, fa_f=25, th_n=-12, sh_n=-172, ft_n=-80), "ankle_f", hold=1.8)]),
+    "calf_stretch": dict(view="side", keys=[
+        kf(dict(t=160, ua_n=110, fa_n=110, ua_f=110, fa_f=110, th_n=40, sh_n=10, th_f=-25, sh_f=-25), "ankle_f", hold=1.8),
+        kf(dict(t=155, ua_n=105, fa_n=105, ua_f=105, fa_f=105, th_n=48, sh_n=12, th_f=-30, sh_f=-30), "ankle_f", hold=1.8)]),
+    "chest_stretch": dict(view="side", keys=[
+        kf(dict(ua_n=-70, fa_n=-70, ua_f=-70, fa_f=-70, hd=8), hold=1.8),
+        kf(dict(ua_n=-82, fa_n=-82, ua_f=-82, fa_f=-82, hd=12), hold=1.8)]),
+    "shoulder_stretch": dict(view="front", keys=[
+        kf(dict(ua_n=-80, fa_n=-85, ua_f=-20, fa_f=-110), "root", hold=1.8),
+        kf(dict(ua_n=-88, fa_n=-92, ua_f=-25, fa_f=-125), "root", hold=1.8)]),
+    "cobra_stretch": dict(view="side", keys=[
+        kf(dict(t=96, ua_n=-10, fa_n=80, ua_f=-10, fa_f=80, th_n=-90, sh_n=-90, th_f=-90, sh_f=-90, ft_n=-90, ft_f=-90), "root", hold=1.6),
+        kf(dict(t=130, ua_n=55, fa_n=55, ua_f=55, fa_f=55, th_n=-92, sh_n=-90, th_f=-92, sh_f=-90, ft_n=-90, ft_f=-90, hd=15), "root", hold=1.6)]),
+    "lunge_twist_stretch": dict(view="side", keys=[
+        kf(dict(ua_n=0, fa_n=5, ua_f=10, fa_f=10, th_n=88, sh_n=-2, th_f=-15, sh_f=-92, ft_f=-170), hold=1.5),
+        kf(dict(ua_n=175, fa_n=178, ua_f=60, fa_f=40, th_n=88, sh_n=-2, th_f=-15, sh_f=-92, ft_f=-170, hd=10), hold=1.5)]),
+    # Lot 3 : mobilité et échauffement.
+    "butterfly_stretch": dict(view="front", keys=[
+        kf(dict(ua_n=12, fa_n=-20, ua_f=12, fa_f=-20, th_n=95, sh_n=-95, th_f=95, sh_f=-95), "root", hold=1),
+        kf(dict(ua_n=10, fa_n=-25, ua_f=10, fa_f=-25, th_n=103, sh_n=-100, th_f=103, sh_f=-100), "root", hold=1)]),
+    "pigeon_stretch": dict(view="side", keys=[
+        kf(dict(t=170, ua_n=12, fa_n=15, ua_f=12, fa_f=15, th_n=80, sh_n=-80, th_f=-88, sh_f=-90, ft_n=180, ft_f=-90), "root", hold=1.8),
+        kf(dict(t=120, ua_n=30, fa_n=35, ua_f=30, fa_f=35, th_n=80, sh_n=-80, th_f=-88, sh_f=-90, ft_n=180, ft_f=-90, hd=-10), "root", hold=1.8)]),
+    "thoracic_rotation": dict(view="side", keys=[
+        kf({**QUAD}, "knee_n", hold=1.3),
+        kf({**QUAD, "ua_n": 170, "fa_n": 175, "hd": 30}, "knee_n", hold=1.3)]),
+    "downward_dog": dict(view="side", keys=[
+        kf(dict(t=45, ua_n=50, fa_n=50, ua_f=50, fa_f=50, th_n=-35, sh_n=-35, th_f=-35, sh_f=-35, ft_n=45, ft_f=45, hd=-10), "toe_n", hold=1.8),
+        kf(dict(t=40, ua_n=45, fa_n=45, ua_f=45, fa_f=45, th_n=-40, sh_n=-40, th_f=-40, sh_f=-40, ft_n=60, ft_f=60, hd=-10), "toe_n", hold=1.8)]),
+    "neck_mobility": dict(view="front", keys=[
+        kf(dict(hd=-35), "root", hold=1.2),
+        kf(dict(hd=0), "root", hold=0.8),
+        kf(dict(hd=35), "root", hold=1.2),
+        kf(dict(hd=0), "root", hold=0.8)]),
+    "arm_circles": dict(view="front", keys=[
+        kf(dict(ua_n=78, fa_n=88, ua_f=78, fa_f=88), "root", hold=0.3),
+        kf(dict(ua_n=90, fa_n=102, ua_f=90, fa_f=102), "root", hold=0.3),
+        kf(dict(ua_n=102, fa_n=92, ua_f=102, fa_f=92), "root", hold=0.3),
+        kf(dict(ua_n=90, fa_n=78, ua_f=90, fa_f=78), "root", hold=0.3)]),
+    "hip_circles": dict(view="front", keys=[
+        kf(dict(t=172, ua_n=-35, fa_n=60, ua_f=-35, fa_f=60, th_n=-4, sh_n=-4, th_f=-12, sh_f=-12), "ankle_n", (0, 0), hold=0.8),
+        kf(dict(t=180, ua_n=-35, fa_n=60, ua_f=-35, fa_f=60, th_n=8, sh_n=8, th_f=-8, sh_f=-8), "ankle_n", (0, 0), hold=0.8),
+        kf(dict(t=188, ua_n=-35, fa_n=60, ua_f=-35, fa_f=60, th_n=12, sh_n=12, th_f=4, sh_f=4), "ankle_n", (0, 0), hold=0.8),
+        kf(dict(t=180, ua_n=-35, fa_n=60, ua_f=-35, fa_f=60, th_n=8, sh_n=8, th_f=-8, sh_f=-8), "ankle_n", (0, 0), hold=0.8)]),
+    "deep_squat_hold": dict(view="side", keys=[
+        kf(dict(t=150, th_n=105, sh_n=-28, th_f=105, sh_f=-28, ua_n=70, fa_n=120, ua_f=70, fa_f=120), hold=2),
+        kf(dict(t=154, th_n=108, sh_n=-30, th_f=108, sh_f=-30, ua_n=72, fa_n=122, ua_f=72, fa_f=122), hold=2)]),
+    # Lot 4 : haut du corps et gainage.
+    "plank_shoulder_taps": dict(view="side", keys=[
+        kf(PLANK_HANDS, "toe_n", hold=0.7),
+        kf({**PLANK_HANDS, "ua_n": 45, "fa_n": 200}, "toe_n", hold=0.7)]),
+    "russian_twist": dict(view="side", keys=[
+        kf(dict(t=210, ua_n=70, fa_n=60, ua_f=35, fa_f=25, th_n=125, sh_n=80, th_f=125, sh_f=80), "root", hold=0.7),
+        kf(dict(t=206, ua_n=35, fa_n=25, ua_f=70, fa_f=60, th_n=125, sh_n=80, th_f=125, sh_f=80), "root", hold=0.7)]),
+    "dead_bug": dict(view="side", keys=[
+        kf(dict(SUPINE, ua_n=180, fa_n=180, ua_f=180, fa_f=180, th_n=180, sh_n=90, th_f=180, sh_f=90, ft_n=180, ft_f=180), "root", hold=1),
+        kf(dict(SUPINE, ua_n=-90, fa_n=-90, ua_f=180, fa_f=180, th_n=180, sh_n=90, th_f=105, sh_f=95, ft_n=180, ft_f=180), "root", hold=1)]),
+    "hollow_hold": dict(view="side", keys=[
+        kf(dict(SUPINE, t=-112, ua_n=-110, fa_n=-110, ua_f=-110, fa_f=-110, th_n=110, sh_n=110, th_f=110, sh_f=110, ft_n=200, ft_f=200), "root", hold=1.8),
+        kf(dict(SUPINE, t=-115, ua_n=-112, fa_n=-112, ua_f=-112, fa_f=-112, th_n=113, sh_n=113, th_f=113, sh_f=113, ft_n=203, ft_f=203), "root", hold=1.8)]),
+    "flutter_kicks": dict(view="side", keys=[
+        kf(dict(SUPINE, t=-100, th_n=125, sh_n=125, th_f=100, sh_f=100, ft_n=215, ft_f=190), "root", hold=0.35),
+        kf(dict(SUPINE, t=-100, th_n=100, sh_n=100, th_f=125, sh_f=125, ft_n=190, ft_f=215), "root", hold=0.35)]),
+    "wall_sit": dict(view="side", keys=[
+        kf(dict(t=180, ua_n=0, fa_n=0, ua_f=0, fa_f=0, th_n=90, sh_n=0, th_f=90, sh_f=0), hold=2),
+        kf(dict(t=182, ua_n=2, fa_n=2, ua_f=2, fa_f=2, th_n=88, sh_n=0, th_f=88, sh_f=0), hold=2)]),
+    # Lot 5 : bas du corps et cardio.
+    "side_lunge": dict(view="front", keys=[
+        kf(dict(th_n=18, sh_n=18, th_f=18, sh_f=18, ua_n=5, ua_f=5, fa_n=5, fa_f=5), "ankle_f", hold=1),
+        kf(dict(t=170, th_n=75, sh_n=-5, th_f=40, sh_f=40, ua_n=-20, fa_n=-60, ua_f=-20, fa_f=-60), "ankle_f", hold=1)]),
+    "single_leg_glute_bridge": dict(view="side", keys=[
+        kf(dict(t=-90, ua_n=-88, fa_n=-88, ua_f=-88, fa_f=-88, th_n=132, sh_n=-45, th_f=120, sh_f=120, ft_n=90, ft_f=200), "neck", (-0.05, 0)),
+        kf(dict(t=-68, ua_n=-80, fa_n=-80, ua_f=-80, fa_f=-80, th_n=103, sh_n=-44, th_f=112, sh_f=112, ft_n=90, ft_f=200), "neck", (-0.05, 0))]),
+    "donkey_kick": dict(view="side", keys=[
+        kf(QUAD, "knee_f", hold=0.8),
+        kf({**QUAD, "th_n": -95, "sh_n": 175, "ft_n": -90}, "knee_f", hold=0.8)]),
+    "squat_jump": dict(view="side", keys=[
+        kf(SQUAT_LOW, hold=0.6),
+        kf(dict(ua_n=-20, fa_n=-15, ua_f=-20, fa_f=-15, ft_n=50, ft_f=50), "ankle_n", (0, -0.2), hold=0.6)]),
+    "high_knees": dict(view="side", keys=[
+        kf(dict(t=176, th_n=95, sh_n=0, th_f=-3, sh_f=-3, ua_n=-40, fa_n=50, ua_f=40, fa_f=130), "root", hold=0.3),
+        kf(dict(t=176, th_f=95, sh_f=0, th_n=-3, sh_n=-3, ua_f=-40, fa_f=50, ua_n=40, fa_n=130), "root", (0, -0.03), hold=0.3)]),
+    "butt_kicks": dict(view="side", keys=[
+        kf(dict(t=176, th_n=-5, sh_n=-165, ft_n=-80, th_f=2, sh_f=2, ua_n=40, fa_n=130, ua_f=-40, fa_f=50), "root", hold=0.3),
+        kf(dict(t=176, th_f=-5, sh_f=-165, ft_f=-80, th_n=2, sh_n=2, ua_f=40, fa_f=130, ua_n=-40, fa_n=50), "root", (0, -0.03), hold=0.3)]),
+    "skater_jump": dict(view="front", keys=[
+        kf(dict(t=165, th_n=40, sh_n=-10, th_f=-35, sh_f=-20, ua_n=-40, fa_n=-30, ua_f=50, fa_f=60), "ankle_n", (-0.35, 0), hold=0.6),
+        kf(dict(t=195, th_f=40, sh_f=-10, th_n=-35, sh_n=-20, ua_f=-40, fa_f=-30, ua_n=50, fa_n=60), "ankle_f", (0.35, 0), hold=0.6)]),
+    # Lot 6 : matériel et coordination.
+    "shadow_boxing": dict(view="side", keys=[
+        kf(GUARD, hold=0.3),
+        kf({**GUARD, "ua_n": 88, "fa_n": 90}, hold=0.3),
+        kf(GUARD, hold=0.3),
+        kf({**GUARD, "t": 170, "ua_f": 85, "fa_f": 88}, hold=0.3)]),
+    "reverse_fly": dict(view="side", keys=[
+        kf(dict(t=112, th_n=15, sh_n=-10, th_f=15, sh_f=-10, ua_n=10, fa_n=15, ua_f=10, fa_f=15)),
+        kf(dict(t=112, th_n=15, sh_n=-10, th_f=15, sh_f=-10, ua_n=-45, fa_n=-40, ua_f=-45, fa_f=-40, hd=10))]),
+    "kettlebell_swing": dict(view="side", keys=[
+        kf(dict(t=115, th_n=25, sh_n=-15, th_f=25, sh_f=-15, ua_n=-25, fa_n=-25, ua_f=-25, fa_f=-25), hold=0.7),
+        kf(dict(t=182, ua_n=92, fa_n=92, ua_f=92, fa_f=92), hold=0.7)]),
+    "shrug": dict(view="front", keys=[
+        kf(dict(ua_n=4, fa_n=4, ua_f=4, fa_f=4), "root"),
+        kf(dict(ua_n=4, fa_n=4, ua_f=4, fa_f=4, sl=0.07), "root")]),
+    "triceps_extension": dict(view="side", keys=[
+        kf(dict(ua_n=172, fa_n=178, ua_f=172, fa_f=178)),
+        kf(dict(ua_n=168, fa_n=15, ua_f=168, fa_f=15, hd=-5))]),
+    "band_pull_apart": dict(view="front", keys=[
+        kf(dict(ua_n=70, fa_n=-80, ua_f=70, fa_f=-80), "root"),
+        kf(dict(ua_n=90, fa_n=90, ua_f=90, fa_f=90, hd=0), "root")]),
 }
 
 def export():

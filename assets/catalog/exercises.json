@@ -1258,6 +1258,1392 @@
     "Balancer le buste.",
     "Décoller les coudes du corps."
    ]
+  },
+  {
+   "id": "cat_cow",
+   "motion": "cat_cow",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "erector_spinae",
+    "rectus_abdominis"
+   ],
+   "secondaryMuscles": [
+    "obliques",
+    "trapezius_mid_lower"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Chat-vache",
+   "description": "Enroulement et creusement du dos à quatre pattes, pour assouplir la colonne.",
+   "instructions": [
+    "À quatre pattes, mains sous les épaules, genoux sous les hanches.",
+    "Inspire en creusant le dos et en levant la tête.",
+    "Expire en arrondissant le dos, menton vers la poitrine."
+   ],
+   "mistakes": [
+    "Aller trop vite, sans suivre la respiration.",
+    "Plier les coudes."
+   ]
+  },
+  {
+   "id": "child_pose",
+   "motion": "child_pose",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "latissimus_dorsi",
+    "erector_spinae"
+   ],
+   "secondaryMuscles": [
+    "gluteus_maximus",
+    "deltoid_posterior"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Posture de l'enfant",
+   "description": "Assis sur les talons, buste allongé vers l'avant : un étirement de détente pour le dos.",
+   "instructions": [
+    "À genoux, assieds-toi sur les talons.",
+    "Allonge le buste vers l'avant, bras tendus au sol.",
+    "Respire lentement et relâche les épaules."
+   ],
+   "mistakes": [
+    "Forcer si les genoux sont douloureux : écarte-les ou glisse un coussin.",
+    "Bloquer la respiration."
+   ]
+  },
+  {
+   "id": "hip_flexor_stretch",
+   "motion": "hip_flexor_stretch",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "hip_flexors",
+    "quadriceps"
+   ],
+   "secondaryMuscles": [
+    "rectus_abdominis"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Étirement des fléchisseurs de hanche",
+   "description": "Fente genou au sol, bassin poussé vers l'avant, pour l'avant de la hanche.",
+   "instructions": [
+    "Pose un genou au sol, l'autre pied devant, genou à 90°.",
+    "Serre le fessier de la jambe arrière.",
+    "Avance doucement le bassin jusqu'à sentir l'étirement."
+   ],
+   "mistakes": [
+    "Cambrer le bas du dos.",
+    "Laisser le genou avant dépasser loin devant le pied."
+   ]
+  },
+  {
+   "id": "hamstring_stretch",
+   "motion": "hamstring_stretch",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "hamstrings"
+   ],
+   "secondaryMuscles": [
+    "gastrocnemius",
+    "erector_spinae"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Étirement des ischio-jambiers",
+   "description": "Flexion du buste jambes tendues, pour l'arrière des cuisses.",
+   "instructions": [
+    "Debout, pieds largeur de hanches, genoux légèrement souples.",
+    "Bascule le buste vers l'avant en gardant le dos long.",
+    "Laisse pendre les bras et respire."
+   ],
+   "mistakes": [
+    "Tirer brusquement vers le sol.",
+    "Verrouiller les genoux."
+   ]
+  },
+  {
+   "id": "quad_stretch",
+   "motion": "quad_stretch",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "quadriceps"
+   ],
+   "secondaryMuscles": [
+    "hip_flexors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Étirement des quadriceps debout",
+   "description": "Talon tenu vers la fesse, en équilibre sur une jambe.",
+   "instructions": [
+    "Debout, appuie-toi au besoin contre un mur.",
+    "Attrape la cheville et rapproche le talon de la fesse.",
+    "Garde les genoux côte à côte, puis change de jambe."
+   ],
+   "mistakes": [
+    "Écarter le genou vers l'extérieur.",
+    "Cambrer le dos."
+   ]
+  },
+  {
+   "id": "calf_stretch",
+   "motion": "calf_stretch",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "gastrocnemius",
+    "soleus"
+   ],
+   "secondaryMuscles": [],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Étirement des mollets au mur",
+   "description": "Mains au mur, jambe arrière tendue, talon au sol.",
+   "instructions": [
+    "Mains contre un mur, une jambe en arrière.",
+    "Garde le talon arrière au sol, jambe tendue.",
+    "Avance le bassin jusqu'à sentir le mollet s'étirer."
+   ],
+   "mistakes": [
+    "Décoller le talon.",
+    "Tourner le pied arrière vers l'extérieur."
+   ]
+  },
+  {
+   "id": "chest_stretch",
+   "motion": "chest_stretch",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "pectoralis_mid_lower",
+    "pectoralis_upper"
+   ],
+   "secondaryMuscles": [
+    "deltoid_anterior",
+    "biceps_brachii"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Étirement des pectoraux",
+   "description": "Bras en arrière (contre un mur ou mains jointes) pour ouvrir la poitrine.",
+   "instructions": [
+    "Debout, tends les bras en arrière, à hauteur d'épaules.",
+    "Ouvre la poitrine sans cambrer.",
+    "Respire calmement, épaules basses."
+   ],
+   "mistakes": [
+    "Hausser les épaules.",
+    "Forcer sur l'articulation de l'épaule."
+   ]
+  },
+  {
+   "id": "shoulder_stretch",
+   "motion": "shoulder_stretch",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "deltoid_posterior",
+    "rotator_cuff"
+   ],
+   "secondaryMuscles": [
+    "trapezius_mid_lower",
+    "rhomboids"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Étirement de l'épaule, bras croisé",
+   "description": "Bras tendu ramené devant la poitrine par l'autre bras.",
+   "instructions": [
+    "Tends un bras devant toi, puis ramène-le devant la poitrine.",
+    "Tiens-le au-dessus du coude avec l'autre main.",
+    "Garde l'épaule basse, puis change de côté."
+   ],
+   "mistakes": [
+    "Tirer sur le coude lui-même.",
+    "Tourner le buste pour aller plus loin."
+   ]
+  },
+  {
+   "id": "cobra_stretch",
+   "motion": "cobra_stretch",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "rectus_abdominis",
+    "hip_flexors"
+   ],
+   "secondaryMuscles": [
+    "pectoralis_mid_lower"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Cobra",
+   "description": "Allongé sur le ventre, buste redressé sur les bras.",
+   "instructions": [
+    "Allongé sur le ventre, mains sous les épaules.",
+    "Pousse doucement pour redresser le buste, bassin au sol.",
+    "Garde les épaules loin des oreilles."
+   ],
+   "mistakes": [
+    "Tendre les bras au point de pincer le bas du dos.",
+    "Décoller le bassin."
+   ]
+  },
+  {
+   "id": "lunge_twist_stretch",
+   "motion": "lunge_twist_stretch",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "hip_flexors",
+    "hamstrings",
+    "obliques"
+   ],
+   "secondaryMuscles": [
+    "gluteus_maximus",
+    "adductors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Fente avec rotation",
+   "description": "Grande fente basse, puis ouverture du buste bras vers le ciel.",
+   "instructions": [
+    "Fais une grande fente, mains au sol de part et d'autre du pied avant.",
+    "Lève le bras du côté de la jambe avant vers le ciel.",
+    "Suis la main du regard, puis change de côté."
+   ],
+   "mistakes": [
+    "Laisser le genou avant rentrer vers l'intérieur.",
+    "Tourner trop vite."
+   ]
+  },
+  {
+   "id": "butterfly_stretch",
+   "motion": "butterfly_stretch",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "adductors"
+   ],
+   "secondaryMuscles": [
+    "hip_flexors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Papillon",
+   "description": "Assis, plantes de pieds jointes, genoux vers le sol.",
+   "instructions": [
+    "Assis, joins les plantes de pieds devant toi.",
+    "Tiens tes pieds et redresse le dos.",
+    "Laisse descendre les genoux sans appuyer dessus."
+   ],
+   "mistakes": [
+    "Appuyer avec les coudes sur les genoux.",
+    "Arrondir le dos."
+   ]
+  },
+  {
+   "id": "pigeon_stretch",
+   "motion": "pigeon_stretch",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "gluteus_maximus",
+    "gluteus_medius"
+   ],
+   "secondaryMuscles": [
+    "hip_flexors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Pigeon",
+   "description": "Jambe avant pliée au sol, jambe arrière allongée, pour la hanche et le fessier.",
+   "instructions": [
+    "Pose une jambe pliée devant toi, l'autre allongée derrière.",
+    "Garde le bassin de face, mains au sol.",
+    "Penche-toi doucement vers l'avant si c'est confortable."
+   ],
+   "mistakes": [
+    "Forcer si le genou avant tire.",
+    "Laisser le bassin basculer sur le côté."
+   ]
+  },
+  {
+   "id": "thoracic_rotation",
+   "motion": "thoracic_rotation",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "obliques",
+    "erector_spinae"
+   ],
+   "secondaryMuscles": [
+    "rhomboids",
+    "trapezius_mid_lower"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Rotation thoracique à quatre pattes",
+   "description": "Ouverture du haut du dos, un bras vers le ciel.",
+   "instructions": [
+    "À quatre pattes, pose une main derrière la tête ou tends le bras.",
+    "Tourne le buste pour ouvrir le coude vers le ciel.",
+    "Reviens lentement, puis change de côté."
+   ],
+   "mistakes": [
+    "Tourner le bassin au lieu du haut du dos.",
+    "Plier le bras d'appui."
+   ]
+  },
+  {
+   "id": "downward_dog",
+   "motion": "downward_dog",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "hamstrings",
+    "gastrocnemius",
+    "latissimus_dorsi"
+   ],
+   "secondaryMuscles": [
+    "deltoid_anterior",
+    "erector_spinae"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Chien tête en bas",
+   "description": "Corps en V inversé, mains et pieds au sol.",
+   "instructions": [
+    "Pars à quatre pattes, puis monte les hanches vers le ciel.",
+    "Pousse le sol avec les mains, dos long.",
+    "Rapproche doucement les talons du sol."
+   ],
+   "mistakes": [
+    "Arrondir le dos pour tendre les jambes.",
+    "Rentrer la tête dans les épaules."
+   ]
+  },
+  {
+   "id": "neck_mobility",
+   "motion": "neck_mobility",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "sternocleidomastoid",
+    "trapezius_upper"
+   ],
+   "secondaryMuscles": [],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Mobilité de la nuque",
+   "description": "Inclinaisons lentes de la tête, d'un côté puis de l'autre.",
+   "instructions": [
+    "Debout ou assis, dos droit, épaules basses.",
+    "Incline lentement l'oreille vers l'épaule.",
+    "Reviens au centre, puis passe de l'autre côté."
+   ],
+   "mistakes": [
+    "Faire de grands cercles rapides.",
+    "Hausser l'épaule vers l'oreille."
+   ]
+  },
+  {
+   "id": "arm_circles",
+   "motion": "arm_circles",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "deltoid_anterior",
+    "deltoid_lateral",
+    "deltoid_posterior"
+   ],
+   "secondaryMuscles": [
+    "rotator_cuff",
+    "trapezius_upper"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Cercles de bras",
+   "description": "Petits cercles, bras tendus sur les côtés, pour échauffer les épaules.",
+   "instructions": [
+    "Tends les bras sur les côtés, à hauteur d'épaules.",
+    "Fais de petits cercles réguliers.",
+    "Change de sens à mi-temps."
+   ],
+   "mistakes": [
+    "Hausser les épaules.",
+    "Faire des cercles trop grands trop vite."
+   ]
+  },
+  {
+   "id": "hip_circles",
+   "motion": "hip_circles",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "hip_flexors",
+    "gluteus_medius"
+   ],
+   "secondaryMuscles": [
+    "obliques",
+    "adductors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Cercles de hanches",
+   "description": "Cercles du bassin, mains sur les hanches.",
+   "instructions": [
+    "Debout, pieds largeur d'épaules, mains sur les hanches.",
+    "Dessine de grands cercles avec le bassin.",
+    "Change de sens à mi-temps."
+   ],
+   "mistakes": [
+    "Bouger les épaules au lieu du bassin.",
+    "Bloquer les genoux."
+   ]
+  },
+  {
+   "id": "deep_squat_hold",
+   "motion": "deep_squat_hold",
+   "type": "duration",
+   "volumeRule": "mobility",
+   "stats": {
+    "agility": 1
+   },
+   "primaryMuscles": [
+    "adductors",
+    "quadriceps"
+   ],
+   "secondaryMuscles": [
+    "gluteus_maximus",
+    "soleus",
+    "erector_spinae"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Squat profond tenu",
+   "description": "Position accroupie basse tenue, pour la mobilité des hanches et des chevilles.",
+   "instructions": [
+    "Descends en squat aussi bas que possible, talons au sol.",
+    "Garde le dos long, coudes contre l'intérieur des genoux.",
+    "Respire calmement dans la position."
+   ],
+   "mistakes": [
+    "Décoller les talons.",
+    "S'effondrer en arrondissant le dos."
+   ]
+  },
+  {
+   "id": "knee_push_up",
+   "motion": "push_up",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "pectoralis_mid_lower",
+    "deltoid_anterior",
+    "triceps_brachii"
+   ],
+   "secondaryMuscles": [
+    "pectoralis_upper",
+    "serratus_anterior"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Pompes sur les genoux",
+   "description": "Pompes en appui sur les genoux : la version de départ.",
+   "instructions": [
+    "Genoux au sol, mains sous les épaules.",
+    "Aligne épaules, hanches et genoux.",
+    "Descends la poitrine près du sol, puis pousse."
+   ],
+   "mistakes": [
+    "Plier les hanches.",
+    "Écarter les coudes à 90° du corps."
+   ]
+  },
+  {
+   "id": "wide_push_up",
+   "motion": "push_up",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "pectoralis_mid_lower",
+    "pectoralis_upper"
+   ],
+   "secondaryMuscles": [
+    "deltoid_anterior",
+    "triceps_brachii"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Pompes larges",
+   "description": "Pompes mains écartées, centrées sur les pectoraux.",
+   "instructions": [
+    "Mains nettement plus larges que les épaules.",
+    "Corps gainé de la tête aux talons.",
+    "Descends en contrôlant, puis pousse."
+   ],
+   "mistakes": [
+    "Laisser tomber les hanches.",
+    "Descendre trop bas en forçant sur les épaules."
+   ]
+  },
+  {
+   "id": "bench_dips",
+   "motion": "dips",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "triceps_brachii"
+   ],
+   "secondaryMuscles": [
+    "deltoid_anterior",
+    "pectoralis_mid_lower"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "bench"
+   ],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Dips sur banc",
+   "description": "Flexion des coudes, mains sur un banc derrière soi.",
+   "instructions": [
+    "Mains sur le bord d'un banc, doigts vers l'avant.",
+    "Pieds au sol devant toi, descends en pliant les coudes.",
+    "Remonte en poussant sur les mains."
+   ],
+   "mistakes": [
+    "Descendre trop bas.",
+    "Écarter les coudes sur les côtés."
+   ]
+  },
+  {
+   "id": "plank_shoulder_taps",
+   "motion": "plank_shoulder_taps",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "vitality": 1
+   },
+   "primaryMuscles": [
+    "rectus_abdominis",
+    "transversus_abdominis",
+    "obliques"
+   ],
+   "secondaryMuscles": [
+    "deltoid_anterior",
+    "serratus_anterior"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Planche avec touches d'épaule",
+   "description": "Planche bras tendus, une main touche l'épaule opposée.",
+   "instructions": [
+    "En planche bras tendus, pieds un peu écartés.",
+    "Touche l'épaule opposée avec une main, puis l'autre.",
+    "Garde le bassin immobile."
+   ],
+   "mistakes": [
+    "Balancer les hanches.",
+    "Aller trop vite."
+   ]
+  },
+  {
+   "id": "russian_twist",
+   "motion": "russian_twist",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "obliques"
+   ],
+   "secondaryMuscles": [
+    "rectus_abdominis",
+    "hip_flexors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Rotations russes",
+   "description": "Assis en V, rotation du buste d'un côté à l'autre.",
+   "instructions": [
+    "Assis, buste incliné en arrière, pieds au sol ou levés.",
+    "Tourne le buste pour poser les mains d'un côté, puis de l'autre.",
+    "Garde le dos long."
+   ],
+   "mistakes": [
+    "Arrondir le dos.",
+    "Bouger seulement les bras."
+   ]
+  },
+  {
+   "id": "dead_bug",
+   "motion": "dead_bug",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "vitality": 1
+   },
+   "primaryMuscles": [
+    "transversus_abdominis",
+    "rectus_abdominis"
+   ],
+   "secondaryMuscles": [
+    "hip_flexors",
+    "obliques"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Dead bug",
+   "description": "Allongé sur le dos, bras et jambe opposés qui s'allongent.",
+   "instructions": [
+    "Allongé sur le dos, bras vers le ciel, genoux pliés au-dessus des hanches.",
+    "Allonge un bras et la jambe opposée sans toucher le sol.",
+    "Reviens, puis change de côté."
+   ],
+   "mistakes": [
+    "Décoller le bas du dos du sol.",
+    "Aller trop vite."
+   ]
+  },
+  {
+   "id": "hollow_hold",
+   "motion": "hollow_hold",
+   "type": "duration",
+   "volumeRule": "strength",
+   "stats": {
+    "vitality": 1
+   },
+   "primaryMuscles": [
+    "rectus_abdominis",
+    "transversus_abdominis"
+   ],
+   "secondaryMuscles": [
+    "hip_flexors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Hollow hold",
+   "description": "Gainage sur le dos, épaules et jambes décollées.",
+   "instructions": [
+    "Allongé sur le dos, plaque le bas du dos au sol.",
+    "Décolle les épaules et les jambes tendues.",
+    "Tiens la position en respirant."
+   ],
+   "mistakes": [
+    "Laisser le bas du dos se creuser.",
+    "Bloquer la respiration."
+   ]
+  },
+  {
+   "id": "flutter_kicks",
+   "motion": "flutter_kicks",
+   "type": "duration",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "hip_flexors",
+    "rectus_abdominis"
+   ],
+   "secondaryMuscles": [
+    "quadriceps"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Battements de jambes",
+   "description": "Allongé sur le dos, petits battements des jambes tendues.",
+   "instructions": [
+    "Allongé sur le dos, mains sous les fesses.",
+    "Décolle les jambes tendues.",
+    "Fais de petits battements alternés."
+   ],
+   "mistakes": [
+    "Creuser le bas du dos.",
+    "Faire des battements trop amples."
+   ]
+  },
+  {
+   "id": "wall_sit",
+   "motion": "wall_sit",
+   "type": "duration",
+   "volumeRule": "strength",
+   "stats": {
+    "vitality": 1
+   },
+   "primaryMuscles": [
+    "quadriceps"
+   ],
+   "secondaryMuscles": [
+    "gluteus_maximus",
+    "adductors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Chaise contre le mur",
+   "description": "Position assise tenue, dos au mur.",
+   "instructions": [
+    "Dos au mur, descends jusqu'à ce que les cuisses soient horizontales.",
+    "Genoux au-dessus des chevilles.",
+    "Tiens la position en respirant."
+   ],
+   "mistakes": [
+    "Descendre plus bas que l'horizontale.",
+    "Pousser avec les mains sur les cuisses."
+   ]
+  },
+  {
+   "id": "reverse_lunge",
+   "motion": "lunge",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "quadriceps",
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "hamstrings",
+    "gluteus_medius",
+    "adductors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Fentes arrière",
+   "description": "Grand pas en arrière et flexion des deux genoux.",
+   "instructions": [
+    "Fais un grand pas en arrière.",
+    "Descends jusqu'à ce que le genou arrière frôle le sol.",
+    "Repousse sur la jambe avant pour revenir."
+   ],
+   "mistakes": [
+    "Laisser le genou avant rentrer vers l'intérieur.",
+    "Pencher le buste en avant."
+   ]
+  },
+  {
+   "id": "side_lunge",
+   "motion": "side_lunge",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "adductors",
+    "quadriceps",
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "gluteus_medius",
+    "hamstrings"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Fentes latérales",
+   "description": "Grand pas sur le côté, une jambe pliée, l'autre tendue.",
+   "instructions": [
+    "Fais un grand pas sur le côté.",
+    "Plie la jambe d'appui, l'autre reste tendue.",
+    "Repousse pour revenir au centre, puis change de côté."
+   ],
+   "mistakes": [
+    "Laisser le talon décoller.",
+    "Arrondir le dos."
+   ]
+  },
+  {
+   "id": "single_leg_glute_bridge",
+   "motion": "single_leg_glute_bridge",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "hamstrings",
+    "gluteus_medius",
+    "erector_spinae"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Pont fessier sur une jambe",
+   "description": "Pont fessier en appui sur une seule jambe.",
+   "instructions": [
+    "Allongé sur le dos, un pied au sol, l'autre jambe tendue.",
+    "Monte les hanches en poussant sur le talon.",
+    "Garde le bassin bien horizontal, puis change de jambe."
+   ],
+   "mistakes": [
+    "Laisser le bassin pencher d'un côté.",
+    "Cambrer en haut."
+   ]
+  },
+  {
+   "id": "donkey_kick",
+   "motion": "donkey_kick",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "hamstrings",
+    "erector_spinae"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Ruades à quatre pattes",
+   "description": "À quatre pattes, montée d'une jambe pliée vers le plafond.",
+   "instructions": [
+    "À quatre pattes, mains sous les épaules.",
+    "Monte un pied vers le plafond, genou plié.",
+    "Serre le fessier en haut, puis redescends."
+   ],
+   "mistakes": [
+    "Cambrer le dos.",
+    "Tourner le bassin."
+   ]
+  },
+  {
+   "id": "fire_hydrant",
+   "motion": "donkey_kick",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "gluteus_medius",
+    "abductors"
+   ],
+   "secondaryMuscles": [
+    "gluteus_maximus"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Abductions à quatre pattes",
+   "description": "À quatre pattes, ouverture d'une jambe pliée sur le côté.",
+   "instructions": [
+    "À quatre pattes, mains sous les épaules.",
+    "Écarte un genou sur le côté, toujours plié.",
+    "Redescends lentement, puis change de côté."
+   ],
+   "mistakes": [
+    "Pencher tout le buste.",
+    "Aller trop vite."
+   ]
+  },
+  {
+   "id": "squat_jump",
+   "motion": "squat_jump",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 0.6,
+    "agility": 0.4
+   },
+   "primaryMuscles": [
+    "quadriceps",
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "gastrocnemius",
+    "soleus",
+    "hamstrings"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Squats sautés",
+   "description": "Squat suivi d'un saut, avec une réception souple.",
+   "instructions": [
+    "Descends en squat.",
+    "Saute en poussant fort sur les jambes.",
+    "Reçois-toi en douceur, genoux souples, et enchaîne."
+   ],
+   "mistakes": [
+    "Atterrir jambes tendues.",
+    "Laisser les genoux rentrer à la réception."
+   ]
+  },
+  {
+   "id": "high_knees",
+   "motion": "high_knees",
+   "type": "duration",
+   "volumeRule": "cardio",
+   "stats": {
+    "endurance": 1
+   },
+   "primaryMuscles": [
+    "hip_flexors",
+    "quadriceps"
+   ],
+   "secondaryMuscles": [
+    "gastrocnemius",
+    "soleus",
+    "rectus_abdominis"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Montées de genoux",
+   "description": "Course sur place en montant les genoux.",
+   "instructions": [
+    "Cours sur place.",
+    "Monte les genoux à hauteur de hanches.",
+    "Accompagne avec les bras."
+   ],
+   "mistakes": [
+    "Se pencher en arrière.",
+    "Atterrir sur les talons."
+   ]
+  },
+  {
+   "id": "butt_kicks",
+   "motion": "butt_kicks",
+   "type": "duration",
+   "volumeRule": "cardio",
+   "stats": {
+    "endurance": 1
+   },
+   "primaryMuscles": [
+    "hamstrings"
+   ],
+   "secondaryMuscles": [
+    "quadriceps",
+    "gastrocnemius"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Talons-fesses",
+   "description": "Course sur place, talons vers les fesses.",
+   "instructions": [
+    "Cours sur place.",
+    "Ramène les talons vers les fesses.",
+    "Garde le buste droit."
+   ],
+   "mistakes": [
+    "Se pencher en avant.",
+    "Bloquer les bras."
+   ]
+  },
+  {
+   "id": "skater_jump",
+   "motion": "skater_jump",
+   "type": "duration",
+   "volumeRule": "cardio",
+   "stats": {
+    "agility": 0.6,
+    "endurance": 0.4
+   },
+   "primaryMuscles": [
+    "gluteus_medius",
+    "quadriceps"
+   ],
+   "secondaryMuscles": [
+    "adductors",
+    "gastrocnemius",
+    "gluteus_maximus"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Sauts du patineur",
+   "description": "Bonds latéraux d'une jambe sur l'autre.",
+   "instructions": [
+    "Saute sur le côté et reçois-toi sur une jambe.",
+    "Croise l'autre jambe derrière.",
+    "Repars de l'autre côté."
+   ],
+   "mistakes": [
+    "Atterrir jambe tendue.",
+    "Laisser le genou rentrer vers l'intérieur."
+   ]
+  },
+  {
+   "id": "shadow_boxing",
+   "motion": "shadow_boxing",
+   "type": "duration",
+   "volumeRule": "cardio",
+   "stats": {
+    "endurance": 0.6,
+    "agility": 0.4
+   },
+   "primaryMuscles": [
+    "deltoid_anterior",
+    "obliques"
+   ],
+   "secondaryMuscles": [
+    "triceps_brachii",
+    "serratus_anterior",
+    "gastrocnemius"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Shadow boxing",
+   "description": "Enchaînements de coups dans le vide, en garde.",
+   "instructions": [
+    "En garde, poings devant le visage.",
+    "Enchaîne des coups droits en ramenant vite le poing.",
+    "Reste léger sur les appuis."
+   ],
+   "mistakes": [
+    "Tendre le bras jusqu'à claquer le coude.",
+    "Baisser la garde."
+   ]
+  },
+  {
+   "id": "reverse_fly",
+   "motion": "reverse_fly",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "deltoid_posterior",
+    "rhomboids"
+   ],
+   "secondaryMuscles": [
+    "trapezius_mid_lower",
+    "rotator_cuff"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "dumbbells",
+    "resistanceBands"
+   ],
+   "difficulty": 2,
+   "reviewStatus": "validated",
+   "name": "Oiseau, élévations postérieures",
+   "description": "Buste penché, bras écartés sur les côtés, pour l'arrière des épaules.",
+   "instructions": [
+    "Penche le buste, dos plat, charge sous les épaules.",
+    "Écarte les bras sur les côtés, coudes légèrement fléchis.",
+    "Serre les omoplates, puis redescends lentement."
+   ],
+   "mistakes": [
+    "Prendre de l'élan.",
+    "Arrondir le dos."
+   ]
+  },
+  {
+   "id": "goblet_squat",
+   "motion": "squat",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "quadriceps",
+    "gluteus_maximus"
+   ],
+   "secondaryMuscles": [
+    "adductors",
+    "erector_spinae",
+    "rectus_abdominis"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "dumbbells",
+    "kettlebell"
+   ],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Squat gobelet",
+   "description": "Squat avec une charge tenue contre la poitrine.",
+   "instructions": [
+    "Tiens la charge contre la poitrine, coudes vers le bas.",
+    "Descends en poussant les hanches en arrière.",
+    "Remonte en poussant sur les talons."
+   ],
+   "mistakes": [
+    "Arrondir le dos.",
+    "Laisser les genoux rentrer vers l'intérieur."
+   ]
+  },
+  {
+   "id": "kettlebell_swing",
+   "motion": "kettlebell_swing",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 0.6,
+    "endurance": 0.4
+   },
+   "primaryMuscles": [
+    "gluteus_maximus",
+    "hamstrings"
+   ],
+   "secondaryMuscles": [
+    "erector_spinae",
+    "deltoid_anterior",
+    "forearm_flexors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "kettlebell"
+   ],
+   "difficulty": 3,
+   "reviewStatus": "validated",
+   "name": "Kettlebell swing",
+   "description": "Balancier de la kettlebell porté par les hanches.",
+   "instructions": [
+    "Pieds un peu plus larges que les épaules, kettlebell à deux mains.",
+    "Bascule les hanches en arrière, la charge passe entre les jambes.",
+    "Pousse les hanches vers l'avant pour la monter à hauteur de poitrine."
+   ],
+   "mistakes": [
+    "Lever avec les bras.",
+    "Arrondir le dos."
+   ]
+  },
+  {
+   "id": "shrug",
+   "motion": "shrug",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "trapezius_upper"
+   ],
+   "secondaryMuscles": [
+    "forearm_flexors"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "dumbbells",
+    "barbell",
+    "kettlebell"
+   ],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Haussements d'épaules",
+   "description": "Montée des épaules vers les oreilles, charge en main.",
+   "instructions": [
+    "Debout, charges le long du corps.",
+    "Monte les épaules vers les oreilles.",
+    "Marque un temps, puis redescends lentement."
+   ],
+   "mistakes": [
+    "Faire rouler les épaules.",
+    "Plier les coudes."
+   ]
+  },
+  {
+   "id": "triceps_extension",
+   "motion": "triceps_extension",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "triceps_brachii"
+   ],
+   "secondaryMuscles": [],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "dumbbells",
+    "kettlebell",
+    "resistanceBands"
+   ],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Extension des triceps au-dessus de la tête",
+   "description": "Charge derrière la tête, extension des coudes.",
+   "instructions": [
+    "Tiens la charge à deux mains au-dessus de la tête.",
+    "Plie les coudes pour la descendre derrière la tête.",
+    "Tends les bras, coudes près de la tête."
+   ],
+   "mistakes": [
+    "Écarter les coudes.",
+    "Cambrer le dos."
+   ]
+  },
+  {
+   "id": "band_pull_apart",
+   "motion": "band_pull_apart",
+   "type": "reps",
+   "volumeRule": "strength",
+   "stats": {
+    "strength": 1
+   },
+   "primaryMuscles": [
+    "deltoid_posterior",
+    "rhomboids",
+    "trapezius_mid_lower"
+   ],
+   "secondaryMuscles": [
+    "rotator_cuff"
+   ],
+   "weakMuscles": [],
+   "equipmentAnyOf": [
+    "resistanceBands"
+   ],
+   "difficulty": 1,
+   "reviewStatus": "validated",
+   "name": "Écartés à l'élastique",
+   "description": "Élastique tendu devant soi, écarté jusqu'à la poitrine.",
+   "instructions": [
+    "Tiens l'élastique bras tendus devant toi.",
+    "Écarte les mains jusqu'à ce que l'élastique touche la poitrine.",
+    "Reviens lentement."
+   ],
+   "mistakes": [
+    "Hausser les épaules.",
+    "Plier les coudes."
+   ]
   }
  ]
 }

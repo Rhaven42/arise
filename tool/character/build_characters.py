@@ -978,6 +978,7 @@ def _reset_pose(arm):
         pose_bone.rotation_mode = "QUATERNION"
         pose_bone.rotation_quaternion = (1, 0, 0, 0)
         pose_bone.location = (0, 0, 0)
+        pose_bone.scale = (1, 1, 1)
 
 
 def _key_all(arm, frame):
@@ -1038,7 +1039,7 @@ def _motions_path():
     base = os.path.join(os.path.dirname(os.path.abspath(here)), "..", "..") if here else os.getcwd()
     return os.path.join(base, "assets", "animations", "motions.json")
 
-MOTION_DEFAULT = dict(t=180, ua_n=0, fa_n=0, ua_f=0, fa_f=0, th_n=0, sh_n=0, th_f=0, sh_f=0, ft_n=90, ft_f=90)
+MOTION_DEFAULT = dict(t=180, ua_n=0, fa_n=0, ua_f=0, fa_f=0, th_n=0, sh_n=0, th_f=0, sh_f=0, ft_n=90, ft_f=90, hd=0, sl=0)
 MOTION_FPS = 24
 MOTION_STEPS = 6  # poses intermédiaires calculées par transition
 
@@ -1056,6 +1057,18 @@ MOTION_ANCHORS = {
     "ankle_n": ("foot_l",),
     "toe_n": ("ball_l",),
     "hand_n": ("hand_l",),
+    "ankle_f": ("foot_r",),
+    "toe_f": ("ball_r",),
+    "knee_n": ("calf_l",),
+    "knee_f": ("calf_r",),
+}
+
+# Distance entre l'articulation et la surface du corps (contact au sol).
+CLEARANCE = {
+    "ball_l": 0.025, "ball_r": 0.025, "foot_l": 0.07, "foot_r": 0.07,
+    "calf_l": 0.06, "calf_r": 0.06, "hand_l": 0.035, "hand_r": 0.035,
+    "lowerarm_l": 0.04, "lowerarm_r": 0.04, "pelvis": 0.11, "thigh_l": 0.09,
+    "thigh_r": 0.09, "spine_02": 0.11, "spine_03": 0.1, "head": 0.1,
 }
 
 
@@ -1071,6 +1084,14 @@ def _motion_direction(angle, view):
 
 def _motion_pose(arm, angles, view):
     """Oriente les os du squelette selon les angles d'une pose 2D."""
+    # Épaules haussées : rotation des clavicules (comme la respiration).
+    lift = angles.get("sl", 0.0)
+    if lift:
+        length = (arm.data.bones["clavicle_l"].tail_local - arm.data.bones["clavicle_l"].head_local).length
+        degrees = math.degrees(math.asin(min(0.9, lift / length)))
+        _rotate(arm, "clavicle_l", (0, 1, 0), -degrees)
+        _rotate(arm, "clavicle_r", (0, -1, 0), -degrees)
+        bpy.context.view_layer.update()
     for key, bone in MOTION_BONES:
         side = None if key == "t" else key[-1]
         angle = angles[key]
@@ -1084,10 +1105,23 @@ def _motion_pose(arm, angles, view):
         pb = arm.pose.bones[bone]
         bpy.context.view_layer.update()
         head, tail = pb.head.copy(), pb.tail.copy()
+        # Le tronc suit la ligne bassin → cou (comme la figure 2D), pas l'os
+        # du bassin, incliné vers l'arrière au repos.
+        if bone == "pelvis":
+            tail = arm.pose.bones["neck_01"].head.copy()
         current = (tail - head).normalized()
         rot = current.rotation_difference(target.normalized()).to_matrix().to_4x4()
         pb.matrix = Matrix.Translation(head) @ rot @ Matrix.Translation(-head) @ pb.matrix
     bpy.context.view_layer.update()
+    # Tête inclinée par rapport au tronc (hochement de profil, inclinaison
+    # latérale de face).
+    tilt = angles.get("hd", 0.0)
+    if tilt:
+        pb = arm.pose.bones["neck_01"]
+        head = pb.head.copy()
+        rot = Matrix.Rotation(math.radians(-tilt), 4, "X" if view == "side" else "Y")
+        pb.matrix = Matrix.Translation(head) @ rot @ Matrix.Translation(-head) @ pb.matrix
+        bpy.context.view_layer.update()
 
 
 # Figure 2D (mêmes longueurs que tool/motions.py) : sert à repérer les appuis
@@ -1102,9 +1136,11 @@ def _figure_joints(angles, root):
         r = math.radians(a)
         return (p[0] + math.sin(r) * length, p[1] + math.cos(r) * length)
 
-    sh = add(root, angles["t"], FIGURE["torso"] * FIGURE_SHOULDER_AT)
-    elbow = add(sh, angles["ua_n"], FIGURE["upper_arm"])
-    joints = {"hand_n": add(elbow, angles["fa_n"], FIGURE["forearm"])}
+    sh = add(root, angles["t"], FIGURE["torso"] * FIGURE_SHOULDER_AT + angles.get("sl", 0.0))
+    joints = {}
+    for side in ("n", "f"):
+        elbow = add(sh, angles["ua_" + side], FIGURE["upper_arm"])
+        joints["hand_" + side] = add(elbow, angles["fa_" + side], FIGURE["forearm"])
     for side in ("n", "f"):
         knee = add(root, angles["th_" + side], FIGURE["thigh"])
         ankle = add(knee, angles["sh_" + side], FIGURE["shin"])
@@ -1117,6 +1153,7 @@ def _figure_joints(angles, root):
 # Points de contact 3D (os, hauteur de l'articulation au-dessus du sol).
 CONTACTS = {
     "hand_n": ("hand_l", 0.035),
+    "hand_f": ("hand_r", 0.035),
     "knee_n": ("calf_l", 0.06),
     "knee_f": ("calf_r", 0.06),
     "toe_n": ("ball_l", 0.025),
@@ -1128,7 +1165,7 @@ def _ground_contacts(angles, root, anchor):
     """Second appui au sol d'une pose de profil au sol (ancrage mains ou
     pointes de pieds) : l'articulation loin de l'ancrage la plus proche du
     niveau du sol."""
-    if anchor not in ("hand_n", "toe_n"):
+    if anchor not in ("hand_n", "toe_n", "knee_n", "knee_f"):
         return []
     joints = _figure_joints(angles, root)
     ax, ay = joints[anchor]
@@ -1136,12 +1173,18 @@ def _ground_contacts(angles, root, anchor):
         name for name, (x, y) in joints.items()
         if name in CONTACTS and name != anchor and abs(x - ax) > 0.3 and abs(y - ay) < 0.12
     ]
-    return sorted(near, key=lambda n: abs(joints[n][1] - ay))[:1]
+    # Mains d'abord quand l'appui est aux pieds ou aux genoux, pieds d'abord
+    # quand il est aux mains.
+    if anchor.startswith("knee"):
+        # À genoux : seules les mains cherchent le sol.
+        near = [n for n in near if n.startswith("hand")]
+    hands_first = not anchor.startswith("hand")
+    return sorted(near, key=lambda n: (n.startswith("hand") != hands_first, abs(joints[n][1] - ay)))
 
 
-def _flatten_hands(arm, forward):
+def _flatten_hands(arm, forward, names=("hand_l", "hand_r")):
     """Mains à plat au sol, doigts vers l'avant."""
-    for name in ("hand_l", "hand_r"):
+    for name in names:
         pb = arm.pose.bones[name]
         bpy.context.view_layer.update()
         head = pb.head.copy()
@@ -1203,6 +1246,7 @@ def _exercise_actions(arm):
     scale = leg / 0.88
     rest = {a: _anchor_point(arm, a) for a in MOTION_ANCHORS}
     floor_z = rest["ankle_n"].z
+    ground = bones["ball_l"].head.z - CLEARANCE["ball_l"]
     actions = []
     for name, motion in motions.items():
         view = motion["view"]
@@ -1223,8 +1267,11 @@ def _exercise_actions(arm):
                 -target[0] * scale if view == "side" else base.y,
                 (floor_z if anchor in ("ankle_n", "toe_n", "hand_n") else base.z) - target[1] * scale,
             ))
-            if anchor in ("toe_n", "hand_n"):
+            if anchor in ("toe_n", "toe_f", "hand_n"):
                 goal.z = floor_z - 0.06 - target[1] * scale
+            elif anchor in ("knee_n", "knee_f", "ankle_f"):
+                # Genou au sol (à genoux, à quatre pattes) ou pied éloigné.
+                goal.z = (floor_z if anchor != "ankle_f" else base.z) - target[1] * scale
             delta = goal - point
             root = bones["Root"]
             root.matrix = Matrix.Translation(delta) @ root.matrix
@@ -1247,22 +1294,33 @@ def _exercise_actions(arm):
                             want = math.pi - want
                         theta = want - phi
                         theta = (theta + math.pi) % (2 * math.pi) - math.pi
+                        # Bascule limitée : au-delà, la pose 2D ne convient pas.
+                        if abs(theta) > math.radians(40):
+                            theta = 0.0
                         rot = Matrix.Rotation(theta, 4, "X")
                         root.matrix = Matrix.Translation(pivot) @ rot @ Matrix.Translation(-pivot) @ root.matrix
                         bpy.context.view_layer.update()
-                if anchor == "hand_n" or contacts[:1] == ["hand_n"]:
-                    _flatten_hands(arm, Vector((0, -1, -0.12)).normalized())
+                # Seules les mains posées au sol sont mises à plat.
+                flat = [CONTACTS[c][0] for c in contacts if c.startswith("hand")]
+                if anchor == "hand_n":
+                    flat = ["hand_l", "hand_r"]
+                if flat:
+                    _flatten_hands(arm, Vector((0, -1, -0.12)).normalized(), flat)
 
         # Première passe : étendue du mouvement d'avant en arrière, pour le
         # centrer devant la caméra.
         ys = []
+        lows = []
         moved = {"Root"}
         for seconds, angles, anchor, target, _ in samples:
             place(seconds, angles, anchor, target)
             ys += [bones[b].head.y for b in EXTENT_BONES]
             ys += [bones[b].tail.y for b in EXTENT_BONES]
+            lows.append(min(bones[b].head.z - c for b, c in CLEARANCE.items()))
             moved |= {pb.name for pb in bones if not _is_rest(pb)}
-        shift = Vector((0, -(min(ys) + max(ys)) / 2, 0)) if view == "side" else Vector()
+        # Centré devant la caméra, et posé au sol : la pose la plus basse du
+        # cycle touche le sol (les sauts gardent leur élan).
+        shift = Vector((0, -(min(ys) + max(ys)) / 2 if view == "side" else 0, ground - min(lows)))
         for seconds, angles, anchor, target, _ in samples:
             place(seconds, angles, anchor, target)
             root = bones["Root"]

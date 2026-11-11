@@ -151,11 +151,17 @@ Map<String, Point2> computeJoints(
   final joints = <String, Point2>{'root': root};
   final torso = a('t');
   joints['neck'] = _step(root, torso, FigureProportions.torso);
-  joints['head'] = _step(joints['neck']!, torso, FigureProportions.neck);
+  // `hd` : inclinaison de la tête par rapport au tronc ; `sl` : épaules
+  // haussées le long du tronc.
+  joints['head'] = _step(
+    joints['neck']!,
+    torso + a('hd'),
+    FigureProportions.neck,
+  );
   final shoulder = _step(
     root,
     torso,
-    FigureProportions.torso * FigureProportions.shoulderAt,
+    FigureProportions.torso * FigureProportions.shoulderAt + a('sl'),
   );
   for (final (side, sign) in const [('n', 1.0), ('f', -1.0)]) {
     final front = view == MotionView.front;

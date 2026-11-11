@@ -77,8 +77,8 @@ function setFocus(name, top) {
   if (name === 'exercise_side') {
     // Profil (côté gauche du personnage), assez large pour les exercices au
     // sol (planche, pompes) : le personnage regarde vers la gauche.
-    target = new THREE.Vector3(0, h * 0.42, 0);
-    position = new THREE.Vector3(h * 2.7, h * 0.6, 0);
+    target = new THREE.Vector3(0, h * 0.46, 0);
+    position = new THREE.Vector3(h * 3.1, h * 0.62, 0);
   } else if (name === 'exercise_front') {
     target = new THREE.Vector3(0, h * 0.5, 0);
     position = new THREE.Vector3(0, h * 0.58, h * 2.6);
@@ -137,6 +137,10 @@ function setMorph(root, name, value) {
 function prepareMaterials(root) {
   root.traverse((o) => {
     if (!o.isMesh) return;
+    // Les volumes de découpe sont calculés au repos : pendant un exercice
+    // (personnage déplacé, allongé), une pièce comme les cheveux sortirait
+    // de son volume et disparaîtrait.
+    o.frustumCulled = false;
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     for (const m of mats) {
       if (!m) continue;
