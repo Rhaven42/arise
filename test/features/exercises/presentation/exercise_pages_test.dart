@@ -34,12 +34,9 @@ void main() {
     tester,
   ) async {
     final container = createTestContainer();
-    await tester.openWithProfile(
-      container,
-      AppRoutes.exerciseDetail('push_up'),
-    );
+    await tester.openWithProfile(container, AppRoutes.exerciseDetail('row'));
 
-    expect(find.text('Pompes'), findsOneWidget);
+    expect(find.text('Rowing'), findsOneWidget);
     await tester.pump();
     // Photos de l'athlète : départ et arrivée, en fondu.
     expect(find.byType(ExercisePhotoDemo), findsOneWidget);
@@ -54,11 +51,11 @@ void main() {
     await tester.pump();
     expect(find.byType(BodyMap), findsWidgets);
     await tester.scrollUntilVisible(
-      find.text('• Triceps'),
+      find.text('• Grand dorsal'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    expect(find.text('• Triceps'), findsOneWidget);
+    expect(find.text('• Grand dorsal'), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.text('Erreurs fréquentes'),
@@ -69,6 +66,22 @@ void main() {
     await tester.unmountApp();
   });
 
+  testWidgets('une vidéo de démonstration passe avant les photos', (
+    tester,
+  ) async {
+    final container = createTestContainer();
+    await tester.openWithProfile(container, AppRoutes.exerciseDetail('squat'));
+    await tester.pump();
+
+    final image = tester.widget<Image>(find.byType(Image));
+    expect((image.image as AssetImage).assetName, exerciseVideoAsset('squat'));
+    await tester.tap(find.byKey(ExercisePhotoDemo.pauseKey));
+    await tester.pump();
+    final still = tester.widget<Image>(find.byType(Image));
+    expect((still.image as AssetImage).assetName, exerciseVideoStill('squat'));
+    await tester.unmountApp();
+  });
+
   testWidgets('animations réduites : départ et arrivée côte à côte', (
     tester,
   ) async {
@@ -76,10 +89,7 @@ void main() {
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
     final container = createTestContainer();
-    await tester.openWithProfile(
-      container,
-      AppRoutes.exerciseDetail('push_up'),
-    );
+    await tester.openWithProfile(container, AppRoutes.exerciseDetail('row'));
     await tester.pump();
 
     expect(find.text('Départ'), findsOneWidget);
@@ -90,7 +100,10 @@ void main() {
 
   testWidgets('sans photo, le mannequin 2D montre l’exercice', (tester) async {
     final container = createTestContainer();
-    await tester.openWithProfile(container, AppRoutes.exerciseDetail('burpee'));
+    await tester.openWithProfile(
+      container,
+      AppRoutes.exerciseDetail('bird_dog'),
+    );
     await tester.pump();
 
     expect(find.byType(FigureAnimation), findsOneWidget);

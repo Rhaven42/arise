@@ -59,6 +59,13 @@ final Set<String> testPhotoIds = {
       file.uri.pathSegments.last.replaceAll('_0.webp', ''),
 };
 
+/// Exercices qui ont leur vidéo dans `assets/exercise_videos`.
+final Set<String> testVideoIds = {
+  for (final file in Directory(exerciseVideoFolder).listSync())
+    if (file.path.endsWith('_still.webp'))
+      file.uri.pathSegments.last.replaceAll('_still.webp', ''),
+};
+
 final Map<String, FigureMotion> testMotions = decodeMotions(
   File(motionsAsset).readAsStringSync(),
 );
@@ -108,6 +115,7 @@ ProviderContainer createTestContainer({
       exerciseCatalogProvider.overrideWith((_) async => testCatalog),
       figureMotionsProvider.overrideWith((_) async => testMotions),
       exercisePhotoIdsProvider.overrideWith((_) async => testPhotoIds),
+      exerciseVideoIdsProvider.overrideWith((_) async => testVideoIds),
       bodyShapesProvider.overrideWith((_) async => testBodyShapes),
     ],
   );

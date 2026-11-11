@@ -19,6 +19,35 @@ const String exercisePhotoFolder = 'assets/exercise_photos';
 String exercisePhotoAsset(String exerciseId, int frame) =>
     '$exercisePhotoFolder/${exerciseId}_$frame.webp';
 
+/// Dossier des vidéos de démonstration (captures de mouvement rendues en
+/// WebP animé, voir `tool/exercise_videos`).
+const String exerciseVideoFolder = 'assets/exercise_videos';
+
+/// Vidéo en boucle d'un exercice.
+String exerciseVideoAsset(String exerciseId) =>
+    '$exerciseVideoFolder/$exerciseId.webp';
+
+/// Première image de la vidéo (pause, animations réduites).
+String exerciseVideoStill(String exerciseId) =>
+    '$exerciseVideoFolder/${exerciseId}_still.webp';
+
+/// Exercices qui ont leur vidéo (et son image fixe) dans l'application.
+@Riverpod(keepAlive: true)
+Future<Set<String>> exerciseVideoIds(Ref ref) async {
+  final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+  final assets = manifest.listAssets().toSet();
+  const prefix = '$exerciseVideoFolder/';
+  return {
+    for (final asset in assets)
+      if (asset.startsWith(prefix) &&
+          asset.endsWith('.webp') &&
+          !asset.endsWith('_still.webp'))
+        if (asset.substring(prefix.length, asset.length - 5) case final id
+            when assets.contains(exerciseVideoStill(id)))
+          id,
+  };
+}
+
 /// Exercices qui ont leurs deux photos dans l'application.
 @Riverpod(keepAlive: true)
 Future<Set<String>> exercisePhotoIds(Ref ref) async {
@@ -34,11 +63,10 @@ Future<Set<String>> exercisePhotoIds(Ref ref) async {
   };
 }
 
-/// Démonstration d'un exercice par un athlète : la photo de départ et celle
-/// d'arrivée alternent en fondu, comme une courte vidéo.
-///
-/// Le mannequin 2D prend le relais pour un exercice sans photo (exercices
-/// personnalisés, mouvements absents de la base).
+/// Démonstration d'un exercice, de la plus fidèle à la plus simple :
+/// - vidéo d'un mannequin animé par une capture de mouvement, en boucle ;
+/// - sinon photos d'un athlète (départ et arrivée en fondu) ;
+/// - sinon mannequin 2D (exercices personnalisés, mouvements sans source).
 class ExercisePhotoDemo extends ConsumerStatefulWidget {
   const ExercisePhotoDemo({
     required this.exerciseId,
@@ -97,9 +125,15 @@ class _ExercisePhotoDemoState extends ConsumerState<ExercisePhotoDemo> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final ids = ref.watch(exercisePhotoIdsProvider);
+    final videos = ref.watch(exerciseVideoIdsProvider);
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
-    if (!ids.hasValue && !ids.hasError) {
+    if ((!ids.hasValue && !ids.hasError) ||
+        (!videos.hasValue && !videos.hasError)) {
       return Semantics(label: widget.semanticLabel, child: const SizedBox());
+    }
+    if (videos.value?.contains(widget.exerciseId) ?? false) {
+      _sync(run: false);
+      return _video(l10n, reduceMotion: reduceMotion);
     }
     if (!(ids.value?.contains(widget.exerciseId) ?? false)) {
       _sync(run: false);
@@ -172,5 +206,49 @@ class _ExercisePhotoDemoState extends ConsumerState<ExercisePhotoDemo> {
       );
     }
     return Semantics(label: widget.semanticLabel, image: true, child: content);
+  }
+
+  /// Vidéo en boucle (WebP animé) ; image fixe en pause ou quand le système
+  /// réduit les animations.
+  Widget _video(AppLocalizations l10n, {required bool reduceMotion}) {
+    final still = _paused || reduceMotion;
+    return Semantics(
+      label: widget.semanticLabel,
+      image: true,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: Image.asset(
+              still
+                  ? exerciseVideoStill(widget.exerciseId)
+                  : exerciseVideoAsset(widget.exerciseId),
+              key: ValueKey(still),
+              fit: BoxFit.cover,
+              gaplessPlayback: true,
+            ),
+          ),
+          if (!reduceMotion)
+            Positioned(
+              right: 4,
+              bottom: 4,
+              child: Material(
+                color: AriseColors.abyss.withValues(alpha: 0.6),
+                shape: const CircleBorder(),
+                child: IconButton(
+                  key: ExercisePhotoDemo.pauseKey,
+                  tooltip: _paused ? l10n.animationPlay : l10n.animationPause,
+                  icon: Icon(
+                    _paused ? Icons.play_arrow : Icons.pause,
+                    color: AriseColors.goldBright,
+                  ),
+                  onPressed: () => setState(() => _paused = !_paused),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }
