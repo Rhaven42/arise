@@ -125,7 +125,8 @@ class ProgressionStates extends Table {
 /// - v4 (phase 3) : ajout de `completed_sessions` ;
 /// - v5 (phase 4) : ajout de `progression_states` ;
 /// - v6 (phase 6A) : ajout de `character_sheets` ;
-/// - v7 (phase 7) : ajout de `inventory_states`.
+/// - v7 (phase 7) : ajout de `inventory_states` ;
+/// - v8 (phase 8A) : ajout de `quest_states` et `trial_states`.
 @DataClassName('CharacterSheetRow')
 class CharacterSheets extends Table {
   IntColumn get id => integer()();
@@ -151,6 +152,32 @@ class InventoryStates extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
+/// Quête quotidienne en cours (une seule ligne, `id` = 1), en JSON.
+@DataClassName('QuestRow')
+class QuestStates extends Table {
+  IntColumn get id => integer()();
+
+  TextColumn get json => text()();
+
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+/// Historique des épreuves de rang (une seule ligne, `id` = 1), en JSON.
+@DataClassName('TrialRow')
+class TrialStates extends Table {
+  IntColumn get id => integer()();
+
+  TextColumn get json => text()();
+
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
 @DriftDatabase(
   tables: [
     PendingSessions,
@@ -163,6 +190,8 @@ class InventoryStates extends Table {
     ProgressionStates,
     CharacterSheets,
     InventoryStates,
+    QuestStates,
+    TrialStates,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -172,7 +201,7 @@ class AppDatabase extends _$AppDatabase {
   static const profileRowId = 1;
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -197,6 +226,10 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 7) {
         await migrator.createTable(inventoryStates);
+      }
+      if (from < 8) {
+        await migrator.createTable(questStates);
+        await migrator.createTable(trialStates);
       }
     },
   );
@@ -227,6 +260,8 @@ class AppDatabase extends _$AppDatabase {
   /// Efface toutes les données du joueur.
   Future<void> eraseAll() {
     return transaction(() async {
+      await delete(trialStates).go();
+      await delete(questStates).go();
       await delete(inventoryStates).go();
       await delete(characterSheets).go();
       await delete(progressionStates).go();
@@ -398,6 +433,70 @@ class AppDatabase extends _$AppDatabase {
       }
       await saveInventoryJson(next.inventory, updatedAt: updatedAt);
       return next.result;
+    });
+  }
+
+  // --- Quêtes et épreuves ------------------------------------------------
+
+  Stream<String?> watchQuestJson() {
+    final query = select(questStates)..where((t) => t.id.equals(profileRowId));
+    return query.watchSingleOrNull().map((row) => row?.json);
+  }
+
+  Future<String?> readQuestJson() async {
+    final query = select(questStates)..where((t) => t.id.equals(profileRowId));
+    return (await query.getSingleOrNull())?.json;
+  }
+
+  Future<void> saveQuestJson(String json, {required DateTime updatedAt}) {
+    return into(questStates).insertOnConflictUpdate(
+      QuestStatesCompanion(
+        id: const Value(profileRowId),
+        json: Value(json),
+        updatedAt: Value(updatedAt.toUtc()),
+      ),
+    );
+  }
+
+  Stream<String?> watchTrialsJson() {
+    final query = select(trialStates)..where((t) => t.id.equals(profileRowId));
+    return query.watchSingleOrNull().map((row) => row?.json);
+  }
+
+  Future<String?> readTrialsJson() async {
+    final query = select(trialStates)..where((t) => t.id.equals(profileRowId));
+    return (await query.getSingleOrNull())?.json;
+  }
+
+  Future<void> saveTrialsJson(String json, {required DateTime updatedAt}) {
+    return into(trialStates).insertOnConflictUpdate(
+      TrialStatesCompanion(
+        id: const Value(profileRowId),
+        json: Value(json),
+        updatedAt: Value(updatedAt.toUtc()),
+      ),
+    );
+  }
+
+  /// Enregistre ensemble, dans une seule transaction, les états du jeu
+  /// modifiés par une récompense (`null` = inchangé) : une quête ou une
+  /// épreuve ne peut jamais être marquée sans sa récompense, ni l'inverse.
+  Future<void> saveGameState({
+    required DateTime updatedAt,
+    String? progression,
+    String? inventory,
+    String? quest,
+    String? trials,
+  }) {
+    return transaction(() async {
+      if (progression != null) {
+        await saveProgressionJson(progression, updatedAt: updatedAt);
+      }
+      if (inventory != null) {
+        await saveInventoryJson(inventory, updatedAt: updatedAt);
+      }
+      if (quest != null) await saveQuestJson(quest, updatedAt: updatedAt);
+      if (trials != null) await saveTrialsJson(trials, updatedAt: updatedAt);
     });
   }
 

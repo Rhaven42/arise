@@ -30,7 +30,11 @@ import 'package:intl/intl.dart';
 
 /// Fenêtre du Système : tableau de bord du chasseur.
 class SystemHomePage extends ConsumerWidget {
-  const SystemHomePage({super.key});
+  const SystemHomePage({super.key, this.panels = const []});
+
+  /// Panneaux d'autres fonctionnalités (quête du jour, épreuve de rang),
+  /// assemblés par le routeur et affichés sous le message du Système.
+  final List<Widget> panels;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,16 +57,25 @@ class SystemHomePage extends ConsumerWidget {
           ? const Center(
               child: CircularProgressIndicator(color: AriseColors.gold),
             )
-          : _SystemHomeBody(profile: profile, view: progression),
+          : _SystemHomeBody(
+              profile: profile,
+              view: progression,
+              panels: panels,
+            ),
     );
   }
 }
 
 class _SystemHomeBody extends ConsumerWidget {
-  const _SystemHomeBody({required this.profile, required this.view});
+  const _SystemHomeBody({
+    required this.profile,
+    required this.view,
+    required this.panels,
+  });
 
   final PlayerProfile profile;
   final ProgressionView view;
+  final List<Widget> panels;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -122,6 +135,10 @@ class _SystemHomeBody extends ConsumerWidget {
         ),
         const SizedBox(height: AriseSpacing.lg),
         _StreakPanel(state: state),
+        for (final panel in panels) ...[
+          const SizedBox(height: AriseSpacing.lg),
+          panel,
+        ],
         const SizedBox(height: AriseSpacing.lg),
         Text(
           next == null || nextProgram == null

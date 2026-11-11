@@ -936,7 +936,7 @@
   },
   "homeNoNextSession": "Aucune séance planifiée.",
   "homePenaltyTitle": "Zone de Pénalité",
-  "homePenaltyBody": "Un jour d'entraînement a été manqué : l'expérience est réduite de 20 % pendant 24 heures. Quête de pénalité : termine une séance aujourd'hui, même courte, pour lever le malus.",
+  "homePenaltyBody": "Un jour d'entraînement a été manqué : l'expérience est réduite de 20 % pendant 24 heures. Quête de pénalité : accomplis la moitié de la quête du jour pour lever le malus.",
   "homeSickTitle": "Mode repos forcé",
   "homeSickBody": "Mode maladie ou blessure actif jusqu'au {date} : aucune pénalité, ta série est protégée. Prends soin de toi.",
   "@homeSickBody": {
@@ -1478,7 +1478,7 @@
       }
     }
   },
-  "itemName": "{id, select, leather_chest{Veste de cuir de l'Éveillé} leather_hands{Gants de cuir de l'Éveillé} leather_belt{Ceinturon de l'Éveillé} leather_legs{Chausses de cuir de l'Éveillé} leather_feet{Bottes de l'Éveillé} mail_head{Camail du Veilleur} mail_chest{Haubert du Veilleur} mail_hands{Mitons de maille du Veilleur} mail_legs{Chausses de maille du Veilleur} mail_feet{Solerets du Veilleur} plate_head{Heaume de l'Aube} plate_shoulders{Spallières de l'Aube} plate_chest{Cuirasse de l'Aube} plate_hands{Gantelets de l'Aube} plate_belt{Tassette de l'Aube} plate_legs{Cuissards de l'Aube} plate_feet{Grèves de l'Aube} cape_wanderer{Cape du Vagabond} cape_dawn{Cape de l'Aube} hood_twilight{Capuche du Crépuscule} sword_dawn{Épée d'apparat de l'Aube} staff_ember{Bâton de Braise} other{?}}",
+  "itemName": "{id, select, leather_chest{Veste de cuir de l'Éveillé} leather_hands{Gants de cuir de l'Éveillé} leather_belt{Ceinturon de l'Éveillé} leather_legs{Chausses de cuir de l'Éveillé} leather_feet{Bottes de l'Éveillé} mail_head{Camail du Veilleur} mail_chest{Haubert du Veilleur} mail_hands{Mitons de maille du Veilleur} mail_legs{Chausses de maille du Veilleur} mail_feet{Solerets du Veilleur} plate_head{Heaume de l'Aube} plate_shoulders{Spallières de l'Aube} plate_chest{Cuirasse de l'Aube} plate_hands{Gantelets de l'Aube} plate_belt{Tassette de l'Aube} plate_legs{Cuissards de l'Aube} plate_feet{Grèves de l'Aube} cape_wanderer{Cape du Vagabond} cape_dawn{Cape de l'Aube} hood_twilight{Capuche du Crépuscule} sword_dawn{Épée d'apparat de l'Aube} staff_ember{Bâton de Braise} guardian_jacket{Veste du Gardien du Rocher} stag_cape{Cape du Cerf d'Argent} wind_hood{Capuche de la Danseuse des Vents} colossus_leggings{Chausses du Colosse de Basalte} comet_cape{Cape de la Comète Écarlate} tempest_hood{Capuche du Seigneur des Tempêtes} other{?}}",
   "@itemName": {
     "placeholders": {
       "id": {
@@ -1519,5 +1519,255 @@
         "type": "String"
       }
     }
-  }
+  },
+  "questDailyTitle": "Quête du jour",
+  "questPenaltyTitle": "Quête de pénalité",
+  "questRestDay": "Jour de repos : le Système t'ordonne de récupérer. Aucune quête aujourd'hui.",
+  "questObjective": "{exercise} : {done} / {target}",
+  "@questObjective": {
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      },
+      "done": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "questObjectiveDone": "{exercise} : accompli",
+  "@questObjectiveDone": {
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      }
+    }
+  },
+  "questStart": "Accomplir la quête",
+  "questCompleted": "Quête accomplie : récompense reçue.",
+  "questReward": "Récompense : {xp} XP, {coins} et +{willpower} Volonté",
+  "@questReward": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      },
+      "coins": {
+        "type": "String"
+      },
+      "willpower": {
+        "type": "int"
+      }
+    }
+  },
+  "questPenaltyHint": "Zone de Pénalité : accomplis la moitié de la quête du jour pour lever le malus.",
+  "questPenaltyStart": "Lever le malus",
+  "questRewardEarned": "Quête du jour accomplie : +{xp} XP, {coins} et +{willpower} Volonté.",
+  "@questRewardEarned": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      },
+      "coins": {
+        "type": "String"
+      },
+      "willpower": {
+        "type": "int"
+      }
+    }
+  },
+  "questDayValidated": "La quête valide ta journée : série de {days} jours.",
+  "@questDayValidated": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "bossName": "{boss, select, rockGuardian{Le Gardien du Rocher} silverStag{Le Cerf d'Argent} windDancer{La Danseuse des Vents} basaltColossus{Le Colosse de Basalte} crimsonComet{La Comète Écarlate} stormLord{Le Seigneur des Tempêtes} other{?}}",
+  "@bossName": {
+    "placeholders": {
+      "boss": {
+        "type": "String"
+      }
+    }
+  },
+  "bossLore": "{boss, select, rockGuardian{Un gardien de pierre barre le col d'Arisia. Seule une force patiente peut le faire reculer.} silverStag{Un cerf aux bois d'argent court à travers les brumes. Tiens son rythme jusqu'au bout.} windDancer{Une danseuse faite de vent tourbillonne sans jamais s'arrêter. Suis sa cadence.} basaltColossus{Un colosse de basalte s'éveille sous la montagne. Ta force doit égaler la sienne.} crimsonComet{Une comète écarlate trace sa route dans le ciel. Endure aussi longtemps qu'elle brille.} stormLord{Le Seigneur des Tempêtes règne sur les éclairs. Danse avec l'orage pour le soumettre.} other{}}",
+  "@bossLore": {
+    "placeholders": {
+      "boss": {
+        "type": "String"
+      }
+    }
+  },
+  "titleName": "{title, select, title_rockGuardian{Briseur de Rocher} title_silverStag{Coureur des Brumes} title_windDancer{Pied-de-Vent} title_basaltColossus{Brise-Colosse} title_crimsonComet{Sillage de Comète} title_stormLord{Œil de la Tempête} other{?}}",
+  "@titleName": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "trialKind": "{kind, select, strength{Épreuve de force} endurance{Épreuve d'endurance} agility{Épreuve d'agilité} other{Épreuve}}",
+  "@trialKind": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "trialCardTitle": "Épreuve de rang",
+  "trialNotYet": "Atteins le niveau {level} pour affronter {boss}.",
+  "@trialNotYet": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      },
+      "boss": {
+        "type": "String"
+      }
+    }
+  },
+  "trialStatTooLow": "{stat} : {current} / {required}. Renforce-toi pour affronter {boss}.",
+  "@trialStatTooLow": {
+    "placeholders": {
+      "stat": {
+        "type": "String"
+      },
+      "current": {
+        "type": "int"
+      },
+      "required": {
+        "type": "int"
+      },
+      "boss": {
+        "type": "String"
+      }
+    }
+  },
+  "trialCooldown": "{boss} se remet du combat. Nouvel essai possible le {date}.",
+  "@trialCooldown": {
+    "placeholders": {
+      "boss": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "trialAvailable": "{boss} t'attend. Vaincs-le pour atteindre le rang {rank}.",
+  "@trialAvailable": {
+    "placeholders": {
+      "boss": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "trialOpen": "Voir l'épreuve",
+  "trialFight": "Affronter le boss",
+  "trialGoalStrength": "Réalise {pushUps} pompes puis {squats} squats, en moins de {minutes} minutes d'effort (repos exclus).",
+  "@trialGoalStrength": {
+    "placeholders": {
+      "pushUps": {
+        "type": "int"
+      },
+      "squats": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "trialGoalEndurance": "{exercise} pendant {minutes} minutes, jusqu'au bout.",
+  "@trialGoalEndurance": {
+    "placeholders": {
+      "exercise": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "trialGoalAgility": "Circuit de {rounds} rounds : 20 s d'effort, 10 s de repos, jumping jacks et mountain climbers.",
+  "@trialGoalAgility": {
+    "placeholders": {
+      "rounds": {
+        "type": "int"
+      }
+    }
+  },
+  "trialRequirement": "Condition : {stat} {required} ou plus.",
+  "@trialRequirement": {
+    "placeholders": {
+      "stat": {
+        "type": "String"
+      },
+      "required": {
+        "type": "int"
+      }
+    }
+  },
+  "trialSafety": "Échauffe-toi avant l'épreuve. Arrête-toi au moindre signe de douleur : le boss attendra. Saisis honnêtement tes répétitions.",
+  "trialRetryRule": "En cas de défaite, rien n'est perdu : nouvel essai après 48 heures.",
+  "trialRewardLine": "Récompense : rang {rank}, titre « {title} » et {item}.",
+  "@trialRewardLine": {
+    "placeholders": {
+      "rank": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      },
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "trialVictoryTitle": "Victoire !",
+  "trialVictoryBody": "{boss} est vaincu. Tu atteins le rang {rank}.",
+  "@trialVictoryBody": {
+    "placeholders": {
+      "boss": {
+        "type": "String"
+      },
+      "rank": {
+        "type": "String"
+      }
+    }
+  },
+  "trialTitleEarned": "Titre obtenu : {title}",
+  "@trialTitleEarned": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "trialItemEarned": "Objet exclusif ajouté à l'inventaire : {item}",
+  "@trialItemEarned": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "trialDefeat": "{boss} résiste encore. Rien n'est perdu : nouvel essai possible le {date}.",
+  "@trialDefeat": {
+    "placeholders": {
+      "boss": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "trialContinue": "Continuer"
 }

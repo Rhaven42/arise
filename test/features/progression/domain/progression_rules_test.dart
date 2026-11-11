@@ -148,13 +148,12 @@ void main() {
       );
     });
 
-    test('pendant la pénalité : XP réduite, puis malus levé', () {
+    test('pendant la pénalité : XP réduite, malus gardé (quête requise)', () {
       final state = _fresh().copyWith(penaltyUntil: _day(0, 20).toUtc());
       final p = _session(state, 0, xp: 100);
       expect(p.multiplier, closeTo(0.8, 1e-9));
       expect(p.xpGained, 80);
-      expect(p.penaltyCleared, isTrue);
-      expect(p.state.penaltyUntil, isNull);
+      expect(p.state.penaltyUntil, isNotNull);
     });
   });
 

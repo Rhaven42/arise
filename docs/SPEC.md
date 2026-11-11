@@ -350,3 +350,24 @@ Décision de la propriétaire du projet : pas de forfait Firebase Blaze, pas de 
 6. **Boutique** : chaque article montre une vignette de l'objet seul à gauche (`assets/items/`) et un bouton « Voir sur mon personnage » qui ouvre une grande vue 3D, orientable, du personnage portant l'article.
 7. **Modèles allégés** : textures WebP et géométrie compressée (meshopt), environ 3,3 Mo par modèle au lieu de 6 à 7.
 
+
+## 30. Décisions de la phase 8A (11/11/2026)
+Plan proposé le 11/11/2026 ; la propriétaire du projet a demandé de poursuivre la phase 8 après les corrections du §29. Toutes les valeurs chiffrées sont **provisoires** (`game_config.dart`, sections `quests` et `trials`).
+
+1. **Quête quotidienne du Système** (`features/quests`) : générée une fois par jour (date civile locale), de façon reproductible, par `generateDailyQuest`. Elle compte 3 ou 4 objectifs tirés du **catalogue validé uniquement** (jamais un exercice en attente de relecture ni personnalisé), selon l'équipement du joueur et une difficulté au plus d'un cran au-dessus de son niveau : deux exercices de force à muscles principaux différents, un cardio chronométré et, une fois sur deux, un gainage. Objectifs de base selon le niveau du questionnaire (20 / 30 / 40 répétitions, 10 / 15 / 20 min de cardio, 45 / 60 / 90 s de gainage), réduits pour les exercices difficiles (× 1, 0,75, 0,5) et augmentés de 2 % par niveau du joueur, au plus × 2.
+2. **Jours de repos et maladie** : aucune quête ; le Système invite à récupérer (le catalogue validé n'a pas encore d'exercice de mobilité légère).
+3. **Progression** : calculée automatiquement à partir des efforts réalisés dans la journée (toutes séances confondues, efforts sautés exclus). Le bouton « Accomplir la quête » lance une séance générée avec les quantités restantes (séries de 15 répétitions au plus).
+4. **Récompense** : quête terminée = (30 + 2 × niveau) XP, autant de pièces de bronze, +1 Volonté, versées une seule fois, et **validation du jour** (série prolongée, coffre aux paliers) si aucune séance complète ne l'a déjà fait.
+5. **Quête de pénalité** (remplace §24.7) : pendant le malus de la Zone de Pénalité, réaliser **la moitié** des objectifs de la quête du jour lève le malus. Terminer une séance ne suffit plus.
+6. **Épreuves de rang** (`features/trials`) : un boss par rang, de E à S (le Monarque n'en a pas) ; les natures tournent force → endurance → agilité.
+   - Force : pompes puis squats (E : 20 et 30 … S : 75 et 110) en **10 minutes d'effort au plus** (repos exclus), répétitions saisies à la main.
+   - Endurance : marche (rang E, 20 min) puis course chronométrée (15 à 40 min).
+   - Agilité : circuit de jumping jacks et de mountain climbers, 20 s d'effort / 10 s de repos, 8 à 20 rounds.
+   - Accès : être au **dernier niveau du rang** et avoir la stat de l'épreuve au minimum requis (10, 20, 30, 45, 60, 80).
+   - Victoire : séance complète, sans arrêt pour douleur, objectifs et temps respectés. Le boss est vaincu, la barre d'XP pleine fait passer le niveau et le rang immédiatement, un **titre** est gagné (affiché en phase 9) et un **objet exclusif** rejoint l'inventaire.
+   - Défaite : rien n'est perdu, nouvel essai après **48 h**.
+   - Une consigne de prudence précède chaque épreuve ; le bouton « Douleur ou malaise » du lecteur reste disponible.
+7. **Boss et titres** (créations originales) : Gardien du Rocher (« Briseur de Rocher »), Cerf d'Argent (« Coureur des Brumes »), Danseuse des Vents (« Pied-de-Vent »), Colosse de Basalte (« Brise-Colosse »), Comète Écarlate (« Sillage de Comète »), Seigneur des Tempêtes (« Œil de la Tempête »).
+8. **Objets exclusifs** : variantes teintées de pièces existantes, absentes de la boutique et teignables (veste du Gardien, cape du Cerf d'Argent, capuche de la Danseuse des Vents, chausses du Colosse, cape de la Comète, capuche du Seigneur des Tempêtes). Des modèles propres sont attendus de l'artiste (docs/ASSETS.md §4).
+9. **Cinématique** : fenêtre du Système « Victoire ! » animée dans le bilan de séance (désactivée si le téléphone limite les animations). Une vraie cinématique 3D reste à produire.
+10. **Données** : base v8 (tables `quest_states` et `trial_states`), sauvegarde v7 (`quest`, `trials`), v6 toujours lisible. Une récompense est enregistrée dans la même transaction que la quête ou l'épreuve qui la donne.

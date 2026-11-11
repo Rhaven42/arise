@@ -155,7 +155,9 @@ Loadout loadoutOf(Inventory inventory, {EquipmentItem? tryOn}) {
     dyes: {
       for (final item in items)
         if (item.dyeable && inventory.dyes[item.id] != null)
-          item.dyeMaterial: inventory.dyes[item.id]!,
+          item.dyeMaterial: inventory.dyes[item.id]!
+        else if (item.tint != null)
+          item.dyeMaterial: item.tint!,
     },
     hidesHair: items.any((item) => item.hidesHair),
   );

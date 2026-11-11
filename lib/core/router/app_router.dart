@@ -17,8 +17,10 @@ import 'package:arise/features/planning/presentation/programs_page.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:arise/features/progression/presentation/system_home_page.dart';
+import 'package:arise/features/quests/presentation/quest_panel.dart';
 import 'package:arise/features/settings/presentation/settings_page.dart';
 import 'package:arise/features/shop/presentation/shop_page.dart';
+import 'package:arise/features/trials/presentation/trial_page.dart';
 import 'package:arise/features/workout_player/presentation/workout_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
@@ -71,7 +73,8 @@ GoRouter appRouter(Ref ref) {
       GoRoute(path: AppRoutes.restore, builder: (_, _) => const RestorePage()),
       GoRoute(
         path: AppRoutes.systemHome,
-        builder: (_, _) => const SystemHomePage(),
+        builder: (_, _) =>
+            const SystemHomePage(panels: [QuestPanel(), TrialPanel()]),
         routes: [
           GoRoute(
             path: AppRoutes.settingsSegment,
@@ -136,6 +139,10 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
             path: AppRoutes.inventorySegment,
             builder: (_, _) => const InventoryPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.trialSegment,
+            builder: (_, _) => const TrialPage(),
           ),
           GoRoute(
             path: AppRoutes.planningSegment,

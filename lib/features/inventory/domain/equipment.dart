@@ -32,6 +32,8 @@ class EquipmentItem {
     this.setId,
     this.dyeable = false,
     this.hidesHair = false,
+    this.baseId,
+    this.tint,
   });
 
   /// Identifiant stable ; la pièce 3D s'appelle `item_<id>`.
@@ -48,10 +50,78 @@ class EquipmentItem {
   /// L'objet couvre la tête : la coiffure est masquée.
   final bool hidesHair;
 
-  String get nodeName => 'item_$id';
+  /// Objet exclusif (récompense de boss) : il reprend la pièce 3D de
+  /// l'objet [baseId] avec sa propre teinte [tint]. Il ne se vend pas.
+  final String? baseId;
 
-  String get dyeMaterial => 'dye_$id';
+  /// Teinte par défaut d'un objet exclusif (ARGB), remplaçable par une
+  /// teinture.
+  final int? tint;
+
+  bool get isExclusive => baseId != null;
+
+  /// Objet dont la pièce 3D et la vignette sont utilisées.
+  String get modelId => baseId ?? id;
+
+  String get nodeName => 'item_$modelId';
+
+  String get dyeMaterial => 'dye_$modelId';
 }
+
+/// Récompenses exclusives des boss de rang (SPEC §30), dans l'ordre des
+/// rangs E, D, C, B, A, S.
+const List<EquipmentItem> bossRewardItems = [
+  EquipmentItem(
+    id: 'guardian_jacket',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    dyeable: true,
+    baseId: 'leather_chest',
+    tint: 0xFF6E6A64,
+  ),
+  EquipmentItem(
+    id: 'stag_cape',
+    slot: EquipmentSlot.back,
+    rarity: Rarity.epic,
+    dyeable: true,
+    baseId: 'cape_wanderer',
+    tint: 0xFFB8C2CC,
+  ),
+  EquipmentItem(
+    id: 'wind_hood',
+    slot: EquipmentSlot.head,
+    rarity: Rarity.epic,
+    dyeable: true,
+    hidesHair: true,
+    baseId: 'hood_twilight',
+    tint: 0xFF5E9C95,
+  ),
+  EquipmentItem(
+    id: 'colossus_leggings',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.legendary,
+    dyeable: true,
+    baseId: 'leather_legs',
+    tint: 0xFF3E3A40,
+  ),
+  EquipmentItem(
+    id: 'comet_cape',
+    slot: EquipmentSlot.back,
+    rarity: Rarity.legendary,
+    dyeable: true,
+    baseId: 'cape_dawn',
+    tint: 0xFFB0302A,
+  ),
+  EquipmentItem(
+    id: 'tempest_hood',
+    slot: EquipmentSlot.head,
+    rarity: Rarity.mythic,
+    dyeable: true,
+    hidesHair: true,
+    baseId: 'hood_twilight',
+    tint: 0xFF2E2440,
+  ),
+];
 
 /// Ensembles d'équipement.
 const List<String> equipmentSets = [
@@ -206,6 +276,9 @@ const List<EquipmentItem> equipmentCatalog = [
 /// Objet du catalogue, ou `null` s'il n'existe pas (sauvegarde ancienne).
 EquipmentItem? itemById(String id) {
   for (final item in equipmentCatalog) {
+    if (item.id == id) return item;
+  }
+  for (final item in bossRewardItems) {
     if (item.id == id) return item;
   }
   return null;

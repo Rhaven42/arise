@@ -57,3 +57,13 @@ Pièces de substitution générées par la fonction `_equipment` de `tool/charac
 - Objets teignables : un matériau `dye_<id>` dont la couleur de base est multipliée par la teinte choisie (texture en niveaux de gris conseillée).
 - Budget : 8 000 triangles par pièce, textures 1024 × 1024 (2048 pour les capes et les plastrons), même licence que le §2.
 
+
+## 4. Récompenses des boss (phase 8A)
+
+### État actuel
+Les six objets exclusifs réutilisent une pièce de la boutique avec leur propre teinte (`baseId` et `tint` dans `lib/features/inventory/domain/equipment.dart`) : `guardian_jacket` (veste de cuir), `stag_cape` (cape du Vagabond), `wind_hood` et `tempest_hood` (capuche du Crépuscule), `colossus_leggings` (chausses de cuir), `comet_cape` (cape de l'Aube). Aucune pièce 3D supplémentaire n'est incluse dans les modèles.
+
+### Livrable attendu
+- Une pièce propre par objet, nommée `item_<id>` (par exemple `item_guardian_jacket`), avec les mêmes exigences que le §3 (squelette, formes de morphologie, matériau `dye_<id>`, budget). Il suffira alors de retirer `baseId` de l'objet dans le catalogue.
+- Une vignette `assets/items/<id>.png` par objet (rendu de l'objet seul, comme pour la boutique).
+- Une courte cinématique de victoire par boss (silhouette du boss, effet de lumière), en remplacement de la fenêtre animée du bilan.

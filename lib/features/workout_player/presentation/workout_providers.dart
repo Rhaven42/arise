@@ -11,6 +11,10 @@ import 'package:arise/features/planning/presentation/planning_providers.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:arise/features/progression/domain/progression_rules.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
+import 'package:arise/features/quests/domain/quest_rules.dart';
+import 'package:arise/features/quests/presentation/quests_providers.dart';
+import 'package:arise/features/trials/domain/trial_rules.dart';
+import 'package:arise/features/trials/presentation/trials_providers.dart';
 import 'package:arise/features/workout_player/data/drift_completed_session_repository.dart';
 import 'package:arise/features/workout_player/domain/completed_session.dart';
 import 'package:arise/features/workout_player/domain/completed_session_repository.dart';
@@ -57,6 +61,12 @@ abstract class WorkoutView with _$WorkoutView {
 
     /// Effets de la séance sur la progression (niveaux, série, coffre).
     SessionProgress? progress,
+
+    /// Quêtes accomplies grâce à la séance (récompense, pénalité levée).
+    QuestOutcome? questOutcome,
+
+    /// Issue de l'épreuve de rang jouée, le cas échéant.
+    TrialOutcome? trialOutcome,
   }) = _WorkoutView;
 
   const WorkoutView._();
@@ -77,7 +87,11 @@ class WorkoutController extends _$WorkoutController {
   @override
   Future<WorkoutView?> build(String programId) async {
     final programs = await ref.read(programsProvider.future);
-    final program = programs.where((p) => p.id == programId).firstOrNull;
+    // Programme du joueur, épreuve de rang ou séance générée pour une quête.
+    final program =
+        programs.where((p) => p.id == programId).firstOrNull ??
+        trialProgramFor(programId) ??
+        await questProgramFor(ref, programId);
     if (program == null) return null;
 
     final exercises = await ref.read(exercisesByIdProvider.future);
@@ -201,9 +215,24 @@ class WorkoutController extends _$WorkoutController {
       xpMultiplier: progress.multiplier,
     );
     await repository.save(session);
+    // Épreuve de rang puis quêtes : elles lisent la séance enregistrée.
+    final trialOutcome = await ref
+        .read(trialControllerProvider.notifier)
+        .resolve(session);
+    final questOutcome = await ref
+        .read(questControllerProvider.notifier)
+        .evaluate();
     if (!ref.mounted) return;
     state = AsyncData(
-      view.copyWith(summary: session, progress: progress, now: now),
+      view.copyWith(
+        summary: session,
+        progress: progress,
+        questOutcome: questOutcome == null || questOutcome.isEmpty
+            ? null
+            : questOutcome,
+        trialOutcome: trialOutcome,
+        now: now,
+      ),
     );
     unawaited(_cues?.keepScreenOn(enabled: false));
     if (_sounds) unawaited(_cues?.play(CueSound.finish));

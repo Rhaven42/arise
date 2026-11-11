@@ -1,3 +1,4 @@
+import 'package:arise/core/router/app_router.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/features/planning/domain/program.dart';
 import 'package:arise/features/planning/presentation/planning_providers.dart';
@@ -130,6 +131,36 @@ void main() {
 
     await tester.unmountApp();
   });
+
+  testWidgets(
+    'un jour avec une quête, le bilan s’affiche après un arrêt de prudence',
+    (tester) async {
+      // Jeudi : la quête du jour est construite par la Fenêtre du Système
+      // avant la séance, comme sur l'appareil.
+      now = DateTime(2026, 11, 5, 10);
+      final container = createTestContainer(clock: () => now, cues: cues);
+      await container.read(programRepositoryProvider).save(_tabata);
+      await tester.openWithProfile(container, AppRoutes.systemHome);
+      await tester.pump(const Duration(milliseconds: 300));
+      container.read(appRouterProvider).go(AppRoutes.workout(_tabata.id));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      await tester.scrollUntilVisible(
+        find.text('Douleur ou malaise'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Douleur ou malaise'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Séance interrompue'), findsOneWidget);
+      expect(find.text('Arrête-toi maintenant'), findsOneWidget);
+      await tester.unmountApp();
+    },
+  );
 
   testWidgets(
     'le bouton douleur arrête la séance avec un message de prudence',

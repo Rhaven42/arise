@@ -136,6 +136,13 @@ class ProgressionController extends _$ProgressionController {
     );
   }
 
+  /// Adopte une progression déjà enregistrée par une autre règle du jeu
+  /// (quête terminée, épreuve), dans la même transaction que sa cause.
+  Future<void> adopt(ProgressionState next) async {
+    final current = await _current();
+    state = AsyncData(ProgressionView(state: next, report: current.report));
+  }
+
   /// Le message du Système a été lu.
   Future<void> dismissReport() async {
     final current = await _current();

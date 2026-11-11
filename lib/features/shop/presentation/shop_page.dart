@@ -350,7 +350,7 @@ class _ArticleImage extends StatelessWidget {
   final Rarity rarity;
 
   static String assetOf(ShopArticle article) => switch (article) {
-    ItemArticle(:final item) => 'assets/items/${item.id}.png',
+    ItemArticle(:final item) => 'assets/items/${item.modelId}.png',
     HairStyleArticle(:final style) =>
       'assets/items/hairstyle_${style.toString().padLeft(2, '0')}.png',
   };

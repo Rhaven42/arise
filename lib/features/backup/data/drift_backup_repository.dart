@@ -11,6 +11,8 @@ import 'package:arise/features/inventory/domain/inventory_rules.dart';
 import 'package:arise/features/planning/data/drift_planning_repositories.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/progression/data/drift_progression_repository.dart';
+import 'package:arise/features/quests/data/drift_quest_repository.dart';
+import 'package:arise/features/trials/data/drift_trials_repository.dart';
 import 'package:arise/features/workout_player/data/drift_completed_session_repository.dart';
 
 /// Sauvegarde et restauration à partir de la base locale.
@@ -54,6 +56,14 @@ class DriftBackupRepository implements BackupRepository {
       },
       inventory: switch (await _database.readInventoryJson()) {
         final json? => DriftInventoryRepository.decode(json),
+        null => null,
+      },
+      quest: switch (await _database.readQuestJson()) {
+        final json? => DriftQuestRepository.decode(json),
+        null => null,
+      },
+      trials: switch (await _database.readTrialsJson()) {
+        final json? => DriftTrialsRepository.decode(json),
         null => null,
       },
     );
@@ -111,6 +121,20 @@ class DriftBackupRepository implements BackupRepository {
       if (inventory != null) {
         await _database.saveInventoryJson(
           jsonEncode(sanitizeInventory(inventory).toJson()),
+          updatedAt: now,
+        );
+      }
+      final quest = data.quest;
+      if (quest != null) {
+        await _database.saveQuestJson(
+          jsonEncode(quest.toJson()),
+          updatedAt: now,
+        );
+      }
+      final trials = data.trials;
+      if (trials != null) {
+        await _database.saveTrialsJson(
+          jsonEncode(trials.toJson()),
           updatedAt: now,
         );
       }
