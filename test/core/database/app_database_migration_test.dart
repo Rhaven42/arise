@@ -391,7 +391,7 @@ void main() {
     final version = await database
         .customSelect('PRAGMA user_version')
         .getSingle();
-    expect(version.read<int>('user_version'), 8);
+    expect(version.read<int>('user_version'), database.schemaVersion);
   });
 
   test(
@@ -476,7 +476,7 @@ void main() {
       final version = await database
           .customSelect('PRAGMA user_version')
           .getSingle();
-      expect(version.read<int>('user_version'), 9);
+      expect(version.read<int>('user_version'), database.schemaVersion);
     },
   );
 }
