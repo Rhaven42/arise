@@ -10,6 +10,9 @@ import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/exercises/presentation/exercise_labels.dart';
 import 'package:arise/features/progression/domain/progression_rules.dart';
 import 'package:arise/features/progression/presentation/progression_labels.dart';
+import 'package:arise/features/quests/domain/quest_rules.dart';
+import 'package:arise/features/trials/domain/trial_rules.dart';
+import 'package:arise/features/trials/presentation/trial_labels.dart';
 import 'package:arise/features/workout_player/domain/completed_session.dart';
 import 'package:arise/features/workout_player/domain/session_summary.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
@@ -23,12 +26,20 @@ class WorkoutSummaryView extends StatelessWidget {
     required this.onClose,
     super.key,
     this.progress,
+    this.questOutcome,
+    this.trialOutcome,
   });
 
   final CompletedSession session;
 
   /// Effets sur la progression (absents pour un ancien enregistrement).
   final SessionProgress? progress;
+
+  /// Quêtes accomplies grâce à la séance.
+  final QuestOutcome? questOutcome;
+
+  /// Issue de l'épreuve de rang jouée.
+  final TrialOutcome? trialOutcome;
   final Map<String, Exercise> exercises;
   final VoidCallback onClose;
 
@@ -53,6 +64,10 @@ class WorkoutSummaryView extends StatelessWidget {
       children: [
         if (session.stoppedForPain) ...[
           _Caution(title: l10n.workoutPainTitle, body: l10n.workoutPainBody),
+          const SizedBox(height: AriseSpacing.md),
+        ],
+        if (trialOutcome case final outcome?) ...[
+          _TrialResult(outcome: outcome),
           const SizedBox(height: AriseSpacing.md),
         ],
         SystemWindow(
@@ -99,6 +114,8 @@ class WorkoutSummaryView extends StatelessWidget {
               ),
               if (progress case final progress?)
                 ..._progressLines(l10n, textTheme, progress),
+              if (questOutcome case final outcome?)
+                ..._questLines(l10n, textTheme, outcome),
               const SizedBox(height: AriseSpacing.sm),
               Text(l10n.workoutSummaryProvisional, style: textTheme.bodySmall),
             ],
@@ -197,14 +214,111 @@ List<Widget> _progressLines(
         l10n.progressChest(formatCoins(l10n, progress.chestCoins)),
         style: highlight,
       ),
-    if (progress.penaltyCleared)
-      Text(l10n.progressPenaltyCleared, style: textTheme.bodyLarge),
     if (progress.rankLocked)
       Text(
         l10n.progressRankLocked(l10n.rankName(state.rank.name)),
         style: textTheme.bodyLarge?.copyWith(color: AriseColors.mana),
       ),
   ];
+}
+
+/// Lignes du bilan consacrées aux quêtes.
+List<Widget> _questLines(
+  AppLocalizations l10n,
+  TextTheme textTheme,
+  QuestOutcome outcome,
+) {
+  final highlight = textTheme.titleMedium?.copyWith(
+    color: AriseColors.goldBright,
+  );
+  final reward = outcome.reward;
+  return [
+    const SizedBox(height: AriseSpacing.sm),
+    if (outcome.penaltyCleared)
+      Text(l10n.progressPenaltyCleared, style: textTheme.bodyLarge),
+    if (reward != null)
+      Text(
+        l10n.questRewardEarned(
+          reward.xp,
+          formatCoins(l10n, reward.coins),
+          reward.willpower,
+        ),
+        style: highlight,
+      ),
+    if (outcome.gain case final gain? when gain.levelsGained > 0)
+      Text(l10n.progressLevelUp(outcome.state.level), style: highlight),
+    if (outcome.dayValidated)
+      Text(
+        l10n.questDayValidated(outcome.state.streakDays),
+        style: textTheme.bodyLarge,
+      ),
+    if (!outcome.chest.isZero)
+      Text(
+        l10n.progressChest(formatCoins(l10n, outcome.chest)),
+        style: highlight,
+      ),
+  ];
+}
+
+/// Annonce de l'issue d'une épreuve de rang : victoire (avec une courte
+/// animation d'apparition, coupée si le téléphone limite les animations)
+/// ou défaite sans perte.
+class _TrialResult extends StatelessWidget {
+  const _TrialResult({required this.outcome});
+
+  final TrialOutcome outcome;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final trial = outcome.trial;
+    final boss = bossLabel(l10n, trial);
+    if (!outcome.won) {
+      final retry = outcome.retryAt;
+      return _Caution(
+        body: l10n.trialDefeat(
+          boss,
+          retry == null ? '' : formatTrialMoment(retry),
+        ),
+      );
+    }
+    final window = SystemWindow(
+      header: l10n.systemWindowHeader,
+      title: l10n.trialVictoryTitle,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.trialVictoryBody(boss, nextRankLabel(l10n, trial)),
+            style: textTheme.titleMedium?.copyWith(
+              color: AriseColors.goldBright,
+            ),
+          ),
+          const SizedBox(height: AriseSpacing.sm),
+          Text(
+            l10n.trialTitleEarned(l10n.titleName(trial.titleId)),
+            style: textTheme.bodyLarge,
+          ),
+          Text(
+            l10n.trialItemEarned(rewardItemLabel(l10n, trial.rewardItem)),
+            style: textTheme.bodyLarge,
+          ),
+        ],
+      ),
+    );
+    if (MediaQuery.of(context).disableAnimations) return window;
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 900),
+      curve: Curves.easeOutBack,
+      builder: (context, t, child) => Opacity(
+        opacity: t.clamp(0, 1),
+        child: Transform.scale(scale: 0.7 + 0.3 * t, child: child),
+      ),
+      child: window,
+    );
+  }
 }
 
 /// Encadré de prudence (douleur, dépassement du plafond quotidien).

@@ -98,11 +98,16 @@
 - [x] Teinture
 - [x] Coupes de cheveux verrouillées
 
-## Phase 8 — Quêtes, boss, donjons, classes
-- [ ] Quête quotidienne générée par le moteur de jeu
+## Phase 8A — Quête quotidienne et épreuves de rang (livré)
+- [x] Quête quotidienne générée par le moteur de jeu (catalogue validé, équipement, niveau), progression automatique, récompense et validation du jour
+- [x] Quête de pénalité (moitié de la quête du jour)
+- [x] Épreuves de rang (force, endurance, agilité), conditions d'accès, délai de 48 h
+- [x] Récompenses de boss (rang, titre, objet exclusif teinté, fenêtre de victoire animée)
+- [x] Base v8 et sauvegarde v7 (v6 toujours lisible), migration testée
+- [x] Parcours sur émulateur : quête du jour et page d'épreuve
+
+## Phase 8B — Quêtes hebdomadaires, donjons, classes
 - [ ] Quêtes hebdomadaires et d'événement
-- [ ] Épreuves de rang (force, endurance, agilité), conditions d'accès, délai de 48 h
-- [ ] Récompenses de boss (rang, titre, équipement exclusif, cinématique)
 - [ ] Donjons hebdomadaires
 - [ ] Classes (choix au rang C, changement mensuel)
 

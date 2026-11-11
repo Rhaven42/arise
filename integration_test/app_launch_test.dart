@@ -274,5 +274,20 @@ void main() {
       find.text('Ton inventaire est vide. Passe à la boutique !'),
       findsOneWidget,
     );
+
+    // Phase 8A : quête du jour et épreuve de rang sur la Fenêtre du Système.
+    debugPrint('Parcours : quête du jour');
+    await tester.tap(find.byType(BackButton).first);
+    await _pumpFor(tester, 1200);
+    await _expectVisible(tester, 'Quête du jour');
+    debugPrint('Parcours : épreuve de rang');
+    await _tapWithoutSettle(tester, find.text("Voir l'épreuve"));
+    await _pumpFor(tester, 1500);
+    await _expectVisible(tester, 'Le Gardien du Rocher');
+    await _expectVisible(tester, 'ÉPREUVE DE FORCE');
+    await _expectVisible(
+      tester,
+      'Atteins le niveau 9 pour affronter Le Gardien du Rocher.',
+    );
   }, timeout: const Timeout(Duration(minutes: 8)));
 }

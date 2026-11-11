@@ -276,25 +276,113 @@ class ShadowsConfig {
 }
 
 class TrialsConfig {
-  const TrialsConfig({required this.retryCooldownHours});
+  const TrialsConfig({
+    required this.retryCooldownHours,
+    required this.statRequirementByRank,
+    required this.strengthPushUpsByRank,
+    required this.strengthSquatsByRank,
+    required this.strengthTimeLimitSeconds,
+    required this.enduranceMinutesByRank,
+    required this.agilityRoundsByRank,
+  });
 
   final int retryCooldownHours;
 
-  Map<String, Object> toJson() => {'retryCooldownHours': retryCooldownHours};
+  /// Valeur minimale de la stat de l'épreuve pour l'affronter, par rang
+  /// (E, D, C, B, A, S : le boss du rang E ouvre le rang D).
+  final List<int> statRequirementByRank;
+
+  /// Épreuve de force : pompes et squats à réaliser, par rang.
+  final List<int> strengthPushUpsByRank;
+  final List<int> strengthSquatsByRank;
+
+  /// Épreuve de force : effort actif maximal (repos exclus).
+  final int strengthTimeLimitSeconds;
+
+  /// Épreuve d'endurance : minutes de marche ou de course, par rang.
+  final List<int> enduranceMinutesByRank;
+
+  /// Épreuve d'agilité : rounds du circuit (20 s / 10 s), par rang.
+  final List<int> agilityRoundsByRank;
+
+  Map<String, Object> toJson() => {
+    'retryCooldownHours': retryCooldownHours,
+    'statRequirementByRank': statRequirementByRank,
+    'strengthPushUpsByRank': strengthPushUpsByRank,
+    'strengthSquatsByRank': strengthSquatsByRank,
+    'strengthTimeLimitSeconds': strengthTimeLimitSeconds,
+    'enduranceMinutesByRank': enduranceMinutesByRank,
+    'agilityRoundsByRank': agilityRoundsByRank,
+  };
 }
 
 class QuestsConfig {
   const QuestsConfig({
     required this.dailyObjectivesMin,
     required this.dailyObjectivesMax,
+    required this.repsTargetByFitnessLevel,
+    required this.holdSecondsTargetByFitnessLevel,
+    required this.cardioMinutesTargetByFitnessLevel,
+    required this.growthPerPlayerLevel,
+    required this.maxTargetMultiplier,
+    required this.difficultyTargetFactor,
+    required this.repsRounding,
+    required this.maxRepsPerSet,
+    required this.maxHoldSecondsPerSet,
+    required this.rewardXpBase,
+    required this.rewardXpPerLevel,
+    required this.rewardWillpower,
+    required this.penaltyTargetShare,
   });
 
   final int dailyObjectivesMin;
   final int dailyObjectivesMax;
 
+  /// Objectifs de base selon le niveau du questionnaire (débutant,
+  /// intermédiaire, avancé).
+  final List<int> repsTargetByFitnessLevel;
+  final List<int> holdSecondsTargetByFitnessLevel;
+  final List<int> cardioMinutesTargetByFitnessLevel;
+
+  /// Hausse des objectifs par niveau du joueur, plafonnée.
+  final double growthPerPlayerLevel;
+  final double maxTargetMultiplier;
+
+  /// Réduction des objectifs selon la difficulté de l'exercice (1 à 3).
+  final List<double> difficultyTargetFactor;
+
+  /// Les répétitions sont arrondies à ce multiple.
+  final int repsRounding;
+
+  /// Découpage en séries de la séance proposée pour la quête.
+  final int maxRepsPerSet;
+  final int maxHoldSecondsPerSet;
+
+  /// Récompense de la quête quotidienne : XP (base + par niveau), payée
+  /// aussi en bronze (1 pour 1), et Volonté.
+  final int rewardXpBase;
+  final int rewardXpPerLevel;
+  final int rewardWillpower;
+
+  /// Part des objectifs du jour demandée par la quête de pénalité.
+  final double penaltyTargetShare;
+
   Map<String, Object> toJson() => {
     'dailyObjectivesMin': dailyObjectivesMin,
     'dailyObjectivesMax': dailyObjectivesMax,
+    'repsTargetByFitnessLevel': repsTargetByFitnessLevel,
+    'holdSecondsTargetByFitnessLevel': holdSecondsTargetByFitnessLevel,
+    'cardioMinutesTargetByFitnessLevel': cardioMinutesTargetByFitnessLevel,
+    'growthPerPlayerLevel': growthPerPlayerLevel,
+    'maxTargetMultiplier': maxTargetMultiplier,
+    'difficultyTargetFactor': difficultyTargetFactor,
+    'repsRounding': repsRounding,
+    'maxRepsPerSet': maxRepsPerSet,
+    'maxHoldSecondsPerSet': maxHoldSecondsPerSet,
+    'rewardXpBase': rewardXpBase,
+    'rewardXpPerLevel': rewardXpPerLevel,
+    'rewardWillpower': rewardWillpower,
+    'penaltyTargetShare': penaltyTargetShare,
   };
 }
 
@@ -623,8 +711,32 @@ const gameConfig = GameConfig(
     maxActiveNecromancer: 7,
     necromancerBonusMultiplier: 2,
   ),
-  trials: TrialsConfig(retryCooldownHours: 48),
-  quests: QuestsConfig(dailyObjectivesMin: 3, dailyObjectivesMax: 4),
+  trials: TrialsConfig(
+    retryCooldownHours: 48,
+    statRequirementByRank: [10, 20, 30, 45, 60, 80],
+    strengthPushUpsByRank: [20, 30, 40, 50, 60, 75],
+    strengthSquatsByRank: [30, 45, 60, 75, 90, 110],
+    strengthTimeLimitSeconds: 600,
+    enduranceMinutesByRank: [20, 15, 20, 25, 30, 40],
+    agilityRoundsByRank: [8, 10, 12, 14, 16, 20],
+  ),
+  quests: QuestsConfig(
+    dailyObjectivesMin: 3,
+    dailyObjectivesMax: 4,
+    repsTargetByFitnessLevel: [20, 30, 40],
+    holdSecondsTargetByFitnessLevel: [45, 60, 90],
+    cardioMinutesTargetByFitnessLevel: [10, 15, 20],
+    growthPerPlayerLevel: 0.02,
+    maxTargetMultiplier: 2,
+    difficultyTargetFactor: [1, 0.75, 0.5],
+    repsRounding: 5,
+    maxRepsPerSet: 15,
+    maxHoldSecondsPerSet: 60,
+    rewardXpBase: 30,
+    rewardXpPerLevel: 2,
+    rewardWillpower: 1,
+    penaltyTargetShare: 0.5,
+  ),
   character: CharacterConfig(
     usernameMinLength: 3,
     usernameMaxLength: 16,
@@ -724,5 +836,21 @@ const gameConfig = GameConfig(
     'streaks.shieldEveryDays',
     'classes.changeCooldownDays',
     'balance.imbalanceRatio',
+    'trials.statRequirementByRank',
+    'trials.strengthPushUpsByRank',
+    'trials.strengthSquatsByRank',
+    'trials.strengthTimeLimitSeconds',
+    'trials.enduranceMinutesByRank',
+    'trials.agilityRoundsByRank',
+    'quests.repsTargetByFitnessLevel',
+    'quests.holdSecondsTargetByFitnessLevel',
+    'quests.cardioMinutesTargetByFitnessLevel',
+    'quests.growthPerPlayerLevel',
+    'quests.maxTargetMultiplier',
+    'quests.difficultyTargetFactor',
+    'quests.rewardXpBase',
+    'quests.rewardXpPerLevel',
+    'quests.rewardWillpower',
+    'quests.penaltyTargetShare',
   ],
 );

@@ -94,7 +94,6 @@ class SessionProgress {
     required this.statPointsGained,
     required this.dayValidated,
     required this.chestCoins,
-    required this.penaltyCleared,
     required this.rankLocked,
   });
 
@@ -122,9 +121,6 @@ class SessionProgress {
   /// Total des pièces gagnées.
   Coins get coinsGained => sessionCoins + levelCoins + chestCoins;
 
-  /// Vrai si la séance accomplit la quête de pénalité.
-  final bool penaltyCleared;
-
   /// Vrai si l'XP est bloquée en attendant le boss du rang.
   final bool rankLocked;
 }
@@ -135,7 +131,8 @@ class SessionProgress {
 ///   ce jour) et par le malus de la Zone de Pénalité s'il est actif.
 /// - Une séance complète valide le jour, sauf un jour de repos déclaré ou en
 ///   mode maladie (jours neutres) ; la Volonté progresse avec la série.
-/// - Terminer une séance pendant le malus accomplit la quête de pénalité.
+/// - Le malus de la Zone de Pénalité est levé par la quête de pénalité
+///   (`features/quests`), plus par une simple séance (SPEC §30).
 SessionProgress applySession(
   ProgressionState state, {
   required int baseXp,
@@ -176,30 +173,10 @@ SessionProgress applySession(
   final gain = addXp(next, xp, config: config);
   next = gain.state;
 
-  final neutralDay = restDays.contains(day.weekday) || state.isSickOn(day);
-  final validates = completed && !neutralDay && state.lastValidatedDay != day;
-  var chest = Coins.zero;
-  if (validates) {
-    final streak = state.streakDays + 1;
-    final milestone = config.streaks.chestMilestonesDays.indexOf(streak);
-    if (milestone >= 0) {
-      chest = Coins.of(
-        silver: config.streaks.chestSilver[milestone],
-        config: config.coins,
-      );
-    }
-    next = next.copyWith(
-      streakDays: streak,
-      bestStreak: streak > next.bestStreak ? streak : next.bestStreak,
-      lastValidatedDay: day,
-      willpowerEarned:
-          next.willpowerEarned + config.streaks.willpowerPerStreakDay,
-      coins: next.coins + chest.bronzeTotal,
-    );
-  }
-
-  final penaltyCleared = penalty && completed;
-  if (penaltyCleared) next = next.copyWith(penaltyUntil: null);
+  final validation = completed
+      ? validateDay(next, day: day, restDays: restDays, config: config)
+      : null;
+  if (validation != null) next = validation.state;
 
   return SessionProgress(
     state: next,
@@ -210,10 +187,46 @@ SessionProgress applySession(
     sessionCoins: effortCoins,
     levelCoins: gain.levelCoins,
     statPointsGained: gain.statPointsGained,
-    dayValidated: validates,
-    chestCoins: chest,
-    penaltyCleared: penaltyCleared,
+    dayValidated: validation != null,
+    chestCoins: validation?.chest ?? Coins.zero,
     rankLocked: next.isRankLocked && next.xpInLevel >= next.xpForNextLevel,
+  );
+}
+
+/// Résultat de la validation d'un jour.
+typedef DayValidation = ({ProgressionState state, Coins chest});
+
+/// Valide [day] (séance complète ou quête quotidienne terminée) : la série
+/// s'allonge, la Volonté progresse et un coffre est offert aux paliers.
+///
+/// Renvoie `null` si le jour est neutre (repos déclaré, maladie) ou déjà
+/// validé.
+DayValidation? validateDay(
+  ProgressionState state, {
+  required CivilDate day,
+  required Set<int> restDays,
+  GameConfig config = gameConfig,
+}) {
+  final neutral = restDays.contains(day.weekday) || state.isSickOn(day);
+  if (neutral || state.lastValidatedDay == day) return null;
+  final streak = state.streakDays + 1;
+  final milestone = config.streaks.chestMilestonesDays.indexOf(streak);
+  final chest = milestone < 0
+      ? Coins.zero
+      : Coins.of(
+          silver: config.streaks.chestSilver[milestone],
+          config: config.coins,
+        );
+  return (
+    state: state.copyWith(
+      streakDays: streak,
+      bestStreak: streak > state.bestStreak ? streak : state.bestStreak,
+      lastValidatedDay: day,
+      willpowerEarned:
+          state.willpowerEarned + config.streaks.willpowerPerStreakDay,
+      coins: state.coins + chest.bronzeTotal,
+    ),
+    chest: chest,
   );
 }
 

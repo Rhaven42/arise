@@ -112,7 +112,7 @@ class InventoryPage extends ConsumerWidget {
     final sheet = ref.watch(savedCharacterProvider).value;
     final controller = ref.read(inventoryControllerProvider.notifier);
     final owned = [
-      for (final item in equipmentCatalog)
+      for (final item in [...equipmentCatalog, ...bossRewardItems])
         if (inventory.owned.contains(item.id)) item,
     ];
     return Scaffold(

@@ -22,7 +22,7 @@ void main() {
       profile: sampleProfile,
       inventory: _bag,
     );
-    expect(data.version, 6);
+    expect(data.version, BackupCodec.currentVersion);
     expect(BackupCodec.decode(BackupCodec.encode(data)), data);
   });
 
