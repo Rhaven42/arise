@@ -271,9 +271,11 @@ class _TryOnView extends ConsumerWidget {
             ),
           ),
           Expanded(
-            child: ref
-                .watch(characterRendererProvider)
-                .build(appearance: appearance),
+            child: _AfterRouteTransition(
+              child: ref
+                  .watch(characterRendererProvider)
+                  .build(appearance: appearance),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(AriseSpacing.md),
@@ -285,6 +287,57 @@ class _TryOnView extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Affiche [child] une fois la page arrivée à l'écran.
+///
+/// La vue 3D est une vue web native : créée pendant que la page glisse
+/// depuis le bas (hors de l'écran), elle peut rester en sommeil et ne
+/// jamais dessiner. On attend donc la fin de la transition.
+class _AfterRouteTransition extends StatefulWidget {
+  const _AfterRouteTransition({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_AfterRouteTransition> createState() => _AfterRouteTransitionState();
+}
+
+class _AfterRouteTransitionState extends State<_AfterRouteTransition> {
+  Animation<double>? _animation;
+  bool _arrived = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final animation = ModalRoute.of(context)?.animation;
+    if (animation == _animation) return;
+    _animation?.removeStatusListener(_onStatus);
+    _animation = animation;
+    if (animation == null || animation.isCompleted) {
+      _arrived = true;
+    } else {
+      animation.addStatusListener(_onStatus);
+    }
+  }
+
+  void _onStatus(AnimationStatus status) {
+    if (status.isCompleted && mounted) setState(() => _arrived = true);
+  }
+
+  @override
+  void dispose() {
+    _animation?.removeStatusListener(_onStatus);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_arrived) return widget.child;
+    return Center(
+      child: Text(AppLocalizations.of(context).characterPreviewLoading),
     );
   }
 }
