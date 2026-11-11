@@ -81,10 +81,13 @@ class _ShopPageState extends ConsumerState<ShopPage> {
     CharacterSheet sheet,
     Inventory inventory,
   ) {
-    return showDialog<void>(
-      context: context,
-      builder: (context) => Dialog.fullscreen(
-        child: _TryOnView(article: article, sheet: sheet, inventory: inventory),
+    // Page plein écran (et non une fenêtre superposée) : la vue 3D est une
+    // vue native, qui s'affiche mal dans une route transparente.
+    return Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) =>
+            _TryOnView(article: article, sheet: sheet, inventory: inventory),
       ),
     );
   }
