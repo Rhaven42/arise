@@ -133,6 +133,10 @@ class _SystemHomeBody extends ConsumerWidget {
           state: state,
           onAllocate: (stat) => unawaited(controller.allocate(stat)),
         ),
+        if (state.rank.index >= gameConfig.classes.unlockRank.index) ...[
+          const SizedBox(height: AriseSpacing.lg),
+          _ClassPanel(state: state),
+        ],
         const SizedBox(height: AriseSpacing.lg),
         _StreakPanel(state: state),
         for (final panel in panels) ...[
@@ -347,6 +351,50 @@ class _StatsPanel extends StatelessWidget {
                   const SizedBox(height: AriseSpacing.minTouchTarget),
               ],
             ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Classe du chasseur (à partir du rang C).
+class _ClassPanel extends StatelessWidget {
+  const _ClassPanel({required this.state});
+
+  static const openKey = Key('class-open');
+
+  final ProgressionState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final heroClass = state.heroClass;
+    return StoneFrame(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            heroClass == null
+                ? l10n.classNone
+                : l10n.classCurrent(l10n.className(heroClass.name)),
+            style: textTheme.titleMedium?.copyWith(color: AriseColors.gold),
+          ),
+          if (heroClass != null)
+            Text(
+              l10n.classDescription(heroClass.name),
+              style: textTheme.bodyMedium,
+            ),
+          const SizedBox(height: AriseSpacing.sm),
+          AriseButton(
+            key: openKey,
+            label: l10n.classChoose,
+            icon: Icons.auto_awesome,
+            variant: heroClass == null
+                ? AriseButtonVariant.primary
+                : AriseButtonVariant.secondary,
+            onPressed: () => context.go(AppRoutes.heroClass),
+          ),
         ],
       ),
     );

@@ -16,6 +16,7 @@ import 'package:arise/features/planning/presentation/program_editor_page.dart';
 import 'package:arise/features/planning/presentation/programs_page.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
+import 'package:arise/features/progression/presentation/hero_class_page.dart';
 import 'package:arise/features/progression/presentation/system_home_page.dart';
 import 'package:arise/features/quests/presentation/quest_panel.dart';
 import 'package:arise/features/settings/presentation/settings_page.dart';
@@ -139,6 +140,10 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
             path: AppRoutes.inventorySegment,
             builder: (_, _) => const InventoryPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.heroClassSegment,
+            builder: (_, _) => const HeroClassPage(),
           ),
           GoRoute(
             path: AppRoutes.trialSegment,

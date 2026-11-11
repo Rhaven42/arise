@@ -189,6 +189,11 @@ List<Widget> _progressLines(
       ),
     if (progress.multiplier < 1)
       Text(l10n.progressPenaltyMalus, style: textTheme.bodyLarge),
+    if (progress.classXp > 0)
+      Text(
+        l10n.progressClassBonus(progress.classXp),
+        style: textTheme.bodyLarge,
+      ),
     if (!progress.sessionCoins.isZero)
       Text(
         l10n.progressSessionCoins(formatCoins(l10n, progress.sessionCoins)),

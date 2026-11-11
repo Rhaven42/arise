@@ -1769,5 +1769,74 @@
       }
     }
   },
-  "trialContinue": "Continuer"
+  "trialContinue": "Continuer",
+  "className": "{heroClass, select, berserker{Berserker} ranger{Ranger} assassin{Assassin} tank{Tank} necromancer{Nécromancien} other{?}}",
+  "@className": {
+    "placeholders": {
+      "heroClass": {
+        "type": "String"
+      }
+    }
+  },
+  "classDescription": "{heroClass, select, berserker{+15 % d'XP sur la Force : pompes, squats, charges.} ranger{+15 % d'XP sur l'Endurance : marche, course, vélo, HIIT.} assassin{+15 % d'XP sur l'Agilité : coordination, jumping jacks.} tank{+15 % d'XP sur la Vitalité : gainage et isométrie.} necromancer{+5 % d'XP partout. Ses Ombres seront plus nombreuses et plus fortes (phase 9).} other{}}",
+  "@classDescription": {
+    "placeholders": {
+      "heroClass": {
+        "type": "String"
+      }
+    }
+  },
+  "classTitle": "Classe",
+  "classPageIntro": "Ta classe oriente ta progression. Tu pourras en changer une fois par mois.",
+  "classCurrent": "Classe actuelle : {name}",
+  "@classCurrent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "classNone": "Aucune classe choisie.",
+  "classLocked": "Les classes se débloquent au rang C.",
+  "classChoose": "Choisir une classe",
+  "classSelect": "Devenir {name}",
+  "@classSelect": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "classChosen": "Tu es désormais {name}.",
+  "@classChosen": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "classCooldown": "Prochain changement possible le {date}.",
+  "@classCooldown": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "classChoiceIssue": "{issue, select, rankTooLow{Les classes se débloquent au rang C.} cooldown{Tu as changé de classe il y a moins d'un mois.} sameClass{C'est déjà ta classe.} other{Choix impossible.}}",
+  "@classChoiceIssue": {
+    "placeholders": {
+      "issue": {
+        "type": "String"
+      }
+    }
+  },
+  "progressClassBonus": "Bonus de classe : +{xp} XP de base",
+  "@progressClassBonus": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  }
 }
