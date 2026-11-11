@@ -13,7 +13,8 @@ bin="$(dirname "$0")/../viewer/node_modules/.bin/gltf-transform"
 tmp="$(mktemp -d)"
 for file in "$src"/*.glb; do
   name="$(basename "$file")"
-  "$bin" webp "$file" "$tmp/$name" --quality 85
+  node "$(dirname "$0")/../viewer/trim_clips.mjs" "$file" "$tmp/trim_$name"
+  "$bin" webp "$tmp/trim_$name" "$tmp/$name" --quality 85
   "$bin" meshopt "$tmp/$name" "$dst/$name"
 done
 rm -rf "$tmp"

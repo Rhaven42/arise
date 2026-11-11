@@ -28,7 +28,7 @@ import os
 
 import bpy  # avant bmesh : le module bpy de PyPI rend bmesh importable
 import bmesh
-from mathutils import Quaternion, Vector
+from mathutils import Matrix, Quaternion, Vector
 
 def _mpfb_prefix():
     """Paquet de services MPFB (installé depuis le site ou depuis un fichier)."""
@@ -1020,6 +1020,274 @@ def _make_actions(arm):
     return actions
 
 
+# --- Démonstration des exercices (3D) -----------------------------------------
+#
+# Les mouvements 2D de assets/animations/motions.json (angles des segments,
+# articulation ancrée au sol, durée des transitions) sont reportés sur le
+# squelette : chaque os prend la direction du segment correspondant, puis le
+# corps est replacé pour que l'articulation d'ancrage reste à sa place. Une
+# animation `ex_<mouvement>` par mouvement, en boucle.
+
+# Chemin du fichier des mouvements : variable ARISE_MOTIONS, sinon à côté du
+# script (lancement direct) ou dans le dossier courant (dépôt).
+def _motions_path():
+    path = os.environ.get("ARISE_MOTIONS")
+    if path:
+        return path
+    here = globals().get("__file__")
+    base = os.path.join(os.path.dirname(os.path.abspath(here)), "..", "..") if here else os.getcwd()
+    return os.path.join(base, "assets", "animations", "motions.json")
+
+MOTION_DEFAULT = dict(t=180, ua_n=0, fa_n=0, ua_f=0, fa_f=0, th_n=0, sh_n=0, th_f=0, sh_f=0, ft_n=90, ft_f=90)
+MOTION_FPS = 24
+MOTION_STEPS = 6  # poses intermédiaires calculées par transition
+
+# Segment 2D → os (côté proche « n » = gauche, côté lointain « f » = droit).
+MOTION_BONES = [
+    ("t", "pelvis"),
+    ("th_n", "thigh_l"), ("sh_n", "calf_l"), ("ft_n", "foot_l"),
+    ("th_f", "thigh_r"), ("sh_f", "calf_r"), ("ft_f", "foot_r"),
+    ("ua_n", "upperarm_l"), ("fa_n", "lowerarm_l"),
+    ("ua_f", "upperarm_r"), ("fa_f", "lowerarm_r"),
+]
+MOTION_ANCHORS = {
+    "root": ("thigh_l", "thigh_r"),
+    "neck": ("neck_01",),
+    "ankle_n": ("foot_l",),
+    "toe_n": ("ball_l",),
+    "hand_n": ("hand_l",),
+}
+
+
+def _motion_direction(angle, view):
+    """Direction 3D d'un segment 2D (angle en degrés, 0 = vers le bas, 180 =
+    vers le haut). De profil, l'avant du personnage est -Y ; de face, les
+    angles positifs vont vers le côté gauche du personnage (+X)."""
+    r = math.radians(angle)
+    if view == "side":
+        return Vector((0.0, -math.sin(r), -math.cos(r)))
+    return Vector((math.sin(r), 0.0, -math.cos(r)))
+
+
+def _motion_pose(arm, angles, view):
+    """Oriente les os du squelette selon les angles d'une pose 2D."""
+    for key, bone in MOTION_BONES:
+        side = None if key == "t" else key[-1]
+        angle = angles[key]
+        if view == "front":
+            if key.startswith("ft"):
+                continue
+            # De face, les angles du côté lointain sont en miroir (motions.py).
+            if side == "f":
+                angle = -angle
+        target = _motion_direction(angle, view)
+        pb = arm.pose.bones[bone]
+        bpy.context.view_layer.update()
+        head, tail = pb.head.copy(), pb.tail.copy()
+        current = (tail - head).normalized()
+        rot = current.rotation_difference(target.normalized()).to_matrix().to_4x4()
+        pb.matrix = Matrix.Translation(head) @ rot @ Matrix.Translation(-head) @ pb.matrix
+    bpy.context.view_layer.update()
+
+
+# Figure 2D (mêmes longueurs que tool/motions.py) : sert à repérer les appuis
+# au sol de chaque pose.
+FIGURE = dict(torso=0.55, upper_arm=0.30, forearm=0.27, thigh=0.45, shin=0.43, foot=0.13)
+FIGURE_SHOULDER_AT = 0.92
+
+
+def _figure_joints(angles, root):
+    """Articulations de la figure 2D (y vers le bas, comme motions.py)."""
+    def add(p, a, length):
+        r = math.radians(a)
+        return (p[0] + math.sin(r) * length, p[1] + math.cos(r) * length)
+
+    sh = add(root, angles["t"], FIGURE["torso"] * FIGURE_SHOULDER_AT)
+    elbow = add(sh, angles["ua_n"], FIGURE["upper_arm"])
+    joints = {"hand_n": add(elbow, angles["fa_n"], FIGURE["forearm"])}
+    for side in ("n", "f"):
+        knee = add(root, angles["th_" + side], FIGURE["thigh"])
+        ankle = add(knee, angles["sh_" + side], FIGURE["shin"])
+        joints["knee_" + side] = knee
+        joints["ankle_" + side] = ankle
+        joints["toe_" + side] = add(ankle, angles["ft_" + side], FIGURE["foot"])
+    return joints
+
+
+# Points de contact 3D (os, hauteur de l'articulation au-dessus du sol).
+CONTACTS = {
+    "hand_n": ("hand_l", 0.035),
+    "knee_n": ("calf_l", 0.06),
+    "knee_f": ("calf_r", 0.06),
+    "toe_n": ("ball_l", 0.025),
+    "toe_f": ("ball_r", 0.025),
+}
+
+
+def _ground_contacts(angles, root, anchor):
+    """Second appui au sol d'une pose de profil au sol (ancrage mains ou
+    pointes de pieds) : l'articulation loin de l'ancrage la plus proche du
+    niveau du sol."""
+    if anchor not in ("hand_n", "toe_n"):
+        return []
+    joints = _figure_joints(angles, root)
+    ax, ay = joints[anchor]
+    near = [
+        name for name, (x, y) in joints.items()
+        if name in CONTACTS and name != anchor and abs(x - ax) > 0.3 and abs(y - ay) < 0.12
+    ]
+    return sorted(near, key=lambda n: abs(joints[n][1] - ay))[:1]
+
+
+def _flatten_hands(arm, forward):
+    """Mains à plat au sol, doigts vers l'avant."""
+    for name in ("hand_l", "hand_r"):
+        pb = arm.pose.bones[name]
+        bpy.context.view_layer.update()
+        head = pb.head.copy()
+        current = (pb.tail - head).normalized()
+        rot = current.rotation_difference(forward).to_matrix().to_4x4()
+        pb.matrix = Matrix.Translation(head) @ rot @ Matrix.Translation(-head) @ pb.matrix
+    bpy.context.view_layer.update()
+
+
+def _anchor_point(arm, anchor):
+    points = [arm.pose.bones[b].head for b in MOTION_ANCHORS[anchor]]
+    return sum(points, Vector()) / len(points)
+
+
+def _motion_frames(motion):
+    """Poses (angles, ancrage, cible) échantillonnées sur le cycle, avec le
+    même lissage que la figure 2D, et leur instant en secondes."""
+    keys = motion["keys"]
+    total = sum(k["hold"] for k in keys)
+    frames = []
+    t = 0.0
+    for i, key in enumerate(keys):
+        nxt = keys[(i + 1) % len(keys)]
+        a = {**MOTION_DEFAULT, **key["angles"]}
+        b = {**MOTION_DEFAULT, **nxt["angles"]}
+        steps = MOTION_STEPS if key["hold"] > 0 and len(keys) > 1 else 1
+        for step in range(steps):
+            u = step / steps
+            k = u * u * (3 - 2 * u)
+            angles = {n: a[n] + (b[n] - a[n]) * k for n in a}
+            target = [key["target"][c] + (nxt["target"][c] - key["target"][c]) * k for c in (0, 1)]
+            root = [key["root"][c] + (nxt["root"][c] - key["root"][c]) * k for c in (0, 1)]
+            frames.append((t + key["hold"] * u, angles, key["anchor"], target, root))
+        t += key["hold"]
+    return frames, total
+
+
+def _is_rest(pb):
+    """Os laissé dans sa position de repos."""
+    q = pb.rotation_quaternion
+    return abs(q.w) > 0.99999 and pb.location.length < 1e-6
+
+
+# Os qui délimitent la silhouette pendant un mouvement.
+EXTENT_BONES = ("head", "hand_l", "hand_r", "foot_l", "foot_r", "pelvis")
+
+
+def _exercise_actions(arm):
+    """Une animation par mouvement d'exercice (`ex_<id>`), en boucle."""
+    import json
+
+    with open(_motions_path(), encoding="utf-8") as f:
+        motions = json.load(f)
+    bones = arm.pose.bones
+    _reset_pose(arm)
+    bpy.context.view_layer.update()
+    # Échelle 2D → 3D : longueur de la jambe (cuisse + jambe).
+    leg = (bones["thigh_l"].tail - bones["thigh_l"].head).length + (bones["calf_l"].tail - bones["calf_l"].head).length
+    scale = leg / 0.88
+    rest = {a: _anchor_point(arm, a) for a in MOTION_ANCHORS}
+    floor_z = rest["ankle_n"].z
+    actions = []
+    for name, motion in motions.items():
+        view = motion["view"]
+        action = bpy.data.actions.new("ex_" + name)
+        arm.animation_data.action = action
+        frames, total = _motion_frames(motion)
+        samples = frames + [(total, *frames[0][1:])]
+        root2d = {f[0]: f[4] for f in samples}
+        def place(seconds, angles, anchor, target):
+            _reset_pose(arm)
+            _motion_pose(arm, angles, view)
+            # Le corps est replacé : l'articulation d'ancrage va à sa cible
+            # (cible 2D (0, 0) = sol pour les pieds, position de repos sinon).
+            point = _anchor_point(arm, anchor)
+            base = rest[anchor]
+            goal = Vector((
+                base.x if view == "side" else base.x + target[0] * scale,
+                -target[0] * scale if view == "side" else base.y,
+                (floor_z if anchor in ("ankle_n", "toe_n", "hand_n") else base.z) - target[1] * scale,
+            ))
+            if anchor in ("toe_n", "hand_n"):
+                goal.z = floor_z - 0.06 - target[1] * scale
+            delta = goal - point
+            root = bones["Root"]
+            root.matrix = Matrix.Translation(delta) @ root.matrix
+            bpy.context.view_layer.update()
+            # Exercices au sol : le corps bascule autour de l'ancrage jusqu'à
+            # ce que le second appui (mains, pieds, genoux) touche le sol.
+            if view == "side":
+                contacts = _ground_contacts(angles, root2d[seconds], anchor)
+                if contacts:
+                    bone, lift = CONTACTS[contacts[0]]
+                    pivot = _anchor_point(arm, anchor)
+                    c = arm.pose.bones[bone].head
+                    v = c - pivot
+                    floor_c = floor_z - 0.06 + lift
+                    length = math.hypot(v.y, v.z)
+                    if length > 1e-4 and abs(floor_c - pivot.z) < length:
+                        phi = math.atan2(v.z, v.y)
+                        want = math.asin((floor_c - pivot.z) / length)
+                        if v.y < 0:
+                            want = math.pi - want
+                        theta = want - phi
+                        theta = (theta + math.pi) % (2 * math.pi) - math.pi
+                        rot = Matrix.Rotation(theta, 4, "X")
+                        root.matrix = Matrix.Translation(pivot) @ rot @ Matrix.Translation(-pivot) @ root.matrix
+                        bpy.context.view_layer.update()
+                if anchor == "hand_n" or contacts[:1] == ["hand_n"]:
+                    _flatten_hands(arm, Vector((0, -1, -0.12)).normalized())
+
+        # Première passe : étendue du mouvement d'avant en arrière, pour le
+        # centrer devant la caméra.
+        ys = []
+        moved = {"Root"}
+        for seconds, angles, anchor, target, _ in samples:
+            place(seconds, angles, anchor, target)
+            ys += [bones[b].head.y for b in EXTENT_BONES]
+            ys += [bones[b].tail.y for b in EXTENT_BONES]
+            moved |= {pb.name for pb in bones if not _is_rest(pb)}
+        shift = Vector((0, -(min(ys) + max(ys)) / 2, 0)) if view == "side" else Vector()
+        for seconds, angles, anchor, target, _ in samples:
+            place(seconds, angles, anchor, target)
+            root = bones["Root"]
+            root.matrix = Matrix.Translation(shift) @ root.matrix
+            bpy.context.view_layer.update()
+            frame = 1 + round(seconds * MOTION_FPS)
+            # Seuls les os qui bougent sont animés (taille du fichier) ; le
+            # visualiseur remet le squelette au repos avant de jouer le clip.
+            for pb in bones:
+                if pb.name in moved:
+                    pb.keyframe_insert("rotation_quaternion", frame=frame)
+                    if pb.name == "Root":
+                        pb.keyframe_insert("location", frame=frame)
+        action.use_fake_user = True
+        actions.append(action)
+    _reset_pose(arm)
+    arm.animation_data.action = None
+    for action in actions:
+        track = arm.animation_data.nla_tracks.new()
+        track.name = action.name
+        track.strips.new(action.name, 1, action)
+        track.mute = True
+    return actions
+
+
 def _rig_and_skin(sex, race, objects, rigid):
     """Ajoute le squelette MPFB « game_engine » et les poids de peau."""
     hs = _services()
@@ -1062,6 +1330,7 @@ def _rig_and_skin(sex, race, objects, rigid):
         obj.parent = arm
     bpy.data.objects.remove(source, do_unlink=True)
     _make_actions(arm)
+    _exercise_actions(arm)
     return arm
 
 

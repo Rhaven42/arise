@@ -70,10 +70,19 @@ let focusAnim = null;
 function setFocus(name, top) {
   const h = top > 0.5 ? top : 1.8;
   const face = name === 'face';
-  const target = new THREE.Vector3(0, face ? h * 0.93 : h * 0.53, 0);
-  const position = face
+  let target = new THREE.Vector3(0, face ? h * 0.93 : h * 0.53, 0);
+  let position = face
     ? new THREE.Vector3(0, h * 0.94, 1.0)
     : new THREE.Vector3(0, h * 0.56, h * 2.3);
+  if (name === 'exercise_side') {
+    // Profil (côté gauche du personnage), assez large pour les exercices au
+    // sol (planche, pompes) : le personnage regarde vers la gauche.
+    target = new THREE.Vector3(0, h * 0.42, 0);
+    position = new THREE.Vector3(h * 2.7, h * 0.6, 0);
+  } else if (name === 'exercise_front') {
+    target = new THREE.Vector3(0, h * 0.5, 0);
+    position = new THREE.Vector3(0, h * 0.58, h * 2.6);
+  }
   focusAnim = {
     t: 0,
     fromT: controls.target.clone(),
@@ -167,12 +176,13 @@ function buildRig(gltf) {
     THREE.AnimationUtils.makeClipAdditive(copy, 0, rest);
     return copy;
   };
-  const rig = { mixer, clips, pose: null };
+  const rig = { mixer, clips, pose: null, root: gltf.scene };
   const breath = additive('breath');
   if (breath) {
     const action = mixer.clipAction(breath);
     action.blendMode = THREE.AdditiveAnimationBlendMode;
     action.setLoop(THREE.LoopRepeat, Infinity).play();
+    rig.breathAction = action;
   }
   return rig;
 }
@@ -190,6 +200,37 @@ function setPose(rig, poseName) {
 }
 
 const LASHES = new THREE.Color('#1c1410');
+
+// Démonstration d'exercice : clip `ex_<mouvement>` en boucle, à la place de
+// la pose détendue et de la respiration ; sinon pose détendue.
+function setMotion(rig, motion) {
+  const clip = motion ? rig.clips['ex_' + motion] : null;
+  if (rig.motion === (clip ? clip.name : null) && rig.motionSet) return;
+  rig.motionSet = true;
+  rig.motion = clip ? clip.name : null;
+  if (rig.exerciseAction) {
+    rig.exerciseAction.stop();
+    rig.exerciseAction = null;
+  }
+  if (clip) {
+    if (rig.poseAction) rig.poseAction.stop();
+    if (rig.breathAction) rig.breathAction.stop();
+    rig.pose = null;
+    rig.poseAction = null;
+    // Le clip n'anime que les os qui bougent : les autres reviennent au repos.
+    let skeleton = null;
+    rig.root.traverse((o) => {
+      if (!skeleton && o.isSkinnedMesh) skeleton = o.skeleton;
+    });
+    if (skeleton) skeleton.pose();
+    const action = rig.mixer.clipAction(clip);
+    action.reset().setLoop(THREE.LoopRepeat, Infinity).play();
+    rig.exerciseAction = action;
+  } else {
+    if (rig.breathAction) rig.breathAction.reset().play();
+    setPose(rig, 'pose_relaxed');
+  }
+}
 
 function applyState(state) {
   const model = models.get(state.model);
@@ -244,17 +285,16 @@ function applyState(state) {
     }
   });
   const rig = rigs.get(state.model);
-  if (rig) setPose(rig, 'pose_relaxed');
+  if (rig) setMotion(rig, state.motion || null);
   setLighting(state.lighting);
-  const focus = state.focus || 'body';
+  const focus = state.motion ? 'exercise_' + (state.view || 'side') : (state.focus || 'body');
   if (focus !== currentFocus || model !== focusModel || state.scale !== focusScale) {
     currentFocus = focus;
     focusModel = model;
     focusScale = state.scale;
-    model.updateMatrixWorld(true);
-    // Hauteur du corps seul : les pièces masquées (bâton…) ne comptent pas.
-    const body = model.getObjectByName('body') || model;
-    setFocus(focus, new THREE.Box3().setFromObject(body).max.y);
+    // Hauteur du corps seul (les pièces masquées, bâton…, ne comptent pas),
+    // à l'échelle choisie.
+    setFocus(focus, model.userData.top * (state.scale || 1));
   }
   return true;
 }
@@ -283,6 +323,11 @@ window.arise = {
       '',
       (gltf) => {
         prepareMaterials(gltf.scene);
+        // Hauteur du corps au repos (avant toute animation) : le cadrage ne
+        // suit pas les mouvements d'exercice.
+        gltf.scene.updateMatrixWorld(true);
+        const body = gltf.scene.getObjectByName('body') || gltf.scene;
+        gltf.scene.userData.top = new THREE.Box3().setFromObject(body).max.y;
         models.set(id, gltf.scene);
         rigs.set(id, buildRig(gltf));
         post('loaded', { id });
