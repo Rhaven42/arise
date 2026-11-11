@@ -114,10 +114,10 @@
 - [x] Sauvegarde v8 (v7 toujours lisible)
 
 ## Phase 9 — Hauts faits, titres, auras, Ombres
-- [ ] 60 hauts faits (7 catégories, dont secrets)
-- [ ] Titres équipables
-- [ ] Auras cosmétiques
-- [ ] Ombres (extraction rang B+, bonus passif, limites 5/7)
+- [x] 60 hauts faits (7 catégories, dont secrets) — 63 hauts faits, SPEC §34
+- [x] Titres équipables
+- [x] Auras cosmétiques
+- [x] Ombres (extraction rang B+, bonus passif, limites 5/7)
 
 ## Phase 10 — ~~Coach caméra~~ (retiré du MVP, SPEC §21)
 

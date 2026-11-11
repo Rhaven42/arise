@@ -399,3 +399,12 @@ Demande de la propriétaire du projet : tenues, coiffures et barbes plus réalis
 3. **Plaques forgées** : plastron, épaulières, tassette et jambières lissées pour perdre les formes du corps.
 4. **Bâton de Braise** : hampe de bois, bague dorée, orbe incandescent ; épée d'apparat en acier, or et cuir.
 5. Vignettes de la boutique refaites ; crédits CC BY complétés (Paramètres → Crédits). Modèles de 4,8 à 6 Mo.
+
+## 34. Décisions de la phase 9 (11/11/2026)
+1. **Hauts faits** : 63 hauts faits en 7 catégories (régularité, volume, statistiques, boss et Ombres, exploration, équilibre musculaire, secrets), définis avec leurs seuils dans `game_config.dart`. Ils sont calculés à partir de l'historique enregistré : les joueurs d'avant la phase 9 les obtiennent à l'ouverture de la page. Les secrets restent masqués (« Haut fait secret ») jusqu'à leur obtention.
+2. **Santé** : aucun haut fait ne pousse au surentraînement. La « longue séance » (45 min d'effort) doit rester sous le plafond quotidien ; le repos est récompensé (« Sage du Repos » : 20 jours de repos déclarés respectés) ; arrêter une séance pour une douleur débloque « À l'écoute de soi ».
+3. **Titres** : ceux des boss (phase 8A) et 14 titres de hauts faits (« L'Éveillé », « Celui qui ne saute jamais les jambes », « Monarque de l'Aube »…). Un titre se porte sous le nom, sur la carte du chasseur de la Fenêtre du Système.
+4. **Auras** : six auras (Aube, Braise, Givre, Sylvestre, Ombre, Orage), chacune débloquée par un titre ; anneau lumineux au sol et particules qui montent autour du personnage.
+5. **Ombres** : à partir du rang B, chaque boss vaincu (rangs B, A et S) et chaque donjon de la semaine terminé laisse une Ombre à extraire (bouton « Extraire »). Sans les donjons, il n'y aurait que trois Ombres pour cinq places. Stat d'une Ombre : celle exigée par l'épreuve du boss, ou celle du thème du donjon (Crypte → Force, Forêt → Agilité, Tour → Endurance). Cinq Ombres actives (sept pour le Nécromancien), +2 % d'XP sur la part de leur stat (+4 % pour le Nécromancien), cumulés par multiplication avec les autres bonus.
+6. **Apparence des Ombres** : silhouettes sombres et translucides du personnage du joueur, d'une teinte différente chacune, placées derrière lui (page Ombres).
+7. **Stockage** : base v9 (`achievement_states`, `shadow_states`) et sauvegarde v9 ; les sauvegardes plus anciennes restent lisibles.

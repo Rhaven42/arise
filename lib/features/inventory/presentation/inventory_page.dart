@@ -15,6 +15,7 @@ import 'package:arise/features/progression/domain/coins.dart';
 import 'package:arise/features/progression/presentation/progression_labels.dart';
 import 'package:arise/features/shop/presentation/shop_labels.dart';
 import 'package:arise/features/shop/presentation/shop_providers.dart';
+import 'package:arise/features/titles/presentation/titles_providers.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -110,6 +111,7 @@ class InventoryPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final inventory = ref.watch(inventoryProvider).value ?? const Inventory();
     final sheet = ref.watch(savedCharacterProvider).value;
+    final aura = ref.watch(titlesViewProvider).value?.aura?.color;
     final controller = ref.read(inventoryControllerProvider.notifier);
     final owned = [
       for (final item in [...equipmentCatalog, ...bossRewardItems])
@@ -134,10 +136,11 @@ class InventoryPage extends ConsumerWidget {
               child: ref
                   .watch(characterRendererProvider)
                   .build(
+                    // Aura portée (titres) autour du personnage.
                     appearance: CharacterAppearance.of(
                       sheet,
                       loadout: loadoutOf(inventory),
-                    ),
+                    ).adorned(auraColor: aura),
                   ),
             ),
           Expanded(

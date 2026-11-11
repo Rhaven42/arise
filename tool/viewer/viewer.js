@@ -10,6 +10,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 
 const post = (type, data) => {
   const msg = JSON.stringify({ type, ...data });
@@ -36,7 +37,7 @@ controls.target.set(0, 0.95, 0);
 controls.enableDamping = true;
 controls.enablePan = false;
 controls.minDistance = 0.6;
-controls.maxDistance = 5.5;
+controls.maxDistance = 8;
 controls.minPolarAngle = 0.35;
 controls.maxPolarAngle = 1.75;
 
@@ -79,6 +80,10 @@ function setFocus(name, top) {
     // sol (planche, pompes) : le personnage regarde vers la gauche.
     target = new THREE.Vector3(0, h * 0.46, 0);
     position = new THREE.Vector3(h * 3.1, h * 0.62, 0);
+  } else if (name === 'army') {
+    // Le personnage et son armée d'Ombres, un peu en hauteur.
+    target = new THREE.Vector3(0, h * 0.48, -h * 0.55);
+    position = new THREE.Vector3(0, h * 1.05, h * 3.2);
   } else if (name === 'exercise_front') {
     target = new THREE.Vector3(0, h * 0.5, 0);
     position = new THREE.Vector3(0, h * 0.58, h * 2.6);
@@ -90,6 +95,147 @@ function setFocus(name, top) {
     toT: target,
     toP: position,
   };
+}
+
+// --- Aura : anneau lumineux au sol et particules qui montent -------------
+function glowTexture() {
+  const size = 128;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.35, 'rgba(255,255,255,0.55)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+const GLOW = glowTexture();
+const AURA_PARTICLES = 70;
+const aura = new THREE.Group();
+aura.visible = false;
+const auraFloor = new THREE.Mesh(
+  new THREE.PlaneGeometry(1.6, 1.6),
+  new THREE.MeshBasicMaterial({
+    map: GLOW, transparent: true, opacity: 0.75, depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  }),
+);
+auraFloor.rotation.x = -Math.PI / 2;
+auraFloor.position.y = 0.01;
+aura.add(auraFloor);
+const auraRing = new THREE.Mesh(
+  new THREE.RingGeometry(0.42, 0.47, 64),
+  new THREE.MeshBasicMaterial({
+    transparent: true, opacity: 0.8, depthWrite: false, side: THREE.DoubleSide,
+    blending: THREE.AdditiveBlending,
+  }),
+);
+auraRing.rotation.x = -Math.PI / 2;
+auraRing.position.y = 0.02;
+aura.add(auraRing);
+const auraPositions = new Float32Array(AURA_PARTICLES * 3);
+const auraSpeeds = new Float32Array(AURA_PARTICLES);
+for (let i = 0; i < AURA_PARTICLES; i++) {
+  const a = Math.random() * Math.PI * 2;
+  const r = 0.25 + Math.random() * 0.3;
+  auraPositions.set([Math.cos(a) * r, Math.random() * 1.9, Math.sin(a) * r], i * 3);
+  auraSpeeds[i] = 0.15 + Math.random() * 0.35;
+}
+const auraGeometry = new THREE.BufferGeometry();
+auraGeometry.setAttribute('position', new THREE.BufferAttribute(auraPositions, 3));
+const auraPoints = new THREE.Points(
+  auraGeometry,
+  new THREE.PointsMaterial({
+    map: GLOW, size: 0.06, transparent: true, opacity: 0.85, depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  }),
+);
+aura.add(auraPoints);
+const auraLight = new THREE.PointLight(0xffffff, 0, 2.2);
+auraLight.position.set(0, 0.15, 0.6);
+aura.add(auraLight);
+scene.add(aura);
+
+function setAura(color, height) {
+  if (!color) {
+    aura.visible = false;
+    return;
+  }
+  const c = new THREE.Color(color);
+  auraFloor.material.color.copy(c);
+  auraRing.material.color.copy(c);
+  auraPoints.material.color.copy(c);
+  auraLight.color.copy(c);
+  auraLight.intensity = 0.35;
+  aura.scale.setScalar((height || 1.8) / 1.8);
+  aura.visible = true;
+}
+
+function animateAura(delta, time) {
+  if (!aura.visible) return;
+  auraRing.rotation.z += delta * 0.4;
+  auraRing.material.opacity = 0.6 + 0.25 * Math.sin(time * 2.2);
+  const pos = auraGeometry.attributes.position;
+  for (let i = 0; i < AURA_PARTICLES; i++) {
+    let y = pos.getY(i) + auraSpeeds[i] * delta;
+    if (y > 1.9) y = 0;
+    pos.setY(i, y);
+  }
+  pos.needsUpdate = true;
+}
+
+// --- Ombres : silhouettes sombres et translucides du personnage ----------
+const SHADOW_TINTS = ['#6d4cff', '#2fb5ff', '#ff4c7a', '#3ee6a8', '#ffb238', '#b04cff', '#4c7bff'];
+// Places derrière le personnage (x, z), pour une taille de 1,8 m.
+const SHADOW_SLOTS = [
+  [-0.8, -0.9], [0.8, -0.9], [-1.5, -1.6], [1.5, -1.6], [0, -1.9], [-2.2, -2.3], [2.2, -2.3],
+];
+const army = { key: '', clones: [] };
+
+function clearArmy() {
+  for (const c of army.clones) {
+    scene.remove(c.root);
+    c.mixer.stopAllAction();
+  }
+  army.clones = [];
+  army.key = '';
+}
+
+function setArmy(model, rig, indices, height) {
+  const list = (indices || []).slice(0, SHADOW_SLOTS.length);
+  const key = list.length ? model.uuid + ':' + list.join(',') + ':' + height.toFixed(3) : '';
+  if (key === army.key) return;
+  clearArmy();
+  if (!list.length || !rig) return;
+  army.key = key;
+  const k = height / 1.8;
+  list.forEach((index, slot) => {
+    const root = SkeletonUtils.clone(model);
+    const tint = new THREE.Color(SHADOW_TINTS[index % SHADOW_TINTS.length]);
+    // Corps presque noir, teinte à peine lumineuse : une silhouette d'ombre.
+    const material = new THREE.MeshStandardMaterial({
+      color: tint.clone().multiplyScalar(0.03), emissive: tint, emissiveIntensity: 0.025,
+      roughness: 1, metalness: 0, envMapIntensity: 0.2, transparent: true, opacity: 0.86,
+    });
+    root.traverse((o) => {
+      if (o.isMesh) {
+        o.material = material;
+        o.frustumCulled = false;
+      }
+    });
+    const [x, z] = SHADOW_SLOTS[slot];
+    root.position.set(x * k, 0, z * k);
+    const mixer = new THREE.AnimationMixer(root);
+    const pose = rig.clips.pose_relaxed || rig.clips.pose_a;
+    if (pose) mixer.clipAction(pose).play();
+    scene.add(root);
+    army.clones.push({ root, mixer });
+  });
 }
 
 const loader = new GLTFLoader();
@@ -291,7 +437,15 @@ function applyState(state) {
   const rig = rigs.get(state.model);
   if (rig) setMotion(rig, state.motion || null);
   setLighting(state.lighting);
-  const focus = state.motion ? 'exercise_' + (state.view || 'side') : (state.focus || 'body');
+  const height = model.userData.top * (state.scale || 1);
+  const shadows = state.motion ? [] : state.shadows || [];
+  setAura(state.motion ? null : state.aura, height);
+  setArmy(model, rig, shadows, height);
+  const focus = state.motion
+    ? 'exercise_' + (state.view || 'side')
+    : shadows.length && (state.focus || 'body') === 'body'
+      ? 'army'
+      : state.focus || 'body';
   if (focus !== currentFocus || model !== focusModel || state.scale !== focusScale) {
     currentFocus = focus;
     focusModel = model;
@@ -367,6 +521,8 @@ function loop() {
   }
   const delta = clock.getDelta();
   for (const rig of rigs.values()) rig.mixer.update(delta);
+  for (const c of army.clones) c.mixer.update(delta);
+  animateAura(delta, clock.elapsedTime);
   if (focusAnim) {
     focusAnim.t = Math.min(1, focusAnim.t + delta / 0.5);
     const k = focusAnim.t * focusAnim.t * (3 - 2 * focusAnim.t);

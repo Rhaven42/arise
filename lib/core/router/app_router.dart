@@ -1,6 +1,8 @@
 import 'package:arise/core/design_system/demo/design_system_demo_page.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/core/router/route_guard.dart';
+import 'package:arise/features/achievements/presentation/achievements_page.dart';
+import 'package:arise/features/achievements/presentation/hunter_panel.dart';
 import 'package:arise/features/backup/presentation/backup_page.dart';
 import 'package:arise/features/backup/presentation/restore_page.dart';
 import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
@@ -22,7 +24,9 @@ import 'package:arise/features/quests/presentation/quest_panel.dart';
 import 'package:arise/features/quests/presentation/quests_page.dart';
 import 'package:arise/features/settings/presentation/credits_page.dart';
 import 'package:arise/features/settings/presentation/settings_page.dart';
+import 'package:arise/features/shadows/presentation/shadows_page.dart';
 import 'package:arise/features/shop/presentation/shop_page.dart';
+import 'package:arise/features/titles/presentation/titles_page.dart';
 import 'package:arise/features/trials/presentation/trial_page.dart';
 import 'package:arise/features/workout_player/presentation/workout_page.dart';
 import 'package:flutter/foundation.dart';
@@ -76,8 +80,9 @@ GoRouter appRouter(Ref ref) {
       GoRoute(path: AppRoutes.restore, builder: (_, _) => const RestorePage()),
       GoRoute(
         path: AppRoutes.systemHome,
-        builder: (_, _) =>
-            const SystemHomePage(panels: [QuestPanel(), TrialPanel()]),
+        builder: (_, _) => const SystemHomePage(
+          panels: [HunterPanel(), QuestPanel(), TrialPanel()],
+        ),
         routes: [
           GoRoute(
             path: AppRoutes.settingsSegment,
@@ -146,6 +151,18 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
             path: AppRoutes.inventorySegment,
             builder: (_, _) => const InventoryPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.achievementsSegment,
+            builder: (_, _) => const AchievementsPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.titlesSegment,
+            builder: (_, _) => const TitlesPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.shadowsSegment,
+            builder: (_, _) => const ShadowsPage(),
           ),
           GoRoute(
             path: AppRoutes.questsSegment,

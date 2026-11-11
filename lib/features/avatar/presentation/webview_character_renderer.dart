@@ -201,6 +201,11 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
         'items': appearance.itemNodes,
         'hiddenOutfit': appearance.hiddenOutfit,
         'dyes': {for (final e in appearance.dyes.entries) e.key: _hex(e.value)},
+        'aura': switch (appearance.auraColor) {
+          final color? => _hex(color),
+          null => null,
+        },
+        'shadows': appearance.shadows,
       });
       await _controller.runJavaScript('arise.apply(${jsonEncode(state)})');
     } on Object {

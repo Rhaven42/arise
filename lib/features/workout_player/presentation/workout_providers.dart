@@ -5,6 +5,7 @@ import 'package:arise/core/audio/music.dart';
 import 'package:arise/core/database/app_database.dart';
 import 'package:arise/core/utils/clock.dart';
 import 'package:arise/core/utils/ids.dart';
+import 'package:arise/features/achievements/presentation/achievements_providers.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/exercises/presentation/exercise_providers.dart';
 import 'package:arise/features/planning/domain/program.dart';
@@ -14,6 +15,7 @@ import 'package:arise/features/progression/domain/progression_rules.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
 import 'package:arise/features/quests/domain/quest_board_rules.dart';
 import 'package:arise/features/quests/presentation/quests_providers.dart';
+import 'package:arise/features/shadows/presentation/shadows_providers.dart';
 import 'package:arise/features/trials/domain/trial_rules.dart';
 import 'package:arise/features/trials/presentation/trials_providers.dart';
 import 'package:arise/features/workout_player/data/drift_completed_session_repository.dart';
@@ -69,6 +71,12 @@ abstract class WorkoutView with _$WorkoutView {
 
     /// Issue de l'épreuve de rang jouée, le cas échéant.
     TrialOutcome? trialOutcome,
+
+    /// Hauts faits obtenus grâce à la séance (identifiants).
+    @Default([]) List<String> achievementsUnlocked,
+
+    /// Une Ombre attend d'être extraite (boss ou donjon vaincu).
+    @Default(false) bool shadowOffered,
   }) = _WorkoutView;
 
   const WorkoutView._();
@@ -207,10 +215,14 @@ class WorkoutController extends _$WorkoutController {
       priorActiveSecondsToday: activeSecondsOnDay(history, view.run.startedAt),
       now: now,
     );
-    // Bonus de série, malus de pénalité, niveaux et série de jours.
+    // Bonus de série, malus de pénalité, Ombres, niveaux et série de jours.
+    final shadows = ref.read(shadowsControllerProvider.notifier);
     final progress = await ref
         .read(progressionControllerProvider.notifier)
-        .recordSession(summary);
+        .recordSession(
+          summary,
+          statMultipliers: await shadows.statMultipliers(),
+        );
     final session = summary.copyWith(
       xpEarned: progress.xpGained,
       xpByStat: progress.xpByStat,
@@ -224,6 +236,21 @@ class WorkoutController extends _$WorkoutController {
     final questOutcome = await ref
         .read(questControllerProvider.notifier)
         .evaluate(session: session);
+    // Ombres offertes par un boss (rang B et plus) ou un donjon terminé.
+    final pendingBefore =
+        (await ref.read(shadowsRepositoryProvider).read()).pending.length;
+    if (trialOutcome?.won ?? false) await shadows.offerFromBosses();
+    final dungeon = questOutcome?.board.board.dungeon;
+    if ((questOutcome?.board.dungeonCompleted ?? false) && dungeon != null) {
+      await shadows.offerFromDungeon(dungeon);
+    }
+    final shadowOffered =
+        (await ref.read(shadowsRepositoryProvider).read()).pending.length >
+        pendingBefore;
+    // Hauts faits (après tout le reste : ils lisent l'état final).
+    final achievements = await ref
+        .read(achievementsControllerProvider.notifier)
+        .evaluate(dailyQuestDone: questOutcome?.daily.reward != null);
     // Jingle de passage de niveau (séance, quêtes ou victoire de boss).
     final levelsGained =
         progress.levelsGained +
@@ -241,6 +268,8 @@ class WorkoutController extends _$WorkoutController {
             ? null
             : questOutcome,
         trialOutcome: trialOutcome,
+        achievementsUnlocked: [for (final a in achievements) a.id],
+        shadowOffered: shadowOffered,
         now: now,
       ),
     );

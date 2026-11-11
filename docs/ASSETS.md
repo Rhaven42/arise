@@ -88,3 +88,13 @@ Créations de la propriétaire du projet, générées avec Suno sous abonnement 
 - `assets/sounds/level_up.mp3` (« Level Up! ») : jingle de passage de niveau, la musique s'efface dessous.
 
 Les bips du lecteur de séance (`countdown`, `start`, `rest`, `finish`) restent générés par `tool/sounds.py`. Pas de musique pendant une séance. La musique se mélange aux autres sons du téléphone, respecte le mode silencieux et se règle dans Paramètres → Musique.
+
+## 6. Auras et Ombres (phase 9)
+
+### État actuel
+- **Auras** : générées par le visualiseur (`tool/viewer/viewer.js`) : anneau lumineux au sol, halo et particules qui montent, dans la couleur de l'aura (`gameConfig.achievements.auras`).
+- **Ombres** : copies du personnage du joueur, au corps presque noir, teintées et translucides, placées derrière lui (jusqu'à sept).
+
+### Livrable possible (artiste)
+- Effets d'aura plus riches (flammes, givre, feuilles, éclairs) : textures de particules en PNG 256 × 256 (fond transparent, licence CC0 ou CC BY), une par aura.
+- Effet d'« éveil » d'une Ombre (fumée qui se lève) : courte texture animée en planche de 4 × 4 images.
