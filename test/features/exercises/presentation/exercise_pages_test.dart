@@ -49,11 +49,9 @@ void main() {
     await tester.tap(find.byKey(ExercisePhotoDemo.pauseKey));
     await tester.pump();
     expect(find.byTooltip("Lancer l'animation"), findsOneWidget);
-    await tester.scrollUntilVisible(
-      find.byType(BodyMap).first,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    // Les silhouettes sont sous les photos : un défilement les affiche.
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -250));
+    await tester.pump();
     expect(find.byType(BodyMap), findsWidgets);
     await tester.scrollUntilVisible(
       find.text('• Triceps'),
