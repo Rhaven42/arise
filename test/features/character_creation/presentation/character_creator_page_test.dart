@@ -226,10 +226,21 @@ void main() {
       findsOneWidget,
     );
     // Les coiffures de la boutique sont verrouillées.
-    await tester.tap(find.text('10 · Crinière'));
+    await tester.tap(find.text('Courtes'));
+    await tester.pump();
+    await _scrollTo(tester, find.text('10 · Bouclée'), tab: CreatorTab.hair);
+    await tester.tap(find.text('10 · Bouclée'));
     await tester.pump();
     expect(sheet().hairStyle, isNot(10));
     expect(find.text('Coiffure à débloquer dans la boutique.'), findsWidgets);
+    await _scrollTo(
+      tester,
+      find.text('Longues'),
+      tab: CreatorTab.hair,
+      delta: -200,
+    );
+    await tester.tap(find.text('Longues'));
+    await tester.pump();
     await tester.tap(find.text('5 · Longue'));
     await tester.pump();
     expect(sheet().hairStyle, 5);

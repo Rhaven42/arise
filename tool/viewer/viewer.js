@@ -8,6 +8,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 
 const post = (type, data) => {
   const msg = JSON.stringify({ type, ...data });
@@ -77,6 +78,8 @@ function setFocus(name, top) {
 }
 
 const loader = new GLTFLoader();
+// Modèles compressés (EXT_meshopt_compression) : décodeur embarqué, hors ligne.
+loader.setMeshoptDecoder(MeshoptDecoder);
 const models = new Map();
 const rigs = new Map();
 const clock = new THREE.Clock();
@@ -114,7 +117,36 @@ function setMorph(root, name, value) {
   });
 }
 
-// Poses (clips complets), posture et respiration (clips additifs).
+// Cheveux, sourcils et cils : textures à découpe (alphaTest), deux faces.
+// Maquillages : couleurs de sommets avec transparence, posés sur la peau.
+function prepareMaterials(root) {
+  root.traverse((o) => {
+    if (!o.isMesh) return;
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    for (const m of mats) {
+      if (!m) continue;
+      if (m.name.startsWith('hair_') || m.name.startsWith('brow_') || m.name === 'lashes') {
+        m.transparent = false;
+        m.alphaTest = 0.4;
+        m.side = THREE.DoubleSide;
+        m.depthWrite = true;
+      }
+      if (m.name.startsWith('makeup_')) {
+        m.vertexColors = true;
+        m.transparent = true;
+        m.depthWrite = false;
+        m.polygonOffset = true;
+        m.polygonOffsetFactor = -2;
+        m.polygonOffsetUnits = -2;
+        m.roughness = 0.6;
+        o.renderOrder = 2;
+      }
+      m.needsUpdate = true;
+    }
+  });
+}
+
+// Pose détendue fixe et respiration (clip additif).
 function buildRig(gltf) {
   const mixer = new THREE.AnimationMixer(gltf.scene);
   const clips = {};
@@ -127,10 +159,7 @@ function buildRig(gltf) {
     THREE.AnimationUtils.makeClipAdditive(copy, 0, rest);
     return copy;
   };
-  const rig = { mixer, clips, pose: null, posture: null, postures: {} };
-  for (const name of Object.keys(clips)) {
-    if (name.startsWith('posture_')) rig.postures[name] = additive(name);
-  }
+  const rig = { mixer, clips, pose: null };
   const breath = additive('breath');
   if (breath) {
     const action = mixer.clipAction(breath);
@@ -140,7 +169,7 @@ function buildRig(gltf) {
   return rig;
 }
 
-function setPose(rig, poseName, postureName) {
+function setPose(rig, poseName) {
   const clip = rig.clips[poseName] || rig.clips.pose_a;
   if (clip && rig.pose !== clip.name) {
     // reset() réactive une pose déjà quittée (désactivée en fin de fondu).
@@ -150,19 +179,9 @@ function setPose(rig, poseName, postureName) {
     rig.poseAction = next;
     rig.pose = clip.name;
   }
-  const posture = rig.postures[postureName] || null;
-  if (rig.posture !== postureName) {
-    if (rig.postureAction) rig.postureAction.fadeOut(0.3);
-    rig.postureAction = null;
-    if (posture) {
-      const action = rig.mixer.clipAction(posture);
-      action.blendMode = THREE.AdditiveAnimationBlendMode;
-      action.reset().fadeIn(0.3).setLoop(THREE.LoopRepeat, Infinity).play();
-      rig.postureAction = action;
-    }
-    rig.posture = postureName;
-  }
 }
+
+const LASHES = new THREE.Color('#1c1410');
 
 function applyState(state) {
   const model = models.get(state.model);
@@ -198,7 +217,10 @@ function applyState(state) {
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     for (const m of mats) {
       if (!m) continue;
-      if (colors[m.name]) m.color.copy(colors[m.name]);
+      const tint = colors[m.name] ||
+        (m.name.startsWith('hair_') || m.name.startsWith('brow_') ? colors.hair : null) ||
+        (m.name === 'lashes' ? LASHES : null);
+      if (tint) m.color.copy(tint);
       if (m.name.startsWith('dye_')) {
         // Couleur d'origine gardée pour revenir sans teinture.
         if (!m.userData.base) m.userData.base = m.color.clone();
@@ -208,7 +230,7 @@ function applyState(state) {
     }
   });
   const rig = rigs.get(state.model);
-  if (rig) setPose(rig, state.pose || 'pose_a', state.posture || 'posture_neutral');
+  if (rig) setPose(rig, 'pose_relaxed');
   setLighting(state.lighting);
   const focus = state.focus || 'body';
   if (focus !== currentFocus || model !== focusModel || state.scale !== focusScale) {
@@ -245,6 +267,7 @@ window.arise = {
       all.buffer,
       '',
       (gltf) => {
+        prepareMaterials(gltf.scene);
         models.set(id, gltf.scene);
         rigs.set(id, buildRig(gltf));
         post('loaded', { id });

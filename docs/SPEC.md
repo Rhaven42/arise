@@ -341,3 +341,12 @@ Décision de la propriétaire du projet : pas de forfait Firebase Blaze, pas de 
 8. **Données** : base v7 (table `inventory_states`), sauvegarde v6 (`inventory`) ; un inventaire relu est nettoyé (objets inconnus, objets portés non possédés, teintures d'objets non teignables).
 9. **Modèles** : les objets sont inclus dans les six fichiers `.glb` (mêmes formes de morphologie et mêmes poids de peau que le corps ; armes liées à la main droite). Environ 6 à 7 Mo par modèle. Ce sont des pièces de substitution, à remplacer par l'artiste (docs/ASSETS.md §3).
 
+## 29. Corrections du créateur et de la boutique (11/11/2026)
+1. **Musculature** : le curseur change le relief des muscles sans faire grossir ni maigrir. Dans MakeHuman, retirer du muscle à poids égal ajoute de la graisse : l'état « peu musclé » baisse donc aussi le poids (tour de taille identique au corps de base), et l'état « très musclé » accentue le relief (× 1,5). La corpulence reste le seul curseur de gras / mince.
+2. **Poses et postures retirées** (§27.4 annulé) : le personnage garde une pose détendue fixe, avec la respiration.
+3. **Yeux, sourcils, cils, coiffures** : pièces des paquets officiels MakeHuman, **licence CC0** (utilisables commercialement), ajustées sur chaque corps et chaque morphologie, avec textures teintées par l'application. L'iris est une pièce à part : seule elle prend la couleur des yeux.
+4. **Coiffures** : 1 Courte, 2 Queue de cheval, 3 Natte, 4 Chignon, 5 Longue, 6 Mèches rebelles, 7 Très courte, 8 Double natte, 9 Carré, 10 Bouclée. Familles : courtes (1, 6, 7, 10), attachées (2, 3, 4, 8), longues (5, 9). Coiffures de la boutique : 6, 8 et 10.
+5. **Maquillages** : peints en dégradés doux (khôl qui suit la paupière avec une pointe, rouge à lèvres, fard à joues, peinture de guerre).
+6. **Boutique** : chaque article montre une vignette de l'objet seul à gauche (`assets/items/`) et un bouton « Voir sur mon personnage » qui ouvre une grande vue 3D, orientable, du personnage portant l'article.
+7. **Modèles allégés** : textures WebP et géométrie compressée (meshopt), environ 3,3 Mo par modèle au lieu de 6 à 7.
+

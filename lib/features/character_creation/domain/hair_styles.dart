@@ -14,8 +14,8 @@ const Map<int, HairCategory> hairStyleCategory = {
   6: HairCategory.short,
   7: HairCategory.short,
   8: HairCategory.tied,
-  9: HairCategory.short,
-  10: HairCategory.long,
+  9: HairCategory.long,
+  10: HairCategory.short,
 };
 
 /// Coiffures d'une famille, dans l'ordre.

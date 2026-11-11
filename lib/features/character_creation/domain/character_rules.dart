@@ -85,8 +85,7 @@ CharacterSheet sanitizeSheet(CharacterSheet sheet, {CharacterConfig? config}) {
 int sliderStep(double value) => (value.clamp(0.0, 1.0) * 4).round();
 
 /// Personnage tiré au hasard, parmi les coiffures [hairStyles] si elles
-/// sont données (le nom, les favoris, la pose et la posture
-/// sont conservés : ce sont des réglages d'affichage, pas d'apparence).
+/// sont données (le nom et les coiffures favorites sont conservés).
 CharacterSheet randomSheet(
   Random random, {
   String name = '',
@@ -129,7 +128,5 @@ CharacterSheet randomSheet(
         ? random.nextInt(beardStyleCount + 1)
         : 0,
     favoriteHairStyles: keep?.favoriteHairStyles ?? const [],
-    pose: keep?.pose ?? CharacterPose.relaxed,
-    posture: keep?.posture ?? CharacterPosture.neutral,
   );
 }

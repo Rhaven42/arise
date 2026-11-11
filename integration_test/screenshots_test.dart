@@ -242,9 +242,8 @@ void main() {
       await pumpFor(800);
     }
 
-    await pick('Détendue', 'Héroïque');
     await pumpFor(2500);
-    await binding.takeScreenshot('27_createur_silhouette_pose');
+    await binding.takeScreenshot('27_createur_silhouette');
     await tester.tap(find.text('Visage'));
     await pumpFor(800);
     await pick('Aucune', 'Collier', tab: CreatorTab.face);
@@ -281,7 +280,7 @@ void main() {
     await tester.tap(shop);
     await pumpFor(5000);
     await binding.takeScreenshot('31_boutique');
-    Future<void> tryOn(String filter, int index) async {
+    Future<void> tryOn(String filter, int index, String shot) async {
       await tester.dragUntilVisible(
         find.text(filter),
         find.byKey(ShopPage.filtersKey),
@@ -290,15 +289,18 @@ void main() {
       await pumpFor(300);
       await tester.tap(find.text(filter));
       await pumpFor(600);
-      await tester.tap(find.text('Essayer').at(index));
-      await pumpFor(3000);
+      final button = find.text('Voir sur mon personnage').at(index);
+      await tester.ensureVisible(button);
+      await pumpFor(300);
+      await tester.tap(button);
+      await pumpFor(5000);
+      await binding.takeScreenshot(shot);
+      await tester.tap(find.byTooltip('Fermer'));
+      await pumpFor(800);
     }
 
-    await tryOn('Torse', 2);
-    await binding.takeScreenshot('32_boutique_cuirasse');
-    await tryOn('Dos', 1);
-    await binding.takeScreenshot('33_boutique_cape');
-    await tryOn('Arme', 0);
-    await binding.takeScreenshot('34_boutique_epee');
+    await tryOn('Torse', 2, '32_boutique_cuirasse');
+    await tryOn('Dos', 1, '33_boutique_cape');
+    await tryOn('Arme', 0, '34_boutique_epee');
   });
 }

@@ -189,8 +189,6 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
         'browNode': appearance.eyebrowId,
         'beardNode': appearance.beardId,
         'makeupNode': appearance.makeupId,
-        'pose': appearance.poseId,
-        'posture': appearance.postureId,
         'lighting': widget.scene.lighting.name,
         'focus': widget.scene.focus.name,
         'outfit': true,

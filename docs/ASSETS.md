@@ -21,22 +21,24 @@ Une nouvelle implémentation de `ExerciseAnimationPlayer` lira le `.glb`, jouera
 ## 2. Personnage (phases 6A et 6B)
 
 ### État actuel
-Six modèles de substitution originaux, générés par `tool/character/build_characters.py` dans Blender avec l'extension MPFB (maillage de base MakeHuman, licence CC0) : `assets/models/{human,elf,orc}_{female,male}.glb`. Aucun asset tiers protégé. Chaque fichier contient :
-- `body` (matériau `skin`), `eyes`, et `tusks` pour les orques ;
+Six modèles de substitution générés par `tool/character/build_characters.py` (Blender + extension MPFB, maillage de base MakeHuman, licence CC0) : `assets/models/{human,elf,orc}_{female,male}.glb`. Aucun asset tiers protégé. Chaque fichier contient :
+- `body` (matériau `skin`), `tusks` pour les orques ;
+- `eye_sclera` (texture) et `eye_iris` (matériau `iris`, teinté par la couleur des yeux) — yeux MakeHuman « high-poly » (CC0) ;
+- `lashes` (cils MakeHuman `eyelashes01`, CC0) ;
 - `outfit_tunic`, `outfit_tunic_skirt`, `outfit_pants`, `outfit_boots`, `outfit_belt` (tenue de départ) ;
-- `hair_01` à `hair_10` (une seule visible à la fois, matériau `hair`) ;
-- `eye_sclera`, `eye_iris` (matériau `iris`, coloré), `eye_pupil` ;
-- `brow_01` à `brow_06` (matériau `brow`, couleur des cheveux), `beard_01` à `beard_06` (hommes, matériau `beard`), `makeup_01` à `makeup_04` (couleurs fixes) — une seule pièce visible par famille ;
-- formes (morph targets) sur tous ces maillages : `corp_low`, `corp_high`, `musc_low`, `musc_high`, et pour le visage `face_jaw_*`, `face_nose_*`, `face_mouth_*`, `face_cheeks_*`, `face_ears_*` (`_low` / `_high`) ;
-- un squelette (os `Root`, `pelvis`, `spine_01`–`03`, `clavicle`, `upperarm`, `lowerarm`, `hand`, doigts, `neck_01`, `head`, `thigh`, `calf`, `foot`, `ball`, suffixes `_l` / `_r`) et des animations : poses `pose_a`, `pose_relaxed`, `pose_heroic`, `pose_combat` ; postures `posture_neutral`, `posture_upright`, `posture_slouched`, `posture_arched` (jouées en additif par rapport à `pose_a`) ; boucle `breath` (additive).
+- `hair_01` à `hair_10` (une seule visible, matériaux `hair_01`…`hair_10`, texture en niveaux de gris teintée par la couleur des cheveux) — coiffures MakeHuman CC0 : short02, ponytail01, braid01, rehmanpolanski_hair_bun_brown, long01, culturalibre_hair_05, short04, elvs_double_mh_braid, toigo_blunt_bob, afro01 (paquets « makehuman_system_assets » et « hair01 ») ;
+- `brow_01` à `brow_06` (sourcils MakeHuman eyebrow006, 001, 002, 004, 012, 009, CC0, teintés comme les cheveux), `beard_01` à `beard_06` (hommes, matériau `beard`) ;
+- `makeup_01` à `makeup_04` : pellicule du visage peinte en couleurs de sommets avec transparence (khôl, lèvres, joues, peinture de guerre) ;
+- formes (morph targets) : `corp_low`, `corp_high`, `musc_low`, `musc_high`, et pour le visage `face_jaw_*`, `face_nose_*`, `face_mouth_*`, `face_cheeks_*`, `face_ears_*` (`_low` / `_high`). La musculature ne change pas le volume d'ensemble (SPEC §29.1) ;
+- un squelette (os `Root`, `pelvis`, `spine_01`–`03`, `clavicle`, `upperarm`, `lowerarm`, `hand`, doigts, `neck_01`, `head`, `thigh`, `calf`, `foot`, `ball`, suffixes `_l` / `_r`) et trois animations : `pose_a` (référence), `pose_relaxed` (pose affichée), `breath` (respiration, additive).
 
-Le code colore `skin`, `hair`, `brow`, `beard` et `iris`, choisit les pièces par leur nom, règle les formes, l'échelle (taille), la pose et la posture. Environ 3 Mo par modèle. Sourcils, barbes et maquillages sont des découpes grossières du maillage : à remplacer en priorité.
+Fabrication : `ARISE_MH_ASSETS=<dossier contenant « sys » et « hair », les deux paquets MakeHuman décompressés> python3 tool/character/build_characters.py <sortie>` puis `tool/character/compress_models.sh <sortie> assets/models` (textures WebP, géométrie meshopt ; environ 3,3 Mo par modèle). Les vignettes de la boutique viennent de `tool/character/render_items.py assets/items`.
 
 ### Livrable attendu (version définitive)
 - **Six personnages** (3 races × 2 sexes) de style fantasy héroïque semi-réaliste, homme et femme sur des **maillages distincts**, conformes à SPEC §3.1.
-- **Mêmes noms d'objets, de matériaux, de formes, d'os et d'animations** que ci-dessus, pour que le code fonctionne sans modification.
+- **Mêmes noms d'objets, de matériaux, de formes, d'os et d'animations** que ci-dessus, pour que le code fonctionne sans modification. Les textures des cheveux, sourcils et iris restent en niveaux de gris (teinte appliquée par l'application).
 - **Règle des équipements** : toute pièce de tenue, armure ou coiffure livrée pour la boutique doit porter les **quatre mêmes formes** (`corp_low`, `corp_high`, `musc_low`, `musc_high`), calculées sur le corps de la même race et du même sexe, pour suivre les proportions sans traverser le corps. Un exemplaire par race et par sexe.
-- **Squelette humanoïde** aux noms ci-dessus, doigts compris, avec les huit animations de pose et de posture et la boucle de respiration.
+- **Squelette humanoïde** aux noms ci-dessus, doigts compris, avec la pose détendue, la pose de référence en A et la boucle de respiration.
 - **Équipements de la boutique** (phase 7) : chaque pièce est liée au même squelette (poids de peau) **et** porte les formes du corps, pour suivre à la fois la pose et la morphologie.
 - **Budget mobile** : 25 000 triangles au plus pour le corps, 8 000 par pièce d'équipement, textures 2048 × 2048 au plus.
 - **Licence** : créations originales ou licences compatibles avec une publication commerciale ; pour les achats sur Fab, licence standard ou professionnelle uniquement (pas « Reference Only » ni l'ancienne licence Marketplace), avec la source et la licence de chaque asset notées ici.

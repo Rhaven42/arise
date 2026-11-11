@@ -9,12 +9,6 @@ enum CharacterSex { female, male }
 /// Race du royaume d'Arisia.
 enum CharacterRace { human, elf, orc }
 
-/// Pose d'affichage du personnage.
-enum CharacterPose { a, relaxed, heroic, combat }
-
-/// Port du buste, ajouté à la pose.
-enum CharacterPosture { neutral, upright, slouched, arched }
-
 /// Fiche du personnage, enregistrée en JSON sur le téléphone.
 ///
 /// Les curseurs [corpulence], [musculature] et ceux du visage vont de 0 à 1
@@ -61,8 +55,6 @@ abstract class CharacterSheet with _$CharacterSheet {
 
     /// Maquillage, de 0 (aucun) à [makeupStyleCount].
     @Default(0) int makeupStyle,
-    @Default(CharacterPose.relaxed) CharacterPose pose,
-    @Default(CharacterPosture.neutral) CharacterPosture posture,
   }) = _CharacterSheet;
 
   factory CharacterSheet.fromJson(Map<String, dynamic> json) =>

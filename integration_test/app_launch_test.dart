@@ -245,7 +245,7 @@ void main() {
     await _pumpFor(tester, 300);
     await tester.tap(find.text('Dos'));
     await _pumpFor(tester, 500);
-    await tester.tap(find.text('Essayer').first);
+    await tester.tap(find.text('Voir sur mon personnage').first);
     await _pumpFor(tester, 4000);
     expect(
       find.text(
@@ -254,6 +254,8 @@ void main() {
       ),
       findsNothing,
     );
+    await tester.tap(find.byTooltip('Fermer'));
+    await _pumpFor(tester, 800);
     debugPrint('Parcours : inventaire');
     await tester.tap(find.byType(BackButton).first);
     await _pumpFor(tester, 1200);
