@@ -162,6 +162,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                   _ArticleTile(
                     article: article,
                     owned: owns(inventory, article),
+                    price: priceOf(article),
                     onTryOn: sheet == null
                         ? null
                         : () => _showOnCharacter(article, sheet, inventory),
