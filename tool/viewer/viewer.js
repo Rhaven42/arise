@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 const post = (type, data) => {
   const msg = JSON.stringify({ type, ...data });
@@ -23,6 +24,11 @@ renderer.toneMappingExposure = 1.0;
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
+// Reflets doux d'une pièce virtuelle (générée, sans image ni réseau) :
+// la peau, le cuir et les cheveux réagissent à la lumière ambiante.
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.2;
 const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 50);
 camera.position.set(0, 1.0, 4.2);
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -125,7 +131,7 @@ function prepareMaterials(root) {
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     for (const m of mats) {
       if (!m) continue;
-      if (m.name.startsWith('hair_') || m.name.startsWith('brow_') || m.name === 'lashes') {
+      if (m.name.startsWith('hair_') || m.name.startsWith('brow_') || m.name.startsWith('beard_') || m.name === 'lashes') {
         m.transparent = false;
         m.alphaTest = 0.4;
         m.side = THREE.DoubleSide;
@@ -141,6 +147,8 @@ function prepareMaterials(root) {
         m.roughness = 0.6;
         o.renderOrder = 2;
       }
+      // Relief de la peau discret (pores), plus marqué sur les tissus.
+      if (m.normalMap) m.normalScale.setScalar(m.name === 'skin' ? 0.35 : 0.8);
       m.needsUpdate = true;
     }
   });
@@ -207,7 +215,12 @@ function applyState(state) {
     for (const [prefix, chosen] of Object.entries(choice)) {
       if (n.startsWith(prefix)) o.visible = n === chosen;
     }
-    if (n.startsWith('outfit_')) {
+    if (n.startsWith('outfit_under_')) {
+      // Sous-vêtements : seulement quand un objet remplace la blouse ou le
+      // pantalon de la tenue de départ.
+      const covered = n.startsWith('outfit_under_top') ? 'outfit_tunic' : 'outfit_pants';
+      o.visible = state.outfit !== false && (state.hiddenOutfit || []).includes(covered);
+    } else if (n.startsWith('outfit_')) {
       o.visible = state.outfit !== false && !(state.hiddenOutfit || []).includes(n);
     }
     if (n.startsWith('item_')) {
@@ -219,6 +232,7 @@ function applyState(state) {
       if (!m) continue;
       const tint = colors[m.name] ||
         (m.name.startsWith('hair_') || m.name.startsWith('brow_') ? colors.hair : null) ||
+        (m.name.startsWith('beard_') ? colors.beard : null) ||
         (m.name === 'lashes' ? LASHES : null);
       if (tint) m.color.copy(tint);
       if (m.name.startsWith('dye_')) {

@@ -1331,7 +1331,7 @@
     }
   },
   "characterBeard": "Barbe",
-  "characterBeardName": "{id, select, b0{Aucune} b1{Collier} b2{Bouc} b3{Moustache} b4{Courte} b5{Longue tressée} b6{Favoris} other{?}}",
+  "characterBeardName": "{id, select, b0{Aucune} b1{Collier} b2{Bouc} b3{Moustache} b4{Courte} b5{Longue} b6{Moustache en guidon} other{?}}",
   "@characterBeardName": {
     "placeholders": {
       "id": {
@@ -1996,6 +1996,34 @@
         "type": "int"
       },
       "coins": {
+        "type": "String"
+      }
+    }
+  },
+  "creditsTitle": "Crédits",
+  "creditsTile": "Crédits",
+  "creditsTileHint": "Auteurs des modèles 3D, des polices et des outils libres",
+  "creditsIntro": "ARISE est une création originale. Les personnages s'appuient sur des ressources libres, partagées par leurs auteurs : merci à eux.",
+  "creditsCcBySection": "Ressources sous licence CC BY",
+  "creditsOtherSection": "Autres ressources libres",
+  "creditsEntry": "{work} — {author}",
+  "@creditsEntry": {
+    "placeholders": {
+      "work": {
+        "type": "String"
+      },
+      "author": {
+        "type": "String"
+      }
+    }
+  },
+  "creditsLicense": "{license, select, ccBy{Licence Creative Commons Attribution (CC BY)} cc0{Domaine public (CC0)} mit{Licence MIT} ofl{SIL Open Font License} other{?}} · {source}",
+  "@creditsLicense": {
+    "placeholders": {
+      "license": {
+        "type": "String"
+      },
+      "source": {
         "type": "String"
       }
     }

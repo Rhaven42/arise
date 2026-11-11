@@ -10,6 +10,8 @@ abstract final class AppRoutes {
   static const String settings = '$systemHome/$settingsSegment';
   static const backupSegment = 'backup';
   static const String backup = '$settings/$backupSegment';
+  static const creditsSegment = 'credits';
+  static const String credits = '$settings/$creditsSegment';
 
   static const exercisesSegment = 'exercises';
   static const String exercises = '$systemHome/$exercisesSegment';
