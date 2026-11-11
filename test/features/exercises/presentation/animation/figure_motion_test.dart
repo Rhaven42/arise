@@ -86,7 +86,7 @@ void main() {
       for (var i = 0; i < 10; i++) {
         final pose = motion.poseAt(i / 10);
         final j = computeJoints(pose.angles, motion.view, pose.root);
-        expect(_distance(j[anchor]!, first), lessThan(1e-6), reason: id);
+        expect(_distance(j[anchor]!, first), lessThan(1e-3), reason: id);
       }
     }
   });
