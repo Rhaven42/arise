@@ -51,11 +51,14 @@ void main() {
     await tester.pump();
     expect(find.text('Cape du Vagabond'), findsOneWidget);
     expect(find.text("Veste de cuir de l'Éveillé"), findsNothing);
-    await tester.ensureVisible(find.text('Essayer').first);
+    await tester.ensureVisible(find.text('Voir sur mon personnage').first);
     await tester.pump();
-    await tester.tap(find.text('Essayer').first);
-    await tester.pump();
+    await tester.tap(find.text('Voir sur mon personnage').first);
+    await tester.pumpAndSettle();
+    expect(find.text('Aperçu sur Création du personnage'), findsOneWidget);
     expect(renderer.last?.itemNodes, ['item_cape_wanderer']);
+    await tester.tap(find.byTooltip('Fermer'));
+    await tester.pumpAndSettle();
 
     // Achat confirmé : 10 pièces d'argent.
     await tester.ensureVisible(find.text('Acheter').first);
@@ -129,7 +132,7 @@ void main() {
       find.text('Crée ton personnage pour essayer les objets.'),
       findsOneWidget,
     );
-    expect(find.text('Essayer'), findsNothing);
+    expect(find.text('Voir sur mon personnage'), findsNothing);
     await _scrollTo(
       tester,
       find.text(

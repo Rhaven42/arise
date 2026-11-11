@@ -407,22 +407,6 @@ class _BodyTab extends ConsumerWidget {
           nameOf: (s) => l10n.characterSkinName(s.id),
           onChanged: (c) => controller.edit((s) => s.copyWith(skinColor: c)),
         ),
-        const SizedBox(height: AriseSpacing.md),
-        _ChoiceDropdown<CharacterPose>(
-          label: l10n.characterPose,
-          values: CharacterPose.values,
-          value: sheet.pose,
-          nameOf: (p) => l10n.characterPoseName(p.name),
-          onChanged: (p) => controller.edit((s) => s.copyWith(pose: p)),
-        ),
-        const SizedBox(height: AriseSpacing.md),
-        _ChoiceDropdown<CharacterPosture>(
-          label: l10n.characterPosture,
-          values: CharacterPosture.values,
-          value: sheet.posture,
-          nameOf: (p) => l10n.characterPostureName(p.name),
-          onChanged: (p) => controller.edit((s) => s.copyWith(posture: p)),
-        ),
       ],
     );
   }

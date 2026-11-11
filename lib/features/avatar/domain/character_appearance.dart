@@ -21,8 +21,6 @@ class CharacterAppearance {
     this.eyebrowId = 'brow_01',
     this.beardId,
     this.makeupId,
-    this.poseId = 'pose_relaxed',
-    this.postureId = 'posture_neutral',
     this.itemNodes = const [],
     this.hiddenOutfit = const [],
     this.dyes = const {},
@@ -68,8 +66,6 @@ class CharacterAppearance {
       makeupId: sheet.makeupStyle > 0
           ? 'makeup_${two(sheet.makeupStyle)}'
           : null,
-      poseId: 'pose_${sheet.pose.name}',
-      postureId: 'posture_${sheet.posture.name}',
       itemNodes: loadout.itemNodes,
       hiddenOutfit: loadout.hiddenOutfit,
       dyes: loadout.dyes,
@@ -93,8 +89,6 @@ class CharacterAppearance {
 
   /// Maquillage visible, ou `null`.
   final String? makeupId;
-  final String poseId;
-  final String postureId;
 
   /// Pièces d'équipement visibles.
   final List<String> itemNodes;
@@ -118,8 +112,6 @@ class CharacterAppearance {
       other.eyebrowId == eyebrowId &&
       other.beardId == beardId &&
       other.makeupId == makeupId &&
-      other.poseId == poseId &&
-      other.postureId == postureId &&
       _sameList(other.itemNodes, itemNodes) &&
       _sameList(other.hiddenOutfit, hiddenOutfit) &&
       other.dyes.length == dyes.length &&
@@ -139,8 +131,6 @@ class CharacterAppearance {
     eyebrowId,
     beardId,
     makeupId,
-    poseId,
-    postureId,
     Object.hashAll(itemNodes),
     Object.hashAll(hiddenOutfit),
     Object.hashAllUnordered(

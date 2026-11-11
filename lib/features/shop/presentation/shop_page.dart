@@ -39,7 +39,6 @@ class _ShopPageState extends ConsumerState<ShopPage> {
   /// Emplacement filtré ; `null` = tout ; [_hairFilter] = coiffures.
   EquipmentSlot? _slot;
   bool _hairFilter = false;
-  ShopArticle? _tryOn;
 
   Future<void> _buy(ShopArticle article, Coins price) async {
     final l10n = AppLocalizations.of(context);
@@ -77,6 +76,22 @@ class _ShopPageState extends ConsumerState<ShopPage> {
       );
   }
 
+  Future<void> _showOnCharacter(
+    ShopArticle article,
+    CharacterSheet sheet,
+    Inventory inventory,
+  ) {
+    // Page plein écran (et non une fenêtre superposée) : la vue 3D est une
+    // vue native, qui s'affiche mal dans une route transparente.
+    return Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) =>
+            _TryOnView(article: article, sheet: sheet, inventory: inventory),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -93,7 +108,11 @@ class _ShopPageState extends ConsumerState<ShopPage> {
       appBar: AppBar(title: Text(l10n.shopTitle)),
       body: Column(
         children: [
-          _TryOnPreview(sheet: sheet, inventory: inventory, tryOn: _tryOn),
+          if (sheet == null)
+            Padding(
+              padding: const EdgeInsets.all(AriseSpacing.md),
+              child: Text(l10n.shopNoCharacter, textAlign: TextAlign.center),
+            ),
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AriseSpacing.md,
@@ -151,15 +170,10 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                   _ArticleTile(
                     article: article,
                     owned: owns(inventory, article),
-                    trying: _sameArticle(article, _tryOn),
                     price: priceOf(article),
                     onTryOn: sheet == null
                         ? null
-                        : () => setState(
-                            () => _tryOn = _sameArticle(article, _tryOn)
-                                ? null
-                                : article,
-                          ),
+                        : () => _showOnCharacter(article, sheet, inventory),
                     onBuy: () => _buy(article, priceOf(article)),
                   ),
                 Padding(
@@ -182,13 +196,6 @@ class _ShopPageState extends ConsumerState<ShopPage> {
     ItemArticle(:final item) =>
       !_hairFilter && (_slot == null || item.slot == _slot),
     HairStyleArticle() => _hairFilter || _slot == null,
-  };
-
-  static bool _sameArticle(ShopArticle a, ShopArticle? b) => switch ((a, b)) {
-    (ItemArticle(item: final x), ItemArticle(item: final y)) => x.id == y.id,
-    (HairStyleArticle(style: final x), HairStyleArticle(style: final y)) =>
-      x == y,
-    _ => false,
   };
 }
 
@@ -216,38 +223,26 @@ class _FilterChip extends StatelessWidget {
   }
 }
 
-/// Personnage enregistré, avec l'article essayé par-dessus sa tenue.
-class _TryOnPreview extends ConsumerWidget {
-  const _TryOnPreview({
+/// Grande vue 3D : le personnage enregistré porte l'article, par-dessus sa
+/// tenue (sans achat).
+class _TryOnView extends ConsumerWidget {
+  const _TryOnView({
+    required this.article,
     required this.sheet,
     required this.inventory,
-    required this.tryOn,
   });
 
-  final CharacterSheet? sheet;
+  final ShopArticle article;
+  final CharacterSheet sheet;
   final Inventory inventory;
-  final ShopArticle? tryOn;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final height = MediaQuery.sizeOf(context).height * 0.3;
-    final base = sheet;
-    if (base == null) {
-      return SizedBox(
-        height: height / 2,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AriseSpacing.md),
-            child: Text(l10n.shopNoCharacter, textAlign: TextAlign.center),
-          ),
-        ),
-      );
-    }
-    final article = tryOn;
+    final article = this.article;
     final shown = article is HairStyleArticle
-        ? base.copyWith(hairStyle: article.style)
-        : base;
+        ? sheet.copyWith(hairStyle: article.style)
+        : sheet;
     final appearance = CharacterAppearance.of(
       shown,
       loadout: loadoutOf(
@@ -255,9 +250,79 @@ class _TryOnPreview extends ConsumerWidget {
         tryOn: article is ItemArticle ? article.item : null,
       ),
     );
-    return SizedBox(
-      height: height,
-      child: ref.watch(characterRendererProvider).build(appearance: appearance),
+    final name = sheet.name.isEmpty ? l10n.characterTitle : sheet.name;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(l10n.shopPreviewTitle(name)),
+        leading: IconButton(
+          tooltip: l10n.shopClose,
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(AriseSpacing.sm),
+            child: Text(
+              articleLabel(l10n, article),
+              style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Expanded(
+            child: ref
+                .watch(characterRendererProvider)
+                .build(appearance: appearance),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(AriseSpacing.md),
+            child: Text(
+              l10n.shopPreviewHint,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Vignette de l'objet seul (rendue hors application, `assets/items/`).
+class _ArticleImage extends StatelessWidget {
+  const _ArticleImage({required this.article, required this.rarity});
+
+  final ShopArticle article;
+  final Rarity rarity;
+
+  static String assetOf(ShopArticle article) => switch (article) {
+    ItemArticle(:final item) => 'assets/items/${item.id}.png',
+    HairStyleArticle(:final style) =>
+      'assets/items/hairstyle_${style.toString().padLeft(2, '0')}.png',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      image: true,
+      label: l10n.shopItemImage(articleLabel(l10n, article)),
+      child: Container(
+        width: 88,
+        height: 88,
+        decoration: BoxDecoration(
+          color: AriseColors.stoneDark,
+          borderRadius: BorderRadius.circular(AriseSpacing.radius),
+          border: Border.all(color: rarityColor(rarity), width: 2),
+        ),
+        padding: const EdgeInsets.all(AriseSpacing.xs),
+        child: Image.asset(
+          assetOf(article),
+          fit: BoxFit.contain,
+          errorBuilder: (_, _, _) => const Icon(Icons.image_not_supported),
+        ),
+      ),
     );
   }
 }
@@ -266,7 +331,6 @@ class _ArticleTile extends StatelessWidget {
   const _ArticleTile({
     required this.article,
     required this.owned,
-    required this.trying,
     required this.price,
     required this.onTryOn,
     required this.onBuy,
@@ -274,7 +338,6 @@ class _ArticleTile extends StatelessWidget {
 
   final ShopArticle article;
   final bool owned;
-  final bool trying;
   final Coins price;
   final VoidCallback? onTryOn;
   final VoidCallback onBuy;
@@ -298,59 +361,71 @@ class _ArticleTile extends StatelessWidget {
       ),
     };
     return Card(
-      color: trying ? AriseColors.stoneLight : null,
       child: Padding(
         padding: const EdgeInsets.all(AriseSpacing.sm),
-        child: Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Icon(icon, color: rarityColor(rarity)),
-                const SizedBox(width: AriseSpacing.sm),
-                Expanded(
-                  child: Text(
-                    articleLabel(l10n, article),
-                    style: Theme.of(context).textTheme.titleSmall,
+            _ArticleImage(article: article, rarity: rarity),
+            const SizedBox(width: AriseSpacing.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(icon, size: 18, color: rarityColor(rarity)),
+                      const SizedBox(width: AriseSpacing.xs),
+                      Expanded(
+                        child: Text(
+                          articleLabel(l10n, article),
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AriseSpacing.xs),
-            Wrap(
-              spacing: AriseSpacing.md,
-              runSpacing: AriseSpacing.xs,
-              children: [
-                LabeledTag(
-                  icon: rarityIcon(rarity),
-                  label: rarityLabel(l10n, rarity),
-                  color: rarityColor(rarity),
-                ),
-                Text(subtitle),
-                Text(l10n.shopPrice(formatCoins(l10n, price))),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (onTryOn != null)
-                  TextButton.icon(
-                    onPressed: onTryOn,
-                    icon: Icon(
-                      trying ? Icons.visibility : Icons.visibility_outlined,
-                    ),
-                    label: Text(trying ? l10n.shopTryingOn : l10n.shopTryOn),
+                  const SizedBox(height: AriseSpacing.xs),
+                  Wrap(
+                    spacing: AriseSpacing.md,
+                    runSpacing: AriseSpacing.xs,
+                    children: [
+                      LabeledTag(
+                        icon: rarityIcon(rarity),
+                        label: rarityLabel(l10n, rarity),
+                        color: rarityColor(rarity),
+                      ),
+                      Text(subtitle),
+                      Text(l10n.shopPrice(formatCoins(l10n, price))),
+                    ],
                   ),
-                const SizedBox(width: AriseSpacing.sm),
-                if (owned)
-                  LabeledTag(
-                    icon: Icons.check,
-                    label: l10n.shopOwned,
-                    color: AriseColors.success,
-                  )
-                else
-                  FilledButton(onPressed: onBuy, child: Text(l10n.shopBuy)),
-              ],
+                  const SizedBox(height: AriseSpacing.xs),
+                  Wrap(
+                    alignment: WrapAlignment.end,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: AriseSpacing.sm,
+                    runSpacing: AriseSpacing.xs,
+                    children: [
+                      if (onTryOn != null)
+                        TextButton.icon(
+                          onPressed: onTryOn,
+                          icon: const Icon(Icons.accessibility_new),
+                          label: Text(l10n.shopTryOn),
+                        ),
+                      if (owned)
+                        LabeledTag(
+                          icon: Icons.check,
+                          label: l10n.shopOwned,
+                          color: AriseColors.success,
+                        )
+                      else
+                        FilledButton(
+                          onPressed: onBuy,
+                          child: Text(l10n.shopBuy),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),

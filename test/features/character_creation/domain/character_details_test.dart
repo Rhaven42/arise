@@ -112,21 +112,17 @@ void main() {
       expect(sheet.beardStyle, 0);
       expect(sheet.beardColor, isNull);
       expect(sheet.favoriteHairStyles, isEmpty);
-      expect(sheet.pose, CharacterPose.relaxed);
-      expect(sheet.posture, CharacterPosture.neutral);
     });
   });
 
   group('apparence', () {
-    test('visage, pièces et pose', () {
+    test('visage et pièces', () {
       final sheet = defaultSheet(sex: CharacterSex.male).copyWith(
         faceJaw: 1,
         faceNose: 0,
         eyebrowStyle: 6,
         beardStyle: 2,
         makeupStyle: 4,
-        pose: CharacterPose.combat,
-        posture: CharacterPosture.upright,
       );
       final a = CharacterAppearance.of(sheet);
       expect(a.morphs['face_jaw_high'], 1);
@@ -136,8 +132,6 @@ void main() {
       expect(a.eyebrowId, 'brow_06');
       expect(a.beardId, 'beard_02');
       expect(a.makeupId, 'makeup_04');
-      expect(a.poseId, 'pose_combat');
-      expect(a.postureId, 'posture_upright');
       expect(a.beardColor, sheet.hairColor);
       expect(
         CharacterAppearance.of(sheet.copyWith(beardColor: 0xFFE8E4DE))

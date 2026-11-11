@@ -1221,7 +1221,7 @@
     }
   },
   "characterHairStyle": "Coiffure",
-  "characterHairStyleName": "{id, select, h1{1 · Courte} h2{2 · Queue de cheval} h3{3 · Natte} h4{4 · Chignon} h5{5 · Longue} h6{6 · Crête} h7{7 · Rasée} h8{8 · Double natte} h9{9 · Carré} h10{10 · Crinière} other{?}}",
+  "characterHairStyleName": "{id, select, h1{1 · Courte} h2{2 · Queue de cheval} h3{3 · Natte} h4{4 · Chignon} h5{5 · Longue} h6{6 · Mèches rebelles} h7{7 · Très courte} h8{8 · Double natte} h9{9 · Carré} h10{10 · Bouclée} other{?}}",
   "@characterHairStyleName": {
     "placeholders": {
       "id": {
@@ -1293,24 +1293,6 @@
   "characterPresetsHint": "Un point de départ, ajustable ensuite avec les curseurs.",
   "characterPresetName": "{id, select, female_delicate{Délicate} female_slender{Svelte} female_athletic{Athlétique} female_swimmer{Nageuse} female_sprinter{Sprinteuse} female_muscular{Musclée} female_bodybuilder{Culturiste} female_warrior{Guerrière} female_round{Ronde} female_sturdy{Costaude} female_generous{Généreuse} female_hourglass{Sablier} male_thin{Fin} male_slender{Svelte} male_athletic{Athlétique} male_swimmer{Nageur} male_sprinter{Sprinteur} male_muscular{Musclé} male_bodybuilder{Culturiste} male_colossus{Colosse} male_robust{Robuste} male_stocky{Costaud} male_imposing{Imposant} male_v_shape{En V} other{?}}",
   "@characterPresetName": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
-  "characterPose": "Pose",
-  "characterPosture": "Posture",
-  "characterPoseName": "{id, select, a{En A} relaxed{Détendue} heroic{Héroïque} combat{Combat} other{?}}",
-  "@characterPoseName": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
-  "characterPostureName": "{id, select, neutral{Neutre} upright{Droite} slouched{Voûtée} arched{Bombée} other{?}}",
-  "@characterPostureName": {
     "placeholders": {
       "id": {
         "type": "String"
@@ -1409,8 +1391,7 @@
   "shopAll": "Tout",
   "shopHairStyles": "Coiffures",
   "shopOwned": "Possédé",
-  "shopTryOn": "Essayer",
-  "shopTryingOn": "Essayé",
+  "shopTryOn": "Voir sur mon personnage",
   "shopBuy": "Acheter",
   "shopNoCharacter": "Crée ton personnage pour essayer les objets.",
   "shopNoRealMoney": "Tout s'achète avec les pièces gagnées en t'entraînant. Jamais d'argent réel.",
@@ -1517,6 +1498,24 @@
   "@dyeColorName": {
     "placeholders": {
       "id": {
+        "type": "String"
+      }
+    }
+  },
+  "shopPreviewTitle": "Aperçu sur {name}",
+  "@shopPreviewTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "shopPreviewHint": "Fais glisser pour tourner ton personnage, pince pour zoomer.",
+  "shopClose": "Fermer",
+  "shopItemImage": "Aperçu de l'objet : {name}",
+  "@shopItemImage": {
+    "placeholders": {
+      "name": {
         "type": "String"
       }
     }

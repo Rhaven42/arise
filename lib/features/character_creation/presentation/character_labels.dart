@@ -49,7 +49,6 @@ String describeCharacter(AppLocalizations l10n, CharacterSheet sheet) => [
   musculatureLabel(l10n, sheet),
   l10n.characterHeight(sheet.heightCm),
   hairStyleLabel(l10n, sheet.hairStyle),
-  l10n.characterPoseName(sheet.pose.name),
 ].join(', ');
 
 String presetLabel(AppLocalizations l10n, CharacterSex sex, String id) =>
