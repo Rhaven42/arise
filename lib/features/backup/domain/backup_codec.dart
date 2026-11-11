@@ -9,6 +9,7 @@ import 'package:arise/features/planning/domain/program.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/quests/domain/daily_quest.dart';
+import 'package:arise/features/quests/domain/quest_board.dart';
 import 'package:arise/features/trials/domain/trials_state.dart';
 import 'package:arise/features/workout_player/domain/completed_session.dart';
 
@@ -49,8 +50,9 @@ abstract final class BackupCodec {
   /// - v4 (phase 4) : progression (niveau, stats, série, cristaux) ;
   /// - v5 (phase 6) : personnage ; les cristaux deviennent des pièces ;
   /// - v6 (phase 7) : inventaire (boutique) ;
-  /// - v7 (phase 8A) : quête du jour et épreuves de rang.
-  static const currentVersion = 7;
+  /// - v7 (phase 8A) : quête du jour et épreuves de rang ;
+  /// - v8 (phase 8B) : quête hebdomadaire, donjon et événements.
+  static const currentVersion = 8;
 
   /// Construit une sauvegarde au format courant.
   static BackupData create({
@@ -65,6 +67,7 @@ abstract final class BackupCodec {
     Inventory? inventory,
     DailyQuest? quest,
     TrialsState? trials,
+    QuestBoard? questBoard,
   }) {
     return BackupData(
       format: format,
@@ -80,6 +83,7 @@ abstract final class BackupCodec {
       inventory: inventory,
       quest: quest,
       trials: trials,
+      questBoard: questBoard,
     );
   }
 

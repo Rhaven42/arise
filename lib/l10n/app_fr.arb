@@ -1838,5 +1838,166 @@
         "type": "int"
       }
     }
+  },
+  "questsPageTitle": "Quêtes et donjon",
+  "questsOpen": "Quêtes de la semaine et donjon",
+  "weeklyTitle": "Quête de la semaine",
+  "weeklyObjective": "{metric, select, sessions{Séances complètes} activeMinutes{Minutes d'effort actif} dailyQuests{Quêtes du jour accomplies} other{?}} : {done} / {target}",
+  "@weeklyObjective": {
+    "placeholders": {
+      "metric": {
+        "type": "String"
+      },
+      "done": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "weeklyReward": "Récompense : {xp} XP et {coins}",
+  "@weeklyReward": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      },
+      "coins": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyClaimed": "Quête de la semaine accomplie.",
+  "weeklyRewardEarned": "Quête de la semaine accomplie : +{xp} XP et {coins}.",
+  "@weeklyRewardEarned": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      },
+      "coins": {
+        "type": "String"
+      }
+    }
+  },
+  "dungeonTitle": "Donjon de la semaine",
+  "dungeonThemeName": "{theme, select, stoneCrypt{La Crypte de Pierre} echoForest{La Forêt des Échos} windTower{La Tour des Vents} other{?}}",
+  "@dungeonThemeName": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
+  "dungeonThemeLore": "{theme, select, stoneCrypt{Des salles taillées dans le roc, gardées par des statues qui ne cèdent qu'à la force.} echoForest{Une forêt où chaque pas résonne : seuls les plus endurants en trouvent la sortie.} windTower{Une tour battue par les vents, où l'équilibre et la vivacité ouvrent chaque porte.} other{}}",
+  "@dungeonThemeLore": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      }
+    }
+  },
+  "dungeonRoomName": "{theme, select, stoneCrypt{Crypte} echoForest{Forêt} windTower{Tour} other{Donjon}} : salle {room}",
+  "@dungeonRoomName": {
+    "placeholders": {
+      "theme": {
+        "type": "String"
+      },
+      "room": {
+        "type": "int"
+      }
+    }
+  },
+  "dungeonRule": "Trois salles à franchir dans l'ordre, une par jour au plus : le repos fait partie de l'aventure.",
+  "dungeonRoomDone": "Salle {room} : franchie",
+  "@dungeonRoomDone": {
+    "placeholders": {
+      "room": {
+        "type": "int"
+      }
+    }
+  },
+  "dungeonRoomLocked": "Salle {room} : fermée",
+  "@dungeonRoomLocked": {
+    "placeholders": {
+      "room": {
+        "type": "int"
+      }
+    }
+  },
+  "dungeonRoomTomorrow": "Salle suivante ouverte demain.",
+  "dungeonEnter": "Entrer dans la salle {room}",
+  "@dungeonEnter": {
+    "placeholders": {
+      "room": {
+        "type": "int"
+      }
+    }
+  },
+  "dungeonCompleted": "Donjon terminé : butin récupéré.",
+  "dungeonRoomCleared": "{room} franchie !",
+  "@dungeonRoomCleared": {
+    "placeholders": {
+      "room": {
+        "type": "String"
+      }
+    }
+  },
+  "dungeonLootItem": "Butin du donjon : {item}, ajouté à l'inventaire.",
+  "@dungeonLootItem": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "dungeonLootCoins": "Butin du donjon : {coins}.",
+  "@dungeonLootCoins": {
+    "placeholders": {
+      "coins": {
+        "type": "String"
+      }
+    }
+  },
+  "eventTitle": "Événement",
+  "eventName": "{id, select, spring_awakening{L'Éveil du Printemps} summer_march{La Grande Marche d'Été} harvest_feast{La Fête des Moissons} winter_solstice{Le Solstice d'Hiver} other{?}}",
+  "@eventName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "eventObjective": "{metric, select, sessions{Séances complètes} activeMinutes{Minutes d'effort actif} other{?}} : {done} / {target} (jusqu'au {end})",
+  "@eventObjective": {
+    "placeholders": {
+      "metric": {
+        "type": "String"
+      },
+      "done": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "eventNone": "Aucun événement en cours. Le prochain s'annoncera ici.",
+  "eventClaimed": "Événement accompli.",
+  "eventRewardEarned": "{event} accompli : +{xp} XP et {coins}.",
+  "@eventRewardEarned": {
+    "placeholders": {
+      "event": {
+        "type": "String"
+      },
+      "xp": {
+        "type": "int"
+      },
+      "coins": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -163,8 +163,8 @@ SessionProgress applySession(
   final xp = ((baseXp + classXp) * multiplier).round();
   final xpByStat = {
     for (final entry in baseXpByStat.entries)
-      entry.key:
-          ((entry.value + (classBonus[entry.key] ?? 0)) * multiplier).round(),
+      entry.key: ((entry.value + (classBonus[entry.key] ?? 0)) * multiplier)
+          .round(),
   };
 
   // Pièces des efforts ; une séance sans détail par difficulté (anciennes

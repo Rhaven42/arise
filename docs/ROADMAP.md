@@ -106,10 +106,11 @@
 - [x] Base v8 et sauvegarde v7 (v6 toujours lisible), migration testée
 - [x] Parcours sur émulateur : quête du jour et page d'épreuve
 
-## Phase 8B — Quêtes hebdomadaires, donjons, classes
-- [ ] Quêtes hebdomadaires et d'événement
-- [ ] Donjons hebdomadaires
-- [ ] Classes (choix au rang C, changement mensuel)
+## Phase 8B — Quêtes hebdomadaires, donjons, classes (livré)
+- [x] Quêtes hebdomadaires et d'événement
+- [x] Donjons hebdomadaires (trois salles, une par jour, butin cosmétique)
+- [x] Classes (choix au rang C, changement mensuel, bonus d'XP)
+- [x] Sauvegarde v8 (v7 toujours lisible)
 
 ## Phase 9 — Hauts faits, titres, auras, Ombres
 - [ ] 60 hauts faits (7 catégories, dont secrets)

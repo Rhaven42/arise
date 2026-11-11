@@ -21,6 +21,7 @@ class QuestPanel extends ConsumerWidget {
   const QuestPanel({super.key});
 
   static const startKey = Key('quest-start');
+  static const boardKey = Key('quest-board');
   static const penaltyKey = Key('quest-penalty-start');
 
   @override
@@ -34,11 +35,25 @@ class QuestPanel extends ConsumerWidget {
     if (view == null || level == null) return const SizedBox.shrink();
     final quest = view.quest;
 
+    final boardLink = AriseButton(
+      key: boardKey,
+      label: l10n.questsOpen,
+      icon: Icons.map_outlined,
+      variant: AriseButtonVariant.secondary,
+      onPressed: () => context.go(AppRoutes.quests),
+    );
     if (quest.restDay || !quest.hasObjectives) {
       return SystemWindow(
         header: l10n.systemWindowHeader,
         title: l10n.questDailyTitle,
-        child: Text(l10n.questRestDay, style: textTheme.bodyLarge),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(l10n.questRestDay, style: textTheme.bodyLarge),
+            const SizedBox(height: AriseSpacing.sm),
+            boardLink,
+          ],
+        ),
       );
     }
 
@@ -104,6 +119,8 @@ class QuestPanel extends ConsumerWidget {
                   context.go(AppRoutes.workout(penaltyQuestProgramId)),
             ),
           ],
+          const SizedBox(height: AriseSpacing.sm),
+          boardLink,
         ],
       ),
     );

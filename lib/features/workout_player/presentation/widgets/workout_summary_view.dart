@@ -10,7 +10,7 @@ import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/exercises/presentation/exercise_labels.dart';
 import 'package:arise/features/progression/domain/progression_rules.dart';
 import 'package:arise/features/progression/presentation/progression_labels.dart';
-import 'package:arise/features/quests/domain/quest_rules.dart';
+import 'package:arise/features/quests/domain/quest_board_rules.dart';
 import 'package:arise/features/trials/domain/trial_rules.dart';
 import 'package:arise/features/trials/presentation/trial_labels.dart';
 import 'package:arise/features/workout_player/domain/completed_session.dart';
@@ -36,7 +36,7 @@ class WorkoutSummaryView extends StatelessWidget {
   final SessionProgress? progress;
 
   /// Quêtes accomplies grâce à la séance.
-  final QuestOutcome? questOutcome;
+  final QuestReport? questOutcome;
 
   /// Issue de l'épreuve de rang jouée.
   final TrialOutcome? trialOutcome;
@@ -231,8 +231,10 @@ List<Widget> _progressLines(
 List<Widget> _questLines(
   AppLocalizations l10n,
   TextTheme textTheme,
-  QuestOutcome outcome,
+  QuestReport report,
 ) {
+  final outcome = report.daily;
+  final board = report.board;
   final highlight = textTheme.titleMedium?.copyWith(
     color: AriseColors.goldBright,
   );
@@ -260,6 +262,34 @@ List<Widget> _questLines(
     if (!outcome.chest.isZero)
       Text(
         l10n.progressChest(formatCoins(l10n, outcome.chest)),
+        style: highlight,
+      ),
+    if (board.roomCleared case final room?)
+      Text(
+        l10n.dungeonRoomCleared(
+          l10n.dungeonRoomName(board.board.dungeon!.theme.name, room + 1),
+        ),
+        style: highlight,
+      ),
+    if (board.dungeonCompleted)
+      Text(
+        board.lootItem == null
+            ? l10n.dungeonLootCoins(formatCoins(l10n, board.lootCoins))
+            : l10n.dungeonLootItem(l10n.itemName(board.lootItem!.id)),
+        style: highlight,
+      ),
+    if (board.weeklyReward case final reward?)
+      Text(
+        l10n.weeklyRewardEarned(reward.xp, formatCoins(l10n, reward.coins)),
+        style: highlight,
+      ),
+    if (board.eventReward case final reward?)
+      Text(
+        l10n.eventRewardEarned(
+          l10n.eventName(board.event!.event.id),
+          reward.xp,
+          formatCoins(l10n, reward.coins),
+        ),
         style: highlight,
       ),
   ];

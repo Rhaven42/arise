@@ -29,9 +29,10 @@ Map<StatId, int> classBonusXpByStat(
   return {
     for (final entry in baseXpByStat.entries)
       if (stat == null || entry.key == stat)
-        entry.key: (entry.value *
-                (stat == null ? c.necromancerXpBonus : c.specialistXpBonus))
-            .round(),
+        entry.key:
+            (entry.value *
+                    (stat == null ? c.necromancerXpBonus : c.specialistXpBonus))
+                .round(),
   };
 }
 

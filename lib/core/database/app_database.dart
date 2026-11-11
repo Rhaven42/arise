@@ -458,6 +458,25 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
+  /// Ligne des quêtes au-delà du jour (semaine, donjon, événements).
+  static const questBoardRowId = 2;
+
+  Future<String?> readQuestBoardJson() async {
+    final query = select(questStates)
+      ..where((t) => t.id.equals(questBoardRowId));
+    return (await query.getSingleOrNull())?.json;
+  }
+
+  Future<void> saveQuestBoardJson(String json, {required DateTime updatedAt}) {
+    return into(questStates).insertOnConflictUpdate(
+      QuestStatesCompanion(
+        id: const Value(questBoardRowId),
+        json: Value(json),
+        updatedAt: Value(updatedAt.toUtc()),
+      ),
+    );
+  }
+
   Stream<String?> watchTrialsJson() {
     final query = select(trialStates)..where((t) => t.id.equals(profileRowId));
     return query.watchSingleOrNull().map((row) => row?.json);
@@ -486,6 +505,7 @@ class AppDatabase extends _$AppDatabase {
     String? progression,
     String? inventory,
     String? quest,
+    String? questBoard,
     String? trials,
   }) {
     return transaction(() async {
@@ -496,6 +516,9 @@ class AppDatabase extends _$AppDatabase {
         await saveInventoryJson(inventory, updatedAt: updatedAt);
       }
       if (quest != null) await saveQuestJson(quest, updatedAt: updatedAt);
+      if (questBoard != null) {
+        await saveQuestBoardJson(questBoard, updatedAt: updatedAt);
+      }
       if (trials != null) await saveTrialsJson(trials, updatedAt: updatedAt);
     });
   }

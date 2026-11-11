@@ -66,6 +66,10 @@ class DriftBackupRepository implements BackupRepository {
         final json? => DriftTrialsRepository.decode(json),
         null => null,
       },
+      questBoard: switch (await _database.readQuestBoardJson()) {
+        final json? => DriftQuestRepository.decodeBoard(json),
+        null => null,
+      },
     );
   }
 
@@ -128,6 +132,13 @@ class DriftBackupRepository implements BackupRepository {
       if (quest != null) {
         await _database.saveQuestJson(
           jsonEncode(quest.toJson()),
+          updatedAt: now,
+        );
+      }
+      final board = data.questBoard;
+      if (board != null) {
+        await _database.saveQuestBoardJson(
+          jsonEncode(board.toJson()),
           updatedAt: now,
         );
       }

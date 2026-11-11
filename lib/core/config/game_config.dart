@@ -333,6 +333,20 @@ class QuestsConfig {
     required this.rewardXpPerLevel,
     required this.rewardWillpower,
     required this.penaltyTargetShare,
+    required this.weeklySessionsMin,
+    required this.weeklySessionsMax,
+    required this.weeklyActiveMinutesByFitnessLevel,
+    required this.weeklyDailyQuests,
+    required this.weeklyRewardXpBase,
+    required this.weeklyRewardXpPerLevel,
+    required this.weeklyRewardSilver,
+    required this.dungeonRepsByFitnessLevel,
+    required this.dungeonSetsPerExercise,
+    required this.dungeonRoundsByFitnessLevel,
+    required this.dungeonRewardXp,
+    required this.dungeonFallbackSilver,
+    required this.eventRewardXp,
+    required this.eventRewardSilver,
   });
 
   final int dailyObjectivesMin;
@@ -367,6 +381,30 @@ class QuestsConfig {
   /// Part des objectifs du jour demandée par la quête de pénalité.
   final double penaltyTargetShare;
 
+  /// Quête hebdomadaire : séances complètes (selon les jours
+  /// d'entraînement, bornées), minutes d'effort actif selon le niveau du
+  /// questionnaire, quêtes du jour accomplies ; récompense.
+  final int weeklySessionsMin;
+  final int weeklySessionsMax;
+  final List<int> weeklyActiveMinutesByFitnessLevel;
+  final int weeklyDailyQuests;
+  final int weeklyRewardXpBase;
+  final int weeklyRewardXpPerLevel;
+  final int weeklyRewardSilver;
+
+  /// Donjon hebdomadaire : trois salles, une par jour au plus.
+  final List<int> dungeonRepsByFitnessLevel;
+  final int dungeonSetsPerExercise;
+  final List<int> dungeonRoundsByFitnessLevel;
+  final int dungeonRewardXp;
+
+  /// Butin quand tous les objets possibles sont déjà possédés.
+  final int dungeonFallbackSilver;
+
+  /// Quêtes d'événement (calendrier d'Arisia).
+  final int eventRewardXp;
+  final int eventRewardSilver;
+
   Map<String, Object> toJson() => {
     'dailyObjectivesMin': dailyObjectivesMin,
     'dailyObjectivesMax': dailyObjectivesMax,
@@ -383,6 +421,20 @@ class QuestsConfig {
     'rewardXpPerLevel': rewardXpPerLevel,
     'rewardWillpower': rewardWillpower,
     'penaltyTargetShare': penaltyTargetShare,
+    'weeklySessionsMin': weeklySessionsMin,
+    'weeklySessionsMax': weeklySessionsMax,
+    'weeklyActiveMinutesByFitnessLevel': weeklyActiveMinutesByFitnessLevel,
+    'weeklyDailyQuests': weeklyDailyQuests,
+    'weeklyRewardXpBase': weeklyRewardXpBase,
+    'weeklyRewardXpPerLevel': weeklyRewardXpPerLevel,
+    'weeklyRewardSilver': weeklyRewardSilver,
+    'dungeonRepsByFitnessLevel': dungeonRepsByFitnessLevel,
+    'dungeonSetsPerExercise': dungeonSetsPerExercise,
+    'dungeonRoundsByFitnessLevel': dungeonRoundsByFitnessLevel,
+    'dungeonRewardXp': dungeonRewardXp,
+    'dungeonFallbackSilver': dungeonFallbackSilver,
+    'eventRewardXp': eventRewardXp,
+    'eventRewardSilver': eventRewardSilver,
   };
 }
 
@@ -736,6 +788,20 @@ const gameConfig = GameConfig(
     rewardXpPerLevel: 2,
     rewardWillpower: 1,
     penaltyTargetShare: 0.5,
+    weeklySessionsMin: 2,
+    weeklySessionsMax: 5,
+    weeklyActiveMinutesByFitnessLevel: [60, 90, 120],
+    weeklyDailyQuests: 3,
+    weeklyRewardXpBase: 100,
+    weeklyRewardXpPerLevel: 5,
+    weeklyRewardSilver: 10,
+    dungeonRepsByFitnessLevel: [10, 12, 15],
+    dungeonSetsPerExercise: 3,
+    dungeonRoundsByFitnessLevel: [6, 8, 10],
+    dungeonRewardXp: 150,
+    dungeonFallbackSilver: 30,
+    eventRewardXp: 200,
+    eventRewardSilver: 25,
   ),
   character: CharacterConfig(
     usernameMinLength: 3,
@@ -852,5 +918,14 @@ const gameConfig = GameConfig(
     'quests.rewardXpPerLevel',
     'quests.rewardWillpower',
     'quests.penaltyTargetShare',
+    'quests.weeklyActiveMinutesByFitnessLevel',
+    'quests.weeklyDailyQuests',
+    'quests.weeklyRewardXpBase',
+    'quests.weeklyRewardSilver',
+    'quests.dungeonRepsByFitnessLevel',
+    'quests.dungeonRoundsByFitnessLevel',
+    'quests.dungeonRewardXp',
+    'quests.eventRewardXp',
+    'quests.eventRewardSilver',
   ],
 );
