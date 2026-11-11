@@ -38,8 +38,14 @@ class CharacterExerciseDemo extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final motion = ref.watch(figureMotionsProvider).value?[motionId];
+    final motions = ref.watch(figureMotionsProvider);
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    // Mouvements en cours de lecture : rien n'est affiché (pas d'aller-retour
+    // entre le mannequin et le personnage).
+    if (!motions.hasValue && !motions.hasError && !reduceMotion) {
+      return Semantics(label: semanticLabel, child: const SizedBox.expand());
+    }
+    final motion = motions.value?[motionId];
     if (motion == null || reduceMotion) {
       return FigureAnimation(
         motionId: motionId,

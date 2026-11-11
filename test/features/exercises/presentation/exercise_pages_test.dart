@@ -43,6 +43,7 @@ void main() {
     );
 
     expect(find.text('Pompes'), findsOneWidget);
+    await tester.pump();
     // Le personnage (par défaut, faute de personnage créé) fait les pompes.
     expect(find.byType(CharacterExerciseDemo), findsOneWidget);
     expect(find.byType(FigureAnimation), findsNothing);
