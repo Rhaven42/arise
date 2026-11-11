@@ -214,10 +214,30 @@ def studio(human, view, box):
     cam_obj.rotation_euler = (target - pos).to_track_quat("-Z", "Y").to_euler()
 
 
+def _use_gpu():
+    """Carte graphique si elle est disponible (OptiX, CUDA, HIP ou Metal),
+    sinon processeur."""
+    prefs = bpy.context.preferences.addons["cycles"].preferences
+    for backend in ("OPTIX", "CUDA", "HIP", "METAL", "ONEAPI"):
+        try:
+            prefs.compute_device_type = backend
+        except TypeError:
+            continue
+        prefs.get_devices()
+        gpus = [d for d in prefs.devices if d.type == backend]
+        if gpus:
+            for d in prefs.devices:
+                d.use = d.type == backend
+            print("rendu sur carte graphique :", backend, [d.name for d in gpus])
+            return "GPU"
+    print("rendu sur processeur")
+    return "CPU"
+
+
 def render(out, frame_count):
     scene = bpy.context.scene
     scene.render.engine = "CYCLES"
-    scene.cycles.device = "CPU"
+    scene.cycles.device = _use_gpu()
     scene.cycles.samples = SAMPLES
     scene.cycles.use_denoising = True
     scene.render.resolution_x = WIDTH
@@ -232,7 +252,7 @@ def render(out, frame_count):
     scene.render.image_settings.file_format = "PNG"
     bpy.ops.render.render(animation=True)
     subprocess.run([
-        "ffmpeg", "-y", "-loglevel", "error", "-framerate", str(FPS), "-i", os.path.join(tmp, "f_%04d.png"),
+        os.environ.get("ARISE_FFMPEG", "ffmpeg"), "-y", "-loglevel", "error", "-framerate", str(FPS), "-i", os.path.join(tmp, "f_%04d.png"),
         "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "26", "-preset", "slow", "-movflags", "+faststart", out,
     ], check=True)
 
@@ -241,7 +261,7 @@ def render_stills(out, frames):
     """Images fixes <out>_<image>.png (contrôle rapide du mouvement)."""
     scene = bpy.context.scene
     scene.render.engine = "CYCLES"
-    scene.cycles.device = "CPU"
+    scene.cycles.device = _use_gpu()
     scene.cycles.samples = SAMPLES
     scene.cycles.use_denoising = True
     scene.render.resolution_x = WIDTH // 2
