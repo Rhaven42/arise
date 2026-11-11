@@ -308,10 +308,9 @@ void main() {
     await pumpFor(1200);
     await tester.scrollUntilVisible(
       find.text('Quête du jour'),
-      200,
+      -200,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.drag(find.byType(Scrollable).first, const Offset(0, -200));
     await pumpFor(800);
     await binding.takeScreenshot('35_quete_du_jour');
     await tester.scrollUntilVisible(
