@@ -72,6 +72,14 @@ class SettingsPage extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.go(AppRoutes.backup),
           ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.info_outline, color: AriseColors.gold),
+            title: Text(l10n.creditsTile),
+            subtitle: Text(l10n.creditsTileHint),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.go(AppRoutes.credits),
+          ),
         ],
       ),
     );

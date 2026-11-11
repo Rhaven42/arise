@@ -22,17 +22,20 @@ Une nouvelle implémentation de `ExerciseAnimationPlayer` lira le `.glb`, jouera
 
 ### État actuel
 Six modèles de substitution générés par `tool/character/build_characters.py` (Blender + extension MPFB, maillage de base MakeHuman, licence CC0) : `assets/models/{human,elf,orc}_{female,male}.glb`. Aucun asset tiers protégé. Chaque fichier contient :
-- `body` (matériau `skin`), `tusks` pour les orques ;
+- `body` (matériau `skin`, texture de peau réaliste ramenée à une teinte neutre : la couleur choisie dans l'application est appliquée par-dessus ; peaux MakeHuman `young_caucasian_male` / `young_caucasian_female`, CC0), `tusks` pour les orques ;
 - `eye_sclera` (texture) et `eye_iris` (matériau `iris`, teinté par la couleur des yeux) — yeux MakeHuman « high-poly » (CC0) ;
 - `lashes` (cils MakeHuman `eyelashes01`, CC0) ;
-- `outfit_tunic`, `outfit_tunic_skirt`, `outfit_pants`, `outfit_boots`, `outfit_belt` (tenue de départ) ;
-- `hair_01` à `hair_10` (une seule visible, matériaux `hair_01`…`hair_10`, texture en niveaux de gris teintée par la couleur des cheveux) — coiffures MakeHuman CC0 : short02, ponytail01, braid01, rehmanpolanski_hair_bun_brown, long01, culturalibre_hair_05, short04, elvs_double_mh_braid, toigo_blunt_bob, afro01 (paquets « makehuman_system_assets » et « hair01 ») ;
-- `brow_01` à `brow_06` (sourcils MakeHuman eyebrow006, 001, 002, 004, 012, 009, CC0, teintés comme les cheveux), `beard_01` à `beard_06` (hommes, matériau `beard`) ;
+- tenue de départ en vraies pièces de vêtement, texturées, ajustées sur chaque morphologie : `outfit_tunic` (blouse lacée « Lace up blouse » de punkduck, **CC BY**, teinte lin), `outfit_pants` et `outfit_boots` (pantalon et bottes « viking » de RehmanPolanski, CC0) ; `outfit_under_top` et `outfit_under_pants` : maillot et collant sombres tirés de la peau, affichés seulement quand un objet de la boutique remplace la blouse ou le pantalon ;
+- `hair_01` à `hair_10` (une seule visible, matériaux `hair_01`…`hair_10`, texture en niveaux de gris teintée par la couleur des cheveux) : Grump hair (Elvaerwyn, **CC BY**), ponytail01 (CC0), Unkempt french braid (Elvaerwyn, CC0), Braid bun (Elvaerwyn, **CC BY**), Alpha 7 long (punkduck, **CC BY**), culturalibre_hair_02 (CC0), short02 (CC0), Double braid (Elvaerwyn, CC0), Wavy bob (Elvaerwyn, **CC BY**), Alpha 7 curly (punkduck, **CC BY**) ;
+- `brow_01` à `brow_06` (sourcils MakeHuman eyebrow006, 001, 002, 004, 012, 009, CC0, teintés comme les cheveux) ;
+- `beard_01` à `beard_06` (hommes, barbes en mèches, matériaux `beard_01`…`beard_06` teintés par la couleur de la barbe) : Full beard (grinsegold, **CC BY**), Faun beard (culturalibre, CC0), Viking moustache (RehmanPolanski, CC0), Scruffy beard 1 (Elvaerwyn, **CC BY**), Viking beard (RehmanPolanski, CC0), Dal moustache (culturalibre, **CC BY**) ;
 - `makeup_01` à `makeup_04` : pellicule du visage peinte en couleurs de sommets avec transparence (khôl, lèvres, joues, peinture de guerre) ;
 - formes (morph targets) : `corp_low`, `corp_high`, `musc_low`, `musc_high`, et pour le visage `face_jaw_*`, `face_nose_*`, `face_mouth_*`, `face_cheeks_*`, `face_ears_*` (`_low` / `_high`). La musculature ne change pas le volume d'ensemble (SPEC §29.1) ;
-- un squelette (os `Root`, `pelvis`, `spine_01`–`03`, `clavicle`, `upperarm`, `lowerarm`, `hand`, doigts, `neck_01`, `head`, `thigh`, `calf`, `foot`, `ball`, suffixes `_l` / `_r`) et trois animations : `pose_a` (référence), `pose_relaxed` (pose affichée), `breath` (respiration, additive).
+- un squelette (os `Root`, `pelvis`, `spine_01`–`03`, `clavicle`, `upperarm`, `lowerarm`, `hand`, doigts, `neck_01`, `head`, `thigh`, `calf`, `foot`, `ball`, suffixes `_l` / `_r`) et trois animations : `pose_a` (référence), `pose_relaxed` (pose affichée : bras le long du corps, coudes et doigts fléchis, poids sur la jambe gauche, tête légèrement inclinée ; SPEC §32), `breath` (respiration, additive).
 
-Fabrication : `ARISE_MH_ASSETS=<dossier contenant « sys » et « hair », les deux paquets MakeHuman décompressés> python3 tool/character/build_characters.py <sortie>` puis `tool/character/compress_models.sh <sortie> assets/models` (textures WebP, géométrie meshopt ; environ 3,3 Mo par modèle). Les vignettes de la boutique viennent de `tool/character/render_items.py assets/items`.
+Toutes les ressources MakeHuman viennent des paquets officiels de makehumancommunity.org (pages des paquets : « makehuman_system_assets », « hair01 », « hair02 », « hair03 », « bodyparts05 », « bodyparts06 », « shirts02 », « suits02 »). Les ressources **CC BY** (licence Creative Commons Attribution) sont citées dans l'écran Paramètres → Crédits, avec leur auteur et leur page d'origine.
+
+Fabrication : `ARISE_MH_ASSETS=<dossier où les paquets MakeHuman sont décompressés (sous-dossiers clothes, hair, eyebrows, eyelashes, eyes, skins…)> python3 tool/character/build_characters.py <sortie>` puis `tool/character/compress_models.sh <sortie> assets/models` (textures WebP, géométrie meshopt ; 4 à 5,2 Mo par modèle). Les vignettes de la boutique viennent de `tool/character/render_items.py assets/items`.
 
 ### Livrable attendu (version définitive)
 - **Six personnages** (3 races × 2 sexes) de style fantasy héroïque semi-réaliste, homme et femme sur des **maillages distincts**, conformes à SPEC §3.1.

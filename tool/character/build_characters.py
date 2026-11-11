@@ -5,10 +5,11 @@ Six corps originaux (3 races × 2 sexes), chacun exporté en .glb avec :
 - quatre formes de morphologie : corp_low / corp_high (corpulence) et
   musc_low / musc_high (musculature), appliquées au corps, à la tenue et à la
   calotte des coiffures, pour que tout suive les proportions ;
-- la tenue de départ (outfit_tunic, outfit_pants, outfit_boots, outfit_belt),
-  tirée de la géométrie d'aide « tights » du maillage MPFB : elle épouse donc
-  le corps quelle que soit la morphologie ;
-- dix coiffures originales (hair_01 à hair_10, matériau « hair »).
+- la tenue de départ (outfit_tunic, outfit_pants, outfit_boots), vraies pièces
+  de vêtement MakeHuman ajustées sur chaque morphologie, et les
+  sous-vêtements outfit_under_top / outfit_under_pants tirés de la peau ;
+- une peau texturée neutre, teintée par l'application ;
+- dix coiffures et six barbes MakeHuman (CC0 et CC BY, voir docs/ASSETS.md).
 
 Lancement dans Blender (avec MPFB installé) :
     exec(open(".../tool/character/build_characters.py").read())
@@ -17,8 +18,8 @@ Lancement dans Blender (avec MPFB installé) :
 ou sans interface, avec le module « bpy » de PyPI (même version de Blender) :
     python3 tool/character/build_characters.py <dossier de sortie>
 
-Aucun asset tiers : seuls le maillage de base MakeHuman (CC0) et des formes
-créées ici sont utilisés.
+Ressources tierces : uniquement des paquets MakeHuman sous licence CC0 ou
+CC BY (auteurs cités dans l'écran Crédits et dans docs/ASSETS.md).
 """
 
 import importlib
@@ -91,6 +92,8 @@ COLORS = {
     "eyes": (0.05, 0.03, 0.02, 1.0),
     "tusk": (0.80, 0.74, 0.60, 1.0),
     "linen": (0.42, 0.34, 0.22, 1.0),
+    "under_linen": (0.20, 0.16, 0.11, 1.0),
+    "under_wool": (0.05, 0.035, 0.025, 1.0),
     "wool": (0.07, 0.04, 0.022, 1.0),
     "leather": (0.035, 0.018, 0.01, 1.0),
     "rope": (0.30, 0.20, 0.09, 1.0),
@@ -427,44 +430,20 @@ def _front(c, marks):
 
 
 def _beards(template, groups, states, marks, mat):
-    co = states["base"]
-    body = groups["body"]
-    lc = marks["lips_center"]
-    lb, lt = marks["lips_bottom"], marks["lips_top"]
-    chin = marks["chin"]
-    ex = marks["ear_x"]
-    lips = groups.get("lips", set())
-
-    def face(c):
-        return _front(c, marks) and abs(c.x) < ex + 0.005
-
-    def full(c):
-        return face(c) and chin.z - 0.02 < c.z < lt + 0.012 and not (abs(c.x) < 0.028 and lb - 0.004 < c.z < lt + 0.004)
-
-    styles = {
-        "beard_01": (lambda c: full(c) and c.z < lc.z + 0.004 or (full(c) and abs(c.x) < 0.03 and c.z > lt), 0.002),
-        "beard_02": (lambda c: face(c) and abs(c.x) < 0.026 and chin.z - 0.01 < c.z < lb - 0.003, 0.0025),
-        "beard_03": (lambda c: face(c) and abs(c.x) < 0.032 and lt + 0.002 < c.z < lt + 0.016, 0.002),
-        "beard_04": (lambda c: full(c) and c.z < lb - 0.012, 0.002),
-        "beard_05": (lambda c: full(c), 0.006),
-        "beard_06": (lambda c: _front(c, marks) and ex - 0.012 < abs(c.x) < ex + 0.004 and marks["ear_z"] - 0.03 < c.z < marks["ear_z"] + 0.012 and c.y < marks["ear_y"] - 0.004, 0.002),
-    }
+    """Six barbes en mèches (MakeHuman, CC0 et CC-BY), texture teintée par
+    la couleur de la barbe (matériau « beard »)."""
     objs = []
-    for name, (test, offset) in styles.items():
-        keep = _faces_where(template, co, body - lips, test)
-        if not keep:
-            continue
-        obj = _extract(template, keep, name, states, offset=offset)
-        if name == "beard_05":
-            # Barbe longue : une pointe qui descend sous le menton.
-            tip = _tube(name + "_tip", [(0, chin.y - 0.004, chin.z + 0.01), (0, chin.y - 0.008, chin.z - 0.03), (0, chin.y - 0.004, chin.z - 0.07)], [0.028, 0.022, 0.006])
-            obj = _join_rigid(obj, [tip])
-            obj.name = name
-        obj.data.materials.clear()
-        obj.data.materials.append(mat)
-        objs.append(obj)
+    for name, folder in BEARD_SOURCES.items():
+        image = _tintable_image(_diffuse_texture(folder), name + "_tex", gain=1.0)
+        normal = _normal_texture(folder)
+        material = _textured_material(
+            name,
+            image,
+            normal=_image(normal, name + "_nrm") if normal else None,
+            roughness=0.55,
+        )
+        objs.append(_proxy(folder, name, states, material))
     return objs
-
 
 
 # --- Ressources MakeHuman (CC0) : cheveux, sourcils, cils, yeux --------------
@@ -479,31 +458,58 @@ def _beards(template, groups, states, marks, mat):
 # puisse les teinter (couleur des cheveux, des yeux).
 
 HAIR_SOURCES = {
-    "hair_01": "sys/hair/short02",
-    "hair_02": "sys/hair/ponytail01",
-    "hair_03": "sys/hair/braid01",
-    "hair_04": "hair/hair/rehmanpolanski_hair_bun_brown",
-    "hair_05": "sys/hair/long01",
-    "hair_06": "hair/hair/culturalibre_hair_05",
-    "hair_07": "sys/hair/short04",
-    "hair_08": "hair/hair/elvs_double_mh_braid",
-    "hair_09": "hair/hair/toigo_blunt_bob",
-    "hair_10": "sys/hair/afro01",
+    "hair_01": "hair/elvs_grump_hair",  # courte (CC-BY, Elvaerwyn)
+    "hair_02": "hair/ponytail01",  # queue de cheval
+    "hair_03": "hair/elvs_unkempt_french_braid",  # natte
+    "hair_04": "hair/elvs_braid_bun",  # chignon (CC-BY, Elvaerwyn)
+    "hair_05": "hair/punkduck_alpha7_long",  # longue (CC-BY, punkduck)
+    "hair_06": "hair/culturalibre_hair_02",  # mèches rebelles
+    "hair_07": "hair/short02",  # très courte
+    "hair_08": "hair/elvs_double_mh_braid",  # double natte
+    "hair_09": "hair/elvs_wavy_bob",  # carré (CC-BY, Elvaerwyn)
+    "hair_10": "hair/punkduck_alpha7_curly",  # bouclée (CC-BY, punkduck)
+}
+
+# Barbes en mèches (paquets « bodyparts05 », CC0, et « bodyparts06 », CC-BY).
+BEARD_SOURCES = {
+    "beard_01": "clothes/grinsegold_full_beard",  # collier (CC-BY)
+    "beard_02": "clothes/culturalibre_faun_beard",  # bouc
+    "beard_03": "clothes/rehmanpolanski_moustache_viking",  # moustache
+    "beard_04": "clothes/elvs_scruffy_beard1",  # courte (CC-BY, Elvaerwyn)
+    "beard_05": "clothes/rehmanpolanski_beard_viking",  # longue
+    "beard_06": "clothes/culturalibre_dal_moustache",  # moustache en guidon (CC-BY)
+}
+
+# Tenue de départ : vraies pièces de vêtement ajustées sur le corps.
+OUTFIT_TINTS = {"outfit_tunic": (0.92, 0.84, 0.70)}
+
+OUTFIT_SOURCES = {
+    "outfit_tunic": ("clothes/punkduck_lace_up_blouse", "linen"),  # CC-BY
+    "outfit_pants": ("clothes/rehmanpolanski_viking_pants", "wool"),
+    "outfit_boots": ("clothes/rehmanpolanski_viking_boots", "leather"),
+}
+
+# Peaux réalistes (paquets « skins », CC0) : texture ramenée à une teinte
+# neutre (l'application applique la couleur de peau) et relief (normal map).
+SKIN_SOURCES = {
+    "male": "skins/young_caucasian_male",
+    "female": "skins/young_caucasian_female",
 }
 
 EYEBROW_SOURCES = {
-    "brow_01": "sys/eyebrows/eyebrow006",  # fins
-    "brow_02": "sys/eyebrows/eyebrow001",  # épais
-    "brow_03": "sys/eyebrows/eyebrow002",  # arqués
-    "brow_04": "sys/eyebrows/eyebrow004",  # droits
-    "brow_05": "sys/eyebrows/eyebrow012",  # courts
-    "brow_06": "sys/eyebrows/eyebrow009",  # broussailleux
+    "brow_01": "eyebrows/eyebrow006",  # fins
+    "brow_02": "eyebrows/eyebrow001",  # épais
+    "brow_03": "eyebrows/eyebrow002",  # arqués
+    "brow_04": "eyebrows/eyebrow004",  # droits
+    "brow_05": "eyebrows/eyebrow012",  # courts
+    "brow_06": "eyebrows/eyebrow009",  # broussailleux
 }
 
-EYELASHES_SOURCE = "sys/eyelashes/eyelashes01"
-EYES_SOURCE = "sys/eyes/high-poly"
-EYES_TEXTURE = "sys/eyes/materials/brown_eye.png"
+EYELASHES_SOURCE = "eyelashes/eyelashes01"
+EYES_SOURCE = "eyes/high-poly"
+EYES_TEXTURE = "eyes/materials/brown_eye.png"
 TEXTURE_SIZE = 512
+SKIN_TEXTURE_SIZE = 1024
 
 
 def _mh_root():
@@ -568,6 +574,9 @@ def _tintable_image(source, name, gain=1.0, region=None, size=TEXTURE_SIZE):
     opaque = px[..., 3] > 0.3
     ref = np.percentile(lum[opaque], 92) if opaque.any() else 1.0
     grey = np.clip(lum / max(ref, 1e-3) * gain, 0.0, 1.0)
+    # Contraste adouci : les zones très sombres d'une texture ne donnent
+    # plus de mèches presque noires quand la couleur choisie est claire.
+    grey = 0.22 + 0.78 * grey
     out = px.copy()
     mask = np.ones((h, w), bool) if region is None else region(w, h)
     for c in range(3):
@@ -578,21 +587,79 @@ def _tintable_image(source, name, gain=1.0, region=None, size=TEXTURE_SIZE):
     return img
 
 
-def _textured_material(name, image, alpha=True, roughness=0.6):
+def _textured_material(name, image, alpha=True, roughness=0.6, normal=None):
     mat = bpy.data.materials.get(name) or bpy.data.materials.new(name)
     mat.use_nodes = True
     nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
     bsdf = next(n for n in nodes if n.bl_idname == "ShaderNodeBsdfPrincipled")
     tex = nodes.new("ShaderNodeTexImage")
     tex.image = image
-    mat.node_tree.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
+    links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
     if alpha:
-        mat.node_tree.links.new(tex.outputs["Alpha"], bsdf.inputs["Alpha"])
+        links.new(tex.outputs["Alpha"], bsdf.inputs["Alpha"])
         mat.surface_render_method = "DITHERED"
+    if normal is not None:
+        # Relief : carte de normales (espace tangent), exportée en glTF.
+        ntex = nodes.new("ShaderNodeTexImage")
+        ntex.image = normal
+        ntex.image.colorspace_settings.name = "Non-Color"
+        nmap = nodes.new("ShaderNodeNormalMap")
+        links.new(ntex.outputs["Color"], nmap.inputs["Color"])
+        links.new(nmap.outputs["Normal"], bsdf.inputs["Normal"])
     bsdf.inputs["Roughness"].default_value = roughness
     bsdf.inputs["Metallic"].default_value = 0.0
     mat.use_backface_culling = False
     return mat
+
+
+def _image(path, name, size=TEXTURE_SIZE):
+    """Image d'un paquet, réduite à [size] et intégrée au fichier."""
+    img = bpy.data.images.load(path, check_existing=False)
+    if img.size[0] > size:
+        img.scale(size, size)
+    img.name = name
+    img.pack()
+    return img
+
+
+def _normal_texture(folder):
+    """Carte de normales d'une pièce MakeHuman, ou `None`."""
+    mhmat = _mh_file(folder, ".mhmat")
+    with open(mhmat, encoding="utf-8", errors="ignore") as f:
+        for line in f:
+            words = line.split()
+            if len(words) >= 2 and words[0] == "normalmapTexture":
+                path = os.path.join(os.path.dirname(mhmat), os.path.basename(words[1]))
+                if os.path.exists(path):
+                    return path
+    return None
+
+
+def _neutral_skin_image(source, name, size=SKIN_TEXTURE_SIZE):
+    """Peau ramenée à une teinte neutre : chaque pixel est divisé par la
+    couleur moyenne de la peau. Les variations (pores, lèvres, joues,
+    ombres) sont gardées, la couleur de peau choisie dans l'application est
+    appliquée par-dessus (couleur du matériau)."""
+    import numpy as np
+
+    img = bpy.data.images.load(source, check_existing=False)
+    if img.size[0] > size:
+        img.scale(size, size)
+    w, h = img.size
+    px = np.array(img.pixels[:], dtype=np.float32).reshape(h, w, 4)
+    rgb = px[..., :3]
+    lum = rgb.mean(axis=2)
+    skin = (lum > np.percentile(lum, 20)) & (lum < np.percentile(lum, 95))
+    mean = rgb[skin].mean(axis=0)
+    out = rgb / np.maximum(mean, 1e-3)
+    out = out / max(np.percentile(out[skin].max(axis=1), 99), 1e-3)
+    px[..., :3] = np.clip(out, 0.0, 1.0)
+    px[..., 3] = 1.0
+    img.pixels[:] = px.ravel()
+    img.name = name
+    img.pack()
+    return img
 
 
 def _proxy(folder, name, states, material, face_keys=True):
@@ -839,12 +906,25 @@ def _muscle_states(states):
 # Rotations (os, axe dans le repère du corps au repos, degrés). L'axe X fait
 # avancer un membre vers l'arrière pour les bras et les jambes, et pencher le
 # buste ou la tête vers l'avant ; l'axe Y rapproche le bras gauche du corps.
+# Pose détendue et naturelle : bras le long du corps, coudes et doigts
+# légèrement fléchis, poids du corps sur la jambe gauche (bassin incliné,
+# genou droit relâché), épaules et tête un peu inclinées en contrepoids.
+_FINGERS = [f"{f}_{k}_{side}" for f in ("index", "middle", "ring", "pinky") for k in ("01", "02", "03") for side in ("l", "r")]
 POSES = {
     "pose_a": [],
     "pose_relaxed": [
-        ("upperarm_l", (0, 1, 0), 40), ("upperarm_r", (0, -1, 0), 40),
-        ("lowerarm_l", (1, 0, 0), -15), ("lowerarm_r", (1, 0, 0), -15),
-        ("spine_03", (1, 0, 0), 3), ("head", (1, 0, 0), 3),
+        ("upperarm_l", (0, 1, 0), 41), ("upperarm_r", (0, -1, 0), 41),
+        ("upperarm_l", (1, 0, 0), 2), ("upperarm_r", (1, 0, 0), 2),
+        ("lowerarm_l", (1, 0, 0), -9), ("lowerarm_r", (1, 0, 0), -9),
+        ("lowerarm_l", "twist", 35), ("lowerarm_r", "twist", -35),
+        ("hand_l", "twist", 15), ("hand_r", "twist", -15),
+        *[(bone, (1, 0, 0), -14) for bone in _FINGERS],
+        ("pelvis", (0, 1, 0), 2.5),
+        ("thigh_l", (0, 1, 0), 1.5), ("thigh_r", (0, -1, 0), 0.5),
+        ("thigh_r", (1, 0, 0), -5), ("calf_r", (1, 0, 0), 10),
+        ("spine_02", (0, -1, 0), 2.0),
+        ("neck_01", (1, 0, 0), 2.0),
+        ("head", (0, 1, 0), 2.5), ("head", (0, 0, 1), 4.0),
     ],
 }
 
@@ -853,7 +933,11 @@ def _rotate(arm, name, axis, degrees):
     pose_bone = arm.pose.bones[name]
     pose_bone.rotation_mode = "QUATERNION"
     bone = arm.data.bones[name]
-    local = (bone.matrix_local.inverted().to_3x3() @ Vector(axis)).normalized()
+    # « twist » : rotation autour de l'axe de l'os lui-même (avant-bras).
+    if axis == "twist":
+        local = Vector((0, 1, 0))
+    else:
+        local = (bone.matrix_local.inverted().to_3x3() @ Vector(axis)).normalized()
     pose_bone.rotation_quaternion = Quaternion(local, math.radians(degrees)) @ pose_bone.rotation_quaternion
 
 
@@ -1283,7 +1367,14 @@ def build(sex, race, out_dir):
     mats = {name: _material(name) for name in COLORS}
 
     body = _extract(template, groups["body"], "body", states)
-    body.data.materials.append(mats["skin"])
+    skin_folder = SKIN_SOURCES[sex]
+    skin = _textured_material(
+        "skin",
+        _neutral_skin_image(_diffuse_texture(skin_folder), "skin_tex"),
+        alpha=False,
+        roughness=0.5,
+    )
+    body.data.materials.append(skin)
     marks = _landmarks(states["base"], groups)
     _eye_parts(template, groups, states, mats)
     _eyebrows(template, groups, states, marks, mats["brow"])
@@ -1291,31 +1382,48 @@ def build(sex, race, out_dir):
         _beards(template, groups, states, marks, mats["beard"])
     _makeups(template, groups, states, marks)
 
-    tights = groups["helper-tights"]
+    # Tenue de départ : vraies pièces de vêtement (MakeHuman), texturées.
     co = states["base"]
-    # Seuils exprimés en fraction de la taille du corps (toutes les races).
     height = max(co[i].z for i in groups["body"])
-    z = {i: co[i].z / height for i in tights}
-    x = {i: abs(co[i].x) / height for i in tights}
-    legs = {i for i in tights if z[i] < 0.39 or x[i] < 0.138}
-    pieces = [
-        ("outfit_tunic", {i for i in tights if 0.585 < z[i] < 0.835 and x[i] < 0.157}, 0.014, None, "linen"),
-        ("outfit_pants", {i for i in legs if 0.17 < z[i] < 0.62}, 0.008, None, "wool"),
-        ("outfit_boots", {i for i in tights if z[i] < 0.207}, 0.012, None, "leather"),
-    ]
-    # Bas de la tunique : la géométrie d'aide « jupe » tombe droit sur les hanches.
-    skirt = {i for i in groups["helper-skirt"] if co[i].z / height > 0.40}
-    pieces.append(("outfit_tunic_skirt", skirt, 0.012, None, "linen"))
-    # Ceinture de corde posée sur la jonction entre le haut et le bas.
-    band = [i for i in groups["body"] if 0.588 < co[i].z / height < 0.607 and abs(co[i].x) / height < 0.16]
-    for name, keep, offset, flare, mat in pieces:
-        if not keep:
-            continue
-        obj = _extract(template, keep, name, states, offset=offset, flare=flare)
-        obj.data.materials.append(mats[mat])
+    # Sous-vêtements ajustés (maillot et collant), tirés de la peau juste
+    # au-dessus d'elle : affichés seulement quand un objet de la boutique
+    # remplace la blouse ou le pantalon, ils couvrent le corps sous l'objet
+    # (les objets sont décalés d'au moins 1,3 cm, les sous-vêtements de 4 mm).
+    body_faces = groups["body"]
+    hand_x = 0.165 * height
 
-    belt = _ring("outfit_belt", band, states, 0.034, 0.008)
-    belt.data.materials.append(mats["rope"])
+    def top(c):
+        return 0.555 * height < c.z < 0.83 * height and abs(c.x) < 0.157 * height
+
+    def bottom(c):
+        return 0.17 * height < c.z < 0.62 * height and abs(c.x) < hand_x * 0.85
+
+    for name, test, look in (
+        ("outfit_under_top", top, "under_linen"),
+        ("outfit_under_pants", bottom, "under_wool"),
+    ):
+        keep = _faces_where(template, co, body_faces, test)
+        if keep:
+            obj = _extract(template, keep, name, states, offset=0.004)
+            obj.data.materials.append(mats[look])
+    for name, (folder, look) in OUTFIT_SOURCES.items():
+        normal = _normal_texture(folder)
+        texture = _image(_diffuse_texture(folder), name + "_tex")
+        if name in OUTFIT_TINTS:
+            import numpy as np
+
+            px = np.array(texture.pixels[:], dtype=np.float32).reshape(-1, 4)
+            px[:, :3] *= np.array(OUTFIT_TINTS[name], dtype=np.float32)
+            texture.pixels[:] = px.ravel()
+            texture.pack()
+        material = _textured_material(
+            look,
+            texture,
+            alpha=False,
+            roughness=0.85,
+            normal=_image(normal, name + "_nrm") if normal else None,
+        )
+        _proxy(folder, name, states, material)
 
     if race == "orc":
         lips = [co[i] for i in groups.get("lips", set()) if co[i].z > 0.85 * height]
