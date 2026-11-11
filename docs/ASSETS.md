@@ -46,14 +46,15 @@ Fabrication : `ARISE_MH_ASSETS=<dossier où les paquets MakeHuman sont décompre
 - **Budget mobile** : 25 000 triangles au plus pour le corps, 8 000 par pièce d'équipement, textures 2048 × 2048 au plus.
 - **Licence** : créations originales ou licences compatibles avec une publication commerciale ; pour les achats sur Fab, licence standard ou professionnelle uniquement (pas « Reference Only » ni l'ancienne licence Marketplace), avec la source et la licence de chaque asset notées ici.
 
-## 3. Équipement de la boutique (phase 7)
+## 3. Équipement de la boutique (phase 7, refait le 11/11/2026)
 
 ### État actuel
-Pièces de substitution générées par la fonction `_equipment` de `tool/character/build_characters.py`, incluses dans chacun des six modèles. Le script tourne dans Blender ou sans interface avec le module `bpy` de PyPI (même version, 5.2.3) et l'extension MPFB installée depuis ses sources (licence CC0 pour les données MakeHuman).
-- Pièces tirées du corps (décalées le long des normales) : `item_leather_chest`, `item_leather_hands`, `item_leather_legs`, `item_leather_feet`, `item_mail_head`, `item_mail_chest`, `item_mail_hands`, `item_mail_legs`, `item_mail_feet`, `item_plate_head`, `item_plate_shoulders`, `item_plate_chest`, `item_plate_hands`, `item_plate_belt`, `item_plate_legs`, `item_plate_feet`, `item_hood_twilight` ; ceinturon `item_leather_belt` ; capes `item_cape_wanderer`, `item_cape_dawn` (nappes recalculées pour chaque morphologie).
-- Armes rigides liées à l'os `hand_r` : `item_sword_dawn`, `item_staff_ember` (plusieurs matériaux : le moteur les sépare en `item_<id>_1`, `_2`…).
-- Matériaux : `dye_<id>` pour les objets teignables (la couleur d'origine sert quand aucune teinture n'est choisie), `item_steel`, `item_gold`, `item_mail`, `item_leather_dark`, `item_wood`, `item_ember`.
-- Limites connues : pas de textures ; bottes et solerets gardent la forme des orteils ; la maille est une surface lisse ; les capes ne flottent pas.
+Pièces générées par la fonction `_equipment` de `tool/character/build_characters.py`, incluses dans chacun des six modèles (variables `ARISE_MH_ASSETS` pour les paquets MakeHuman et `ARISE_PBR` pour les matières ambientCG décompressées).
+- **Vraies pièces MakeHuman** ajustées sur chaque morphologie (mêmes formes que le corps, poids de peau transférés) : `item_leather_chest` (Male boho top 1, Elvaerwyn, **CC BY**), `item_leather_legs` (Wool pants, Margaret Toigo, CC0), `item_leather_hands`, `item_mail_hands`, `item_plate_hands` (gants courts, moyens et longs, Margaret Toigo, CC0), `item_leather_feet` (Medieval boots, punkduck, **CC BY**), `item_mail_chest` (Viking tunic, RehmanPolanski, CC0), `item_mail_feet` (Tight leather boots, madmanny, **CC BY**), `item_plate_head` (Templar knight helmet, javherre, CC0, lié à l'os `head`), `item_plate_feet` (Hero boots 4, culturalibre, CC0), `item_hood_twilight` (Monk robe hood, Donitz, CC0). Gants et bottes sont légèrement gonflés pour que le corps ne les traverse pas.
+- **Pièces tirées du corps**, lissées pour perdre le relief du corps (plaques forgées) : `item_mail_head`, `item_mail_legs`, `item_plate_shoulders`, `item_plate_chest`, `item_plate_belt`, `item_plate_legs` ; ceinture `item_leather_belt` ; capes `item_cape_wanderer`, `item_cape_dawn` (nappes recalculées pour chaque morphologie, avec UV).
+- **Armes rigides** liées à l'os `hand_r` : `item_sword_dawn`, `item_staff_ember` (orbe lumineux).
+- **Matières** (ambientCG, CC0) : cuir Leather037, maille Chainmail004, acier Metal009, or Metal048A, tissu Fabric061 ; texture répétée en niveaux de gris × couleur de la pièce, relief (normal map) et rugosité pour les métaux. Matériaux `dye_<id>` pour les objets teignables (la couleur de base sert quand aucune teinture n'est choisie).
+- Limites connues : la coiffe de maille et les jambières restent tirées du corps ; les capes ne flottent pas.
 
 ### Livrable attendu
 - Chaque objet en version définitive, **un exemplaire par race et par sexe**, sous le même nom `item_<id>`, lié au même squelette (poids de peau) et portant les formes `corp_low`, `corp_high`, `musc_low`, `musc_high` (plus `face_*` pour les coiffes), afin de suivre la pose et la morphologie sans traverser le corps.

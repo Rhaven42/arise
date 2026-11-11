@@ -198,7 +198,7 @@ def _race_deform(race, coords, groups):
     return out
 
 
-def _extract(template, keep, name, states, offset=0.0, flare=None, refine=None):
+def _extract(template, keep, name, states, offset=0.0, flare=None, refine=None, smooth=0):
     """Crée un objet à partir des faces de [keep], avec une forme par état."""
     bm = bmesh.new()
     bm.from_mesh(template)
@@ -235,6 +235,30 @@ def _extract(template, keep, name, states, offset=0.0, flare=None, refine=None):
                     t = z0 - co.z
                     co = Vector((co.x * (1 + k * t), co.y * (1 + k * 0.6 * t), co.z))
             result.append(co)
+        if smooth:
+            # Lissage (Laplacien) : la pièce perd le relief du corps (seins,
+            # abdominaux) et prend la forme d'une plaque forgée.
+            neighbours = [set() for _ in result]
+            for e in tmp.edges:
+                a, b = e.vertices
+                neighbours[a].add(b)
+                neighbours[b].add(a)
+            # Le bord de la pièce reste en place (pas de bord effrangé).
+            uses = {}
+            for poly in tmp.polygons:
+                for key in poly.edge_keys:
+                    uses[key] = uses.get(key, 0) + 1
+            for (a, b), n in uses.items():
+                if n == 1:
+                    neighbours[a] = set()
+                    neighbours[b] = set()
+            for _ in range(smooth):
+                result = [
+                    co * 0.5 + sum((result[n] for n in near), Vector()) / len(near) * 0.5
+                    if near
+                    else co
+                    for co, near in zip(result, neighbours)
+                ]
         bpy.data.meshes.remove(tmp)
         return result
 
@@ -662,7 +686,7 @@ def _neutral_skin_image(source, name, size=SKIN_TEXTURE_SIZE):
     return img
 
 
-def _proxy(folder, name, states, material, face_keys=True):
+def _proxy(folder, name, states, material, face_keys=True, inflate=0.0):
     """Pièce MakeHuman ajustée sur le corps, avec une forme par état."""
     mod = importlib.import_module(_MPFB[: -len("services.")] + "entities.clothes.mhclo")
     mhclo = mod.Mhclo()
@@ -686,6 +710,14 @@ def _proxy(folder, name, states, material, face_keys=True):
                 coords[a] * wa + coords[b] * wb + coords[c] * wc
                 + Vector((off[0] * x_size, off[1] * z_size, off[2] * y_size))
             )
+        if inflate:
+            # Pièce un peu plus ample (gants, bottes) : le corps ne la traverse
+            # plus (orteils, doigts).
+            tmp = bpy.data.meshes.new("tmp")
+            tmp.from_pydata(out, [], [[v for v, _ in f] for f in faces])
+            tmp.update()
+            out = [v.co + v.normal * inflate for v in tmp.vertices]
+            bpy.data.meshes.remove(tmp)
         return out
 
     mesh = bpy.data.meshes.new(name)
@@ -1041,18 +1073,32 @@ def _rig_and_skin(sex, race, objects, rigid):
 # la main droite et déplacée avec elle d'un état à l'autre. Les matériaux
 # `dye_<id>` peuvent être teints par l'application.
 
+# Matières réalistes (ambientCG, CC0) : texture répétée sur la pièce, relief
+# et rugosité. La couleur est ramenée en niveaux de gris puis multipliée par
+# la teinte de la pièce, ce qui garde la teinture de la boutique.
+PBR_SETS = {
+    # matière : (dossier ambientCG, répétitions sur les UV du corps)
+    "leather": ("Leather037", 9.0),
+    "mail": ("Chainmail004", 16.0),
+    "steel": ("Metal009", 3.0),
+    "gold": ("Metal048A", 3.0),
+    "cloth": ("Fabric061", 10.0),
+    "wood": ("Leather026", 3.0),
+}
+PBR_TEXTURE_SIZE = 512
+
 ITEM_MATERIALS = {
-    # nom : (couleur linéaire, métal, rugosité)
-    "leather_brown": ((0.10, 0.045, 0.02, 1.0), 0.0, 0.75),
-    "leather_dark": ((0.03, 0.017, 0.01, 1.0), 0.0, 0.7),
-    "mail": ((0.30, 0.31, 0.33, 1.0), 0.9, 0.45),
-    "steel": ((0.55, 0.56, 0.58, 1.0), 1.0, 0.3),
-    "gold": ((0.80, 0.55, 0.18, 1.0), 1.0, 0.3),
-    "cloth_teal": ((0.03, 0.12, 0.13, 1.0), 0.0, 0.9),
-    "cloth_red": ((0.30, 0.03, 0.03, 1.0), 0.0, 0.9),
-    "cloth_violet": ((0.10, 0.05, 0.16, 1.0), 0.0, 0.9),
-    "wood": ((0.12, 0.06, 0.025, 1.0), 0.0, 0.8),
-    "ember": ((1.0, 0.28, 0.04, 1.0), 0.0, 0.4),
+    # nom : (matière, couleur linéaire, métal, rugosité de base)
+    "leather_brown": ("leather", (0.16, 0.075, 0.035, 1.0), 0.0, 0.82),
+    "leather_dark": ("leather", (0.05, 0.028, 0.016, 1.0), 0.0, 0.78),
+    "mail": ("mail", (0.55, 0.56, 0.58, 1.0), 1.0, 0.45),
+    "steel": ("steel", (0.62, 0.63, 0.65, 1.0), 1.0, 0.3),
+    "gold": ("gold", (0.85, 0.60, 0.22, 1.0), 1.0, 0.3),
+    "cloth_teal": ("cloth", (0.04, 0.16, 0.17, 1.0), 0.0, 0.9),
+    "cloth_red": ("cloth", (0.40, 0.04, 0.04, 1.0), 0.0, 0.9),
+    "cloth_violet": ("cloth", (0.14, 0.07, 0.22, 1.0), 0.0, 0.9),
+    "wood": ("wood", (0.20, 0.10, 0.045, 1.0), 0.0, 0.8),
+    "ember": (None, (1.0, 0.22, 0.02, 1.0), 0.0, 0.4),
 }
 
 # Objets teignables : matériau de base de leur teinture.
@@ -1064,13 +1110,148 @@ DYEABLE = {
     "hood_twilight": "cloth_violet",
 }
 
+_PBR_IMAGES = {}
+
+
+def _pbr_root():
+    root = os.environ.get("ARISE_PBR")
+    if not root or not os.path.isdir(root):
+        raise RuntimeError("ARISE_PBR doit désigner le dossier des matières ambientCG décompressées")
+    return root
+
+
+def _pbr_images(material):
+    """Couleur (niveaux de gris normalisés), relief et rugosité d'une matière."""
+    import numpy as np
+
+    if material in _PBR_IMAGES:
+        return _PBR_IMAGES[material]
+    folder, _ = PBR_SETS[material]
+    base = os.path.join(_pbr_root(), folder, f"{folder}_1K-JPG_")
+    color = _image(base + "Color.jpg", f"pbr_{material}_col", size=PBR_TEXTURE_SIZE)
+    w, h = color.size
+    px = np.array(color.pixels[:], dtype=np.float32).reshape(h, w, 4)
+    lum = px[..., :3] @ np.array([0.3, 0.59, 0.11], dtype=np.float32)
+    grey = np.clip(lum / max(np.percentile(lum, 97), 1e-3), 0.0, 1.0)
+    # Contraste adouci : le grain reste visible sans taches marquées.
+    grey = 0.55 + 0.45 * grey
+    for c in range(3):
+        px[..., c] = grey
+    color.pixels[:] = px.ravel()
+    color.pack()
+    normal = _image(base + "NormalGL.jpg", f"pbr_{material}_nrm", size=PBR_TEXTURE_SIZE)
+    rough = _image(base + "Roughness.jpg", f"pbr_{material}_rgh", size=PBR_TEXTURE_SIZE)
+    normal.colorspace_settings.name = "Non-Color"
+    rough.colorspace_settings.name = "Non-Color"
+    _PBR_IMAGES[material] = (color, normal, rough)
+    return _PBR_IMAGES[material]
+
+
+def _pbr_material(name, look):
+    """Matériau réaliste : texture de la matière × couleur de la pièce."""
+    material, color, metal, rough = ITEM_MATERIALS[look]
+    mat = bpy.data.materials.get(name)
+    if mat is not None:
+        return mat
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
+    bsdf = next(n for n in nodes if n.bl_idname == "ShaderNodeBsdfPrincipled")
+    bsdf.inputs["Metallic"].default_value = metal
+    bsdf.inputs["Roughness"].default_value = rough
+    mat.use_backface_culling = False
+    if material is None:
+        bsdf.inputs["Base Color"].default_value = color
+        if look == "ember":
+            bsdf.inputs["Emission Color"].default_value = color
+            bsdf.inputs["Emission Strength"].default_value = 1.2
+        return mat
+    col_img, nrm_img, rgh_img = _pbr_images(material)
+    _, repeat = PBR_SETS[material]
+    coord = nodes.new("ShaderNodeTexCoord")
+    mapping = nodes.new("ShaderNodeMapping")
+    mapping.inputs["Scale"].default_value = (repeat, repeat, 1.0)
+    links.new(coord.outputs["UV"], mapping.inputs["Vector"])
+
+    def tex(image):
+        node = nodes.new("ShaderNodeTexImage")
+        node.image = image
+        links.new(mapping.outputs["Vector"], node.inputs["Vector"])
+        return node
+
+    # Couleur : texture × teinte (exportée comme baseColorFactor).
+    mix = nodes.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    mix.blend_type = "MULTIPLY"
+    mix.inputs[0].default_value = 1.0
+    rgba_in = [i for i in mix.inputs if i.type == "RGBA"]
+    rgba_out = [o for o in mix.outputs if o.type == "RGBA"]
+    links.new(tex(col_img).outputs["Color"], rgba_in[0])
+    rgba_in[1].default_value = color
+    links.new(rgba_out[0], bsdf.inputs["Base Color"])
+    nmap = nodes.new("ShaderNodeNormalMap")
+    links.new(tex(nrm_img).outputs["Color"], nmap.inputs["Color"])
+    links.new(nmap.outputs["Normal"], bsdf.inputs["Normal"])
+    if metal > 0:
+        links.new(tex(rgh_img).outputs["Color"], bsdf.inputs["Roughness"])
+    return mat
+
 
 def _item_material(item_id, look):
     if item_id in DYEABLE:
-        color, metal, rough = ITEM_MATERIALS[DYEABLE[item_id]]
-        return _material("dye_" + item_id, color, metal, rough)
-    color, metal, rough = ITEM_MATERIALS[look]
-    return _material("item_" + look, color, metal, rough)
+        return _pbr_material("dye_" + item_id, DYEABLE[item_id])
+    return _pbr_material("item_" + look, look)
+
+
+# Vraies pièces MakeHuman pour l'équipement de la boutique : (dossier, matière
+# imposée ou None pour garder la texture d'origine, os des pièces rigides).
+ITEM_SOURCES = {
+    "leather_chest": ("clothes/elvs_male_boho_top1", "leather_brown", None),  # CC-BY
+    "leather_legs": ("clothes/toigo_wool_pants", "leather_brown", None),
+    "leather_hands": ("clothes/toigo_gloves_short", "leather_dark", None),
+    "leather_feet": ("clothes/punkduck_medieval_boots", None, None),  # CC-BY
+    "mail_chest": ("clothes/rehmanpolanski_viking_tunic", None, None),
+    "mail_hands": ("clothes/toigo_gloves_medium", "mail", None),
+    "mail_feet": ("clothes/madmanny_tight_leather_boots", None, None),  # CC-BY
+    "plate_head": ("clothes/javherre_casco_caballero_templario_templar_knight_helmet", None, "head"),
+    "plate_hands": ("clothes/toigo_gloves_long", "steel", None),
+    "plate_feet": ("clothes/culturalibre_hero_boots_4", "steel", None),
+    "hood_twilight": ("clothes/donitz_monk_robe_hood", "cloth_violet", None),
+}
+
+# Gonflement des vraies pièces portées sur les mains et les pieds (mètres).
+ITEM_INFLATE = {
+    "leather_chest": 0.007,
+    "leather_legs": 0.005,
+    "leather_hands": 0.003,
+    "leather_feet": 0.006,
+    "mail_hands": 0.003,
+    "mail_feet": 0.006,
+    "plate_hands": 0.004,
+    "plate_feet": 0.007,
+}
+
+
+def _item_proxy(item_id, states):
+    """Objet de la boutique fait d'une vraie pièce MakeHuman ajustée au corps."""
+    folder, look, _ = ITEM_SOURCES[item_id]
+    name = "item_" + item_id
+    if look is not None:
+        material = _item_material(item_id, look)
+    else:
+        normal = _normal_texture(folder)
+        material = _textured_material(
+            name,
+            _image(_diffuse_texture(folder), name + "_tex"),
+            alpha=False,
+            roughness=0.6,
+            normal=_image(normal, name + "_nrm") if normal else None,
+        )
+    obj = _proxy(folder, name, states, material, inflate=ITEM_INFLATE.get(item_id, 0.0))
+    if look is not None and not obj.data.uv_layers:
+        obj.data.uv_layers.new(name="UVMap")
+    return obj
 
 
 def _joints(coords, groups):
@@ -1132,12 +1313,33 @@ def _part(c, j, height):
     return "torso"
 
 
+# Lissage des pièces tirées du corps (nombre de passes).
+ITEM_SMOOTH = {
+    "leather_chest": 3,
+    "leather_legs": 1,
+    "mail_head": 2,
+    "mail_legs": 2,
+    "plate_shoulders": 4,
+    "plate_chest": 25,
+    "plate_belt": 4,
+    "plate_legs": 5,
+}
+
+
 def _item_from_body(template, groups, states, j, height, item_id, look, test, offset, flare=None):
     base = states["base"]
     keep = _faces_where(template, base, groups["body"], lambda c: test(c, _part(c, j, height)))
     if not keep:
         return None
-    obj = _extract(template, keep, "item_" + item_id, states, offset=offset, flare=flare)
+    obj = _extract(
+        template,
+        keep,
+        "item_" + item_id,
+        states,
+        offset=offset,
+        flare=flare,
+        smooth=ITEM_SMOOTH.get(item_id, 0),
+    )
     obj.data.materials.append(_item_material(item_id, look))
     return obj
 
@@ -1231,6 +1433,11 @@ def _cape(item_id, look, groups, states, j, height, length, flare):
     name = "item_" + item_id
     mesh = bpy.data.meshes.new(name)
     mesh.from_pydata(grid(states["base"], j), [], faces)
+    uv = mesh.uv_layers.new(name="UVMap")
+    for poly in mesh.polygons:
+        for li in poly.loop_indices:
+            v = mesh.loops[li].vertex_index
+            uv.data[li].uv = ((v % cols) / (cols - 1) * 0.15, (v // cols) / (rows - 1) * 0.25)
     mesh.update()
     obj = bpy.data.objects.new(name, mesh)
     bpy.context.collection.objects.link(obj)
@@ -1286,7 +1493,17 @@ def _equipment(template, groups, states, marks):
         # Capuche du Crépuscule : tête, nuque et haut des épaules.
         ("hood_twilight", "cloth_violet", lambda c, p: (p == "head" and not face_open(c)) or p == "neck" or (p == "torso" and c.z > j["shoulder_l"].z and abs(c.x) < abs(j["shoulder_l"].x)), 0.032, None),
     ]
+    held = {}
+    for item_id in ITEM_SOURCES:
+        obj = _item_proxy(item_id, states)
+        bone = ITEM_SOURCES[item_id][2]
+        if bone is not None:
+            held[obj.name] = bone
+        if not item_id.endswith("_head") and not item_id.startswith("hood"):
+            _drop_face_keys(obj)
     for item_id, look, test, offset, flare in items:
+        if item_id in ITEM_SOURCES:
+            continue
         obj = _item_from_body(template, groups, states, j, H, item_id, look, test, offset, flare)
         if obj is not None and not item_id.endswith("_head") and not item_id.startswith("hood"):
             _drop_face_keys(obj)
@@ -1323,6 +1540,9 @@ def _equipment(template, groups, states, marks):
     sword[-1].data.materials.append(gold)
     _rigid_item("sword_dawn", sword, hand_r, states, None)
 
+    held["item_sword_dawn"] = "hand_r"
+
+    # Bâton de Braise : hampe de bois, bague dorée, orbe incandescent.
     wood = _item_material("staff_ember", "wood")
     ember = _item_material("staff_ember", "ember")
     staff = [
@@ -1332,7 +1552,8 @@ def _equipment(template, groups, states, marks):
     ]
     staff[1].data.materials.append(ember)
     _rigid_item("staff_ember", staff, hand_r, states, None)
-    return {"item_sword_dawn": "hand_r", "item_staff_ember": "hand_r"}
+    held["item_staff_ember"] = "hand_r"
+    return held
 
 
 def _clear_scene():
@@ -1388,7 +1609,7 @@ def build(sex, race, out_dir):
     # Sous-vêtements ajustés (maillot et collant), tirés de la peau juste
     # au-dessus d'elle : affichés seulement quand un objet de la boutique
     # remplace la blouse ou le pantalon, ils couvrent le corps sous l'objet
-    # (les objets sont décalés d'au moins 1,3 cm, les sous-vêtements de 4 mm).
+    # (les sous-vêtements ne sont décalés que de 1,5 mm).
     body_faces = groups["body"]
     hand_x = 0.165 * height
 
@@ -1404,7 +1625,7 @@ def build(sex, race, out_dir):
     ):
         keep = _faces_where(template, co, body_faces, test)
         if keep:
-            obj = _extract(template, keep, name, states, offset=0.004)
+            obj = _extract(template, keep, name, states, offset=0.0015)
             obj.data.materials.append(mats[look])
     for name, (folder, look) in OUTFIT_SOURCES.items():
         normal = _normal_texture(folder)

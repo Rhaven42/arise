@@ -74,6 +74,24 @@ const List<Credit> ccByCredits = [
     license: CreditLicense.ccBy,
     source: 'makehumancommunity.org/node/2872',
   ),
+  Credit(
+    work: 'Male boho top 1',
+    author: 'Elvaerwyn',
+    license: CreditLicense.ccBy,
+    source: 'makehumancommunity.org/node/1808',
+  ),
+  Credit(
+    work: 'Medieval boots',
+    author: 'punkduck',
+    license: CreditLicense.ccBy,
+    source: 'makehumancommunity.org/node/1381',
+  ),
+  Credit(
+    work: 'Tight leather boots',
+    author: 'madmanny',
+    license: CreditLicense.ccBy,
+    source: 'makehumancommunity.org/node/1448',
+  ),
 ];
 
 /// Autres ressources (mention non obligatoire, faite par courtoisie).
@@ -83,6 +101,12 @@ const List<Credit> otherCredits = [
     author: 'MakeHuman Community',
     license: CreditLicense.cc0,
     source: 'makehumancommunity.org',
+  ),
+  Credit(
+    work: 'Matières cuir, maille, acier, or et tissu',
+    author: 'ambientCG',
+    license: CreditLicense.cc0,
+    source: 'ambientcg.com',
   ),
   Credit(
     work: 'three.js',

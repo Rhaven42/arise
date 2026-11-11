@@ -392,3 +392,10 @@ Demande de la propriétaire du projet : tenues, coiffures et barbes plus réalis
 6. **Rendu** : reflets doux d'une pièce virtuelle générée (sans image ni réseau) en plus des trois éclairages.
 7. **Crédits** : nouvel écran Paramètres → Crédits (ressources CC BY avec auteur et page d'origine, ressources CC0, three.js, polices).
 8. **Limites** : les sourcils restent des plaques texturées (les sourcils en vrais poils pèsent 10 000 à 28 000 points chacun, trop pour un téléphone) ; les objets de la boutique, moulés sur le corps, seront refaits avec de vraies pièces dans une étape suivante.
+
+## 33. Équipement de la boutique plus réaliste (11/11/2026)
+1. **Vraies pièces** (MakeHuman, CC0 et CC BY) : tunique et pantalon de cuir, gants (trois longueurs), bottes de cuir, haubert de maille à manches, heaume de chevalier, solerets à revers, capuche de moine. Elles suivent corpulence, musculature et pose.
+2. **Matières réalistes** (ambientCG, CC0) : cuir, maille, acier brossé, or, tissu, avec relief ; la teinture des objets teignables est conservée.
+3. **Plaques forgées** : plastron, épaulières, tassette et jambières lissées pour perdre les formes du corps.
+4. **Bâton de Braise** : hampe de bois, bague dorée, orbe incandescent ; épée d'apparat en acier, or et cuir.
+5. Vignettes de la boutique refaites ; crédits CC BY complétés (Paramètres → Crédits). Modèles de 4,8 à 6 Mo.
