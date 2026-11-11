@@ -292,6 +292,9 @@ window.arise = {
   },
 };
 
+let frames = 0;
+// Diagnostic temporaire : images réellement dessinées.
+setInterval(() => post('debug', { frames }), 2000);
 let lastSize = '';
 function loop() {
   // La vue web peut changer de taille sans événement « resize » (ouverture
@@ -312,6 +315,7 @@ function loop() {
   }
   controls.update();
   renderer.render(scene, camera);
+  frames++;
   requestAnimationFrame(loop);
 }
 loop();

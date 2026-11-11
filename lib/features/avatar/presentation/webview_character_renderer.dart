@@ -10,6 +10,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 /// Rendu 3D hors ligne : page `assets/viewer/index.html` (three.js) dans une
 /// vue web, alimentée avec les modèles `assets/models/<id>.glb`.
@@ -126,6 +127,10 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
       return;
     }
     if (data is! Map<String, dynamic>) return;
+    // Diagnostic temporaire (builds de debug seulement).
+    if (kDebugMode && data['type'] != 'capture') {
+      debugPrint('AriseViewer ${message.message}');
+    }
     switch (data['type']) {
       case 'ready':
         _ready = true;
@@ -207,6 +212,31 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
     }
   }
 
+  static const _gestures = {
+    Factory<OneSequenceGestureRecognizer>(EagerGestureRecognizer.new),
+  };
+
+  /// Sur Android, la vue web est une vraie vue du système (« hybrid
+  /// composition ») : rendue dans une texture, elle pouvait rester en
+  /// sommeil et ne jamais dessiner quand elle était créée dans une page
+  /// ouverte par-dessus une autre (aperçu de la boutique).
+  Widget _webView() {
+    final platform = _controller.platform;
+    if (platform is AndroidWebViewController) {
+      return WebViewWidget.fromPlatformCreationParams(
+        params: AndroidWebViewWidgetCreationParams(
+          controller: platform,
+          gestureRecognizers: _gestures,
+          displayWithHybridComposition: true,
+        ),
+      );
+    }
+    return WebViewWidget(
+      controller: _controller,
+      gestureRecognizers: _gestures,
+    );
+  }
+
   static String _hex(int argb) =>
       '#${(argb & 0xFFFFFF).toRadixString(16).padLeft(6, '0')}';
 
@@ -216,12 +246,7 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        WebViewWidget(
-          controller: _controller,
-          gestureRecognizers: const {
-            Factory<OneSequenceGestureRecognizer>(EagerGestureRecognizer.new),
-          },
-        ),
+        _webView(),
         if (_failed)
           Center(
             child: Padding(
