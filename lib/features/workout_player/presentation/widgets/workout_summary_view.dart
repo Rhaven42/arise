@@ -1,6 +1,7 @@
 import 'package:arise/core/anatomy/body_map.dart';
 import 'package:arise/core/anatomy/muscle.dart';
 import 'package:arise/core/anatomy/muscle_legend.dart';
+import 'package:arise/core/config/game_config.dart';
 import 'package:arise/core/design_system/widgets/arise_button.dart';
 import 'package:arise/core/design_system/widgets/system_window.dart';
 import 'package:arise/core/theme/arise_colors.dart';
@@ -28,6 +29,8 @@ class WorkoutSummaryView extends StatelessWidget {
     this.progress,
     this.questOutcome,
     this.trialOutcome,
+    this.achievementsUnlocked = const [],
+    this.onShowShadows,
   });
 
   final CompletedSession session;
@@ -40,6 +43,12 @@ class WorkoutSummaryView extends StatelessWidget {
 
   /// Issue de l'épreuve de rang jouée.
   final TrialOutcome? trialOutcome;
+
+  /// Hauts faits obtenus grâce à la séance (identifiants).
+  final List<String> achievementsUnlocked;
+
+  /// Une Ombre attend d'être extraite : ouvre la page des Ombres.
+  final VoidCallback? onShowShadows;
   final Map<String, Exercise> exercises;
   final VoidCallback onClose;
 
@@ -68,6 +77,29 @@ class WorkoutSummaryView extends StatelessWidget {
         ],
         if (trialOutcome case final outcome?) ...[
           _TrialResult(outcome: outcome),
+          const SizedBox(height: AriseSpacing.md),
+        ],
+        if (achievementsUnlocked.isNotEmpty) ...[
+          _AchievementsUnlocked(ids: achievementsUnlocked),
+          const SizedBox(height: AriseSpacing.md),
+        ],
+        if (onShowShadows case final show?) ...[
+          SystemWindow(
+            header: l10n.systemWindowHeader,
+            title: l10n.shadowsTitle,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(l10n.shadowOfferedSummary, style: textTheme.bodyLarge),
+                const SizedBox(height: AriseSpacing.sm),
+                AriseButton(
+                  label: l10n.shadowGoExtract,
+                  icon: Icons.groups_outlined,
+                  onPressed: show,
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: AriseSpacing.md),
         ],
         SystemWindow(
@@ -194,6 +226,8 @@ List<Widget> _progressLines(
         l10n.progressClassBonus(progress.classXp),
         style: textTheme.bodyLarge,
       ),
+    if (progress.shadowXp > 0)
+      Text(l10n.sessionShadowXp(progress.shadowXp), style: textTheme.bodyLarge),
     if (!progress.sessionCoins.isZero)
       Text(
         l10n.progressSessionCoins(formatCoins(l10n, progress.sessionCoins)),
@@ -357,6 +391,51 @@ class _TrialResult extends StatelessWidget {
 }
 
 /// Encadré de prudence (douleur, dépassement du plafond quotidien).
+/// Fenêtre du Système : hauts faits obtenus pendant la séance.
+class _AchievementsUnlocked extends StatelessWidget {
+  const _AchievementsUnlocked({required this.ids});
+
+  final List<String> ids;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final titles = {
+      for (final d in gameConfig.achievements.definitions)
+        if (d.titleId != null) d.id: d.titleId!,
+    };
+    return SystemWindow(
+      header: l10n.systemWindowHeader,
+      title: l10n.achievementUnlockedWindow,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.achievementsUnlockedCount(ids.length),
+            style: textTheme.bodyMedium,
+          ),
+          for (final id in ids) ...[
+            const SizedBox(height: AriseSpacing.xs),
+            Text(
+              l10n.achievementName(id),
+              style: textTheme.titleMedium?.copyWith(
+                color: AriseColors.goldBright,
+              ),
+            ),
+            Text(l10n.achievementDescription(id), style: textTheme.bodyMedium),
+            if (titles[id] case final title?)
+              Text(
+                l10n.trialTitleEarned(l10n.titleName(title)),
+                style: textTheme.bodyMedium?.copyWith(color: AriseColors.gold),
+              ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 class _Caution extends StatelessWidget {
   const _Caution({required this.body, this.title});
 

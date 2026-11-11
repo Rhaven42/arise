@@ -88,7 +88,10 @@ class ProgressionController extends _$ProgressionController {
 
   /// Applique une séance enregistrée : bascule des jours écoulés, puis XP,
   /// série, coffres et quête de pénalité.
-  Future<SessionProgress> recordSession(CompletedSession session) async {
+  Future<SessionProgress> recordSession(
+    CompletedSession session, {
+    Map<StatId, double> statMultipliers = const {},
+  }) async {
     final current = await _current();
     final now = _now();
     final restDays = await _restDays();
@@ -105,6 +108,7 @@ class ProgressionController extends _$ProgressionController {
       completed: session.completed,
       now: now,
       restDays: restDays,
+      statMultipliers: statMultipliers,
     );
     await _save(
       progress.state,

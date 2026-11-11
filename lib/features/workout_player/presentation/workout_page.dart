@@ -67,6 +67,10 @@ class WorkoutPage extends ConsumerWidget {
         progress: view.progress,
         questOutcome: view.questOutcome,
         trialOutcome: view.trialOutcome,
+        achievementsUnlocked: view.achievementsUnlocked,
+        onShowShadows: view.shadowOffered
+            ? () => context.go(AppRoutes.shadows)
+            : null,
         exercises: view.exercises,
         onClose: close,
       );

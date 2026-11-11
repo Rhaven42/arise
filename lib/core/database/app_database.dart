@@ -126,7 +126,8 @@ class ProgressionStates extends Table {
 /// - v5 (phase 4) : ajout de `progression_states` ;
 /// - v6 (phase 6A) : ajout de `character_sheets` ;
 /// - v7 (phase 7) : ajout de `inventory_states` ;
-/// - v8 (phase 8A) : ajout de `quest_states` et `trial_states`.
+/// - v8 (phase 8A) : ajout de `quest_states` et `trial_states` ;
+/// - v9 (phase 9) : ajout de `achievement_states` et `shadow_states`.
 @DataClassName('CharacterSheetRow')
 class CharacterSheets extends Table {
   IntColumn get id => integer()();
@@ -178,6 +179,32 @@ class TrialStates extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
+/// Hauts faits (ligne 1) et titre / aura portés (ligne 2), en JSON.
+@DataClassName('AchievementRow')
+class AchievementStates extends Table {
+  IntColumn get id => integer()();
+
+  TextColumn get json => text()();
+
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+/// Armée d'Ombres (une seule ligne, `id` = 1), en JSON.
+@DataClassName('ShadowRow')
+class ShadowStates extends Table {
+  IntColumn get id => integer()();
+
+  TextColumn get json => text()();
+
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
 @DriftDatabase(
   tables: [
     PendingSessions,
@@ -192,6 +219,8 @@ class TrialStates extends Table {
     InventoryStates,
     QuestStates,
     TrialStates,
+    AchievementStates,
+    ShadowStates,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -201,7 +230,7 @@ class AppDatabase extends _$AppDatabase {
   static const profileRowId = 1;
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -230,6 +259,10 @@ class AppDatabase extends _$AppDatabase {
       if (from < 8) {
         await migrator.createTable(questStates);
         await migrator.createTable(trialStates);
+      }
+      if (from < 9) {
+        await migrator.createTable(achievementStates);
+        await migrator.createTable(shadowStates);
       }
     },
   );
@@ -260,6 +293,8 @@ class AppDatabase extends _$AppDatabase {
   /// Efface toutes les données du joueur.
   Future<void> eraseAll() {
     return transaction(() async {
+      await delete(shadowStates).go();
+      await delete(achievementStates).go();
       await delete(trialStates).go();
       await delete(questStates).go();
       await delete(inventoryStates).go();
@@ -522,6 +557,73 @@ class AppDatabase extends _$AppDatabase {
       if (trials != null) await saveTrialsJson(trials, updatedAt: updatedAt);
     });
   }
+
+  // --- Hauts faits, titres et Ombres (phase 9) ----------------------------
+
+  /// Ligne des titre et aura portés dans `achievement_states`.
+  static const titlesRowId = 2;
+
+  Stream<String?> _watchRow(TableInfo<Table, Object?> table, int id) {
+    final query = customSelect(
+      'SELECT json FROM ${table.actualTableName} WHERE id = ?',
+      variables: [Variable.withInt(id)],
+      readsFrom: {table},
+    );
+    return query.watchSingleOrNull().map((row) => row?.read<String>('json'));
+  }
+
+  Future<String?> _readRow(TableInfo<Table, Object?> table, int id) async {
+    final row = await customSelect(
+      'SELECT json FROM ${table.actualTableName} WHERE id = ?',
+      variables: [Variable.withInt(id)],
+      readsFrom: {table},
+    ).getSingleOrNull();
+    return row?.read<String>('json');
+  }
+
+  Stream<String?> watchAchievementsJson() =>
+      _watchRow(achievementStates, profileRowId);
+
+  Future<String?> readAchievementsJson() =>
+      _readRow(achievementStates, profileRowId);
+
+  Future<void> saveAchievementsJson(
+    String json, {
+    required DateTime updatedAt,
+  }) => into(achievementStates).insertOnConflictUpdate(
+    AchievementStatesCompanion(
+      id: const Value(profileRowId),
+      json: Value(json),
+      updatedAt: Value(updatedAt.toUtc()),
+    ),
+  );
+
+  Stream<String?> watchTitlesJson() =>
+      _watchRow(achievementStates, titlesRowId);
+
+  Future<String?> readTitlesJson() => _readRow(achievementStates, titlesRowId);
+
+  Future<void> saveTitlesJson(String json, {required DateTime updatedAt}) =>
+      into(achievementStates).insertOnConflictUpdate(
+        AchievementStatesCompanion(
+          id: const Value(titlesRowId),
+          json: Value(json),
+          updatedAt: Value(updatedAt.toUtc()),
+        ),
+      );
+
+  Stream<String?> watchShadowsJson() => _watchRow(shadowStates, profileRowId);
+
+  Future<String?> readShadowsJson() => _readRow(shadowStates, profileRowId);
+
+  Future<void> saveShadowsJson(String json, {required DateTime updatedAt}) =>
+      into(shadowStates).insertOnConflictUpdate(
+        ShadowStatesCompanion(
+          id: const Value(profileRowId),
+          json: Value(json),
+          updatedAt: Value(updatedAt.toUtc()),
+        ),
+      );
 
   // --- Séances réalisées -------------------------------------------------
 

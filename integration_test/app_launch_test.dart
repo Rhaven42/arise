@@ -1,3 +1,4 @@
+import 'package:arise/features/achievements/presentation/hunter_panel.dart';
 import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
 import 'package:arise/features/shop/presentation/shop_page.dart';
 import 'package:arise/main.dart' as app;
@@ -296,5 +297,19 @@ void main() {
       tester,
       'Atteins le niveau 9 pour affronter Le Gardien du Rocher.',
     );
+
+    // Phase 9 : hauts faits depuis la carte du chasseur.
+    debugPrint('Parcours : hauts faits');
+    await tester.tap(find.byType(BackButton).first);
+    await _pumpFor(tester, 1200);
+    await tester.scrollUntilVisible(
+      find.byKey(HunterPanel.achievementsKey),
+      -200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await _tapWithoutSettle(tester, find.byKey(HunterPanel.achievementsKey));
+    await _pumpFor(tester, 1500);
+    await _expectVisible(tester, 'Régularité');
+    await _expectVisible(tester, 'Premier pas');
   }, timeout: const Timeout(Duration(minutes: 8)));
 }

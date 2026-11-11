@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:arise/features/achievements/domain/achievements_state.dart';
 import 'package:arise/features/backup/domain/backup_data.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
@@ -10,6 +11,8 @@ import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/quests/domain/daily_quest.dart';
 import 'package:arise/features/quests/domain/quest_board.dart';
+import 'package:arise/features/shadows/domain/shadows_state.dart';
+import 'package:arise/features/titles/domain/titles_state.dart';
 import 'package:arise/features/trials/domain/trials_state.dart';
 import 'package:arise/features/workout_player/domain/completed_session.dart';
 
@@ -51,8 +54,9 @@ abstract final class BackupCodec {
   /// - v5 (phase 6) : personnage ; les cristaux deviennent des pièces ;
   /// - v6 (phase 7) : inventaire (boutique) ;
   /// - v7 (phase 8A) : quête du jour et épreuves de rang ;
-  /// - v8 (phase 8B) : quête hebdomadaire, donjon et événements.
-  static const currentVersion = 8;
+  /// - v8 (phase 8B) : quête hebdomadaire, donjon et événements ;
+  /// - v9 (phase 9) : hauts faits, titre et aura portés, Ombres.
+  static const currentVersion = 9;
 
   /// Construit une sauvegarde au format courant.
   static BackupData create({
@@ -68,6 +72,9 @@ abstract final class BackupCodec {
     DailyQuest? quest,
     TrialsState? trials,
     QuestBoard? questBoard,
+    AchievementsState? achievements,
+    TitlesState? titles,
+    ShadowsState? shadows,
   }) {
     return BackupData(
       format: format,
@@ -84,6 +91,9 @@ abstract final class BackupCodec {
       quest: quest,
       trials: trials,
       questBoard: questBoard,
+      achievements: achievements,
+      titles: titles,
+      shadows: shadows,
     );
   }
 

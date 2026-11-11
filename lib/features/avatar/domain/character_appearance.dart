@@ -24,6 +24,8 @@ class CharacterAppearance {
     this.itemNodes = const [],
     this.hiddenOutfit = const [],
     this.dyes = const {},
+    this.auraColor,
+    this.shadows = const [],
   });
 
   /// Construit l'apparence d'une fiche : chaque curseur pilote deux formes
@@ -99,6 +101,34 @@ class CharacterAppearance {
   /// Couleur par matériau teint.
   final Map<String, int> dyes;
 
+  /// Couleur ARGB de l'aura portée, ou `null`.
+  final int? auraColor;
+
+  /// Ombres qui accompagnent le personnage (numéros d'ordre : teinte de
+  /// chaque silhouette).
+  final List<int> shadows;
+
+  /// Même apparence, avec une aura et des Ombres.
+  CharacterAppearance adorned({int? auraColor, List<int> shadows = const []}) =>
+      CharacterAppearance(
+        modelId: modelId,
+        morphs: morphs,
+        scale: scale,
+        skinColor: skinColor,
+        hairColor: hairColor,
+        hairStyleId: hairStyleId,
+        eyeColor: eyeColor,
+        beardColor: beardColor,
+        eyebrowId: eyebrowId,
+        beardId: beardId,
+        makeupId: makeupId,
+        itemNodes: itemNodes,
+        hiddenOutfit: hiddenOutfit,
+        dyes: dyes,
+        auraColor: auraColor,
+        shadows: shadows,
+      );
+
   @override
   bool operator ==(Object other) =>
       other is CharacterAppearance &&
@@ -112,6 +142,8 @@ class CharacterAppearance {
       other.eyebrowId == eyebrowId &&
       other.beardId == beardId &&
       other.makeupId == makeupId &&
+      other.auraColor == auraColor &&
+      _sameList(other.shadows, shadows) &&
       _sameList(other.itemNodes, itemNodes) &&
       _sameList(other.hiddenOutfit, hiddenOutfit) &&
       other.dyes.length == dyes.length &&
@@ -131,6 +163,8 @@ class CharacterAppearance {
     eyebrowId,
     beardId,
     makeupId,
+    auraColor,
+    Object.hashAll(shadows),
     Object.hashAll(itemNodes),
     Object.hashAll(hiddenOutfit),
     Object.hashAllUnordered(
@@ -142,7 +176,7 @@ class CharacterAppearance {
   );
 }
 
-bool _sameList(List<String> a, List<String> b) {
+bool _sameList<T>(List<T> a, List<T> b) {
   if (a.length != b.length) return false;
   for (var i = 0; i < a.length; i++) {
     if (a[i] != b[i]) return false;

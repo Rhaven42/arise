@@ -391,6 +391,92 @@ void main() {
     final version = await database
         .customSelect('PRAGMA user_version')
         .getSingle();
-    expect(version.read<int>('user_version'), 8);
+    expect(version.read<int>('user_version'), database.schemaVersion);
   });
+
+  test(
+    'la migration v8 → v9 ajoute hauts faits et Ombres sans perte',
+    () async {
+      final database = AppDatabase(
+        NativeDatabase.memory(
+          setup: (raw) {
+            for (final table in [
+              'player_profiles',
+              'progression_states',
+              'character_sheets',
+              'inventory_states',
+              'quest_states',
+              'trial_states',
+            ]) {
+              raw.execute(
+                'CREATE TABLE $table (id INTEGER NOT NULL PRIMARY KEY, '
+                'json TEXT NOT NULL, updated_at INTEGER NOT NULL)',
+              );
+            }
+            for (final table in ['custom_exercises', 'programs']) {
+              raw.execute(
+                'CREATE TABLE $table (id TEXT NOT NULL PRIMARY KEY, '
+                'json TEXT NOT NULL, updated_at INTEGER NOT NULL)',
+              );
+            }
+            raw
+              ..execute(
+                'CREATE TABLE pending_sessions (id TEXT NOT NULL PRIMARY '
+                'KEY, payload_json TEXT NOT NULL, created_at INTEGER NOT '
+                'NULL, attempt_count INTEGER NOT NULL DEFAULT 0)',
+              )
+              ..execute(
+                'CREATE TABLE local_drafts (draft_key TEXT NOT NULL PRIMARY '
+                'KEY, json TEXT NOT NULL, updated_at INTEGER NOT NULL)',
+              )
+              ..execute(
+                'CREATE TABLE planned_sessions (id TEXT NOT NULL PRIMARY '
+                'KEY, program_id TEXT NOT NULL, json TEXT NOT NULL, '
+                'updated_at INTEGER NOT NULL)',
+              )
+              ..execute(
+                'CREATE TABLE completed_sessions (id TEXT NOT NULL PRIMARY '
+                'KEY, started_at INTEGER NOT NULL, json TEXT NOT NULL)',
+              )
+              ..execute(
+                'INSERT INTO trial_states VALUES '
+                "(1, '{\"titles\":[\"title_rockGuardian\"]}', 0)",
+              )
+              ..userVersion = 8;
+          },
+        ),
+      );
+      addTearDown(database.close);
+
+      expect(
+        await database.readTrialsJson(),
+        '{"titles":["title_rockGuardian"]}',
+      );
+      expect(await database.readAchievementsJson(), isNull);
+      expect(await database.readTitlesJson(), isNull);
+      expect(await database.readShadowsJson(), isNull);
+      final updatedAt = DateTime.utc(2026);
+      await database.saveAchievementsJson(
+        '{"unlocked":{}}',
+        updatedAt: updatedAt,
+      );
+      await database.saveTitlesJson(
+        '{"equippedTitle":null}',
+        updatedAt: updatedAt,
+      );
+      await database.saveShadowsJson('{"shadows":[]}', updatedAt: updatedAt);
+      expect(await database.readAchievementsJson(), '{"unlocked":{}}');
+      expect(await database.readTitlesJson(), '{"equippedTitle":null}');
+      expect(await database.readShadowsJson(), '{"shadows":[]}');
+      expect(
+        await database.readTrialsJson(),
+        '{"titles":["title_rockGuardian"]}',
+      );
+
+      final version = await database
+          .customSelect('PRAGMA user_version')
+          .getSingle();
+      expect(version.read<int>('user_version'), database.schemaVersion);
+    },
+  );
 }

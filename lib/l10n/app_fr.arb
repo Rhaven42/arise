@@ -1601,7 +1601,7 @@
       }
     }
   },
-  "titleName": "{title, select, title_rockGuardian{Briseur de Rocher} title_silverStag{Coureur des Brumes} title_windDancer{Pied-de-Vent} title_basaltColossus{Brise-Colosse} title_crimsonComet{Sillage de Comète} title_stormLord{Œil de la Tempête} other{?}}",
+  "titleName": "{title, select, title_rockGuardian{Briseur de Rocher} title_silverStag{Coureur des Brumes} title_windDancer{Pied-de-Vent} title_basaltColossus{Brise-Colosse} title_crimsonComet{Sillage de Comète} title_stormLord{Œil de la Tempête} title_awakened{L'Éveillé} title_veteran{Vétéran d'Arisia} title_unshakable{L'Inébranlable} title_tireless{L'Infatigable} title_legend{Légende d'Arisia} title_rock_breaker{Poigne de Fer} title_balanced{L'Équilibré} title_explorer{Explorateur des Arts} title_never_skips_legs{Celui qui ne saute jamais les jambes} title_body_cartographer{Cartographe du Corps} title_willow{Souple comme le Saule} title_dawn_monarch{Monarque de l'Aube} title_rest_sage{Sage du Repos} title_shadow_master{Maître des Ombres} other{?}}",
   "@titleName": {
     "placeholders": {
       "title": {
@@ -2029,5 +2029,170 @@
     }
   },
   "settingsMusic": "Musique",
-  "settingsMusicHint": "Musiques d'ambiance et jingle de niveau (mode silencieux respecté)"
+  "settingsMusicHint": "Musiques d'ambiance et jingle de niveau (mode silencieux respecté)",
+  "achievementName": "{id, select, first_session{Premier pas} sessions_10{Habitude naissante} sessions_50{Chasseur assidu} sessions_100{Centurion} sessions_250{Vétéran d'Arisia} streak_7{Une semaine sans faillir} streak_30{Un mois de constance} streak_100{Inébranlable} daily_quests_10{Serviteur du Système} daily_quests_50{Élu du Système} minutes_60{Première heure} minutes_600{Dix heures de sueur} minutes_3000{Cinquante heures} minutes_10000{Infatigable} reps_1000{Mille répétitions} reps_10000{Dix mille répétitions} reps_50000{Marée de répétitions} sets_500{Cinq cents séries} long_session{Souffle long} level_5{Éveil} level_10{Ascension} level_25{Élite} level_50{Légende d'Arisia} level_100{Sommet} strength_20{Poigne de fer} endurance_20{Second souffle} agility_20{Pas de chat} vitality_20{Cœur de chêne} willpower_20{Volonté d'acier} all_stats_10{Équilibré} boss_1{Premier boss} boss_2{Deux trophées} boss_3{Tueur de géants} boss_4{Fléau des colosses} boss_5{Chasseur de comètes} boss_6{Maître des épreuves} first_try_boss{Du premier coup} shadow_1{Première Ombre} shadow_5{Escouade des Ombres} exercises_10{Curieux} exercises_25{Polyvalent} exercises_50{Explorateur des Arts} custom_exercise{Inventeur} first_program{Stratège} all_formats{Touche-à-tout} dungeon_1{Premier donjon} dungeon_5{Pilleur de donjons} first_item{Premier trésor} first_event{Héros de saison} legs_4_weeks{Fondations solides} legs_12_weeks{Celui qui ne saute jamais les jambes} push_pull_4_weeks{Pousser et tirer} front_back_4_weeks{Face et dos} muscles_15{Carte en cours} muscles_all{Cartographe du Corps} flexibility_60{Corps délié} flexibility_300{Souple comme le Saule} dawn_10{Monarque de l'Aube} evening_10{Gardien du crépuscule} new_year{Bonne résolution} rest_sage{Sage du Repos} listen_body{À l’écoute de soi} shadow_army{Armée des Ombres} other{?}}",
+  "@achievementName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "achievementDescription": "{id, select, first_session{Termine ta première séance.} sessions_10{Termine 10 séances.} sessions_50{Termine 50 séances.} sessions_100{Termine 100 séances.} sessions_250{Termine 250 séances.} streak_7{Atteins une série de 7 jours.} streak_30{Atteins une série de 30 jours.} streak_100{Atteins une série de 100 jours.} daily_quests_10{Accomplis 10 quêtes du jour.} daily_quests_50{Accomplis 50 quêtes du jour.} minutes_60{Cumule 60 minutes d’effort.} minutes_600{Cumule 600 minutes d’effort.} minutes_3000{Cumule 3 000 minutes d’effort.} minutes_10000{Cumule 10 000 minutes d’effort.} reps_1000{Cumule 1 000 répétitions.} reps_10000{Cumule 10 000 répétitions.} reps_50000{Cumule 50 000 répétitions.} sets_500{Réalise 500 séries effectives (intensité 6 ou plus).} long_session{Termine une séance de 45 minutes d’effort, sous le plafond quotidien.} level_5{Atteins le niveau 5.} level_10{Atteins le niveau 10.} level_25{Atteins le niveau 25.} level_50{Atteins le niveau 50.} level_100{Atteins le niveau 100.} strength_20{Atteins 20 en Force.} endurance_20{Atteins 20 en Endurance.} agility_20{Atteins 20 en Agilité.} vitality_20{Atteins 20 en Vitalité.} willpower_20{Atteins 20 en Volonté.} all_stats_10{Atteins 10 dans chaque stat.} boss_1{Vaincs ton premier boss de rang.} boss_2{Vaincs 2 boss de rang.} boss_3{Vaincs 3 boss de rang.} boss_4{Vaincs 4 boss de rang.} boss_5{Vaincs 5 boss de rang.} boss_6{Vaincs les 6 boss de rang.} first_try_boss{Vaincs un boss à ton premier essai.} shadow_1{Extrais ta première Ombre.} shadow_5{Possède 5 Ombres.} exercises_10{Pratique 10 exercices différents.} exercises_25{Pratique 25 exercices différents.} exercises_50{Pratique 50 exercices différents.} custom_exercise{Crée ton propre exercice.} first_program{Crée un programme.} all_formats{Termine une séance de chaque format : musculation, cardio, Tabata et mobilité.} dungeon_1{Termine un donjon de la semaine.} dungeon_5{Termine 5 donjons.} first_item{Possède ton premier objet.} first_event{Termine un événement saisonnier.} legs_4_weeks{Travaille les jambes 4 semaines de suite.} legs_12_weeks{Travaille les jambes 12 semaines de suite.} push_pull_4_weeks{Équilibre poussée et tirage pendant 4 semaines.} front_back_4_weeks{Équilibre l’avant et l’arrière du corps pendant 4 semaines.} muscles_15{Travaille 15 muscles différents.} muscles_all{Travaille les 33 muscles.} flexibility_60{Cumule 60 minutes de mobilité.} flexibility_300{Cumule 300 minutes de mobilité.} dawn_10{Commence 10 séances avant 6 h 30.} evening_10{Commence 10 séances après 21 h 30.} new_year{Entraîne-toi un 1er janvier.} rest_sage{Respecte 20 jours de repos déclarés.} listen_body{Arrête une séance à cause d’une douleur : savoir s’arrêter est une force.} shadow_army{Possède 7 Ombres.} other{?}}",
+  "@achievementDescription": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "achievementCategory": "{category, select, regularity{Régularité} volume{Volume} stats{Statistiques} bosses{Boss et Ombres} exploration{Exploration} balance{Équilibre musculaire} secret{Secrets} other{?}}",
+  "@achievementCategory": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "achievementsTitle": "Hauts faits",
+  "achievementsHomeHint": "Tes exploits, tes titres et ton armée d’Ombres",
+  "achievementsCount": "{done} / {total} hauts faits",
+  "@achievementsCount": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "achievementProgress": "{value} / {target}",
+  "@achievementProgress": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "achievementSecretName": "Haut fait secret",
+  "achievementSecretHint": "Continue d’explorer Arisia pour le découvrir.",
+  "achievementUnlockedOn": "Obtenu le {date}",
+  "@achievementUnlockedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "achievementRewardTitle": "Titre : {title}",
+  "@achievementRewardTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "achievementUnlockedWindow": "Haut fait débloqué",
+  "achievementsUnlockedCount": "{count, plural, =1{1 haut fait obtenu} other{{count} hauts faits obtenus}}",
+  "@achievementsUnlockedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "titlesTitle": "Titres et auras",
+  "titlesHint": "Le titre s’affiche sous ton nom ; l’aura entoure ton personnage.",
+  "titlesNone": "Aucun titre pour le moment : vaincs un boss ou obtiens certains hauts faits.",
+  "titlesWearNone": "Aucun titre",
+  "aurasSection": "Auras",
+  "aurasNone": "Aucune aura : certains titres en débloquent une.",
+  "auraWearNone": "Aucune aura",
+  "auraName": "{aura, select, aura_dawn{Aura de l'Aube} aura_ember{Aura de Braise} aura_frost{Aura de Givre} aura_verdant{Aura Sylvestre} aura_shadow{Aura d'Ombre} aura_storm{Aura d'Orage} other{?}}",
+  "@auraName": {
+    "placeholders": {
+      "aura": {
+        "type": "String"
+      }
+    }
+  },
+  "auraUnlockedBy": "Débloquée par le titre « {title} »",
+  "@auraUnlockedBy": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "hunterNoTitle": "Sans titre",
+  "shadowsTitle": "Ombres",
+  "shadowsIntro": "À partir du rang B, chaque boss vaincu et chaque donjon terminé laisse une Ombre à extraire. Une Ombre active t’accompagne et donne +{bonus} % d’XP dans sa stat.",
+  "@shadowsIntro": {
+    "placeholders": {
+      "bonus": {
+        "type": "int"
+      }
+    }
+  },
+  "shadowsLocked": "Les Ombres s’éveillent au rang B.",
+  "shadowsActiveCount": "Ombres actives : {active} / {max}",
+  "@shadowsActiveCount": {
+    "placeholders": {
+      "active": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "shadowsPending": "Ombres à extraire",
+  "shadowExtract": "Extraire",
+  "shadowExtracted": "{name} rejoint ton armée.",
+  "@shadowExtracted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "shadowsArmy": "Ton armée",
+  "shadowsEmpty": "Aucune Ombre pour le moment.",
+  "shadowName": "{name, select, rockGuardian{Ombre du Gardien du Rocher} silverStag{Ombre du Cerf d'Argent} windDancer{Ombre de la Danseuse des Vents} basaltColossus{Ombre du Colosse de Basalte} crimsonComet{Ombre de la Comète Écarlate} stormLord{Ombre du Seigneur des Tempêtes} stoneCrypt{Ombre de la Crypte de Pierre} echoForest{Ombre de la Forêt des Échos} windTower{Ombre de la Tour des Vents} other{Ombre}}",
+  "@shadowName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "shadowBonus": "+{bonus} % d’XP en {stat}",
+  "@shadowBonus": {
+    "placeholders": {
+      "bonus": {
+        "type": "int"
+      },
+      "stat": {
+        "type": "String"
+      }
+    }
+  },
+  "shadowActive": "Active",
+  "shadowResting": "Au repos",
+  "shadowsFull": "Toutes les places sont prises : mets une Ombre au repos d’abord.",
+  "shadowOfferedSummary": "Une Ombre attend d’être extraite.",
+  "shadowGoExtract": "Voir les Ombres",
+  "sessionShadowXp": "Ombres : +{xp} XP",
+  "@sessionShadowXp": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "titlesSeeAll": "Titres et auras"
 }

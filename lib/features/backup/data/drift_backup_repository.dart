@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:arise/core/database/app_database.dart';
+import 'package:arise/features/achievements/data/drift_achievements_repository.dart';
 import 'package:arise/features/backup/domain/backup_codec.dart';
 import 'package:arise/features/backup/domain/backup_data.dart';
 import 'package:arise/features/backup/domain/backup_repository.dart';
@@ -12,6 +13,8 @@ import 'package:arise/features/planning/data/drift_planning_repositories.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/progression/data/drift_progression_repository.dart';
 import 'package:arise/features/quests/data/drift_quest_repository.dart';
+import 'package:arise/features/shadows/data/drift_shadows_repository.dart';
+import 'package:arise/features/titles/data/drift_titles_repository.dart';
 import 'package:arise/features/trials/data/drift_trials_repository.dart';
 import 'package:arise/features/workout_player/data/drift_completed_session_repository.dart';
 
@@ -68,6 +71,18 @@ class DriftBackupRepository implements BackupRepository {
       },
       questBoard: switch (await _database.readQuestBoardJson()) {
         final json? => DriftQuestRepository.decodeBoard(json),
+        null => null,
+      },
+      achievements: switch (await _database.readAchievementsJson()) {
+        final json? => DriftAchievementsRepository.decode(json),
+        null => null,
+      },
+      titles: switch (await _database.readTitlesJson()) {
+        final json? => DriftTitlesRepository.decode(json),
+        null => null,
+      },
+      shadows: switch (await _database.readShadowsJson()) {
+        final json? => DriftShadowsRepository.decode(json),
         null => null,
       },
     );
@@ -146,6 +161,26 @@ class DriftBackupRepository implements BackupRepository {
       if (trials != null) {
         await _database.saveTrialsJson(
           jsonEncode(trials.toJson()),
+          updatedAt: now,
+        );
+      }
+      // Phase 9 : absents des sauvegardes plus anciennes (les hauts faits
+      // sont alors recalculés à partir de l'historique).
+      if (data.achievements case final achievements?) {
+        await _database.saveAchievementsJson(
+          jsonEncode(achievements.toJson()),
+          updatedAt: now,
+        );
+      }
+      if (data.titles case final titles?) {
+        await _database.saveTitlesJson(
+          jsonEncode(titles.toJson()),
+          updatedAt: now,
+        );
+      }
+      if (data.shadows case final shadows?) {
+        await _database.saveShadowsJson(
+          jsonEncode(shadows.toJson()),
           updatedAt: now,
         );
       }
