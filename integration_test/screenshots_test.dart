@@ -302,5 +302,25 @@ void main() {
     await tryOn('Torse', 2, '32_boutique_cuirasse');
     await tryOn('Dos', 1, '33_boutique_cape');
     await tryOn('Arme', 0, '34_boutique_epee');
+
+    // Phase 8A : quête du jour et épreuve de rang.
+    await tester.binding.handlePopRoute();
+    await pumpFor(1200);
+    await tester.scrollUntilVisible(
+      find.text('Quête du jour'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -200));
+    await pumpFor(800);
+    await binding.takeScreenshot('35_quete_du_jour');
+    await tester.scrollUntilVisible(
+      find.text("Voir l'épreuve"),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text("Voir l'épreuve"));
+    await pumpFor(1500);
+    await binding.takeScreenshot('36_epreuve_de_rang');
   });
 }
