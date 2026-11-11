@@ -126,10 +126,6 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
       return;
     }
     if (data is! Map<String, dynamic>) return;
-    // Diagnostic temporaire (builds de debug seulement).
-    if (kDebugMode && data['type'] != 'capture') {
-      debugPrint('AriseViewer ${message.message}');
-    }
     switch (data['type']) {
       case 'ready':
         _ready = true;
