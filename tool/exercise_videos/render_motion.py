@@ -1,11 +1,13 @@
 """Vidéo de démonstration d'un exercice : mannequin MPFB animé par une
-capture de mouvement (BVH de la base CMU, ou FBX Mixamo), rendu Cycles.
+capture de mouvement (BVH de la base CMU ou FBX Mixamo), rendu Cycles.
 
 Usage :
-  python render_motion.py <capture.bvh> <début> <fin> <sortie.mp4> [--frames N]
+  python render_motion.py <capture.bvh|.fbx> <début> <fin> <sortie.mp4>
+                          [vue] [--frames N] [--stills a,b,c]
 
-<début> et <fin> sont des numéros d'image de la capture (120 i/s pour CMU) ;
-la vidéo est échantillonnée à 30 i/s et boucle sur cet extrait.
+<début> et <fin> sont des numéros d'image de la capture (120 i/s pour CMU,
+30 i/s pour Mixamo) ; la vidéo est échantillonnée à 30 i/s et boucle sur
+cet extrait. Vue : front, side ou three_quarter.
 """
 import importlib
 import math
@@ -51,7 +53,7 @@ def _material(name, color, roughness=0.5, subsurface=0.0):
     return mat
 
 
-def build_human():
+def build_human(rig="cmu_mb"):
     """Mannequin athlétique, matière unie claire (style planche d'exercices)."""
     hs = _mpfb()
     human = hs.create_human(macro_detail_dict={
@@ -59,7 +61,7 @@ def build_human():
         "proportions": 0.7, "height": 0.55, "cupsize": 0.5, "firmness": 0.5,
         "race": {"asian": 0.33, "caucasian": 0.33, "african": 0.33},
     })
-    hs.add_builtin_rig(human, "cmu_mb")
+    hs.add_builtin_rig(human, rig)
     arm = human.parent
     skin = _material("mannequin", (0.36, 0.42, 0.52), roughness=0.36, subsurface=0.04)
     human.data.materials.clear()
@@ -77,15 +79,29 @@ def build_human():
 
 
 def import_capture(path):
+    """Squelette animé de la capture ; ses maillages (Mixamo) sont masqués."""
+    if path.lower().endswith(".fbx"):
+        before = set(bpy.data.objects)
+        bpy.ops.import_scene.fbx(filepath=path, automatic_bone_orientation=False)
+        new = [o for o in bpy.data.objects if o not in before]
+        for obj in new:
+            if obj.type != "ARMATURE":
+                obj.hide_render = True
+                obj.hide_viewport = True
+        return next(o for o in new if o.type == "ARMATURE")
     bpy.ops.import_anim.bvh(filepath=path, axis_forward="-Z", axis_up="Y", update_scene_fps=False)
     return bpy.context.object
+
+
+def _hips(arm):
+    return "mixamorig:Hips" if "mixamorig:Hips" in arm.data.bones else "Hips"
 
 
 def _world_rot(obj, pb):
     return (obj.matrix_world @ pb.matrix).to_3x3().normalized()
 
 
-def retarget(src, dst, start, end):
+def retarget(src, dst, start, end, capture_fps=120):
     """Copie l'animation de [src] (capture) sur [dst] (squelette MPFB) :
     rotation de chaque os = rotation de la capture depuis sa pose de repos,
     appliquée à la pose de repos du mannequin ; le bassin suit la capture
@@ -101,12 +117,13 @@ def retarget(src, dst, start, end):
     pairs.sort(key=lambda p: order[p[1]])
     # Échelle : hauteur du bassin du mannequin / celle de la capture debout
     # (première image de l'extrait ; la pose de repos BVH est à l'origine).
-    dst_hips_rest = dst.matrix_world @ dst.data.bones["Hips"].head_local
+    dst_hips_rest = dst.matrix_world @ dst.data.bones[_hips(dst)].head_local
     scene.frame_set(start)
     bpy.context.view_layer.update()
-    src_hips_start = src.matrix_world @ src.pose.bones["Hips"].head
+    hips = _hips(src)
+    src_hips_start = src.matrix_world @ src.pose.bones[hips].head
     scale = dst_hips_rest.z / max(src_hips_start.z, 1e-6)
-    step = 120 / FPS
+    step = capture_fps / FPS
     frames = []
     t = start
     while t <= end:
@@ -122,7 +139,7 @@ def retarget(src, dst, start, end):
             delta = _world_rot(src, spb) @ src_rest[s].inverted()
             world = delta @ dst_rest[d]
             head = (dst.matrix_world @ dpb.matrix).to_translation()
-            if d == "Hips":
+            if d == _hips(dst):
                 hip = src.matrix_world @ spb.head
                 if origin is None:
                     origin = Vector((hip.x, hip.y, 0))
@@ -132,7 +149,7 @@ def retarget(src, dst, start, end):
             bpy.context.view_layer.update()
         for pb in dst.pose.bones:
             pb.keyframe_insert("rotation_quaternion" if pb.rotation_mode == "QUATERNION" else "rotation_euler", frame=out_frame)
-            if pb.name == "Hips":
+            if pb.name == _hips(dst):
                 pb.keyframe_insert("location", frame=out_frame)
     return len(frames)
 
@@ -243,9 +260,10 @@ def main():
     view = args[4] if len(args) > 4 else "three_quarter"
     limit = int(args[args.index("--frames") + 1]) if "--frames" in args else None
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    human, arm = build_human()
+    mixamo = capture.lower().endswith(".fbx")
+    human, arm = build_human("mixamo" if mixamo else "cmu_mb")
     src = import_capture(capture)
-    count = retarget(src, arm, start, end)
+    count = retarget(src, arm, start, end, capture_fps=30 if mixamo else 120)
     src.hide_render = True
     src.hide_viewport = True
     scene = bpy.context.scene
