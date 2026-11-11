@@ -281,7 +281,10 @@ window.arise = {
   },
   apply(json) {
     const ok = applyState(JSON.parse(json));
-    post('applied', { ok });
+    // « applied » part après deux images réellement dessinées : sur un
+    // appareil lent, le premier rendu d'un modèle prend plusieurs secondes
+    // et l'écran de chargement doit rester visible jusque-là.
+    requestAnimationFrame(() => requestAnimationFrame(() => post('applied', { ok })));
   },
   capture() {
     renderer.render(scene, camera);
