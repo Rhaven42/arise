@@ -37,7 +37,7 @@ void main() {
       quest: _quest,
       trials: _trials,
     );
-    expect(data.version, 7);
+    expect(data.version, BackupCodec.currentVersion);
     expect(BackupCodec.decode(BackupCodec.encode(data)), data);
   });
 

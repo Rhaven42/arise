@@ -4,6 +4,7 @@ import 'package:arise/core/config/game_config.dart';
 import 'package:arise/features/exercises/domain/stat_id.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
 import 'package:arise/features/progression/domain/coins.dart';
+import 'package:arise/features/progression/domain/hero_class.dart';
 import 'package:arise/features/progression/domain/level_curve.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 
@@ -95,6 +96,7 @@ class SessionProgress {
     required this.dayValidated,
     required this.chestCoins,
     required this.rankLocked,
+    this.classXp = 0,
   });
 
   final ProgressionState state;
@@ -103,6 +105,9 @@ class SessionProgress {
 
   /// Bonus de série × malus de pénalité appliqués à l'XP de base.
   final double multiplier;
+
+  /// XP de base ajoutée par la classe (avant le multiplicateur).
+  final int classXp;
   final int levelsGained;
 
   /// Pièces gagnées par les efforts de la séance.
@@ -148,10 +153,18 @@ SessionProgress applySession(
   final multiplier =
       streakMultiplier(state.streakDays, config: config.streaks) *
       (penalty ? config.penalty.xpMultiplier : 1);
-  final xp = (baseXp * multiplier).round();
+  // Bonus de classe (SPEC §6) ajouté à l'XP de base, puis multiplié.
+  final classBonus = classBonusXpByStat(
+    state.heroClass,
+    baseXpByStat,
+    config: config.classes,
+  );
+  final classXp = classBonus.values.fold<int>(0, (sum, v) => sum + v);
+  final xp = ((baseXp + classXp) * multiplier).round();
   final xpByStat = {
     for (final entry in baseXpByStat.entries)
-      entry.key: (entry.value * multiplier).round(),
+      entry.key: ((entry.value + (classBonus[entry.key] ?? 0)) * multiplier)
+          .round(),
   };
 
   // Pièces des efforts ; une séance sans détail par difficulté (anciennes
@@ -190,6 +203,7 @@ SessionProgress applySession(
     dayValidated: validation != null,
     chestCoins: validation?.chest ?? Coins.zero,
     rankLocked: next.isRankLocked && next.xpInLevel >= next.xpForNextLevel,
+    classXp: classXp,
   );
 }
 

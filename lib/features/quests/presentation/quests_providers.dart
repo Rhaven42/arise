@@ -9,6 +9,8 @@ import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
 import 'package:arise/features/quests/data/drift_quest_repository.dart';
 import 'package:arise/features/quests/domain/daily_quest.dart';
+import 'package:arise/features/quests/domain/quest_board.dart';
+import 'package:arise/features/quests/domain/quest_board_rules.dart';
 import 'package:arise/features/quests/domain/quest_repository.dart';
 import 'package:arise/features/quests/domain/quest_rules.dart';
 import 'package:arise/features/workout_player/domain/completed_session.dart';
@@ -131,11 +133,13 @@ class QuestController extends _$QuestController {
   }
 
   /// Évalue les quêtes après une séance : quête de pénalité, récompense de
-  /// la quête quotidienne. Renvoie le bilan à annoncer.
-  Future<QuestOutcome?> evaluate() async {
+  /// la quête quotidienne, puis semaine, donjon et événement. Tout ce
+  /// qu'elles rapportent est enregistré dans une seule transaction.
+  Future<QuestReport?> evaluate({CompletedSession? session}) async {
     final view = await _questViewFromStorage(ref);
     if (view == null) return null;
     final profile = await _profile(ref);
+    if (profile == null) return null;
     final now = ref.read(clockProvider)();
     final progression =
         await ref.read(progressionRepositoryProvider).read() ??
@@ -143,28 +147,162 @@ class QuestController extends _$QuestController {
     final sessions = await ref
         .read(completedSessionRepositoryProvider)
         .readAll();
-    final outcome = evaluateQuests(
+    final daily = evaluateQuests(
       quest: view.quest,
       state: progression,
       sessions: sessions,
       now: now,
-      restDays: profile?.restDays ?? const {},
+      restDays: profile.restDays,
     );
-    if (outcome.quest != view.quest || outcome.state != progression) {
-      await ref
-          .read(questRepositoryProvider)
-          .saveWithProgression(outcome.quest, outcome.state);
+    final repository = ref.read(questRepositoryProvider);
+    final board = await repository.readBoard();
+    final inventory = await repository.readInventory();
+    final boardOutcome = evaluateBoard(
+      board: board,
+      state: daily.state,
+      inventory: inventory,
+      sessions: sessions,
+      now: now,
+      profile: profile,
+      dailyQuestDone: daily.reward != null,
+      lastSession: session,
+    );
+    await repository.saveOutcome(
+      quest: daily.quest == view.quest ? null : daily.quest,
+      board: boardOutcome.board == board ? null : boardOutcome.board,
+      progression: boardOutcome.state == progression
+          ? null
+          : boardOutcome.state,
+      inventory: boardOutcome.inventory,
+    );
+    if (boardOutcome.state != progression) {
       await ref
           .read(progressionControllerProvider.notifier)
-          .adopt(outcome.state);
+          .adopt(boardOutcome.state);
     }
-    ref.invalidateSelf();
-    return outcome;
+    ref
+      ..invalidateSelf()
+      ..invalidate(questBoardProvider);
+    return QuestReport(daily: daily, board: boardOutcome);
   }
 }
 
-/// Séance générée pour une quête (objectifs restants), ou `null`.
+/// Tableau des quêtes de la semaine prêt à afficher.
+class QuestBoardView {
+  const QuestBoardView({
+    required this.board,
+    required this.weeklyProgress,
+    required this.rooms,
+    required this.clearedDays,
+    required this.nextRoom,
+    required this.event,
+    required this.eventProgress,
+    this.resting = false,
+  });
+
+  final QuestBoard board;
+  final List<int> weeklyProgress;
+
+  /// Séances des trois salles du donjon.
+  final List<Program> rooms;
+  final List<CivilDate> clearedDays;
+
+  /// Salle ouverte aujourd'hui, ou `null`.
+  final int? nextRoom;
+  final EventEdition? event;
+  final int eventProgress;
+
+  /// Jour de repos ou de maladie : aucune salle n'ouvre.
+  final bool resting;
+}
+
+/// Semaine, donjon et événement en cours (le tableau est renouvelé le
+/// lundi et enregistré).
+@riverpod
+Future<QuestBoardView?> questBoard(Ref ref) async {
+  final profile = await ref.watch(playerProfileProvider.future);
+  if (profile == null) return null;
+  final sessions = await ref.watch(completedSessionsProvider.future);
+  final progression = (await ref.watch(progressionControllerProvider.future))
+      .state;
+  return await _boardView(
+    ref,
+    profile: profile,
+    sessions: sessions,
+    progression: progression,
+  );
+}
+
+Future<QuestBoardView> _boardView(
+  Ref ref, {
+  required PlayerProfile profile,
+  required List<CompletedSession> sessions,
+  required ProgressionState progression,
+}) async {
+  final level = progression.level;
+  final now = ref.read(clockProvider)();
+  final today = CivilDate.ofLocal(now);
+  final repository = ref.read(questRepositoryProvider);
+  final stored = await repository.readBoard();
+  final board = refreshBoard(
+    board: stored,
+    today: today,
+    profile: profile,
+    playerLevel: level,
+  );
+  if (board != stored) await repository.saveOutcome(board: board);
+  final catalog = await ref.read(exerciseCatalogProvider.future);
+  final dungeon = board.dungeon!;
+  final cleared = dungeonClearedDays(dungeon, sessions);
+  final event = activeEvent(today);
+  return QuestBoardView(
+    board: board,
+    weeklyProgress: weeklyProgress(board.weekly!, sessions),
+    rooms: dungeonRooms(
+      run: dungeon,
+      profile: profile,
+      playerLevel: level,
+      catalog: catalog,
+    ),
+    clearedDays: cleared,
+    nextRoom: nextDungeonRoom(
+      cleared,
+      today,
+      resting:
+          profile.restDays.contains(today.weekday) ||
+          progression.isSickOn(today),
+    ),
+    resting:
+        profile.restDays.contains(today.weekday) || progression.isSickOn(today),
+    event: event,
+    eventProgress: event == null ? 0 : eventProgress(event, sessions),
+  );
+}
+
+/// Séance générée pour une quête (objectifs restants) ou une salle de
+/// donjon, ou `null`.
 Future<Program?> questProgramFor(Ref ref, String programId) async {
+  final room = dungeonRoomOfProgram(programId);
+  if (room != null) {
+    final profile = await _profile(ref);
+    if (profile == null) return null;
+    final sessions = await ref
+        .read(completedSessionRepositoryProvider)
+        .readAll();
+    final progression =
+        await ref.read(progressionRepositoryProvider).read() ??
+        ProgressionState.initial(CivilDate.ofLocal(ref.read(clockProvider)()));
+    final view = await _boardView(
+      ref,
+      profile: profile,
+      sessions: sessions,
+      progression: progression,
+    );
+    final l10n = lookupAppLocalizations(const Locale('fr'));
+    return view.rooms[room].copyWith(
+      name: l10n.dungeonRoomName(view.board.dungeon!.theme.name, room + 1),
+    );
+  }
   if (programId != dailyQuestProgramId && programId != penaltyQuestProgramId) {
     return null;
   }

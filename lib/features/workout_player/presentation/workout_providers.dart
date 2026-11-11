@@ -11,7 +11,7 @@ import 'package:arise/features/planning/presentation/planning_providers.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:arise/features/progression/domain/progression_rules.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
-import 'package:arise/features/quests/domain/quest_rules.dart';
+import 'package:arise/features/quests/domain/quest_board_rules.dart';
 import 'package:arise/features/quests/presentation/quests_providers.dart';
 import 'package:arise/features/trials/domain/trial_rules.dart';
 import 'package:arise/features/trials/presentation/trials_providers.dart';
@@ -62,8 +62,9 @@ abstract class WorkoutView with _$WorkoutView {
     /// Effets de la séance sur la progression (niveaux, série, coffre).
     SessionProgress? progress,
 
-    /// Quêtes accomplies grâce à la séance (récompense, pénalité levée).
-    QuestOutcome? questOutcome,
+    /// Quêtes accomplies grâce à la séance (récompense, pénalité levée,
+    /// semaine, donjon, événement).
+    QuestReport? questOutcome,
 
     /// Issue de l'épreuve de rang jouée, le cas échéant.
     TrialOutcome? trialOutcome,
@@ -221,7 +222,7 @@ class WorkoutController extends _$WorkoutController {
         .resolve(session);
     final questOutcome = await ref
         .read(questControllerProvider.notifier)
-        .evaluate();
+        .evaluate(session: session);
     if (!ref.mounted) return;
     state = AsyncData(
       view.copyWith(

@@ -2,6 +2,7 @@ import 'package:arise/core/config/game_config.dart';
 import 'package:arise/features/exercises/domain/stat_id.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
 import 'package:arise/features/progression/domain/coins.dart';
+import 'package:arise/features/progression/domain/hero_class.dart';
 import 'package:arise/features/progression/domain/level_curve.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -52,6 +53,11 @@ abstract class ProgressionState with _$ProgressionState {
     @NullableCivilDateConverter() CivilDate? sickUntil,
 
     @Default({}) Set<RankId> defeatedBosses,
+
+    /// Classe choisie à partir du rang C (phase 8B) et date du dernier
+    /// choix (un changement par mois).
+    HeroClass? heroClass,
+    DateTime? classChangedAt,
   }) = _ProgressionState;
 
   const ProgressionState._();

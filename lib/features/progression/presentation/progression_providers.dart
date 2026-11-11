@@ -4,6 +4,7 @@ import 'package:arise/features/exercises/domain/stat_id.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:arise/features/progression/data/drift_progression_repository.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
+import 'package:arise/features/progression/domain/hero_class.dart';
 import 'package:arise/features/progression/domain/progression_repository.dart';
 import 'package:arise/features/progression/domain/progression_rules.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
@@ -117,6 +118,18 @@ class ProgressionController extends _$ProgressionController {
     final current = await _current();
     final next = allocateStatPoint(current.state, stat);
     if (next != null) await _save(next, report: current.report);
+  }
+
+  /// Choisit ou change de classe (rang C, une fois par mois). Renvoie le
+  /// motif du refus, ou `null` si le choix est enregistré.
+  Future<ClassChoiceIssue?> chooseHeroClass(HeroClass heroClass) async {
+    final current = await _current();
+    final now = _now();
+    final issue = classChoiceIssue(current.state, heroClass, now: now);
+    if (issue != null) return issue;
+    final next = chooseClass(current.state, heroClass, now: now);
+    if (next != null) await _save(next, report: current.report);
+    return null;
   }
 
   /// Active le mode maladie ou blessure pour [days] jours.
