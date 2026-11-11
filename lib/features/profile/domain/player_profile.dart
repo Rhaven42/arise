@@ -50,6 +50,9 @@ abstract class PlayerProfile with _$PlayerProfile {
 
     /// Lecteur de séance : annonces vocales (désactivées par défaut).
     @Default(false) bool workoutVoice,
+
+    /// Musique d'ambiance et jingles (activés par défaut).
+    @Default(true) bool music,
   }) = _PlayerProfile;
 
   factory PlayerProfile.fromJson(Map<String, dynamic> json) =>

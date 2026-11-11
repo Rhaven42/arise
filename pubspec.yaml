@@ -52,6 +52,7 @@ flutter:
     - assets/svg/body_front.svg
     - assets/svg/body_back.svg
     - assets/sounds/
+    - assets/music/
     - assets/models/
     - assets/items/
     - assets/viewer/

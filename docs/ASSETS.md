@@ -71,3 +71,14 @@ Les six objets exclusifs réutilisent une pièce de la boutique avec leur propre
 - Une pièce propre par objet, nommée `item_<id>` (par exemple `item_guardian_jacket`), avec les mêmes exigences que le §3 (squelette, formes de morphologie, matériau `dye_<id>`, budget). Il suffira alors de retirer `baseId` de l'objet dans le catalogue.
 - Une vignette `assets/items/<id>.png` par objet (rendu de l'objet seul, comme pour la boutique).
 - Une courte cinématique de victoire par boss (silhouette du boss, effet de lumière), en remplacement de la fenêtre animée du bilan.
+
+## 5. Musiques et jingles
+
+### État actuel
+Créations de la propriétaire du projet, générées avec Suno sous abonnement payant (usage commercial autorisé) le 06/11/2026, puis normalisées en volume et compressées (MP3 112 kbit/s, fondu de fin pour la boucle) :
+- `assets/music/title.mp3` (« Kingdoms of Aethelgard ») : écran titre et questionnaire ;
+- `assets/music/system.mp3` (« Ascension of the Hero ») : Fenêtre du Système et écrans de jeu ;
+- `assets/music/shop.mp3` (« Merchant's Warmth ») : boutique et inventaire ;
+- `assets/sounds/level_up.mp3` (« Level Up! ») : jingle de passage de niveau, la musique s'efface dessous.
+
+Les bips du lecteur de séance (`countdown`, `start`, `rest`, `finish`) restent générés par `tool/sounds.py`. Pas de musique pendant une séance. La musique se mélange aux autres sons du téléphone, respecte le mode silencieux et se règle dans Paramètres → Musique.

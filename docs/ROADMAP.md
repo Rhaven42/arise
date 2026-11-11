@@ -127,7 +127,7 @@
 - [ ] Saisie manuelle de l'hydratation
 
 ## Phase 12 — Finitions et publication
-- [ ] Sons et ambiance
+- [x] Sons et ambiance (musiques et jingle fournis par la propriétaire du projet, 11/11/2026)
 - [ ] Performances (profilage, temps de démarrage)
 - [ ] Audit d'accessibilité
 - [ ] Audit de confidentialité (aucune donnée ne quitte le téléphone sans action de l'utilisateur)

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:arise/core/audio/music.dart';
 import 'package:arise/core/database/app_database.dart';
 import 'package:arise/core/utils/clock.dart';
 import 'package:arise/core/utils/ids.dart';
@@ -223,6 +224,14 @@ class WorkoutController extends _$WorkoutController {
     final questOutcome = await ref
         .read(questControllerProvider.notifier)
         .evaluate(session: session);
+    // Jingle de passage de niveau (séance, quêtes ou victoire de boss).
+    final levelsGained =
+        progress.levelsGained +
+        (questOutcome?.daily.gain?.levelsGained ?? 0) +
+        (trialOutcome?.levelsGained ?? 0);
+    if (levelsGained > 0) {
+      unawaited(ref.read(musicPlayerProvider).jingle(Jingle.levelUp));
+    }
     if (!ref.mounted) return;
     state = AsyncData(
       view.copyWith(
