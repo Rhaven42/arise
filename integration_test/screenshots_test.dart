@@ -83,22 +83,14 @@ void main() {
     await binding.takeScreenshot('11_fiche_pompes');
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
-    // Le champ doit reprendre le focus après le retour de la fiche pour que
-    // la saisie soit prise en compte sur l'appareil.
-    await tester.tap(find.byType(TextField).first);
+    // Retour à la Fenêtre du Système puis nouvelle ouverture du catalogue :
+    // sur l'émulateur, une seconde saisie dans le même champ, après le retour
+    // de la fiche, n'était pas toujours prise en compte.
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
+    await tapText(tester, 'Exercices');
     await tester.enterText(find.byType(TextField).first, 'squat');
     await tester.pumpAndSettle();
-    if (find.text('Squat').evaluate().isEmpty) {
-      // Aide au diagnostic : textes affichés si la recherche échoue.
-      final texts = find
-          .byType(Text)
-          .evaluate()
-          .map((element) => (element.widget as Text).data)
-          .whereType<String>()
-          .join(' | ');
-      debugPrint('Textes visibles : $texts');
-    }
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('Squat'));
@@ -294,7 +286,7 @@ void main() {
       await tester.ensureVisible(button);
       await pumpFor(300);
       await tester.tap(button);
-      await pumpFor(5000);
+      await pumpFor(8000);
       debugPrint(
         'Diagnostic $shot : chargement='
         '${find.text('Le Système façonne ton héros…').evaluate().length} '

@@ -281,13 +281,27 @@ window.arise = {
   },
   apply(json) {
     const ok = applyState(JSON.parse(json));
-    post('applied', { ok });
+    post('applied', { ok, info: diagnostics() });
   },
   capture() {
     renderer.render(scene, camera);
     post('capture', { data: renderer.domElement.toDataURL('image/png') });
   },
 };
+
+// État de la vue (taille, contexte WebGL, caméra) joint aux messages.
+function diagnostics() {
+  const gl = renderer.getContext();
+  return {
+    size: window.innerWidth + 'x' + window.innerHeight,
+    buffer: gl.drawingBufferWidth + 'x' + gl.drawingBufferHeight,
+    lost: gl.isContextLost(),
+    camera: camera.position.toArray().map((v) => v.toFixed(2)).join(','),
+    visible: document.visibilityState,
+  };
+}
+renderer.domElement.addEventListener('webglcontextlost', () => post('debug', { event: 'contextlost' }));
+renderer.domElement.addEventListener('webglcontextrestored', () => post('debug', { event: 'contextrestored' }));
 
 let lastSize = '';
 function loop() {
@@ -297,6 +311,7 @@ function loop() {
   if (size !== lastSize) {
     lastSize = size;
     resize();
+    post('debug', { event: 'resize', info: diagnostics() });
   }
   const delta = clock.getDelta();
   for (const rig of rigs.values()) rig.mixer.update(delta);
