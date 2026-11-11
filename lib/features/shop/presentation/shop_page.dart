@@ -105,6 +105,11 @@ class _ShopPageState extends ConsumerState<ShopPage> {
       appBar: AppBar(title: Text(l10n.shopTitle)),
       body: Column(
         children: [
+          if (sheet == null)
+            Padding(
+              padding: const EdgeInsets.all(AriseSpacing.md),
+              child: Text(l10n.shopNoCharacter, textAlign: TextAlign.center),
+            ),
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AriseSpacing.md,
