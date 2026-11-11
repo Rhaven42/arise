@@ -1,15 +1,13 @@
 import 'package:arise/core/anatomy/body_map.dart';
 import 'package:arise/core/anatomy/muscle.dart';
 import 'package:arise/core/router/app_routes.dart';
-import 'package:arise/features/avatar/domain/character_scene.dart';
-import 'package:arise/features/exercises/presentation/animation/character_exercise_demo.dart';
+import 'package:arise/features/exercises/presentation/animation/exercise_photo_demo.dart';
 import 'package:arise/features/exercises/presentation/animation/figure_animation.dart';
 import 'package:arise/features/exercises/presentation/exercise_detail_page.dart';
 import 'package:arise/features/exercises/presentation/exercise_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../helpers/fake_character_renderer.dart';
 import '../../../helpers/test_app.dart';
 
 void main() {
@@ -32,11 +30,10 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('la fiche montre l’animation, les silhouettes et les consignes', (
+  testWidgets('la fiche montre les photos, les silhouettes et les consignes', (
     tester,
   ) async {
-    final renderer = FakeCharacterRenderer();
-    final container = createTestContainer(renderer: renderer);
+    final container = createTestContainer();
     await tester.openWithProfile(
       container,
       AppRoutes.exerciseDetail('push_up'),
@@ -44,11 +41,14 @@ void main() {
 
     expect(find.text('Pompes'), findsOneWidget);
     await tester.pump();
-    // Le personnage (par défaut, faute de personnage créé) fait les pompes.
-    expect(find.byType(CharacterExerciseDemo), findsOneWidget);
+    // Photos de l'athlète : départ et arrivée, en fondu.
+    expect(find.byType(ExercisePhotoDemo), findsOneWidget);
     expect(find.byType(FigureAnimation), findsNothing);
-    expect(renderer.lastScene?.motion, 'push_up');
-    expect(renderer.lastScene?.focus, SceneFocus.exerciseSide);
+    expect(find.byType(Image), findsNWidgets(2));
+    expect(find.byKey(ExercisePhotoDemo.pauseKey), findsOneWidget);
+    await tester.tap(find.byKey(ExercisePhotoDemo.pauseKey));
+    await tester.pump();
+    expect(find.byTooltip("Lancer l'animation"), findsOneWidget);
     expect(find.byType(BodyMap), findsNWidgets(2));
     await tester.scrollUntilVisible(
       find.text('• Triceps'),
@@ -66,7 +66,7 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('animations réduites : le mannequin 2D remplace le personnage', (
+  testWidgets('animations réduites : départ et arrivée côte à côte', (
     tester,
   ) async {
     tester.platformDispatcher.accessibilityFeaturesTestValue =
@@ -77,9 +77,20 @@ void main() {
       container,
       AppRoutes.exerciseDetail('push_up'),
     );
+    await tester.pump();
+
+    expect(find.text('Départ'), findsOneWidget);
+    expect(find.text('Arrivée'), findsOneWidget);
+    expect(find.byKey(ExercisePhotoDemo.pauseKey), findsNothing);
+    await tester.unmountApp();
+  });
+
+  testWidgets('sans photo, le mannequin 2D montre l’exercice', (tester) async {
+    final container = createTestContainer();
+    await tester.openWithProfile(container, AppRoutes.exerciseDetail('burpee'));
+    await tester.pump();
 
     expect(find.byType(FigureAnimation), findsOneWidget);
-    expect(find.text('rendu:human_female'), findsNothing);
     await tester.unmountApp();
   });
 

@@ -36,7 +36,7 @@
 - [x] Catalogue des 27 exercices de référence conforme à ANATOMY.md, vérifié par un test
 - [x] Catalogue complété à 80 exercices (lot 1 validé le 05/11/2026, lots 2 à 6 validés le 11/11/2026 ; 61 mouvements animés)
 - [x] `ExerciseAnimationPlayer` + animations 2D de substitution (24 mouvements, muscles colorés)
-- [x] Démonstration des exercices par le personnage 3D du joueur (clips `ex_<mouvement>` générés depuis les poses 2D)
+- [x] Démonstration des exercices par photos d'un athlète (free-exercise-db, domaine public ; mannequin 2D pour les exercices sans photo) — remplace le personnage 3D
 - [x] Silhouettes SVG face et dos (33 zones), motifs + libellés pour les daltoniens
 - [x] Fiche exercice (consignes, erreurs fréquentes, muscles, animation en boucle)
 - [x] Exercices personnalisés avec sélection des muscles sur la silhouette

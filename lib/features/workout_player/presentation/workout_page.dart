@@ -204,11 +204,12 @@ class _RunningWorkout extends ConsumerWidget {
           if (!isRest)
             StoneFrame(
               padding: const EdgeInsets.all(AriseSpacing.sm),
-              child: SizedBox(
-                height: 180,
+              child: AspectRatio(
+                aspectRatio: 3 / 2,
                 child: exercise == null
                     ? const SizedBox.shrink()
                     : player.build(
+                        exerciseId: exercise.id,
                         motionId: exercise.motion,
                         highlights: exercise.muscleRoles,
                         semanticLabel: exercise.name,
