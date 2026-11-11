@@ -50,10 +50,12 @@ class TrialController extends _$TrialController {
     final rank = trialRankOfProgram(programId);
     if (rank == null) return null;
     final repository = ref.read(trialsRepositoryProvider);
-    final progression = (await ref.read(progressionControllerProvider.future))
-        .state;
-    final trials = await repository.read() ?? const TrialsState();
     final now = ref.read(clockProvider)();
+    // Lecture directe de la base : voir `quests_providers.dart` (providers
+    // mis en pause sous le lecteur de séance).
+    final progression = await ref.read(progressionRepositoryProvider).read();
+    if (progression == null) return null;
+    final trials = await repository.read() ?? const TrialsState();
     // L'épreuve doit être celle du rang en cours et accessible au départ.
     final access = trialAccess(progression, trials, now: now);
     if (access is! TrialAvailable || access.trial.rank != rank) return null;

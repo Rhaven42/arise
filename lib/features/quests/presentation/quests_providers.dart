@@ -2,13 +2,16 @@ import 'package:arise/core/database/app_database.dart';
 import 'package:arise/core/utils/clock.dart';
 import 'package:arise/features/exercises/presentation/exercise_providers.dart';
 import 'package:arise/features/planning/domain/program.dart';
+import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
+import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
 import 'package:arise/features/quests/data/drift_quest_repository.dart';
 import 'package:arise/features/quests/domain/daily_quest.dart';
 import 'package:arise/features/quests/domain/quest_repository.dart';
 import 'package:arise/features/quests/domain/quest_rules.dart';
+import 'package:arise/features/workout_player/domain/completed_session.dart';
 import 'package:arise/features/workout_player/presentation/workout_providers.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/widgets.dart';
@@ -49,6 +52,62 @@ class QuestView {
   bool get completed => objectivesMet(quest.objectives, progress);
 }
 
+/// Quête du jour prête à afficher, à partir des données fournies : elle
+/// est générée (et enregistrée) si aucune quête n'existe pour aujourd'hui.
+Future<QuestView> _questView(
+  Ref ref, {
+  required PlayerProfile profile,
+  required List<CompletedSession> sessions,
+  required ProgressionState progression,
+}) async {
+  final now = ref.read(clockProvider)();
+  final today = CivilDate.ofLocal(now);
+  final repository = ref.read(questRepositoryProvider);
+  var quest = await repository.read();
+  if (quest == null || quest.day != today) {
+    final catalog = await ref.read(exerciseCatalogProvider.future);
+    quest = generateDailyQuest(
+      day: today,
+      profile: profile,
+      playerLevel: progression.level,
+      sick: progression.isSickOn(today),
+      catalog: catalog,
+    );
+    await repository.save(quest);
+  }
+  final penalty = penaltyObjectives(quest);
+  return QuestView(
+    quest: quest,
+    progress: questProgress(quest.objectives, today, sessions),
+    penaltyActive: progression.isPenaltyActive(now) && !quest.penaltyCleared,
+    penaltyObjectives: penalty,
+    penaltyProgress: questProgress(penalty, today, sessions),
+  );
+}
+
+/// Données lues directement dans la base, sans attendre un provider : un
+/// provider écouté seulement par une page cachée (la Fenêtre du Système
+/// sous le lecteur de séance) est mis en pause par Riverpod et ne se
+/// reconstruirait pas avant le retour sur cette page.
+Future<QuestView?> _questViewFromStorage(Ref ref) async {
+  final profile = await ref
+      .read(profileRepositoryProvider)
+      .watchProfile()
+      .first;
+  if (profile == null) return null;
+  final sessions = await ref.read(completedSessionRepositoryProvider).readAll();
+  final now = ref.read(clockProvider)();
+  final progression =
+      await ref.read(progressionRepositoryProvider).read() ??
+      ProgressionState.initial(CivilDate.ofLocal(now));
+  return await _questView(
+    ref,
+    profile: profile,
+    sessions: sessions,
+    progression: progression,
+  );
+}
+
 /// Quête quotidienne : générée au premier affichage du jour, recalculée à
 /// chaque séance enregistrée.
 @Riverpod(keepAlive: true)
@@ -60,39 +119,27 @@ class QuestController extends _$QuestController {
     final sessions = await ref.watch(completedSessionsProvider.future);
     final progression = (await ref.watch(progressionControllerProvider.future))
         .state;
-    final now = ref.read(clockProvider)();
-    final today = CivilDate.ofLocal(now);
-    final repository = ref.read(questRepositoryProvider);
-    var quest = await repository.read();
-    if (quest == null || quest.day != today) {
-      final catalog = await ref.read(exerciseCatalogProvider.future);
-      quest = generateDailyQuest(
-        day: today,
-        profile: profile,
-        playerLevel: progression.level,
-        sick: progression.isSickOn(today),
-        catalog: catalog,
-      );
-      await repository.save(quest);
-    }
-    final penalty = penaltyObjectives(quest);
-    return QuestView(
-      quest: quest,
-      progress: questProgress(quest.objectives, today, sessions),
-      penaltyActive: progression.isPenaltyActive(now) && !quest.penaltyCleared,
-      penaltyObjectives: penalty,
-      penaltyProgress: questProgress(penalty, today, sessions),
+    return await _questView(
+      ref,
+      profile: profile,
+      sessions: sessions,
+      progression: progression,
     );
   }
 
   /// Évalue les quêtes après une séance : quête de pénalité, récompense de
   /// la quête quotidienne. Renvoie le bilan à annoncer.
   Future<QuestOutcome?> evaluate() async {
-    final view = await future;
+    final view = await _questViewFromStorage(ref);
     if (view == null) return null;
-    final profile = await ref.read(playerProfileProvider.future);
-    final progression = (await ref.read(progressionControllerProvider.future))
-        .state;
+    final profile = await ref
+        .read(profileRepositoryProvider)
+        .watchProfile()
+        .first;
+    final now = ref.read(clockProvider)();
+    final progression =
+        await ref.read(progressionRepositoryProvider).read() ??
+        ProgressionState.initial(CivilDate.ofLocal(now));
     final sessions = await ref
         .read(completedSessionRepositoryProvider)
         .readAll();
@@ -100,7 +147,7 @@ class QuestController extends _$QuestController {
       quest: view.quest,
       state: progression,
       sessions: sessions,
-      now: ref.read(clockProvider)(),
+      now: now,
       restDays: profile?.restDays ?? const {},
     );
     if (outcome.quest != view.quest || outcome.state != progression) {
@@ -121,7 +168,7 @@ Future<Program?> questProgramFor(Ref ref, String programId) async {
   if (programId != dailyQuestProgramId && programId != penaltyQuestProgramId) {
     return null;
   }
-  final view = await ref.read(questControllerProvider.future);
+  final view = await _questViewFromStorage(ref);
   if (view == null) return null;
   final l10n = lookupAppLocalizations(const Locale('fr'));
   final penalty = programId == penaltyQuestProgramId;
