@@ -2,7 +2,7 @@
 // Construit avec esbuild en un seul script (assets/viewer/viewer.js) :
 //   node build.mjs
 // Interface appelée depuis Flutter via runJavaScript :
-//   arise.beginModel(id) / arise.appendChunk(base64) / arise.endModel()
+//   arise.beginModel(id) / arise.appendChunk(id, base64) / arise.endModel(id)
 //   arise.apply(jsonApparence)
 // Les messages vers Flutter passent par le canal JavaScript « AriseViewer ».
 import * as THREE from 'three';
@@ -87,8 +87,8 @@ let currentFocus = 'body';
 let focusModel = null;
 let focusScale = null;
 let current = null;
-let pending = null;
-let buffer = null;
+// Envois en cours, par modèle : deux envois ne se mélangent jamais.
+const uploads = new Map();
 
 function resize() {
   const w = window.innerWidth;
@@ -247,22 +247,23 @@ function applyState(state) {
 
 window.arise = {
   beginModel(id) {
-    pending = id;
-    buffer = [];
+    uploads.set(id, []);
   },
-  appendChunk(b64) {
-    buffer.push(decode(b64));
+  appendChunk(id, b64) {
+    const parts = uploads.get(id);
+    if (parts) parts.push(decode(b64));
   },
-  endModel() {
-    const size = buffer.reduce((s, c) => s + c.length, 0);
+  endModel(id) {
+    const parts = uploads.get(id);
+    uploads.delete(id);
+    if (!parts) return;
+    const size = parts.reduce((s, c) => s + c.length, 0);
     const all = new Uint8Array(size);
     let offset = 0;
-    for (const c of buffer) {
+    for (const c of parts) {
       all.set(c, offset);
       offset += c.length;
     }
-    const id = pending;
-    buffer = null;
     loader.parse(
       all.buffer,
       '',

@@ -161,7 +161,9 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
     final id = appearance.modelId;
     try {
       if (!_loaded.contains(id)) {
-        if (_loading == id) return;
+        // Un seul envoi à la fois : le suivant part quand le modèle en cours
+        // est chargé (message « loaded »).
+        if (_loading != null) return;
         _loading = id;
         final bytes = await rootBundle.load('assets/models/$id.glb');
         final encoded = base64Encode(bytes.buffer.asUint8List());
@@ -171,10 +173,10 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
               ? i + _chunkLength
               : encoded.length;
           await _controller.runJavaScript(
-            "arise.appendChunk('${encoded.substring(i, end)}')",
+            "arise.appendChunk('$id', '${encoded.substring(i, end)}')",
           );
         }
-        await _controller.runJavaScript('arise.endModel()');
+        await _controller.runJavaScript("arise.endModel('$id')");
         return;
       }
       final state = jsonEncode({

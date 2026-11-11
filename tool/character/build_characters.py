@@ -786,17 +786,14 @@ def _makeups(template, groups, states, marks):
         return (0.55, 0.12, 0.12, a)
 
     def war(c):
-        # Bandeau à travers les yeux et trois traits sur chaque joue.
+        # Bandeau net à travers les yeux, prolongé d'un trait sous chaque œil.
         e = eyes[0]
-        band = (1 - smooth(abs(c.z - e.z), r * 0.9, r * 1.2)) * (1 - smooth(abs(c.x), abs(e.x) + r * 1.6, abs(e.x) + r * 2.4))
-        stripes = 0.0
-        for k in (-1, 0, 1):
-            x0 = abs(e.x) + k * r * 0.7
-            z0 = e.z - r * 1.6
-            stripes = max(stripes, (1 - smooth(abs(abs(c.x) - x0), r * 0.12, r * 0.25)) * (1 - smooth(abs(c.z - z0), r * 0.5, r * 0.8)))
+        ex = abs(e.x)
+        band = (1 - smooth(abs(c.z - (e.z + r * 0.1)), r * 0.85, r * 1.0)) * (1 - smooth(abs(c.x), ex + r * 1.7, ex + r * 1.9))
+        stripe = (1 - smooth(abs(abs(c.x) - ex), r * 0.28, r * 0.4)) * (1 - smooth(e.z - c.z, r * 2.6, r * 2.9)) * smooth(e.z - c.z, 0.0, r * 0.2)
         inside_eye = any(eye_frame(c, ee)[0] < 1.0 for ee in eyes)
-        a = 0.0 if inside_eye else max(band * 0.85, stripes * 0.9)
-        return (0.28, 0.07, 0.015, a)
+        a = 0.0 if inside_eye else max(band, stripe) * 0.92
+        return (0.30, 0.035, 0.02, a)
 
     looks = dict(zip(MAKEUP_LOOKS, (kohl, lipstick, blush, war)))
     face = _faces_where(template, co, groups["body"], lambda c: _front(c, marks) and c.z > marks["chin"].z - 0.01)
