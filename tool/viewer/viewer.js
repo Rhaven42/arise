@@ -289,7 +289,15 @@ window.arise = {
   },
 };
 
+let lastSize = '';
 function loop() {
+  // La vue web peut changer de taille sans événement « resize » (ouverture
+  // d'une fenêtre plein écran) : on vérifie à chaque image.
+  const size = window.innerWidth + 'x' + window.innerHeight;
+  if (size !== lastSize) {
+    lastSize = size;
+    resize();
+  }
   const delta = clock.getDelta();
   for (const rig of rigs.values()) rig.mixer.update(delta);
   if (focusAnim) {
