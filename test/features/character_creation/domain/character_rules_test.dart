@@ -89,4 +89,25 @@ void main() {
     expect(big.scale, closeTo(150 / 187, 1e-9));
     expect(big.hairStyleId, 'hair_10');
   });
+
+  test('le haut-elfe a son modèle et sa taille', () {
+    final sheet = defaultSheet(
+      sex: CharacterSex.male,
+      race: CharacterRace.highElf,
+    );
+    expect(CharacterRace.highElf.id, 'high_elf');
+    expect(CharacterRace.orc.id, 'orc');
+    expect(
+      sheet.heightCm,
+      modelHeightCm[CharacterRace.highElf]![CharacterSex.male],
+    );
+    expect(CharacterAppearance.of(sheet).modelId, 'high_elf_male');
+    // Plus grand que l'elfe, pour chaque sexe.
+    for (final sex in CharacterSex.values) {
+      expect(
+        modelHeightCm[CharacterRace.highElf]![sex],
+        greaterThan(modelHeightCm[CharacterRace.elf]![sex]!),
+      );
+    }
+  });
 }

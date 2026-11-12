@@ -50,7 +50,7 @@ class CharacterAppearance {
     };
     final beard = sheet.sex == CharacterSex.male ? sheet.beardStyle : 0;
     return CharacterAppearance(
-      modelId: '${sheet.race.name}_${sheet.sex.name}',
+      modelId: '${sheet.race.id}_${sheet.sex.name}',
       morphs: {
         for (final e in sliders.entries) ...{
           '${e.key}_low': low(e.value),

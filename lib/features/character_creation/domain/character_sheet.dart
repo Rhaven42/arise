@@ -7,7 +7,20 @@ part 'character_sheet.g.dart';
 enum CharacterSex { female, male }
 
 /// Race du royaume d'Arisia.
-enum CharacterRace { human, elf, orc }
+enum CharacterRace {
+  human,
+  elf,
+  orc,
+
+  /// Haut-elfe : plus grand et plus élancé, oreilles très longues.
+  highElf;
+
+  /// Identifiant stable des fichiers et des textes (`high_elf`).
+  String get id => switch (this) {
+    CharacterRace.highElf => 'high_elf',
+    _ => name,
+  };
+}
 
 /// Fiche du personnage, enregistrée en JSON sur le téléphone.
 ///

@@ -55,6 +55,8 @@ SEXES = {"female": 0.0, "male": 1.0}
 RACES = {
     "human": {"height": 0.5, "proportions": 0.55},
     "elf": {"height": 0.7, "proportions": 0.85},
+    # Haut-elfe : plus grand et plus élancé encore, oreilles très longues.
+    "high_elf": {"height": 0.82, "proportions": 0.95},
     "orc": {"height": 0.65, "proportions": 0.35},
 }
 
@@ -165,15 +167,17 @@ def _race_deform(race, coords, groups):
         return coords
     out = [c.copy() for c in coords]
     ears = groups.get("ears", set())
-    if race == "elf" and ears:
-        # Oreilles allongées vers le haut et l'arrière, de façon progressive.
+    if race in ("elf", "high_elf") and ears:
+        # Oreilles allongées vers le haut et l'arrière, de façon progressive ;
+        # celles du haut-elfe, bien plus longues, sont balayées vers l'arrière.
+        reach = (0.012, 0.022, 0.05) if race == "elf" else (0.02, 0.075, 0.075)
         zs = [coords[i].z for i in ears]
         z0, z1 = min(zs), max(zs)
         for i in ears:
             t = (coords[i].z - z0) / max(z1 - z0, 1e-6)
             t = t * t
             side = 1 if coords[i].x > 0 else -1
-            out[i] += Vector((side * 0.012 * t, 0.022 * t, 0.05 * t))
+            out[i] += Vector((side * reach[0] * t, reach[1] * t, reach[2] * t))
     if race == "orc":
         lips = groups.get("lips", set())
         mouth_z = sum(coords[i].z for i in lips) / max(len(lips), 1)

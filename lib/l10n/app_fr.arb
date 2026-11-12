@@ -1168,7 +1168,7 @@
     }
   },
   "characterRace": "Race",
-  "characterRaceName": "{key, select, human_female{Humaine} human_male{Humain} elf_female{Elfe} elf_male{Elfe} orc_female{Orque} orc_male{Orque} other{?}}",
+  "characterRaceName": "{key, select, human_female{Humaine} human_male{Humain} elf_female{Elfe} elf_male{Elfe} orc_female{Orque} orc_male{Orque} high_elf_female{Haute-elfe} high_elf_male{Haut-elfe} other{?}}",
   "@characterRaceName": {
     "placeholders": {
       "key": {

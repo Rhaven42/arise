@@ -6,7 +6,7 @@ import 'package:arise/features/character_creation/domain/name_rules.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 
 String raceLabel(AppLocalizations l10n, CharacterRace race, CharacterSex sex) =>
-    l10n.characterRaceName('${race.name}_${sex.name}');
+    l10n.characterRaceName('${race.id}_${sex.name}');
 
 String corpulenceLabel(AppLocalizations l10n, CharacterSheet sheet) =>
     l10n.characterCorpulenceStep(
