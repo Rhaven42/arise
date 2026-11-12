@@ -56,6 +56,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           disk-size: 4096M
+          ram-size: 4096M
           emulator-boot-timeout: 900
           script: flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/screenshots_test.dart -d emulator-5554
       - uses: actions/upload-artifact@v4
