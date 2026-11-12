@@ -1,6 +1,5 @@
 """Mouvements originaux des exercices (figure 2D), avec contrôle visuel."""
 import json, math, sys
-from PIL import Image, ImageDraw
 
 L = dict(torso=0.55, neck=0.17, head_r=0.11, upper_arm=0.30, forearm=0.27,
          thigh=0.45, shin=0.43, foot=0.13)
@@ -527,6 +526,7 @@ def export():
     return out
 
 def draw_sheet(data, path):
+    from PIL import Image, ImageDraw  # seulement pour la planche de contrôle
     names = list(data)
     cols = 6; cw, ch = 220, 230
     rows_needed = 0

@@ -15,6 +15,7 @@ import 'package:arise/features/backup/presentation/backup_controller.dart';
 import 'package:arise/features/character_creation/presentation/character_providers.dart';
 import 'package:arise/features/exercises/data/asset_exercise_catalog_repository.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
+import 'package:arise/features/exercises/presentation/animation/coach_video_demo.dart';
 import 'package:arise/features/exercises/presentation/animation/figure_animation.dart';
 import 'package:arise/features/exercises/presentation/animation/figure_motion.dart';
 import 'package:arise/features/exercises/presentation/exercise_providers.dart';
@@ -52,6 +53,14 @@ final sampleProfile = PlayerProfile(
 final List<Exercise> testCatalog = AssetExerciseCatalogRepository.decodeCatalog(
   File(AssetExerciseCatalogRepository.assetPath).readAsStringSync(),
 );
+
+/// Mouvements filmés par le prof médiéval (`assets/coach_videos/medieval`).
+final Set<String> testCoachVideoIds = {
+  if (Directory('assets/coach_videos/medieval').existsSync())
+    for (final file in Directory('assets/coach_videos/medieval').listSync())
+      if (file.path.endsWith('_still.webp'))
+        file.uri.pathSegments.last.replaceAll('_still.webp', ''),
+};
 
 final Map<String, FigureMotion> testMotions = decodeMotions(
   File(motionsAsset).readAsStringSync(),
@@ -112,6 +121,7 @@ ProviderContainer createTestContainer({
       musicPlayerProvider.overrideWithValue(music ?? FakeMusicPlayer()),
       exerciseCatalogProvider.overrideWith((_) async => testCatalog),
       figureMotionsProvider.overrideWith((_) async => testMotions),
+      coachVideoIdsProvider.overrideWith((_, _) async => testCoachVideoIds),
       bodyShapesProvider.overrideWith((_) async => testBodyShapes),
     ],
   );

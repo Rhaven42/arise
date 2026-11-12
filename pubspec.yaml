@@ -49,6 +49,7 @@ flutter:
 
   assets:
     - assets/branding/
+    - assets/coach_videos/medieval/
     - assets/catalog/exercises.json
     - assets/animations/motions.json
     - assets/svg/body_front.svg
