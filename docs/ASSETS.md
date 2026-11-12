@@ -5,14 +5,11 @@
 ## 1. Animations des exercices (phase 2)
 
 ### État actuel
-Démonstration par **photos d'un athlète** (11/11/2026, à la demande de la propriétaire du projet : les mouvements du personnage 3D n'étaient pas assez justes ni lisibles) : pour 65 des 80 exercices, la photo de départ et celle d'arrivée alternent en fondu (`ExercisePhotoDemo`, 3:2, pause possible ; côte à côte quand le système réduit les animations).
+Démonstration par un **mannequin 2D animé** (12/11/2026, à la demande de la propriétaire du projet : les photos et les vidéos 3D étaient moins lisibles). Mannequin articulé dessiné par le code (`FigureAnimation`), muscles travaillés colorés, poses extrêmes en transparence, accessoires simples (barre, banc, box, mur).
 
-- Source : [free-exercise-db](https://github.com/yuhonas/free-exercise-db), **domaine public** (Unlicense), crédité dans Paramètres → Crédits.
-- Correspondance exercice → photos : `tool/exercise_photos/mapping.json` ; import et conversion WebP (640 px) : `node tool/viewer/exercise_photos.mjs <clone de free-exercise-db>` → `assets/exercise_photos/<exercice>_<0|1>.webp` (2,1 Mo au total).
-- Variantes proches : étirement des quadriceps pied arrière sur un banc, fentes latérales et squat bulgare avec charge, papillon mains derrière la tête.
-- **Sans photo** (rien de fidèle dans la base) : burpees, pompes piquées, bird dog, cobra, pigeon, rotation thoracique, chien tête en bas, squat profond tenu, pompes sur les genoux, planche avec touches d'épaule, hollow hold, chaise contre le mur, abductions à quatre pattes, montées de genoux, shadow boxing : le mannequin 2D (`assets/animations/motions.json`) les montre. Livrable attendu : deux photos (départ, arrivée) par exercice, même cadrage, licence CC0 ou CC BY.
-
-Les clips 3D `ex_<mouvement>` restent dans les modèles et le visualiseur, inutilisés par les écrans.
+- 75 mouvements dans `assets/animations/motions.json`, générés par `tool/motions.py` : chaque exercice du catalogue a le sien ou partage celui d'une variante identique vue de profil (pompes larges ou diamant, chin-up, curl marteau, fente arrière).
+- Appuis vérifiés image par image (planche de contrôle et test : mains et pieds ne traversent pas le sol, prises fixes par cinématique inverse).
+- Les photos (free-exercise-db) et les vidéos de capture de mouvement ont été retirées ; les clips 3D `ex_<mouvement>` restent dans les modèles et le visualiseur, inutilisés par les écrans.
 
 ### Livrable attendu (version 3D)
 - **Un modèle anatomique** homme et un modèle femme, « écorché » ou semi-réaliste, avec **un maillage séparé par muscle** pour les 33 muscles de docs/ANATOMY.md §1. Chaque maillage est nommé exactement comme l'identifiant (`pectoralis_upper`, `gluteus_medius`…), y compris les côtés gauche et droit (`_l` / `_r`).

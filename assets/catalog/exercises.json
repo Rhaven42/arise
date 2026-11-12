@@ -39,7 +39,7 @@
   },
   {
    "id": "decline_push_up",
-   "motion": "push_up",
+   "motion": "decline_push_up",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -431,7 +431,7 @@
   },
   {
    "id": "hip_thrust",
-   "motion": "glute_bridge",
+   "motion": "hip_thrust",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -923,7 +923,7 @@
   },
   {
    "id": "incline_push_up",
-   "motion": "push_up",
+   "motion": "incline_push_up",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -956,7 +956,7 @@
   },
   {
    "id": "pike_push_up",
-   "motion": "push_up",
+   "motion": "pike_push_up",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -1027,7 +1027,7 @@
   },
   {
    "id": "inverted_row",
-   "motion": "row",
+   "motion": "inverted_row",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -1061,7 +1061,7 @@
   },
   {
    "id": "bulgarian_split_squat",
-   "motion": "lunge",
+   "motion": "bulgarian_split_squat",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -1096,7 +1096,7 @@
   },
   {
    "id": "sumo_squat",
-   "motion": "squat",
+   "motion": "sumo_squat",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -1129,7 +1129,7 @@
   },
   {
    "id": "step_up",
-   "motion": "lunge",
+   "motion": "step_up",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -1164,7 +1164,7 @@
   },
   {
    "id": "bird_dog",
-   "motion": "superman",
+   "motion": "bird_dog",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -1197,7 +1197,7 @@
   },
   {
    "id": "bicycle_crunch",
-   "motion": "crunch",
+   "motion": "bicycle_crunch",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -1827,7 +1827,7 @@
   },
   {
    "id": "knee_push_up",
-   "motion": "push_up",
+   "motion": "knee_push_up",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -1892,7 +1892,7 @@
   },
   {
    "id": "bench_dips",
-   "motion": "dips",
+   "motion": "bench_dips",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -2243,7 +2243,7 @@
   },
   {
    "id": "fire_hydrant",
-   "motion": "donkey_kick",
+   "motion": "fire_hydrant",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {
@@ -2475,7 +2475,7 @@
   },
   {
    "id": "goblet_squat",
-   "motion": "squat",
+   "motion": "goblet_squat",
    "type": "reps",
    "volumeRule": "strength",
    "stats": {

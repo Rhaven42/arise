@@ -50,9 +50,47 @@ class MotionKey {
   final Map<String, double> angles;
 }
 
+/// Accessoire fixe d'une animation (banc, box, mur, barre).
+sealed class FigureProp {
+  const FigureProp();
+
+  factory FigureProp.fromJson(Map<String, dynamic> json) {
+    List<double> numbers(String key) => [
+      for (final n in json[key] as List<dynamic>) (n as num).toDouble(),
+    ];
+    return switch (json['type']) {
+      'bar' => PropBar((x: numbers('at')[0], y: numbers('at')[1])),
+      _ => PropBox(
+        topLeft: (x: numbers('rect')[0], y: numbers('rect')[1]),
+        bottomRight: (x: numbers('rect')[2], y: numbers('rect')[3]),
+      ),
+    };
+  }
+}
+
+/// Banc, box ou mur : rectangle (y vers le bas, sol en y = 0).
+class PropBox extends FigureProp {
+  const PropBox({required this.topLeft, required this.bottomRight});
+
+  final Point2 topLeft;
+  final Point2 bottomRight;
+}
+
+/// Barre vue en coupe (traction, dips, rowing inversé).
+class PropBar extends FigureProp {
+  const PropBar(this.at);
+
+  final Point2 at;
+}
+
 /// Animation d'un exercice (`assets/animations/motions.json`).
 class FigureMotion {
-  const FigureMotion({required this.view, required this.keys});
+  const FigureMotion({
+    required this.view,
+    required this.keys,
+    this.props = const [],
+    this.ground = true,
+  });
 
   factory FigureMotion.fromJson(Map<String, dynamic> json) => FigureMotion(
     view: MotionView.values.byName(json['view'] as String),
@@ -60,10 +98,21 @@ class FigureMotion {
       for (final key in json['keys'] as List<dynamic>)
         MotionKey.fromJson(key as Map<String, dynamic>),
     ],
+    props: [
+      for (final prop in json['props'] as List<dynamic>? ?? const [])
+        FigureProp.fromJson(prop as Map<String, dynamic>),
+    ],
+    ground: json['ground'] as bool? ?? true,
   );
 
   final MotionView view;
   final List<MotionKey> keys;
+
+  /// Accessoires fixes dessinés derrière le mannequin.
+  final List<FigureProp> props;
+
+  /// Faux pour un mouvement suspendu (barre) : pas de sol dessiné.
+  final bool ground;
 
   double get cycleSeconds => keys.fold(0, (total, key) => total + key.hold);
 
@@ -139,18 +188,22 @@ Point2 _step(Point2 from, double degrees, double length) {
 
 /// Positions des articulations (cinématique directe).
 ///
-/// Clés : `root`, `neck`, `head`, puis `shoulder_n`, `elbow_n`, `hand_n`,
-/// `hip_n`, `knee_n`, `ankle_n`, `toe_n` et leurs équivalents `_f` (côté
-/// éloigné).
+/// `tz`, `shz_n` et `shz_f` raccourcissent le tronc et les tibias (vue de
+/// dos à quatre pattes). Clés : `root`, `neck`, `head`, puis `shoulder_n`,
+/// `elbow_n`, `hand_n`, `hip_n`, `knee_n`, `ankle_n`, `toe_n` et leurs
+/// équivalents `_f` (côté éloigné).
 Map<String, Point2> computeJoints(
   Map<String, double> angles,
   MotionView view,
   Point2 root,
 ) {
   double a(String name) => angles[name] ?? 0;
+  // Longueurs apparentes (segments vus en raccourci) : 1 par défaut.
+  double scale(String name) => angles[name] ?? 1;
   final joints = <String, Point2>{'root': root};
   final torso = a('t');
-  joints['neck'] = _step(root, torso, FigureProportions.torso);
+  final torsoLength = FigureProportions.torso * scale('tz');
+  joints['neck'] = _step(root, torso, torsoLength);
   // `hd` : inclinaison de la tête par rapport au tronc ; `sl` : épaules
   // haussées le long du tronc.
   joints['head'] = _step(
@@ -161,7 +214,7 @@ Map<String, Point2> computeJoints(
   final shoulder = _step(
     root,
     torso,
-    FigureProportions.torso * FigureProportions.shoulderAt + a('sl'),
+    torsoLength * FigureProportions.shoulderAt + a('sl'),
   );
   for (final (side, sign) in const [('n', 1.0), ('f', -1.0)]) {
     final front = view == MotionView.front;
@@ -195,7 +248,7 @@ Map<String, Point2> computeJoints(
     joints['ankle_$side'] = _step(
       joints['knee_$side']!,
       mirror(a('sh_$side')),
-      FigureProportions.shin,
+      FigureProportions.shin * scale('shz_$side'),
     );
     joints['toe_$side'] = front
         ? _step(joints['ankle_$side']!, 0, FigureProportions.frontFoot)

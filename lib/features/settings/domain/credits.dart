@@ -97,12 +97,6 @@ const List<Credit> ccByCredits = [
 /// Autres ressources (mention non obligatoire, faite par courtoisie).
 const List<Credit> otherCredits = [
   Credit(
-    work: 'Photos de démonstration des exercices (free-exercise-db)',
-    author: 'Contributeurs de free-exercise-db',
-    license: CreditLicense.publicDomain,
-    source: 'github.com/yuhonas/free-exercise-db',
-  ),
-  Credit(
     work: 'MakeHuman (corps, peaux, yeux, sourcils, vêtements et cheveux CC0)',
     author: 'MakeHuman Community',
     license: CreditLicense.cc0,

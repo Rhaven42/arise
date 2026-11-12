@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -120,5 +121,98 @@ void main() {
       MuscleRole.secondary,
     );
     expect(segmentRole(FigureSegment.head, const {}), isNull);
+  });
+
+  test('chaque exercice du catalogue a son mouvement', () {
+    final catalog = jsonDecode(
+      File('assets/catalog/exercises.json').readAsStringSync(),
+    ) as Map<String, dynamic>;
+    for (final exercise
+        in (catalog['exercises'] as List<dynamic>)
+            .cast<Map<String, dynamic>>()) {
+      expect(
+        motions,
+        contains(exercise['motion']),
+        reason: exercise['id'] as String,
+      );
+    }
+  });
+
+  test('les mains restent posées pendant les pompes', () {
+    for (final id in ['push_up', 'knee_push_up', 'pike_push_up']) {
+      final motion = motions[id]!;
+      final first = computeJoints(
+        motion.keys.first.angles,
+        motion.view,
+        motion.keys.first.root,
+      )['hand_n']!;
+      expect(first.y, closeTo(0, 0.01), reason: id);
+      for (var i = 0; i < 24; i++) {
+        final pose = motion.poseAt(i / 24);
+        final hand = computeJoints(
+          pose.angles,
+          motion.view,
+          pose.root,
+        )['hand_n']!;
+        expect(_distance(hand, first), lessThan(0.05), reason: '$id $i');
+      }
+    }
+  });
+
+  test('au sol, aucun membre ne traverse le plancher', () {
+    for (final id in [
+      'burpee',
+      'glute_bridge',
+      'dead_bug',
+      'donkey_kick',
+      'cobra_stretch',
+      'pigeon_stretch',
+      'crunch',
+      'bench_dips',
+      'hip_thrust',
+    ]) {
+      final motion = motions[id]!;
+      for (var i = 0; i < 48; i++) {
+        final pose = motion.poseAt(i / 48);
+        for (final p in computeJoints(
+          pose.angles,
+          motion.view,
+          pose.root,
+        ).values) {
+          expect(p.y, lessThan(0.07), reason: '$id $i');
+        }
+      }
+    }
+  });
+
+  test('accessoires : barre de traction, banc, sans sol sous la barre', () {
+    final pullUp = motions['pull_up']!;
+    expect(pullUp.ground, isFalse);
+    expect(pullUp.props.single, isA<PropBar>());
+    final dips = motions['bench_dips']!;
+    expect(dips.ground, isTrue);
+    final bench = dips.props.single as PropBox;
+    expect(bench.bottomRight.y, 0);
+    expect(bench.topLeft.y, lessThan(0));
+  });
+
+  test('vu de dos, le tronc et les tibias apparaissent raccourcis', () {
+    final j = computeJoints(
+      {'t': 180, 'tz': 0.5, 'shz_n': 0.2},
+      MotionView.front,
+      (x: 0, y: 0),
+    );
+    expect(
+      _distance(j['root']!, j['neck']!),
+      closeTo(FigureProportions.torso * 0.5, 1e-9),
+    );
+    expect(
+      _distance(j['knee_n']!, j['ankle_n']!),
+      closeTo(FigureProportions.shin * 0.2, 1e-9),
+    );
+    expect(
+      _distance(j['knee_f']!, j['ankle_f']!),
+      closeTo(FigureProportions.shin, 1e-9),
+    );
   });
 }

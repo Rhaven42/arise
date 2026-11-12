@@ -49,8 +49,6 @@ flutter:
   assets:
     - assets/catalog/exercises.json
     - assets/animations/motions.json
-    - assets/exercise_photos/
-    - assets/exercise_videos/
     - assets/svg/body_front.svg
     - assets/svg/body_back.svg
     - assets/sounds/

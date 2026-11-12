@@ -1,7 +1,6 @@
 import 'package:arise/core/anatomy/body_map.dart';
 import 'package:arise/core/anatomy/muscle.dart';
 import 'package:arise/core/router/app_routes.dart';
-import 'package:arise/features/exercises/presentation/animation/exercise_photo_demo.dart';
 import 'package:arise/features/exercises/presentation/animation/figure_animation.dart';
 import 'package:arise/features/exercises/presentation/exercise_detail_page.dart';
 import 'package:arise/features/exercises/presentation/exercise_providers.dart';
@@ -30,59 +29,41 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('la fiche montre les photos, les silhouettes et les consignes', (
-    tester,
-  ) async {
-    final container = createTestContainer();
-    await tester.openWithProfile(container, AppRoutes.exerciseDetail('row'));
+  testWidgets(
+    'la fiche montre le mannequin, les silhouettes et les consignes',
+    (tester) async {
+      final container = createTestContainer();
+      await tester.openWithProfile(container, AppRoutes.exerciseDetail('row'));
 
-    expect(find.text('Rowing'), findsOneWidget);
-    await tester.pump();
-    // Photos de l'athlète : départ et arrivée, en fondu.
-    expect(find.byType(ExercisePhotoDemo), findsOneWidget);
-    expect(find.byType(FigureAnimation), findsNothing);
-    expect(find.byType(Image), findsNWidgets(2));
-    expect(find.byKey(ExercisePhotoDemo.pauseKey), findsOneWidget);
-    await tester.tap(find.byKey(ExercisePhotoDemo.pauseKey));
-    await tester.pump();
-    expect(find.byTooltip("Lancer l'animation"), findsOneWidget);
-    // Les silhouettes sont sous les photos : un défilement les affiche.
-    await tester.drag(find.byType(Scrollable).first, const Offset(0, -250));
-    await tester.pump();
-    expect(find.byType(BodyMap), findsWidgets);
-    await tester.scrollUntilVisible(
-      find.text('• Grand dorsal'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    expect(find.text('• Grand dorsal'), findsOneWidget);
+      expect(find.text('Rowing'), findsOneWidget);
+      await tester.pump();
+      // Mannequin 2D animé, avec pause.
+      expect(find.byType(FigureAnimation), findsOneWidget);
+      await tester.tap(find.byKey(FigureAnimation.pauseKey));
+      await tester.pump();
+      expect(find.byTooltip("Lancer l'animation"), findsOneWidget);
+      // Les silhouettes sont sous le mannequin : un défilement les affiche.
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -250));
+      await tester.pump();
+      expect(find.byType(BodyMap), findsWidgets);
+      await tester.scrollUntilVisible(
+        find.text('• Grand dorsal'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('• Grand dorsal'), findsOneWidget);
 
-    await tester.scrollUntilVisible(
-      find.text('Erreurs fréquentes'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    expect(find.text('Consignes'), findsOneWidget);
-    await tester.unmountApp();
-  });
+      await tester.scrollUntilVisible(
+        find.text('Erreurs fréquentes'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Consignes'), findsOneWidget);
+      await tester.unmountApp();
+    },
+  );
 
-  testWidgets('une vidéo de démonstration passe avant les photos', (
-    tester,
-  ) async {
-    final container = createTestContainer();
-    await tester.openWithProfile(container, AppRoutes.exerciseDetail('squat'));
-    await tester.pump();
-
-    final image = tester.widget<Image>(find.byType(Image));
-    expect((image.image as AssetImage).assetName, exerciseVideoAsset('squat'));
-    await tester.tap(find.byKey(ExercisePhotoDemo.pauseKey));
-    await tester.pump();
-    final still = tester.widget<Image>(find.byType(Image));
-    expect((still.image as AssetImage).assetName, exerciseVideoStill('squat'));
-    await tester.unmountApp();
-  });
-
-  testWidgets('animations réduites : départ et arrivée côte à côte', (
+  testWidgets('animations réduites : pose fixe, sans bouton pause', (
     tester,
   ) async {
     tester.platformDispatcher.accessibilityFeaturesTestValue =
@@ -92,13 +73,12 @@ void main() {
     await tester.openWithProfile(container, AppRoutes.exerciseDetail('row'));
     await tester.pump();
 
-    expect(find.text('Départ'), findsOneWidget);
-    expect(find.text('Arrivée'), findsOneWidget);
-    expect(find.byKey(ExercisePhotoDemo.pauseKey), findsNothing);
+    expect(find.byType(FigureAnimation), findsOneWidget);
+    expect(find.byKey(FigureAnimation.pauseKey), findsNothing);
     await tester.unmountApp();
   });
 
-  testWidgets('sans photo, le mannequin 2D montre l’exercice', (tester) async {
+  testWidgets('une variante a son propre mouvement', (tester) async {
     final container = createTestContainer();
     await tester.openWithProfile(
       container,
@@ -106,7 +86,8 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.byType(FigureAnimation), findsOneWidget);
+    final figure = tester.widget<FigureAnimation>(find.byType(FigureAnimation));
+    expect(figure.motionId, 'bird_dog');
     await tester.unmountApp();
   });
 
