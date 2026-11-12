@@ -3,6 +3,8 @@
 > Ce fichier fait foi pendant tout le projet. **Relis-le, ainsi que `docs/SPEC.md`, `docs/ANATOMY.md` et `docs/ROADMAP.md`, au début de chaque phase.**
 >
 > Depuis le 04/11/2026, ARISE est une application **100 % hors ligne** : ni compte, ni serveur, ni Firebase (SPEC.md §21).
+>
+> Depuis le 12/11/2026, le nom affiché aux utilisateurs est **Hero Protocol** (SPEC.md §35) ; « ARISE » / `arise` reste le nom de code interne.
 
 ## 1. Le projet en une phrase
 ARISE est une application mobile de sport gamifiée (Android + iOS), dans l'esprit « chasseur qui s'éveille et monte en rang » : l'utilisateur fait du sport réel, gagne de l'expérience, monte de niveau, débloque des rangs et fait évoluer un avatar 3D personnalisable dans le royaume original d'**Arisia**.

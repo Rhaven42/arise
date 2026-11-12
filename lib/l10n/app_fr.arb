@@ -1,6 +1,6 @@
 {
   "@@locale": "fr",
-  "appTitle": "ARISE",
+  "appTitle": "Hero Protocol",
   "welcomeTagline": "Le royaume d'Arisia attend son prochain chasseur.",
   "welcomeDesignSystemButton": "Voir le design system",
   "designSystemTitle": "Design system",
@@ -172,7 +172,7 @@
   },
   "onboardingHealthQuestion": "Santé et prudence",
   "healthConsentTitle": "Lire mes données de santé",
-  "healthConsentBody": "ARISE pourra lire tes pas, ton sommeil et tes activités pour te faire progresser. Rien n'est jamais écrit ni envoyé : tout reste sur ton téléphone. Tu pourras changer d'avis dans les paramètres.",
+  "healthConsentBody": "Hero Protocol pourra lire tes pas, ton sommeil et tes activités pour te faire progresser. Rien n'est jamais écrit ni envoyé : tout reste sur ton téléphone. Tu pourras changer d'avis dans les paramètres.",
   "safetyTitle": "Rappel de prudence",
   "safetyBody": "Arrête immédiatement l'exercice en cas de douleur, de vertige ou de fatigue extrême. Si tu as un problème de santé, demande l'avis d'un médecin avant de commencer.",
   "safetyAcknowledge": "J'ai lu et compris ce rappel",
@@ -228,7 +228,7 @@
   "restoreSuccess": "Sauvegarde restaurée.",
   "exportSuccess": "Sauvegarde exportée.",
   "eraseSuccess": "Toutes les données ont été effacées.",
-  "backupErrorMessage": "{error, select, unreadable{Ce fichier est illisible.} notArise{Ce fichier n'est pas une sauvegarde ARISE.} tooRecent{Cette sauvegarde vient d'une version plus récente d'ARISE : mets l'application à jour.} corrupted{Cette sauvegarde est endommagée.} other{Fichier refusé.}}",
+  "backupErrorMessage": "{error, select, unreadable{Ce fichier est illisible.} notArise{Ce fichier n'est pas une sauvegarde Hero Protocol.} tooRecent{Cette sauvegarde vient d'une version plus récente de Hero Protocol : mets l'application à jour.} corrupted{Cette sauvegarde est endommagée.} other{Fichier refusé.}}",
   "@backupErrorMessage": {
     "placeholders": {
       "error": {
@@ -2005,7 +2005,7 @@
   "creditsTitle": "Crédits",
   "creditsTile": "Crédits",
   "creditsTileHint": "Auteurs des modèles 3D, des polices et des outils libres",
-  "creditsIntro": "ARISE est une création originale. Les personnages s'appuient sur des ressources libres, partagées par leurs auteurs : merci à eux.",
+  "creditsIntro": "Hero Protocol est une création originale. Les personnages s'appuient sur des ressources libres, partagées par leurs auteurs : merci à eux.",
   "creditsCcBySection": "Ressources sous licence CC BY",
   "creditsOtherSection": "Autres ressources libres",
   "creditsEntry": "{work} — {author}",

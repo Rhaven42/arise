@@ -102,7 +102,12 @@ void main() {
     app.main();
     await tester.pumpAndSettle(const Duration(seconds: 2));
 
-    expect(find.text('ARISE'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) => w is Semantics && w.properties.label == 'Hero Protocol',
+      ),
+      findsOneWidget,
+    );
     await _tapText(tester, "Commencer l'aventure");
 
     await _tapText(tester, 'Endurance');

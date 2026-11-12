@@ -2,7 +2,7 @@
     <!-- Rappels de séances : reprogrammés après un redémarrage du téléphone. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
-        android:label="ARISE"
+        android:label="Hero Protocol"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

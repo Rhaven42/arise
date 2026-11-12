@@ -46,7 +46,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text("Ce fichier n'est pas une sauvegarde ARISE."),
+      find.text("Ce fichier n'est pas une sauvegarde Hero Protocol."),
       findsOneWidget,
     );
     await tester.unmountApp();

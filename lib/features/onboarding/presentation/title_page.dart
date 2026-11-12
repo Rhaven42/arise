@@ -11,14 +11,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// Écran titre : la taverne d'Arisia.
+/// Logo de l'application (blason Hero Protocol).
+const String appLogoAsset = 'assets/branding/logo.webp';
+
+/// Écran titre : la taverne d'Arisia, sous le blason de Hero Protocol.
 class TitlePage extends ConsumerWidget {
   const TitlePage({super.key});
+
+  static const logoKey = Key('title-logo');
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
     final profile = ref.watch(playerProfileProvider);
 
     final actions = switch (profile) {
@@ -60,18 +64,17 @@ class TitlePage extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: MediaQuery.sizeOf(context).height * 0.2),
+                    SizedBox(height: MediaQuery.sizeOf(context).height * 0.04),
                     Semantics(
                       header: true,
-                      child: Text(
-                        l10n.appTitle,
-                        textAlign: TextAlign.center,
-                        style: textTheme.displayLarge?.copyWith(
-                          color: AriseColors.goldBright,
-                          letterSpacing: 8,
-                          shadows: const [
-                            Shadow(color: AriseColors.ember, blurRadius: 18),
-                          ],
+                      image: true,
+                      label: l10n.appTitle,
+                      child: ExcludeSemantics(
+                        child: Image.asset(
+                          appLogoAsset,
+                          key: logoKey,
+                          height: MediaQuery.sizeOf(context).height * 0.34,
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
