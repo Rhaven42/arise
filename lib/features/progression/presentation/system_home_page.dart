@@ -3,14 +3,17 @@ import 'dart:async';
 import 'package:arise/core/config/game_config.dart';
 import 'package:arise/core/design_system/widgets/arise_button.dart';
 import 'package:arise/core/design_system/widgets/rank_badge.dart';
+import 'package:arise/core/design_system/widgets/stat_gem.dart';
 import 'package:arise/core/design_system/widgets/stone_frame.dart';
 import 'package:arise/core/design_system/widgets/system_window.dart';
 import 'package:arise/core/design_system/widgets/xp_bar.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/core/theme/arise_colors.dart';
 import 'package:arise/core/theme/arise_spacing.dart';
+import 'package:arise/core/theme/arise_typography.dart';
 import 'package:arise/core/utils/clock.dart';
 import 'package:arise/core/utils/weekdays.dart';
+import 'package:arise/features/character_creation/presentation/character_providers.dart';
 import 'package:arise/features/exercises/domain/stat_id.dart';
 import 'package:arise/features/planning/domain/schedule.dart';
 import 'package:arise/features/planning/presentation/planning_providers.dart';
@@ -22,6 +25,7 @@ import 'package:arise/features/progression/domain/progression_rules.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/progression/presentation/progression_labels.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
+import 'package:arise/features/titles/presentation/titles_providers.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,11 +34,14 @@ import 'package:intl/intl.dart';
 
 /// Fenêtre du Système : tableau de bord du chasseur.
 class SystemHomePage extends ConsumerWidget {
-  const SystemHomePage({super.key, this.panels = const []});
+  const SystemHomePage({super.key, this.panels = const [], this.bottomBar});
 
   /// Panneaux d'autres fonctionnalités (quête du jour, épreuve de rang),
   /// assemblés par le routeur et affichés sous le message du Système.
   final List<Widget> panels;
+
+  /// Barre d'action (assemblée par le routeur).
+  final Widget? bottomBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,6 +50,7 @@ class SystemHomePage extends ConsumerWidget {
     final progression = ref.watch(progressionControllerProvider).value;
 
     return Scaffold(
+      bottomNavigationBar: bottomBar,
       appBar: AppBar(
         title: Text(l10n.systemHomeTitle),
         actions: [
@@ -98,6 +106,8 @@ class _SystemHomeBody extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(AriseSpacing.md),
       children: [
+        _HeroHud(state: state),
+        const SizedBox(height: AriseSpacing.md),
         if (view.report case final report?) ...[
           _ReportWindow(
             report: report,
@@ -126,8 +136,14 @@ class _SystemHomeBody extends ConsumerWidget {
             title: l10n.systemWelcomeTitle,
             child: Text(l10n.systemWelcomeBody, style: textTheme.bodyLarge),
           ),
-        const SizedBox(height: AriseSpacing.lg),
-        _LevelPanel(state: state),
+        if (state.isRankLocked && state.xpInLevel >= state.xpForNextLevel)
+          Padding(
+            padding: const EdgeInsets.only(top: AriseSpacing.sm),
+            child: Text(
+              l10n.progressRankLocked(l10n.rankName(state.rank.name)),
+              style: textTheme.bodyMedium?.copyWith(color: AriseColors.mana),
+            ),
+          ),
         const SizedBox(height: AriseSpacing.lg),
         _StatsPanel(
           state: state,
@@ -209,56 +225,137 @@ class _SystemHomeBody extends ConsumerWidget {
   }
 }
 
-class _LevelPanel extends StatelessWidget {
-  const _LevelPanel({required this.state});
+/// Fiche du héros, façon MMO : médaillon de rang avec le niveau, nom,
+/// titre porté, barre d'expérience et bourse.
+class _HeroHud extends ConsumerWidget {
+  const _HeroHud({required this.state});
+
+  final ProgressionState state;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final sheet = ref.watch(savedCharacterProvider).value;
+    final title = ref.watch(titlesViewProvider).value?.worn.equippedTitle;
+    final name = sheet == null || sheet.name.isEmpty
+        ? l10n.characterTitle
+        : sheet.name;
+    return StoneFrame(
+      padding: const EdgeInsets.all(AriseSpacing.sm),
+      child: Row(
+        children: [
+          _Medallion(state: state),
+          const SizedBox(width: AriseSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.titleLarge,
+                ),
+                Text(
+                  title == null ? l10n.hunterNoTitle : l10n.titleName(title),
+                  style: textTheme.bodyLarge?.copyWith(
+                    fontFamily: AriseTypography.flavor,
+                    fontStyle: FontStyle.italic,
+                    color: title == null
+                        ? AriseColors.parchmentMuted
+                        : AriseColors.goldBright,
+                  ),
+                ),
+                Wrap(
+                  spacing: AriseSpacing.sm,
+                  children: [
+                    Text(
+                      l10n.systemLevel(state.level),
+                      style: textTheme.labelLarge?.copyWith(
+                        color: AriseColors.gold,
+                      ),
+                    ),
+                    Text(
+                      l10n.homeRankLabel(l10n.rankName(state.rank.name)),
+                      style: textTheme.labelLarge?.copyWith(
+                        color: RankBadge.colorOf(state.rank),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AriseSpacing.xs),
+                XpBar(
+                  current: state.xpInLevel,
+                  goal: state.isAtMaxLevel ? 1 : state.xpForNextLevel,
+                ),
+                _Wallet(coins: state.wallet),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Médaillon de rang serti d'or, avec le niveau en pastille.
+class _Medallion extends StatelessWidget {
+  const _Medallion({required this.state});
 
   final ProgressionState state;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
-    final rankName = l10n.rankName(state.rank.name);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          children: [
-            RankBadge(rank: state.rank),
-            const SizedBox(width: AriseSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    l10n.systemLevel(state.level),
-                    style: textTheme.titleLarge,
-                  ),
-                  Text(
-                    l10n.homeRankLabel(rankName),
-                    style: textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: AriseSpacing.xs),
-                  XpBar(
-                    current: state.xpInLevel,
-                    goal: state.isAtMaxLevel ? 1 : state.xpForNextLevel,
+    return SizedBox(
+      width: 80,
+      height: 80,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AriseColors.goldBright.withValues(alpha: 0.35),
+                    blurRadius: 16,
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-        if (state.isRankLocked && state.xpInLevel >= state.xpForNextLevel)
-          Padding(
-            padding: const EdgeInsets.only(top: AriseSpacing.sm),
-            child: Text(
-              l10n.progressRankLocked(rankName),
-              style: textTheme.bodyMedium?.copyWith(color: AriseColors.mana),
+              child: RankBadge(rank: state.rank, size: 80),
             ),
           ),
-        const SizedBox(height: AriseSpacing.sm),
-        _Wallet(coins: state.wallet),
-      ],
+          Positioned(
+            right: -4,
+            bottom: -4,
+            child: ExcludeSemantics(
+              child: Container(
+                width: 32,
+                height: 32,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const RadialGradient(
+                    colors: [Color(0xFF3A2A10), Color(0xFF140D05)],
+                  ),
+                  border: Border.all(color: AriseColors.goldBright, width: 2),
+                ),
+                child: Text(
+                  '${state.level}',
+                  style: TextStyle(
+                    fontFamily: AriseTypography.display,
+                    fontVariations: AriseTypography.weight(800),
+                    fontSize: 13,
+                    color: AriseColors.goldBright,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -305,6 +402,15 @@ class _StatsPanel extends StatelessWidget {
   final ProgressionState state;
   final ValueChanged<StatId> onAllocate;
 
+  /// Couleur de la gemme de chaque stat.
+  static Color gemColor(StatId stat) => switch (stat) {
+    StatId.strength => AriseColors.gemStrength,
+    StatId.endurance => AriseColors.gemEndurance,
+    StatId.agility => AriseColors.gemAgility,
+    StatId.vitality => AriseColors.gemVitality,
+    StatId.willpower => AriseColors.gemWillpower,
+  };
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -316,7 +422,13 @@ class _StatsPanel extends StatelessWidget {
         children: [
           Semantics(
             header: true,
-            child: Text(l10n.homeStatsTitle, style: textTheme.titleLarge),
+            child: Text(
+              l10n.homeStatsTitle,
+              style: textTheme.titleMedium?.copyWith(
+                color: AriseColors.gold,
+                letterSpacing: 1.5,
+              ),
+            ),
           ),
           if (canAllocate)
             Text(
@@ -326,31 +438,35 @@ class _StatsPanel extends StatelessWidget {
               ),
             ),
           const SizedBox(height: AriseSpacing.sm),
-          for (final stat in StatId.values)
-            Row(
-              children: [
+          Row(
+            children: [
+              for (final stat in StatId.values)
                 Expanded(
-                  child: Text(
-                    l10n.homeStatValue(
-                      l10n.statName(stat.name),
-                      state.stat(stat),
-                    ),
-                    style: textTheme.bodyLarge,
+                  child: Column(
+                    children: [
+                      StatGem(
+                        color: gemColor(stat),
+                        value: state.stat(stat),
+                        label: l10n.statName(stat.name),
+                        semanticsLabel: l10n.homeStatValue(
+                          l10n.statName(stat.name),
+                          state.stat(stat),
+                        ),
+                      ),
+                      if (canAllocate)
+                        IconButton(
+                          tooltip: l10n.homeAllocate(l10n.statName(stat.name)),
+                          icon: const Icon(
+                            Icons.add_circle_outline,
+                            color: AriseColors.goldBright,
+                          ),
+                          onPressed: () => onAllocate(stat),
+                        ),
+                    ],
                   ),
                 ),
-                if (canAllocate)
-                  IconButton(
-                    tooltip: l10n.homeAllocate(l10n.statName(stat.name)),
-                    icon: const Icon(
-                      Icons.add_circle_outline,
-                      color: AriseColors.gold,
-                    ),
-                    onPressed: () => onAllocate(stat),
-                  )
-                else
-                  const SizedBox(height: AriseSpacing.minTouchTarget),
-              ],
-            ),
+            ],
+          ),
         ],
       ),
     );

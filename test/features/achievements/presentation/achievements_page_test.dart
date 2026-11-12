@@ -52,7 +52,7 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('la carte du chasseur mène aux hauts faits', (tester) async {
+  testWidgets('le panneau des exploits mène aux hauts faits', (tester) async {
     final container = createTestContainer();
     await tester.openWithProfile(container, AppRoutes.systemHome);
     await tester.scrollUntilVisible(
@@ -60,7 +60,6 @@ void main() {
       300,
       scrollable: find.byType(Scrollable).first,
     );
-    expect(find.text('Sans titre'), findsOneWidget);
     await tester.tap(find.byKey(HunterPanel.achievementsKey));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));

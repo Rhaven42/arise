@@ -21,6 +21,29 @@ abstract final class AriseColors {
   static const success = Color(0xFF7BC87A);
   static const onGold = Color(0xFF1B1408);
 
+  // Interface MMORPG (refonte du 12/11/2026).
+  static const goldPale = Color(0xFFFFE8A8);
+  static const goldDeep = Color(0xFFB9852E);
+  static const goldShadow = Color(0xFF5A3D12);
+  static const bronzeEdge = Color(0xFF6B5326);
+  static const panelTop = Color(0xFF2B2622);
+  static const panelBottom = Color(0xFF1C1815);
+  static const manaBright = Color(0xFF9FE3FF);
+  static const manaPale = Color(0xFFBFEAFF);
+  static const manaDeep = Color(0xFF0C2539);
+  static const manaPanelTop = Color(0xFF0E2030);
+  static const manaPanelBottom = Color(0xFF08101A);
+  static const manaText = Color(0xFFD6E7F2);
+  static const backdropTop = Color(0xFF221C18);
+  static const backdropBottom = Color(0xFF120F0D);
+
+  // Gemmes des stats (texte blanc lisible sur chacune).
+  static const gemStrength = Color(0xFFC0392B);
+  static const gemEndurance = Color(0xFFD07A22);
+  static const gemAgility = Color(0xFF2E9A62);
+  static const gemVitality = Color(0xFFB8457F);
+  static const gemWillpower = Color(0xFF6150D0);
+
   // Silhouettes musculaires : la couleur est toujours doublée d'un motif
   // (hachures = principal, points = secondaire) pour les daltoniens.
   static const bodyFill = Color(0xFF4A423B);

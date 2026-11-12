@@ -1,8 +1,11 @@
+import 'package:arise/core/router/app_router.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/features/exercises/domain/stat_id.dart';
+import 'package:arise/features/inventory/presentation/inventory_page.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
+import 'package:arise/features/quests/presentation/quests_page.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -19,6 +22,8 @@ void main() {
     expect(find.text('Bienvenue, chasseur'), findsOneWidget);
     expect(find.text('Niveau 0'), findsOneWidget);
     expect(find.text('Rang E'), findsOneWidget);
+    // Fiche du héros : pas encore de personnage ni de titre.
+    expect(find.text('Sans titre'), findsOneWidget);
     expect(
       find.byWidgetPredicate(
         (w) =>
@@ -55,7 +60,10 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text('Force : 1'), findsOneWidget);
+    // Les gemmes annoncent « stat : valeur » aux lecteurs d'écran.
+    final semantics = tester.ensureSemantics();
+    expect(find.bySemanticsLabel('Force : 1'), findsOneWidget);
+    semantics.dispose();
     expect(find.text('1 point à placer'), findsOneWidget);
     final saved = await container.read(progressionRepositoryProvider).read();
     expect(saved?.stat(StatId.strength), 1);
@@ -89,6 +97,28 @@ void main() {
     final saved = await container.read(progressionRepositoryProvider).read();
     expect(saved?.streakDays, 0);
     expect(saved?.bestStreak, 4);
+    await tester.unmountApp();
+  });
+
+  testWidgets('la barre d’action ouvre les quêtes et l’inventaire', (
+    tester,
+  ) async {
+    final container = createTestContainer();
+    await tester.openWithProfile(container, AppRoutes.systemHome);
+    await tester.pump(const Duration(milliseconds: 300));
+
+    await tester.tap(find.byKey(HomeDock.questsKey));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byType(QuestsPage), findsOneWidget);
+
+    container.read(appRouterProvider).go(AppRoutes.systemHome);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.byKey(HomeDock.bagKey));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byType(InventoryPage), findsOneWidget);
     await tester.unmountApp();
   });
 }

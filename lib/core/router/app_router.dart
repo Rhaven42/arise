@@ -1,4 +1,5 @@
 import 'package:arise/core/design_system/demo/design_system_demo_page.dart';
+import 'package:arise/core/design_system/widgets/action_dock.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/core/router/route_guard.dart';
 import 'package:arise/features/achievements/presentation/achievements_page.dart';
@@ -22,6 +23,7 @@ import 'package:arise/features/progression/presentation/hero_class_page.dart';
 import 'package:arise/features/progression/presentation/system_home_page.dart';
 import 'package:arise/features/quests/presentation/quest_panel.dart';
 import 'package:arise/features/quests/presentation/quests_page.dart';
+import 'package:arise/features/quests/presentation/quests_providers.dart';
 import 'package:arise/features/settings/presentation/credits_page.dart';
 import 'package:arise/features/settings/presentation/settings_page.dart';
 import 'package:arise/features/shadows/presentation/shadows_page.dart';
@@ -29,7 +31,8 @@ import 'package:arise/features/shop/presentation/shop_page.dart';
 import 'package:arise/features/titles/presentation/titles_page.dart';
 import 'package:arise/features/trials/presentation/trial_page.dart';
 import 'package:arise/features/workout_player/presentation/workout_page.dart';
-import 'package:flutter/foundation.dart';
+import 'package:arise/l10n/generated/app_localizations.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -82,6 +85,7 @@ GoRouter appRouter(Ref ref) {
         path: AppRoutes.systemHome,
         builder: (_, _) => const SystemHomePage(
           panels: [HunterPanel(), QuestPanel(), TrialPanel()],
+          bottomBar: HomeDock(),
         ),
         routes: [
           GoRoute(
@@ -191,4 +195,54 @@ GoRouter appRouter(Ref ref) {
   );
   ref.onDispose(router.dispose);
   return router;
+}
+
+/// Barre d'action de la Fenêtre du Système : chaque emplacement mène à une
+/// fonctionnalité (le routeur est seul à les assembler).
+class HomeDock extends StatelessWidget {
+  const HomeDock({super.key});
+
+  static const trainKey = Key('dock-train');
+  static const questsKey = Key('dock-quests');
+  static const heroKey = Key('dock-hero');
+  static const bagKey = Key('dock-bag');
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return ActionDock(
+      items: [
+        DockItem(
+          icon: Icons.shield_outlined,
+          label: l10n.dockSystem,
+          selected: true,
+          onTap: () => context.go(AppRoutes.systemHome),
+        ),
+        DockItem(
+          key: questsKey,
+          icon: Icons.menu_book_outlined,
+          label: l10n.dockQuests,
+          onTap: () => context.go(AppRoutes.quests),
+        ),
+        DockItem(
+          key: heroKey,
+          icon: Icons.person_outline,
+          label: l10n.dockHero,
+          onTap: () => context.go(AppRoutes.character),
+        ),
+        DockItem(
+          key: bagKey,
+          icon: Icons.backpack_outlined,
+          label: l10n.dockBag,
+          onTap: () => context.go(AppRoutes.inventory),
+        ),
+      ],
+      center: DockItem(
+        key: trainKey,
+        icon: Icons.fitness_center,
+        label: l10n.dockTrain,
+        onTap: () => context.go(AppRoutes.workout(dailyQuestProgramId)),
+      ),
+    );
+  }
 }

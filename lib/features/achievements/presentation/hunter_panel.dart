@@ -4,17 +4,14 @@ import 'package:arise/core/design_system/widgets/stone_frame.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/core/theme/arise_colors.dart';
 import 'package:arise/core/theme/arise_spacing.dart';
-import 'package:arise/core/theme/arise_typography.dart';
 import 'package:arise/features/achievements/presentation/achievements_providers.dart';
-import 'package:arise/features/character_creation/presentation/character_providers.dart';
-import 'package:arise/features/titles/presentation/titles_providers.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-/// Carte du chasseur sur la Fenêtre du Système : nom, titre porté, hauts
-/// faits, accès aux titres et aux Ombres.
+/// Exploits sur la Fenêtre du Système : hauts faits obtenus, accès aux
+/// titres et aux Ombres (le nom et le titre sont sur la fiche du héros).
 class HunterPanel extends ConsumerWidget {
   const HunterPanel({super.key});
 
@@ -26,24 +23,20 @@ class HunterPanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
-    final sheet = ref.watch(savedCharacterProvider).value;
-    final title = ref.watch(titlesViewProvider).value?.worn.equippedTitle;
     final unlocked =
         ref.watch(achievementsStateProvider).value?.unlocked.length ?? 0;
-    final name = sheet == null || sheet.name.isEmpty
-        ? l10n.characterTitle
-        : sheet.name;
     return StoneFrame(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(name, style: textTheme.titleLarge),
-          Text(
-            title == null ? l10n.hunterNoTitle : l10n.titleName(title),
-            style: textTheme.bodyLarge?.copyWith(
-              color: title == null ? null : AriseColors.goldBright,
-              fontFamily: AriseTypography.flavor,
-              fontStyle: FontStyle.italic,
+          Semantics(
+            header: true,
+            child: Text(
+              l10n.hunterExploits,
+              style: textTheme.titleMedium?.copyWith(
+                color: AriseColors.gold,
+                letterSpacing: 1.5,
+              ),
             ),
           ),
           const SizedBox(height: AriseSpacing.xs),

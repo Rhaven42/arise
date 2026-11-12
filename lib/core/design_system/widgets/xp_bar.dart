@@ -31,22 +31,36 @@ class XpBar extends StatelessWidget {
             Container(
               height: 14,
               decoration: BoxDecoration(
-                color: AriseColors.abyss,
-                border: Border.all(color: AriseColors.woodLight),
-                borderRadius: BorderRadius.circular(AriseSpacing.radius),
+                color: const Color(0xFF0B0907),
+                border: Border.all(color: AriseColors.bronzeEdge),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(AriseSpacing.radius - 1),
+                borderRadius: BorderRadius.circular(7),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: FractionallySizedBox(
                     widthFactor: progress,
                     heightFactor: 1,
-                    child: const DecoratedBox(
+                    // Mana lumineuse : clair en haut, profond en bas.
+                    child: DecoratedBox(
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [AriseColors.mana, AriseColors.goldBright],
+                        gradient: const LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AriseColors.manaBright,
+                            AriseColors.mana,
+                            Color(0xFF1D6D9E),
+                          ],
+                          stops: [0, 0.45, 1],
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AriseColors.mana.withValues(alpha: 0.8),
+                            blurRadius: 8,
+                          ),
+                        ],
                       ),
                     ),
                   ),

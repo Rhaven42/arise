@@ -2196,5 +2196,11 @@
   },
   "titlesSeeAll": "Titres et auras",
   "exercisePhotoStart": "Départ",
-  "exercisePhotoEnd": "Arrivée"
+  "exercisePhotoEnd": "Arrivée",
+  "dockSystem": "Système",
+  "dockQuests": "Quêtes",
+  "dockTrain": "Lancer la quête du jour",
+  "dockHero": "Héros",
+  "dockBag": "Sac",
+  "hunterExploits": "Exploits"
 }
