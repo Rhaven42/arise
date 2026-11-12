@@ -55,6 +55,9 @@ abstract final class AppRoutes {
   static const questsSegment = 'quests';
   static const String quests = '$systemHome/$questsSegment';
 
+  static const statsSegment = 'stats';
+  static const String stats = '$systemHome/$statsSegment';
+
   static const heroClassSegment = 'class';
   static const String heroClass = '$systemHome/$heroClassSegment';
 

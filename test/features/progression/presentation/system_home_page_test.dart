@@ -2,10 +2,10 @@ import 'package:arise/core/design_system/widgets/stat_gem.dart';
 import 'package:arise/core/router/app_router.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/features/exercises/domain/stat_id.dart';
-import 'package:arise/features/inventory/presentation/inventory_page.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
+import 'package:arise/features/progression/presentation/stats_page.dart';
 import 'package:arise/features/quests/presentation/quests_page.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -112,7 +112,7 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('la barre d’action ouvre les quêtes et l’inventaire', (
+  testWidgets('la barre d’action ouvre les quêtes et les stats', (
     tester,
   ) async {
     final container = createTestContainer();
@@ -127,10 +127,10 @@ void main() {
     container.read(appRouterProvider).go(AppRoutes.systemHome);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
-    await tester.tap(find.byKey(HomeDock.bagKey));
+    await tester.tap(find.byKey(HomeDock.statsKey));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byType(InventoryPage), findsOneWidget);
+    expect(find.byType(StatsPage), findsOneWidget);
     await tester.unmountApp();
   });
 }

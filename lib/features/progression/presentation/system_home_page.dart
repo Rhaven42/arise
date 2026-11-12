@@ -402,15 +402,6 @@ class _StatsPanel extends StatelessWidget {
   final ProgressionState state;
   final ValueChanged<StatId> onAllocate;
 
-  /// Couleur de la gemme de chaque stat.
-  static Color gemColor(StatId stat) => switch (stat) {
-    StatId.strength => AriseColors.gemStrength,
-    StatId.endurance => AriseColors.gemEndurance,
-    StatId.agility => AriseColors.gemAgility,
-    StatId.vitality => AriseColors.gemVitality,
-    StatId.willpower => AriseColors.gemWillpower,
-  };
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -445,7 +436,7 @@ class _StatsPanel extends StatelessWidget {
                   child: Column(
                     children: [
                       StatGem(
-                        color: gemColor(stat),
+                        color: statGemColor(stat),
                         value: state.stat(stat),
                         label: l10n.statName(stat.name),
                         semanticsLabel: l10n.homeStatValue(

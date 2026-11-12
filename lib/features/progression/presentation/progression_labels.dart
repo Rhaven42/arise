@@ -1,6 +1,9 @@
+import 'package:arise/core/theme/arise_colors.dart';
+import 'package:arise/features/exercises/domain/stat_id.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
 import 'package:arise/features/progression/domain/coins.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
+import 'package:flutter/painting.dart';
 import 'package:intl/intl.dart';
 
 /// Date civile au format français, par exemple « 12 novembre 2026 ».
@@ -16,3 +19,12 @@ String formatCoins(AppLocalizations l10n, Coins coins) {
   ];
   return parts.join(', ');
 }
+
+/// Couleur de la gemme de chaque stat.
+Color statGemColor(StatId stat) => switch (stat) {
+  StatId.strength => AriseColors.gemStrength,
+  StatId.endurance => AriseColors.gemEndurance,
+  StatId.agility => AriseColors.gemAgility,
+  StatId.vitality => AriseColors.gemVitality,
+  StatId.willpower => AriseColors.gemWillpower,
+};

@@ -20,6 +20,7 @@ import 'package:arise/features/planning/presentation/programs_page.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
 import 'package:arise/features/progression/presentation/hero_class_page.dart';
+import 'package:arise/features/progression/presentation/stats_page.dart';
 import 'package:arise/features/progression/presentation/system_home_page.dart';
 import 'package:arise/features/quests/presentation/quest_panel.dart';
 import 'package:arise/features/quests/presentation/quests_page.dart';
@@ -173,6 +174,10 @@ GoRouter appRouter(Ref ref) {
             builder: (_, _) => const QuestsPage(),
           ),
           GoRoute(
+            path: AppRoutes.statsSegment,
+            builder: (_, _) => const StatsPage(),
+          ),
+          GoRoute(
             path: AppRoutes.heroClassSegment,
             builder: (_, _) => const HeroClassPage(),
           ),
@@ -205,7 +210,7 @@ class HomeDock extends StatelessWidget {
   static const trainKey = Key('dock-train');
   static const questsKey = Key('dock-quests');
   static const heroKey = Key('dock-hero');
-  static const bagKey = Key('dock-bag');
+  static const statsKey = Key('dock-stats');
 
   @override
   Widget build(BuildContext context) {
@@ -231,10 +236,10 @@ class HomeDock extends StatelessWidget {
           onTap: () => context.go(AppRoutes.character),
         ),
         DockItem(
-          key: bagKey,
-          icon: Icons.backpack_outlined,
-          label: l10n.dockBag,
-          onTap: () => context.go(AppRoutes.inventory),
+          key: statsKey,
+          icon: Icons.insights,
+          label: l10n.dockStats,
+          onTap: () => context.go(AppRoutes.stats),
         ),
       ],
       center: DockItem(

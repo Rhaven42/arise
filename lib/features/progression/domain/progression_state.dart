@@ -91,6 +91,16 @@ abstract class ProgressionState with _$ProgressionState {
         (statXp[id] ?? 0) ~/ gameConfig.progression.statXpPerPoint;
   }
 
+  /// Points placés à la main dans une stat.
+  int allocatedIn(StatId id) => allocatedStats[id] ?? 0;
+
+  /// XP d'entraînement accumulée vers le prochain point automatique de la
+  /// stat, ou `null` pour la Volonté (gagnée par la régularité seule).
+  int? statXpTowardNextPoint(StatId id) {
+    if (id == StatId.willpower) return null;
+    return (statXp[id] ?? 0) % gameConfig.progression.statXpPerPoint;
+  }
+
   bool isPenaltyActive(DateTime now) {
     final until = penaltyUntil;
     return until != null && now.isBefore(until);
