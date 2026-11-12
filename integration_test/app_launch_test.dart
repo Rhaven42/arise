@@ -229,8 +229,10 @@ void main() {
     await tester.tap(find.text('Valider le personnage'));
     await _pumpFor(tester, 1500);
     debugPrint('Parcours : personnage enregistré');
+    // Le message de confirmation ne reste que quelques secondes : il est
+    // attendu avant le retour complet sur la Fenêtre du Système.
+    await _waitFor(tester, find.text('Personnage enregistré.'));
     await _waitFor(tester, find.text('Analyse musculaire'));
-    expect(find.text('Personnage enregistré.'), findsOneWidget);
 
     // Boutique : essayage d'une cape sur le vrai rendu 3D, puis inventaire.
     debugPrint('Parcours : boutique');
