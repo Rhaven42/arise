@@ -420,3 +420,6 @@ Demande de la propriétaire du projet : tenues, coiffures et barbes plus réalis
 - Écran titre : « Commencer l'aventure » crée un compte puis lance l'Éveil ; « Changer de compte » ouvre la liste. Un compte protégé demande son code avant d'ouvrir les écrans du jeu.
 - Paramètres → Mon compte : pseudo, code PIN (définir, changer, retirer), changer de compte, supprimer le compte (confirmation ; ses données sont effacées du téléphone).
 - La sauvegarde exporte et restaure le compte ouvert (format inchangé).
+
+## 37. Race Haut-elfe (12/11/2026)
+- Quatrième race jouable, originale : plus grande (193 cm / 206 cm) et plus élancée que l'Elfe, oreilles très longues balayées vers l'arrière. Mêmes curseurs, coiffures, teintes et équipements que les autres races.
