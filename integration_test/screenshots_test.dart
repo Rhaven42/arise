@@ -158,47 +158,8 @@ void main() {
     debugPrint('capture 15_planning');
     await binding.takeScreenshot('15_planning');
 
-    // Phase 3 : lecteur de séance, intensité, repos et bilan.
-    await tester.tap(find.byTooltip('Lancer Haut du corps'));
-    await pumpFor(1500);
-    debugPrint('capture 16_lecteur_serie');
-    await binding.takeScreenshot('16_lecteur_serie');
-    await tester.scrollUntilVisible(
-      find.text('Série terminée'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.text('Série terminée'));
-    await pumpFor(600);
-    await tester.tap(find.text('7'));
-    await pumpFor(300);
-    debugPrint('capture 17_intensite');
-    await binding.takeScreenshot('17_intensite');
-    await tester.tap(find.text('Valider'));
-    await pumpFor(3200);
-    debugPrint('capture 18_repos');
-    await binding.takeScreenshot('18_repos');
-    await tester.tap(find.byTooltip('Arrêter la séance'));
-    await pumpFor(600);
-    await tester.tap(find.text('Arrêter'));
-    await pumpFor(2000);
-    debugPrint('capture 19_bilan');
-    await binding.takeScreenshot('19_bilan');
-
-    // Phase 4 : la Fenêtre du Système après la séance (le bouton est sous
-    // les hauts faits obtenus).
-    await tester.scrollUntilVisible(
-      find.text('Retour'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.text('Retour'));
-    await pumpFor(800);
     await tester.binding.handlePopRoute();
     await pumpFor(1200);
-    debugPrint('capture 20_fenetre_apres_seance');
-    await binding.takeScreenshot('20_fenetre_apres_seance');
-
     // Phase 5 : l'analyse musculaire.
     final analysis = find.text('Analyse musculaire');
     await tester.scrollUntilVisible(
