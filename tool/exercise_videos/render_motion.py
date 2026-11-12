@@ -115,14 +115,20 @@ def retarget(src, dst, start, end, capture_fps=120):
     pairs = [(b.name, RENAME.get(b.name, b.name)) for b in src.data.bones if RENAME.get(b.name, b.name) in dst.data.bones]
     order = {b.name: len(b.parent_recursive) for b in dst.data.bones}
     pairs.sort(key=lambda p: order[p[1]])
-    # Échelle : hauteur du bassin du mannequin / celle de la capture debout
-    # (première image de l'extrait ; la pose de repos BVH est à l'origine).
-    dst_hips_rest = dst.matrix_world @ dst.data.bones[_hips(dst)].head_local
-    scene.frame_set(start)
-    bpy.context.view_layer.update()
+    # Échelle : longueur de la jambe (cuisse + jambe) du mannequin / celle
+    # de la capture, quelle que soit la pose de départ (debout ou au sol).
+    def leg(arm):
+        prefix = "mixamorig:" if "mixamorig:Hips" in arm.data.bones else ""
+        total = 0.0
+        for name in ("LeftUpLeg", "LeftLeg"):
+            bone = arm.data.bones[prefix + name]
+            a = arm.matrix_world @ bone.head_local
+            b = arm.matrix_world @ bone.tail_local
+            total += (b - a).length
+        return total
+
+    scale = leg(dst) / max(leg(src), 1e-6)
     hips = _hips(src)
-    src_hips_start = src.matrix_world @ src.pose.bones[hips].head
-    scale = dst_hips_rest.z / max(src_hips_start.z, 1e-6)
     step = capture_fps / FPS
     frames = []
     t = start
@@ -160,13 +166,13 @@ def ground(human):
     scene = bpy.context.scene
     lo = Vector((math.inf,) * 3)
     hi = Vector((-math.inf,) * 3)
-    for f in range(scene.frame_start, scene.frame_end + 1, 3):
+    for f in range(scene.frame_start, scene.frame_end + 1):
         scene.frame_set(f)
         dg = bpy.context.evaluated_depsgraph_get()
         ev = human.evaluated_get(dg)
         mesh = ev.to_mesh()
         mw = ev.matrix_world
-        for i in range(0, len(mesh.vertices), 7):
+        for i in range(0, len(mesh.vertices), 3):
             p = mw @ mesh.vertices[i].co
             lo = Vector(min(a, b) for a, b in zip(lo, p))
             hi = Vector(max(a, b) for a, b in zip(hi, p))
