@@ -271,6 +271,13 @@ const List<EquipmentItem> equipmentCatalog = [
     slot: EquipmentSlot.weapon,
     rarity: Rarity.mythic,
   ),
+  // Modèles 3D créés par la propriétaire du projet (Tripo, compte Pro).
+  EquipmentItem(
+    id: 'great_helm_gilded',
+    slot: EquipmentSlot.head,
+    rarity: Rarity.epic,
+    hidesHair: true,
+  ),
 ];
 
 /// Objet du catalogue, ou `null` s'il n'existe pas (sauvegarde ancienne).

@@ -1686,7 +1686,15 @@ def _drop_face_keys(obj):
             obj.shape_key_remove(block)
 
 
-def _rigid_item(item_id, parts, anchor_of, states, look_of):
+# Casques importés : fichier dans tool/character/external, largeur rapportée
+# à celle de la tête, hauteur du sommet au-dessus du crâne et recul (en
+# fraction de la taille du personnage).
+EXTERNAL_HELMS = {
+    "great_helm_gilded": ("great_helm_gilded.glb", 1.5, 0.022, 0.006),
+}
+
+
+def _rigid_item(item_id, parts, anchor_of, states, look_of, smooth=False):
     """Pièce rigide (arme) : jointe, matériaux par pièce, déplacée avec la main
     dans chaque état (formes de morphologie)."""
     bpy.ops.object.select_all(action="DESELECT")
@@ -1698,7 +1706,7 @@ def _rigid_item(item_id, parts, anchor_of, states, look_of):
     obj.name = "item_" + item_id
     obj.data.name = obj.name
     for poly in obj.data.polygons:
-        poly.use_smooth = False
+        poly.use_smooth = smooth
     base = anchor_of(states["base"])
     obj.shape_key_add(name="Basis")
     for state_name, *_ in STATES[1:]:
@@ -1884,6 +1892,47 @@ def _equipment(template, groups, states, marks):
     staff[1].data.materials.append(ember)
     _rigid_item("staff_ember", staff, hand_r, states, None)
     held["item_staff_ember"] = "hand_r"
+
+    # Casques importés (modèles 3D créés par la propriétaire du projet, déjà
+    # allégés) : posés sur la tête puis portés par l'os de la tête.
+    head_ids = [i for i in groups["body"] if _part(base[i], j, H) == "head"]
+    xs = [base[i].x for i in head_ids]
+    ys = [base[i].y for i in head_ids]
+    top = max(base[i].z for i in head_ids)
+    head_width = max(xs) - min(xs)
+    head_center = Vector(((max(xs) + min(xs)) / 2, (max(ys) + min(ys)) / 2, 0))
+
+    def head(coords):
+        return _joints(coords, groups)["head"]
+
+    for item_id, (file, width_ratio, lift, back) in EXTERNAL_HELMS.items():
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "external", file)
+        before = set(bpy.data.objects)
+        bpy.ops.import_scene.gltf(filepath=path)
+        parts = [o for o in bpy.data.objects if o not in before and o.type == "MESH"]
+        for extra in [o for o in bpy.data.objects if o not in before and o.type != "MESH"]:
+            bpy.data.objects.remove(extra, do_unlink=True)
+        bpy.ops.object.select_all(action="DESELECT")
+        for part in parts:
+            part.parent = None
+            part.select_set(True)
+            bpy.context.view_layer.objects.active = part
+            # La face des modèles Tripo regarde vers -X : quart de tour.
+            part.rotation_mode = "XYZ"
+            part.rotation_euler = (0, 0, 0)
+            part.matrix_world = Matrix.Rotation(math.radians(90), 4, "Z") @ part.matrix_world
+        bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+        pts = [v.co for part in parts for v in part.data.vertices]
+        lo = Vector([min(p[k] for p in pts) for k in range(3)])
+        hi = Vector([max(p[k] for p in pts) for k in range(3)])
+        scale = head_width * width_ratio / (hi.x - lo.x)
+        anchor = Vector(((hi.x + lo.x) / 2, (hi.y + lo.y) / 2, hi.z))
+        target = Vector((head_center.x, head_center.y + back * H, top + lift * H))
+        for part in parts:
+            for v in part.data.vertices:
+                v.co = target + (v.co - anchor) * scale
+        _rigid_item(item_id, parts, head, states, None, smooth=True)
+        held["item_" + item_id] = "head"
     return held
 
 
