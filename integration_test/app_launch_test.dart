@@ -113,7 +113,10 @@ void main() {
     // Compte local, sans code PIN.
     await tester.enterText(find.byKey(AccountCreatePage.nameKey), 'Aelin');
     await tester.pumpAndSettle();
-    await _tapText(tester, 'Créer mon compte');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(AccountCreatePage.createKey));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
 
     await _tapText(tester, 'Endurance');
     await _tapText(tester, 'Continuer');

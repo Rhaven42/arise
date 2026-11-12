@@ -45,7 +45,10 @@ void main() {
     await tester.pumpAndSettle();
     debugPrint('capture 01b_compte');
     await binding.takeScreenshot('01b_compte');
-    await tapText(tester, 'Créer mon compte');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(AccountCreatePage.createKey));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
     await tapText(tester, 'Force');
     debugPrint('capture 02_objectif');
     await binding.takeScreenshot('02_objectif');
