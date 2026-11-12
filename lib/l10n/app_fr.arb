@@ -1155,6 +1155,8 @@
     }
   },
   "characterTitle": "Création du personnage",
+  "heroUnnamed": "Chasseur sans nom",
+  "@heroUnnamed": {"description": "Nom affiché sur l'accueil tant que le héros n'a pas de nom"},
   "characterHomeHint": "Race, silhouette et coiffure de ton héros",
   "characterSex": "Sexe",
   "characterSexName": "{sex, select, female{Femme} male{Homme} other{?}}",

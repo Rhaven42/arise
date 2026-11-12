@@ -63,8 +63,8 @@ class SystemWindow extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AriseColors.mana.withValues(alpha: 0.3),
-                        blurRadius: 18,
+                        color: AriseColors.mana.withValues(alpha: 0.16),
+                        blurRadius: 12,
                       ),
                     ],
                   ),

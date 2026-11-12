@@ -63,6 +63,11 @@ abstract final class AriseTheme {
         centerTitle: true,
         shape: const Border(bottom: BorderSide(color: AriseColors.bronzeEdge)),
       ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          textStyle: WidgetStatePropertyAll(textTheme.labelMedium),
+        ),
+      ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: Colors.transparent,
@@ -170,12 +175,12 @@ abstract final class AriseTheme {
         boxShadow: disabled
             ? null
             : [
-                const BoxShadow(color: AriseColors.goldShadow, spreadRadius: 2),
+                const BoxShadow(color: AriseColors.goldShadow, spreadRadius: 1),
                 BoxShadow(
                   color: AriseColors.goldBright.withValues(
-                    alpha: pressed ? 0.25 : 0.4,
+                    alpha: pressed ? 0.1 : 0.18,
                   ),
-                  blurRadius: 14,
+                  blurRadius: 8,
                 ),
               ],
       ),
