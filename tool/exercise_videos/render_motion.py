@@ -183,6 +183,24 @@ def ground(human):
     return lo, hi
 
 
+def ground_each_frame(human):
+    """Exercices au sol : le corps touche le sol à chaque image (les
+    proportions de la capture et du mannequin diffèrent un peu)."""
+    scene = bpy.context.scene
+    arm = human.parent
+    for f in range(scene.frame_start, scene.frame_end + 1):
+        scene.frame_set(f)
+        dg = bpy.context.evaluated_depsgraph_get()
+        ev = human.evaluated_get(dg)
+        mesh = ev.to_mesh()
+        mw = ev.matrix_world
+        low = min((mw @ mesh.vertices[i].co).z for i in range(0, len(mesh.vertices), 3))
+        ev.to_mesh_clear()
+        # Position actuelle (déjà évaluée pour cette image) moins l'écart.
+        arm.location.z -= low
+        arm.keyframe_insert("location", index=2, frame=f)
+
+
 def studio(human, view, box):
     scene = bpy.context.scene
     floor_mat = _material("sol", (0.42, 0.43, 0.46), roughness=0.85)
@@ -294,6 +312,8 @@ def main():
     src.hide_viewport = True
     scene = bpy.context.scene
     scene.frame_start, scene.frame_end = 1, count
+    if "--floor" in args:
+        ground_each_frame(human)
     box = ground(human)
     studio(human, view, box)
     if "--stills" in args:

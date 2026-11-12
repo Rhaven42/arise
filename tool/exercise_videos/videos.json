@@ -41,13 +41,15 @@
       "source": "mixamo:Situps",
       "start": 1,
       "end": 68,
-      "view": "side"
+      "view": "side",
+      "floor": true
     },
     "bicycle_crunch": {
       "source": "mixamo:Bicycle Crunch",
       "start": 1,
       "end": 34,
-      "view": "three_quarter"
+      "view": "three_quarter",
+      "floor": true
     },
     "shoulder_stretch": {
       "source": "mixamo:Arm Stretching",
