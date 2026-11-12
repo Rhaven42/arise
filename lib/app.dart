@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:arise/core/audio/music.dart';
+import 'package:arise/core/design_system/widgets/arise_backdrop.dart';
 import 'package:arise/core/router/app_router.dart';
 import 'package:arise/core/theme/arise_theme.dart';
 import 'package:arise/features/planning/presentation/planning_providers.dart';
@@ -75,6 +76,8 @@ class _AriseAppState extends ConsumerState<AriseApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       routerConfig: router,
+      // Fond commun sous toutes les pages (elles sont transparentes).
+      builder: (_, child) => AriseBackdrop(child: child ?? const SizedBox()),
     );
   }
 }

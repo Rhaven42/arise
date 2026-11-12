@@ -239,7 +239,7 @@ class _HeroHud extends ConsumerWidget {
     final sheet = ref.watch(savedCharacterProvider).value;
     final title = ref.watch(titlesViewProvider).value?.worn.equippedTitle;
     final name = sheet == null || sheet.name.isEmpty
-        ? l10n.characterTitle
+        ? l10n.heroUnnamed
         : sheet.name;
     return StoneFrame(
       padding: const EdgeInsets.all(AriseSpacing.sm),
