@@ -56,6 +56,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(find.text('2 points à placer'), findsOneWidget);
+    // Au-dessus de la barre d'action.
+    await tester.ensureVisible(find.byTooltip('Ajouter un point à Force'));
+    await tester.pump();
     await tester.tap(find.byTooltip('Ajouter un point à Force'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));

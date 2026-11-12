@@ -90,12 +90,24 @@ class CornerBracketsPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.square;
     if (glow) {
-      paint.maskFilter = const MaskFilter.blur(BlurStyle.solid, 3);
+      // Halo : trait large et translucide sous le trait net (sans flou,
+      // trop coûteux pour les rendus logiciels).
+      canvas.drawPath(
+        _path(size),
+        Paint()
+          ..color = color.withValues(alpha: 0.3)
+          ..strokeWidth = 6
+          ..style = PaintingStyle.stroke,
+      );
     }
+    canvas.drawPath(_path(size), paint);
+  }
+
+  Path _path(Size size) {
     final w = size.width;
     final h = size.height;
     final l = length;
-    final path = Path()
+    return Path()
       ..moveTo(1, l)
       ..lineTo(1, 1)
       ..lineTo(l, 1)
@@ -108,7 +120,6 @@ class CornerBracketsPainter extends CustomPainter {
       ..moveTo(w - l, h - 1)
       ..lineTo(w - 1, h - 1)
       ..lineTo(w - 1, h - l);
-    canvas.drawPath(path, paint);
   }
 
   @override

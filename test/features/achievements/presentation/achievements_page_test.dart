@@ -62,7 +62,6 @@ void main() {
     );
     // Au-dessus de la barre d'action.
     await tester.ensureVisible(find.byKey(HunterPanel.achievementsKey));
-    await tester.drag(find.byType(Scrollable).first, const Offset(0, -150));
     await tester.pump();
     await tester.tap(find.byKey(HunterPanel.achievementsKey));
     await tester.pump();

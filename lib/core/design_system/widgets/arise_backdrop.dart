@@ -97,11 +97,12 @@ class _BackdropPainter extends CustomPainter {
 }
 
 /// Transition de page qui peint le fond sous chaque page (les pages sont
-/// transparentes) avant l'animation habituelle.
+/// transparentes), puis la fait monter en fondu (sans capture d'écran
+/// intermédiaire, plus légère que le zoom).
 class AriseBackdropTransitionsBuilder extends PageTransitionsBuilder {
   const AriseBackdropTransitionsBuilder();
 
-  static const _inner = ZoomPageTransitionsBuilder();
+  static const _inner = FadeUpwardsPageTransitionsBuilder();
 
   @override
   Widget buildTransitions<T>(
