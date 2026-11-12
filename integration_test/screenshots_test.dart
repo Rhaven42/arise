@@ -1,3 +1,4 @@
+import 'package:arise/core/router/app_router.dart';
 import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
 import 'package:arise/features/shop/presentation/shop_page.dart';
 import 'package:arise/main.dart' as app;
@@ -366,5 +367,13 @@ void main() {
     await pumpFor(1500);
     debugPrint('capture 36_epreuve_de_rang');
     await binding.takeScreenshot('36_epreuve_de_rang');
+
+    // Écran des statistiques, depuis la barre d'action.
+    await tester.binding.handlePopRoute();
+    await pumpFor(1200);
+    await tester.tap(find.byKey(HomeDock.statsKey));
+    await pumpFor(1200);
+    debugPrint('capture 37_statistiques');
+    await binding.takeScreenshot('37_statistiques');
   });
 }
