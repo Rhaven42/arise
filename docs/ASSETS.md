@@ -96,3 +96,9 @@ Les bips du lecteur de séance (`countdown`, `start`, `rest`, `finish`) restent 
 ### Livrable possible (artiste)
 - Effets d'aura plus riches (flammes, givre, feuilles, éclairs) : textures de particules en PNG 256 × 256 (fond transparent, licence CC0 ou CC BY), une par aura.
 - Effet d'« éveil » d'une Ombre (fumée qui se lève) : courte texture animée en planche de 4 × 4 images.
+
+## Pièces importées (modèles Tripo de la propriétaire du projet)
+- Créées par la propriétaire du projet sur Tripo Studio (compte Pro, usage commercial autorisé), déposées dans un dossier Google Drive partagé.
+- Préparation : soudure des sommets puis réduction à environ 15 000 triangles, textures 1024 px en WebP, rugosité du métal relevée à 0,38 au minimum (le modèle brut est presque un miroir). Source allégée versionnée dans `tool/character/external/`.
+- Intégration : `EXTERNAL_HELMS` dans `tool/character/build_characters.py` (quart de tour, largeur rapportée à celle de la tête, hauteur et recul), pièce rigide portée par l'os de la tête dans les huit modèles.
+- Pièces : `great_helm_gilded` (Grand heaume doré, tête, épique).
