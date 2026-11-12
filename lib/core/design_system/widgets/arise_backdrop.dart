@@ -12,9 +12,7 @@ class AriseBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: CustomPaint(painter: const _BackdropPainter(), child: child),
-    );
+    return CustomPaint(painter: const _BackdropPainter(), child: child);
   }
 }
 

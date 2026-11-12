@@ -1,3 +1,4 @@
+import 'package:arise/core/design_system/widgets/stat_gem.dart';
 import 'package:arise/core/router/app_router.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/features/exercises/domain/stat_id.dart';
@@ -63,11 +64,11 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    // Les gemmes annoncent « stat : valeur » aux lecteurs d'écran.
-    final semantics = tester.ensureSemantics();
-    await tester.pump();
-    expect(find.bySemanticsLabel('Force : 1'), findsOneWidget);
-    semantics.dispose();
+    // La gemme de Force affiche la nouvelle valeur.
+    expect(
+      find.descendant(of: find.byType(StatGem).first, matching: find.text('1')),
+      findsOneWidget,
+    );
     expect(find.text('1 point à placer'), findsOneWidget);
     final saved = await container.read(progressionRepositoryProvider).read();
     expect(saved?.stat(StatId.strength), 1);
