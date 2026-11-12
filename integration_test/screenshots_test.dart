@@ -26,6 +26,11 @@ void main() {
   }
 
   testWidgets('captures du parcours d’arrivée', (tester) async {
+    // L'émulateur de la CI rend tout en logiciel : les démonstrations
+    // vidéo y tournent en image fixe (mode « animations réduites »).
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
     app.main();
     await tester.pumpAndSettle(const Duration(seconds: 2));
     await binding.convertFlutterSurfaceToImage();

@@ -94,6 +94,11 @@ void main() {
   testWidgets('un nouveau joueur termine l’Éveil puis planifie une séance', (
     tester,
   ) async {
+    // L'émulateur de la CI rend tout en logiciel : les démonstrations
+    // vidéo y tournent en image fixe (mode « animations réduites »).
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
     app.main();
     await tester.pumpAndSettle(const Duration(seconds: 2));
 
