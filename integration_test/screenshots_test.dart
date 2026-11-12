@@ -151,7 +151,13 @@ void main() {
     await pumpFor(2000);
     await binding.takeScreenshot('19_bilan');
 
-    // Phase 4 : la Fenêtre du Système après la séance.
+    // Phase 4 : la Fenêtre du Système après la séance (le bouton est sous
+    // les hauts faits obtenus).
+    await tester.scrollUntilVisible(
+      find.text('Retour'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Retour'));
     await pumpFor(800);
     await tester.binding.handlePopRoute();

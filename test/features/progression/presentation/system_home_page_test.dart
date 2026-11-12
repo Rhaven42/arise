@@ -62,6 +62,7 @@ void main() {
 
     // Les gemmes annoncent « stat : valeur » aux lecteurs d'écran.
     final semantics = tester.ensureSemantics();
+    await tester.pump();
     expect(find.bySemanticsLabel('Force : 1'), findsOneWidget);
     semantics.dispose();
     expect(find.text('1 point à placer'), findsOneWidget);
@@ -88,8 +89,15 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining('Ta série de 4 jours'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Zone de Pénalité'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Zone de Pénalité'), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Compris'));
+    await tester.pump();
     await tester.tap(find.text('Compris'));
     await tester.pump();
     expect(find.text('Rapport du Système'), findsNothing);
