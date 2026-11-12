@@ -410,6 +410,12 @@ def render_motion(coach_path, world, motion_id, out_dir):
 if __name__ == "__main__":
     coach, world_id, out = sys.argv[1:4]
     ids = sys.argv[4:] or list(json.load(open(MOTIONS)))
+    motions_all = json.load(open(MOTIONS))
     for mid in ids:
+        # Reprise : un mouvement dont la dernière image existe est déjà fait.
+        count = max(12, round(sum(k["hold"] for k in motions_all[mid]["keys"]) * FPS))
+        if os.path.exists(os.path.join(out, f"{mid}_{count - 1:03d}.png")):
+            print("DEJA", mid, flush=True)
+            continue
         n = render_motion(coach, world_id, mid, out)
         print("RENDU", mid, n, flush=True)
