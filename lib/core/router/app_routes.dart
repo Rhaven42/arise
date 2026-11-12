@@ -5,6 +5,12 @@ abstract final class AppRoutes {
   static const String designSystem = '/$designSystemSegment';
   static const onboarding = '/onboarding';
   static const restore = '/restore';
+
+  /// Comptes locaux : choix et création.
+  static const accounts = '/accounts';
+  static const accountNewSegment = 'new';
+  static const String accountNew = '$accounts/$accountNewSegment';
+  static const String accountNewForRestore = '$accountNew?restore=1';
   static const systemHome = '/system';
   static const settingsSegment = 'settings';
   static const String settings = '$systemHome/$settingsSegment';
@@ -12,6 +18,8 @@ abstract final class AppRoutes {
   static const String backup = '$settings/$backupSegment';
   static const creditsSegment = 'credits';
   static const String credits = '$settings/$creditsSegment';
+  static const accountSettingsSegment = 'account';
+  static const String accountSettings = '$settings/$accountSettingsSegment';
 
   static const exercisesSegment = 'exercises';
   static const String exercises = '$systemHome/$exercisesSegment';

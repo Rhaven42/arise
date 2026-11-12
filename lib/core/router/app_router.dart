@@ -2,6 +2,10 @@ import 'package:arise/core/design_system/demo/design_system_demo_page.dart';
 import 'package:arise/core/design_system/widgets/action_dock.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/core/router/route_guard.dart';
+import 'package:arise/features/account/presentation/account_create_page.dart';
+import 'package:arise/features/account/presentation/account_picker_page.dart';
+import 'package:arise/features/account/presentation/account_providers.dart';
+import 'package:arise/features/account/presentation/account_settings_page.dart';
 import 'package:arise/features/achievements/presentation/achievements_page.dart';
 import 'package:arise/features/achievements/presentation/hunter_panel.dart';
 import 'package:arise/features/backup/presentation/backup_page.dart';
@@ -39,8 +43,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
 
-/// Convertit l'état asynchrone du profil pour le routeur.
-ProfileStatus profileStatusFrom(AsyncValue<PlayerProfile?> value) {
+/// Convertit l'état asynchrone du profil pour le routeur. Un compte
+/// verrouillé par son code PIN compte comme sans profil (retour au titre).
+ProfileStatus profileStatusFrom(
+  AsyncValue<PlayerProfile?> value, {
+  bool locked = false,
+}) {
+  if (locked) return ProfileStatus.missing;
   return switch (value) {
     AsyncData(value: final profile) =>
       profile == null ? ProfileStatus.missing : ProfileStatus.ready,
@@ -53,11 +62,21 @@ ProfileStatus profileStatusFrom(AsyncValue<PlayerProfile?> value) {
 @Riverpod(keepAlive: true)
 GoRouter appRouter(Ref ref) {
   final status = ValueNotifier<ProfileStatus>(ProfileStatus.unknown);
+  bool locked() => ref.read(accountsControllerProvider).value?.locked ?? false;
+  void refresh() => status.value = profileStatusFrom(
+    ref.read(playerProfileProvider),
+    locked: locked(),
+  );
   ref
     ..onDispose(status.dispose)
     ..listen<AsyncValue<PlayerProfile?>>(
       playerProfileProvider,
-      (_, next) => status.value = profileStatusFrom(next),
+      (_, _) => refresh(),
+      fireImmediately: true,
+    )
+    ..listen<AsyncValue<AccountsView>>(
+      accountsControllerProvider,
+      (_, _) => refresh(),
       fireImmediately: true,
     );
 
@@ -83,6 +102,18 @@ GoRouter appRouter(Ref ref) {
       ),
       GoRoute(path: AppRoutes.restore, builder: (_, _) => const RestorePage()),
       GoRoute(
+        path: AppRoutes.accounts,
+        builder: (_, _) => const AccountPickerPage(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.accountNewSegment,
+            builder: (_, state) => AccountCreatePage(
+              restore: state.uri.queryParameters['restore'] == '1',
+            ),
+          ),
+        ],
+      ),
+      GoRoute(
         path: AppRoutes.systemHome,
         builder: (_, _) => const SystemHomePage(
           panels: [HunterPanel(), QuestPanel(), TrialPanel()],
@@ -100,6 +131,10 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: AppRoutes.creditsSegment,
                 builder: (_, _) => const CreditsPage(),
+              ),
+              GoRoute(
+                path: AppRoutes.accountSettingsSegment,
+                builder: (_, _) => const AccountSettingsPage(),
               ),
             ],
           ),

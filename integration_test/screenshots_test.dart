@@ -1,4 +1,5 @@
 import 'package:arise/core/router/app_router.dart';
+import 'package:arise/features/account/presentation/account_create_page.dart';
 import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
 import 'package:arise/features/shop/presentation/shop_page.dart';
 import 'package:arise/main.dart' as app;
@@ -32,7 +33,7 @@ void main() {
     tester.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
-    app.main();
+    await app.main();
     await tester.pumpAndSettle(const Duration(seconds: 2));
     await binding.convertFlutterSurfaceToImage();
     await tester.pumpAndSettle();
@@ -40,6 +41,11 @@ void main() {
     await binding.takeScreenshot('01_taverne');
 
     await tapText(tester, "Commencer l'aventure");
+    await tester.enterText(find.byKey(AccountCreatePage.nameKey), 'Aelin');
+    await tester.pumpAndSettle();
+    debugPrint('capture 01b_compte');
+    await binding.takeScreenshot('01b_compte');
+    await tapText(tester, 'Créer mon compte');
     await tapText(tester, 'Force');
     debugPrint('capture 02_objectif');
     await binding.takeScreenshot('02_objectif');

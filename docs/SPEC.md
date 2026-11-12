@@ -413,3 +413,10 @@ Demande de la propriétaire du projet : tenues, coiffures et barbes plus réalis
 - **Nom affiché : « Hero Protocol »**, avec le blason fourni par la propriétaire du projet (`assets/branding/logo.webp`) sur l'écran titre, l'icône de l'application (Android, y compris l'icône adaptative, et iOS) et l'écran de lancement. Le nom de code interne reste `arise` (paquet, base Drift, format de sauvegarde `arise-backup`) : les mises à jour s'installent par-dessus et les sauvegardes existantes restent lisibles.
 - Démonstration des exercices par le **mannequin 2D** (les photos et vidéos 3D sont retirées) ; chaque variante a son mouvement, vérifié image par image.
 - La barre d'action remplace « Sac » par **« Stats »** : un écran pour placer ses points libres, voir ce qui fait monter chaque stat et la jauge vers le prochain point gagné. L'inventaire reste accessible depuis la Fenêtre du Système.
+
+## 36. Comptes locaux (12/11/2026)
+- Plusieurs comptes sur un même téléphone, **sans serveur** : pseudo (20 caractères au plus, unique sur le téléphone), code PIN facultatif à 4 chiffres (empreinte SHA-256 salée), 6 comptes au plus.
+- **Une base Drift par compte** (`arise_<id>.sqlite`) ; le registre des comptes est une petite base à part (`accounts.sqlite`). La base d'avant les comptes (`arise.sqlite`) devient le premier compte, sans pseudo tant que le joueur ne le nomme pas : aucune donnée n'est déplacée ni perdue.
+- Écran titre : « Commencer l'aventure » crée un compte puis lance l'Éveil ; « Changer de compte » ouvre la liste. Un compte protégé demande son code avant d'ouvrir les écrans du jeu.
+- Paramètres → Mon compte : pseudo, code PIN (définir, changer, retirer), changer de compte, supprimer le compte (confirmation ; ses données sont effacées du téléphone).
+- La sauvegarde exporte et restaure le compte ouvert (format inchangé).

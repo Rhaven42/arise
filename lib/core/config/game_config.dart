@@ -614,6 +614,30 @@ class BalanceConfig {
   };
 }
 
+/// Comptes locaux (plusieurs joueurs sur un même téléphone).
+class AccountConfig {
+  const AccountConfig({
+    required this.nameMaxLength,
+    required this.pinLength,
+    required this.maxAccounts,
+  });
+
+  /// Longueur maximale du pseudo.
+  final int nameMaxLength;
+
+  /// Nombre de chiffres du code PIN facultatif.
+  final int pinLength;
+
+  /// Nombre maximal de comptes sur le téléphone.
+  final int maxAccounts;
+
+  Map<String, Object> toJson() => {
+    'nameMaxLength': nameMaxLength,
+    'pinLength': pinLength,
+    'maxAccounts': maxAccounts,
+  };
+}
+
 class HealthConfig {
   const HealthConfig({required this.sleepBonusMinHours});
 
@@ -794,6 +818,7 @@ class GameConfig {
     required this.heatmap,
     required this.balance,
     required this.health,
+    required this.account,
     required this.planning,
     required this.xp,
     required this.coins,
@@ -821,6 +846,7 @@ class GameConfig {
   final HeatmapConfig heatmap;
   final BalanceConfig balance;
   final HealthConfig health;
+  final AccountConfig account;
   final PlanningConfig planning;
   final XpConfig xp;
   final CoinsConfig coins;
@@ -851,6 +877,7 @@ class GameConfig {
     'heatmap': heatmap.toJson(),
     'balance': balance.toJson(),
     'health': health.toJson(),
+    'account': account.toJson(),
     'planning': planning.toJson(),
     'xp': xp.toJson(),
     'coins': coins.toJson(),
@@ -1452,6 +1479,7 @@ const gameConfig = GameConfig(
     maxSuggestions: 3,
   ),
   health: HealthConfig(sleepBonusMinHours: 7),
+  account: AccountConfig(nameMaxLength: 20, pinLength: 4, maxAccounts: 6),
   planning: PlanningConfig(reminderLeadMinutes: 30),
   xp: XpConfig(
     baseXpPerVolumeUnit: 10,

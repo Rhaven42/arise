@@ -1,3 +1,4 @@
+import 'package:arise/features/account/presentation/account_create_page.dart';
 import 'package:arise/features/achievements/presentation/hunter_panel.dart';
 import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
 import 'package:arise/features/shop/presentation/shop_page.dart';
@@ -99,7 +100,7 @@ void main() {
     tester.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
-    app.main();
+    await app.main();
     await tester.pumpAndSettle(const Duration(seconds: 2));
 
     expect(
@@ -109,6 +110,10 @@ void main() {
       findsOneWidget,
     );
     await _tapText(tester, "Commencer l'aventure");
+    // Compte local, sans code PIN.
+    await tester.enterText(find.byKey(AccountCreatePage.nameKey), 'Aelin');
+    await tester.pumpAndSettle();
+    await _tapText(tester, 'Créer mon compte');
 
     await _tapText(tester, 'Endurance');
     await _tapText(tester, 'Continuer');

@@ -9,6 +9,7 @@ import 'package:arise/core/audio/music.dart';
 import 'package:arise/core/database/app_database.dart';
 import 'package:arise/core/router/app_router.dart';
 import 'package:arise/core/utils/clock.dart';
+import 'package:arise/features/account/presentation/account_providers.dart';
 import 'package:arise/features/avatar/presentation/character_renderer.dart';
 import 'package:arise/features/backup/presentation/backup_controller.dart';
 import 'package:arise/features/character_creation/presentation/character_providers.dart';
@@ -26,6 +27,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'fake_accounts.dart';
 import 'fake_backup_file_gateway.dart';
 import 'fake_character_renderer.dart';
 import 'fake_music_player.dart';
@@ -79,10 +81,21 @@ ProviderContainer createTestContainer({
   FakeCharacterRenderer? renderer,
   FakeSnapshotSharer? sharer,
   FakeMusicPlayer? music,
+  FakeAccountRepository? accounts,
+  FakeAccountStorage? accountStorage,
 }) {
   return ProviderContainer.test(
     overrides: [
       appDatabaseProvider.overrideWithValue(database ?? createTestDatabase()),
+      // Un compte sans code PIN est ouvert, sauf registre fourni.
+      accountRepositoryProvider.overrideWithValue(
+        accounts ??
+            FakeAccountRepository(accounts: [testAccount()], activeId: 'test'),
+      ),
+      accountStorageProvider.overrideWithValue(
+        accountStorage ?? FakeAccountStorage(),
+      ),
+      pinHasherProvider.overrideWithValue(FakePinHasher()),
       clockProvider.overrideWithValue(clock ?? () => testNow),
       workoutCuesProvider.overrideWithValue(cues ?? FakeWorkoutCues()),
       backupFileGatewayProvider.overrideWithValue(

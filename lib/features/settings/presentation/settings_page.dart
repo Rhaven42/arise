@@ -18,6 +18,8 @@ import 'package:go_router/go_router.dart';
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
+  static const accountKey = Key('settings-account');
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
@@ -28,6 +30,15 @@ class SettingsPage extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: AriseSpacing.sm),
         children: [
+          _SectionHeader(l10n.accountSettingsSection),
+          ListTile(
+            key: SettingsPage.accountKey,
+            leading: const Icon(Icons.manage_accounts_outlined),
+            title: Text(l10n.accountSettingsTile),
+            subtitle: Text(l10n.accountSettingsHint),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.go(AppRoutes.accountSettings),
+          ),
           _SectionHeader(l10n.settingsHealthSection),
           SwitchListTile(
             value: profile?.healthConsent ?? false,

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -748,10 +749,30 @@ class AppDatabase extends _$AppDatabase {
   }
 }
 
-/// Base locale unique de l'application.
+/// Base du compte actif au démarrage (lue avant le lancement de l'interface,
+/// voir `main.dart`).
+@Riverpod(keepAlive: true)
+String? initialDatabaseName(Ref ref) => null;
+
+/// Nom de la base du compte actif (`null` tant qu'aucun compte n'existe).
+@Riverpod(keepAlive: true)
+class ActiveDatabaseName extends _$ActiveDatabaseName {
+  @override
+  String? build() => ref.read(initialDatabaseNameProvider);
+
+  // Le compte actif est choisi par la fonctionnalité « compte ».
+  // ignore: use_setters_to_change_properties
+  void select(String? name) => state = name;
+}
+
+/// Base de jeu du compte actif. Sans compte, une base en mémoire (rien
+/// n'est écrit sur le téléphone avant la création du premier compte).
 @Riverpod(keepAlive: true)
 AppDatabase appDatabase(Ref ref) {
-  final database = AppDatabase(driftDatabase(name: 'arise'));
+  final name = ref.watch(activeDatabaseNameProvider);
+  final database = AppDatabase(
+    name == null ? NativeDatabase.memory() : driftDatabase(name: name),
+  );
   ref.onDispose(() => unawaited(database.close()));
   return database;
 }

@@ -122,6 +122,11 @@
 
 ## Phase 10 — ~~Coach caméra~~ (retiré du MVP, SPEC §21)
 
+## Ajouts du 12/11/2026
+- [x] Nom « Hero Protocol », logo, icône et écran de lancement
+- [x] Écran des statistiques dans la barre d'action
+- [x] Comptes locaux (plusieurs joueurs, code PIN facultatif)
+
 ## Phase 11 — Santé
 - [ ] Health Connect / HealthKit en lecture seule
 - [ ] Conversion plafonnée en Endurance / Vitalité

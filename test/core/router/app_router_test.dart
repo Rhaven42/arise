@@ -14,6 +14,11 @@ void main() {
     expect(profileStatusFrom(const AsyncLoading()), ProfileStatus.unknown);
     expect(profileStatusFrom(const AsyncData(null)), ProfileStatus.missing);
     expect(profileStatusFrom(AsyncData(sampleProfile)), ProfileStatus.ready);
+    // Compte verrouillé par son code PIN : retour au titre.
+    expect(
+      profileStatusFrom(AsyncData(sampleProfile), locked: true),
+      ProfileStatus.missing,
+    );
     expect(
       profileStatusFrom(AsyncError(Exception('panne'), StackTrace.empty)),
       ProfileStatus.missing,
