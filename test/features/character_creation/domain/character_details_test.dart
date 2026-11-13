@@ -147,5 +147,18 @@ void main() {
       expect(a.eyebrowId, 'brow_01');
       expect(a, CharacterAppearance.of(defaultSheet()));
     });
+
+    test('les coiffures et barbes récentes sont chargées à la demande', () {
+      expect(CharacterAppearance.of(defaultSheet()).packs, isEmpty);
+      final sheet = defaultSheet().copyWith(
+        sex: CharacterSex.male,
+        hairStyle: firstPackedHairStyle,
+        beardStyle: firstPackedBeardStyle,
+      );
+      expect(CharacterAppearance.of(sheet).packs, [
+        'hair_$firstPackedHairStyle',
+        'beard_${firstPackedBeardStyle.toString().padLeft(2, '0')}',
+      ]);
+    });
   });
 }
