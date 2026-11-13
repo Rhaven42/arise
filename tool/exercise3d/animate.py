@@ -164,7 +164,7 @@ def apply(arm, rig, pose):
     bpy.context.view_layer.update()
 
 
-def stage(view, props, arm):
+def stage(view, props, arm, tall=False):
     """Cour d'entraînement : sol pavé, mur de pierre, lumière chaude, caméra
     de trois quarts (ou de profil) ; accessoires de l'exercice."""
     from animate_coach import WORLDS, pbr_material
@@ -192,7 +192,12 @@ def stage(view, props, arm):
     scene.camera = cam
     cam.data.lens = 42
     look = Vector((0, 0, 0.8))
-    if view == "side":
+    if view == "side" and tall:
+        # Exercice debout vu de côté : cadre plus haut et plus large, la
+        # tête reste dans l'image même pendant les sauts.
+        cam.location = Vector((-4.4, -1.9, 1.35))
+        look = Vector((0, -0.1, 0.9))
+    elif view == "side":
         cam.location = Vector((-3.6, -1.6, 1.25))
         look = Vector((0, -0.1, 0.55))
     elif view == "front":
@@ -317,7 +322,9 @@ def render(arm, rig, ex, name, out):
     only = os.environ.get("ARISE_FRAMES")
     wanted = {int(x) for x in only.split(",")} if only else None
     scene = bpy.context.scene
-    stage(ex.get("view", "three_quarter"), ex.get("props", []), arm)
+    poses = [{**REST, **ex.get("base", {}), **k[1]} for k in ex["keys"]]
+    tall = max(p["pelvis"][2] for p in poses) > 0.7
+    stage(ex.get("view", "three_quarter"), ex.get("props", []), arm, tall)
     os.makedirs(out, exist_ok=True)
     for f in range(frames):
         if wanted is not None and f not in wanted:

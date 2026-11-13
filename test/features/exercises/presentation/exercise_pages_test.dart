@@ -1,6 +1,7 @@
 import 'package:arise/core/anatomy/body_map.dart';
 import 'package:arise/core/anatomy/muscle.dart';
 import 'package:arise/core/router/app_routes.dart';
+import 'package:arise/features/exercises/presentation/animation/coach_video_demo.dart';
 import 'package:arise/features/exercises/presentation/animation/figure_animation.dart';
 import 'package:arise/features/exercises/presentation/exercise_detail_page.dart';
 import 'package:arise/features/exercises/presentation/exercise_providers.dart';
@@ -36,14 +37,15 @@ void main() {
       await tester.openWithProfile(container, AppRoutes.exerciseDetail('row'));
 
       expect(find.text('Rowing'), findsOneWidget);
+      // La vidéo du prof s'affiche après la liste des vidéos, avec pause.
       await tester.pump();
-      // Mannequin 2D animé, avec pause.
-      expect(find.byType(FigureAnimation), findsOneWidget);
-      // Le mouvement se charge après la liste des vidéos du prof.
       await tester.pump(const Duration(milliseconds: 100));
-      await tester.tap(find.byKey(FigureAnimation.pauseKey));
+      expect(find.byKey(const ValueKey('row-false')), findsOneWidget);
+      await tester.tap(find.byKey(CoachVideoDemo.pauseKey));
       await tester.pump();
       expect(find.byTooltip("Lancer l'animation"), findsOneWidget);
+      // En pause, l'image fixe remplace la vidéo.
+      expect(find.byKey(const ValueKey('row-true')), findsOneWidget);
       // Les silhouettes sont sous le mannequin : un défilement les affiche.
       await tester.drag(find.byType(Scrollable).first, const Offset(0, -250));
       await tester.pump();
@@ -74,9 +76,10 @@ void main() {
     final container = createTestContainer();
     await tester.openWithProfile(container, AppRoutes.exerciseDetail('row'));
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.byType(FigureAnimation), findsOneWidget);
-    expect(find.byKey(FigureAnimation.pauseKey), findsNothing);
+    expect(find.byKey(const ValueKey('row-true')), findsOneWidget);
+    expect(find.byKey(CoachVideoDemo.pauseKey), findsNothing);
     await tester.unmountApp();
   });
 
@@ -87,9 +90,11 @@ void main() {
       AppRoutes.exerciseDetail('bird_dog'),
     );
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
-    final figure = tester.widget<FigureAnimation>(find.byType(FigureAnimation));
-    expect(figure.motionId, 'bird_dog');
+    final demo = tester.widget<CoachVideoDemo>(find.byType(CoachVideoDemo));
+    expect(demo.motionId, 'bird_dog');
+    expect(find.byKey(const ValueKey('bird_dog-false')), findsOneWidget);
     await tester.unmountApp();
   });
 
