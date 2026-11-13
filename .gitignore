@@ -52,3 +52,10 @@ app.*.map.json
 *.freezed.dart
 lib/l10n/generated/
 node_modules/
+
+# Pièces fournies, préparées par prep_bodies.py / prep_pieces.py à partir des
+# fichiers du Drive de la propriétaire du projet (trop lourdes pour le dépôt).
+tool/character/external/bodies/
+tool/character/external/hair/
+tool/character/external/beards/
+tool/character/external/armor/

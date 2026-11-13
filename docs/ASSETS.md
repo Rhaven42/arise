@@ -108,3 +108,9 @@ Les bips du lecteur de séance (`countdown`, `start`, `rest`, `finish`) restent 
 - Chaîne : téléchargement brut (hors dépôt) → `tool/character/prep_outfits.py` (nettoyage, 30 000 triangles et textures 1024 px au plus, `tool/character/external/outfits/`) → `build_characters.py` + `fit_outfits.py` (ajustement sur chaque corps, découpe par emplacement, formes de corpulence, poids de peau) → `compress_models.sh … assets/models assets/outfits`.
 - Une vraie tenue d'artiste reste préférable : livrer chaque pièce séparée, en pose A, pour le squelette MPFB « game_engine ».
 
+## Corps, coiffures, barbes et armures fournis (13/11/2026)
+- Source : modèles 3D du Drive de la propriétaire du projet (générés sur son compte Tripo). Liste et emplacements : `tool/character/pieces.json`.
+- Préparation (hors dépôt, trop lourd) : `prep_bodies.py` (corps homme / femme, socle retiré, 100 000 triangles) et `prep_pieces.py` (coiffures et barbes teintables, armures 20 000 triangles) écrivent dans `tool/character/external/{bodies,hair,beards,armor}/`.
+- Le corps fourni remplace le corps MakeHuman sous le cou (`fit_outfits.replace_body`) : la tête MakeHuman reste (yeux teintables, maquillage, visage réglable). Peau ramenée au gris et teintée ; sous-vêtements d'origine gardés.
+- Chaque pièce d'armure est ajustée sur le corps (`fit_outfits.add_slot_pieces`) et exportée dans son propre fichier `assets/outfits/<pièce>/<race>_<sexe>.glb`.
+

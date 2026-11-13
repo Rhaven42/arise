@@ -59,9 +59,15 @@ void main() {
       final imported = equipmentCatalog.where((i) => i.pack != null).toList();
       expect(imported, isNotEmpty);
       for (final item in imported) {
-        expect(item.id, startsWith('${item.pack}_'));
-        expect(item.setId, item.pack);
-        expect(equipmentSets, contains(item.pack));
+        // Pièce d'une tenue (fichier de la tenue) ou pièce seule (son
+        // propre fichier).
+        if (item.setId != null) {
+          expect(item.id, startsWith('${item.pack}_'));
+          expect(item.setId, item.pack);
+          expect(equipmentSets, contains(item.pack));
+        } else {
+          expect(item.id, item.pack);
+        }
         expect(
           File('assets/outfits/${item.pack}/human_male.glb').existsSync(),
           isTrue,

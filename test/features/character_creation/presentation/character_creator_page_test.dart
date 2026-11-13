@@ -182,7 +182,7 @@ void main() {
     await _scrollTo(tester, find.text('Aucun'), tab: CreatorTab.face);
     await tester.tap(find.text('Aucun'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Khôl').last);
+    await tester.tap(find.text('Khôl fumé').last);
     await tester.pumpAndSettle();
     expect(sheet().makeupStyle, 1);
     expect(renderer.last?.makeupId, 'makeup_01');

@@ -71,13 +71,13 @@ abstract class CharacterSheet with _$CharacterSheet {
 }
 
 /// Nombre de coiffures disponibles.
-const int hairStyleCount = 10;
+const int hairStyleCount = 35;
 
 /// Nombre de styles de sourcils.
 const int eyebrowStyleCount = 6;
 
 /// Nombre de barbes (sans compter « aucune »).
-const int beardStyleCount = 6;
+const int beardStyleCount = 11;
 
 /// Nombre de maquillages (sans compter « aucun »).
-const int makeupStyleCount = 4;
+const int makeupStyleCount = 9;

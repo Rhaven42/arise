@@ -297,7 +297,9 @@ function prepareMaterials(root) {
         m.depthWrite = true;
       }
       if (m.name.startsWith('makeup_')) {
-        m.vertexColors = true;
+        // Maquillage peint dans une texture (ou, à défaut, en couleurs de
+        // sommets).
+        m.vertexColors = !m.map;
         m.transparent = true;
         m.depthWrite = false;
         m.polygonOffset = true;
@@ -419,7 +421,8 @@ function applyState(state) {
     if (!o.isMesh) return;
     const n = o.name || '';
     for (const [prefix, chosen] of Object.entries(choice)) {
-      if (n.startsWith(prefix)) o.visible = n === chosen;
+      // Une pièce à plusieurs matériaux devient « hair_11_1 »…
+      if (n.startsWith(prefix)) o.visible = !!chosen && (n === chosen || n.startsWith(chosen + '_'));
     }
     if (n.startsWith('outfit_under_')) {
       // Sous-vêtements : seulement quand un objet remplace la blouse ou le
@@ -437,6 +440,7 @@ function applyState(state) {
     for (const m of mats) {
       if (!m) continue;
       const tint = colors[m.name] ||
+        (m.name.startsWith('skin_body') ? colors.skin : null) ||
         (m.name.startsWith('hair_') || m.name.startsWith('brow_') ? colors.hair : null) ||
         (m.name.startsWith('beard_') ? colors.beard : null) ||
         (m.name === 'lashes' ? LASHES : null);
