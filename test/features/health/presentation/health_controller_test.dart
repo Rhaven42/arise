@@ -17,11 +17,15 @@ Future<ProviderContainer> _container(
   bool consent = true,
 }) async {
   final container = createTestContainer(health: source);
-  addTearDown(container.dispose);
   await container
       .read(profileRepositoryProvider)
       .saveProfile(sampleProfile.copyWith(healthConsent: consent));
-  return container;
+  // Riverpod met en pause les fournisseurs sans auditeur : on écoute ceux
+  // que le test lit.
+  return container
+    ..listen(healthControllerProvider, (_, _) {})
+    ..listen(progressionControllerProvider, (_, _) {})
+    ..listen(playerProfileProvider, (_, _) {});
 }
 
 Future<int> _statXp(ProviderContainer container, StatId stat) async {

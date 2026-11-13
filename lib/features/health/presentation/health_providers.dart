@@ -33,15 +33,11 @@ class HealthView {
     required this.today,
     required this.log,
     required this.status,
-    required this.consent,
   });
 
   final HealthDay today;
   final HealthLog log;
   final HealthSyncStatus status;
-
-  /// Faux tant que le joueur n'a pas autorisé la lecture de ses données.
-  final bool consent;
 
   /// XP gagnée aujourd'hui grâce à la santé.
   Map<StatId, int> get todayXp => today.credited;
@@ -55,21 +51,26 @@ class HealthController extends _$HealthController {
 
   @override
   Future<HealthView> build() async {
-    final profile = await ref.watch(playerProfileProvider.future);
+    // Garde la progression et le profil actifs : l'XP santé y est versée et
+    // l'accord y est lu.
+    ref
+      ..listen(progressionControllerProvider, (_, _) {})
+      ..listen(playerProfileProvider, (_, _) {});
     final log = await ref.read(healthRepositoryProvider).read();
     final today = CivilDate.ofLocal(_now());
     return HealthView(
       today: log.dayOf(today),
       log: log,
       status: HealthSyncStatus.idle,
-      consent: profile?.healthConsent ?? false,
     );
   }
 
   /// Lit aujourd'hui et hier sur le téléphone, puis verse l'XP gagnée.
   Future<void> sync() async {
     final view = await future;
-    if (!view.consent) {
+    // Accord lu au moment de la lecture : il peut changer à tout instant.
+    final profile = await ref.read(playerProfileProvider.future);
+    if (!(profile?.healthConsent ?? false)) {
       state = AsyncData(_view(view.log, HealthSyncStatus.disabled, view));
       return;
     }
@@ -78,7 +79,9 @@ class HealthController extends _$HealthController {
       state = AsyncData(_view(view.log, HealthSyncStatus.denied, view));
       return;
     }
-    final sessions = await ref.read(completedSessionsProvider.future);
+    final sessions = await ref
+        .read(completedSessionRepositoryProvider)
+        .readAll();
     final spans = [
       for (final s in sessions) (start: s.startedAt, end: s.endedAt),
     ];
@@ -127,6 +130,5 @@ class HealthController extends _$HealthController {
         today: log.dayOf(CivilDate.ofLocal(_now())),
         log: log,
         status: status,
-        consent: before.consent,
       );
 }

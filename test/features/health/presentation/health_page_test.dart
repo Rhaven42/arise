@@ -27,13 +27,15 @@ void main() {
     expect(find.text('1 verre sur 8 (250 ml)'), findsOneWidget);
 
     await tester.tap(find.byKey(HealthPage.consentKey));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
     expect(find.byKey(HealthPage.syncKey), findsOneWidget);
 
     await tester.tap(find.byKey(HealthPage.syncKey));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
     expect(source.authorizeCalls, 1);
     expect(
       container.read(healthControllerProvider).value?.status,

@@ -33,8 +33,8 @@ class _HealthPageState extends ConsumerState<HealthPage> {
     super.initState();
     // Lecture du téléphone à l'ouverture, si le joueur l'a autorisée.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final view = await ref.read(healthControllerProvider.future);
-      if (mounted && view.consent) {
+      final profile = await ref.read(playerProfileProvider.future);
+      if (mounted && (profile?.healthConsent ?? false)) {
         unawaited(ref.read(healthControllerProvider.notifier).sync());
       }
     });
@@ -78,6 +78,7 @@ class _ConsentCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final profile = ref.watch(playerProfileProvider).value;
+    final consent = profile?.healthConsent ?? false;
     final status = switch (view.status) {
       HealthSyncStatus.denied => l10n.healthStatusDenied,
       HealthSyncStatus.failed => l10n.healthStatusFailed,
@@ -92,7 +93,7 @@ class _ConsentCard extends ConsumerWidget {
           SwitchListTile(
             key: HealthPage.consentKey,
             contentPadding: EdgeInsets.zero,
-            value: view.consent,
+            value: consent,
             onChanged: profile == null
                 ? null
                 : (value) => ref
@@ -101,7 +102,7 @@ class _ConsentCard extends ConsumerWidget {
             title: Text(l10n.healthConsentTitle),
             subtitle: Text(l10n.healthReadOnlyHint),
           ),
-          if (view.consent) ...[
+          if (consent) ...[
             const SizedBox(height: AriseSpacing.xs),
             AriseButton(
               key: HealthPage.syncKey,
