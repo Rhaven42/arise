@@ -9,13 +9,13 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('silhouettes', () {
     for (final sex in CharacterSex.values) {
-      test('douze silhouettes distinctes et valides (${sex.name})', () {
+      test('quatre silhouettes distinctes et valides (${sex.name})', () {
         final presets = presetsFor(sex);
-        expect(presets, hasLength(12));
-        expect(presets.map((p) => p.id).toSet(), hasLength(12));
+        expect(presets, hasLength(4));
+        expect(presets.map((p) => p.id).toSet(), hasLength(4));
         expect(
           presets.map((p) => (p.corpulence, p.musculature)).toSet(),
-          hasLength(12),
+          hasLength(4),
         );
         for (final p in presets) {
           expect(p.corpulence, inInclusiveRange(0, 1));
@@ -26,7 +26,7 @@ void main() {
 
     test('appliquer une silhouette ne touche que le corps', () {
       final sheet = defaultSheet().copyWith(name: 'Lyra', hairStyle: 3);
-      final swimmer = femalePresets.firstWhere((p) => p.id == 'swimmer');
+      final swimmer = bodyPresets.firstWhere((p) => p.id == 'muscular');
       final next = applyPreset(sheet, swimmer);
       expect(next.corpulence, swimmer.corpulence);
       expect(next.musculature, swimmer.musculature);

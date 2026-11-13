@@ -26,38 +26,53 @@ class StatsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final state = ref.watch(progressionControllerProvider).value?.state;
-    final controller = ref.read(progressionControllerProvider.notifier);
     return Scaffold(
       appBar: AppBar(title: Text(l10n.statsTitle)),
-      body: state == null
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: const EdgeInsets.all(AriseSpacing.md),
-              children: [
-                _FreePoints(state: state),
-                for (final stat in StatId.values) ...[
-                  const SizedBox(height: AriseSpacing.md),
-                  _StatCard(
-                    stat: stat,
-                    state: state,
-                    onAllocate: state.freeStatPoints > 0
-                        ? () => unawaited(controller.allocate(stat))
-                        : null,
-                  ),
-                ],
-                if (state.rank.index >=
-                    gameConfig.classes.unlockRank.index) ...[
-                  const SizedBox(height: AriseSpacing.lg),
-                  AriseButton(
-                    label: l10n.statsHeroClass,
-                    icon: Icons.shield_moon_outlined,
-                    variant: AriseButtonVariant.secondary,
-                    onPressed: () => context.go(AppRoutes.heroClass),
-                  ),
-                ],
-              ],
-            ),
+      body: ListView(
+        padding: const EdgeInsets.all(AriseSpacing.md),
+        children: const [StatsSheet()],
+      ),
+    );
+  }
+}
+
+/// Fiche des statistiques (points libres, chaque stat, classe), affichée
+/// sous le personnage sur la Fenêtre du Système.
+class StatsSheet extends ConsumerWidget {
+  const StatsSheet({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final state = ref.watch(progressionControllerProvider).value?.state;
+    final controller = ref.read(progressionControllerProvider.notifier);
+    if (state == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _FreePoints(state: state),
+        for (final stat in StatId.values) ...[
+          const SizedBox(height: AriseSpacing.md),
+          _StatCard(
+            stat: stat,
+            state: state,
+            onAllocate: state.freeStatPoints > 0
+                ? () => unawaited(controller.allocate(stat))
+                : null,
+          ),
+        ],
+        if (state.rank.index >= gameConfig.classes.unlockRank.index) ...[
+          const SizedBox(height: AriseSpacing.lg),
+          AriseButton(
+            label: l10n.statsHeroClass,
+            icon: Icons.shield_moon_outlined,
+            variant: AriseButtonVariant.secondary,
+            onPressed: () => context.go(AppRoutes.heroClass),
+          ),
+        ],
+      ],
     );
   }
 }

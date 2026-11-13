@@ -1,3 +1,4 @@
+import 'package:arise/core/router/app_router.dart';
 import 'package:arise/features/account/presentation/account_create_page.dart';
 import 'package:arise/features/achievements/presentation/hunter_panel.dart';
 import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
@@ -128,6 +129,40 @@ void main() {
     await _tapText(tester, 'Continuer');
     await _tapText(tester, "J'ai lu et compris ce rappel");
     await _tapText(tester, 'Entrer dans Arisia');
+    // Création du personnage, juste après le questionnaire : rendu 3D réel
+    // (vue web), silhouette, nom, validation.
+    debugPrint('Parcours : création du personnage');
+    await _pumpFor(tester, 4000);
+    debugPrint('Parcours : silhouette, visage, onglet fiche');
+    await tester.tap(find.text('Puissante'));
+    await _pumpFor(tester, 800);
+    await tester.tap(find.text('Visage'));
+    await _pumpFor(tester, 1500);
+    await tester.tap(find.text('Nom & fiche'));
+    await _pumpFor(tester, 1000);
+    final name = find.byType(TextField);
+    await _waitFor(tester, name);
+    await tester.scrollUntilVisible(
+      name,
+      200,
+      scrollable: find
+          .descendant(
+            of: find.byKey(CharacterCreatorPage.tabKey(CreatorTab.sheet)),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.enterText(name, 'Aelin');
+    await _pumpFor(tester, 500);
+    FocusManager.instance.primaryFocus?.unfocus();
+    await _pumpFor(tester, 500);
+    await tester.tap(find.text('Valider le personnage'));
+    await _pumpFor(tester, 1500);
+    debugPrint('Parcours : personnage enregistré');
+    // Le message de confirmation ne reste que quelques secondes : il est
+    // attendu avant le retour complet sur la Fenêtre du Système.
+    await _waitFor(tester, find.text('Personnage enregistré.'));
+
     await _waitFor(tester, find.text('Bienvenue, chasseur'));
 
     expect(find.text('Bienvenue, chasseur'), findsOneWidget);
@@ -210,52 +245,19 @@ void main() {
     await _expectVisible(tester, '1 séance sur cette période.');
     await _expectVisible(tester, 'Conseils du Système');
 
-    // Création du personnage : rendu 3D réel (vue web), nom, validation.
-    debugPrint('Parcours : création du personnage');
-    await tester.tap(find.byType(BackButton).first);
-    await _pumpFor(tester, 1200);
-    await _tapWithoutSettle(tester, find.text('Création du personnage'));
-    await _pumpFor(tester, 4000);
-    debugPrint('Parcours : silhouette, visage, onglet fiche');
-    await tester.tap(find.text('Athlétique'));
-    await _pumpFor(tester, 800);
-    await tester.tap(find.text('Visage'));
-    await _pumpFor(tester, 1500);
-    await tester.tap(find.text('Nom & fiche'));
-    await _pumpFor(tester, 1000);
-    final name = find.byType(TextField);
-    await _waitFor(tester, name);
-    await tester.scrollUntilVisible(
-      name,
-      200,
-      scrollable: find
-          .descendant(
-            of: find.byKey(CharacterCreatorPage.tabKey(CreatorTab.sheet)),
-            matching: find.byType(Scrollable),
-          )
-          .first,
-    );
-    await tester.enterText(name, 'Aelin');
-    await _pumpFor(tester, 500);
-    FocusManager.instance.primaryFocus?.unfocus();
-    await _pumpFor(tester, 500);
-    await tester.tap(find.text('Valider le personnage'));
-    await _pumpFor(tester, 1500);
-    debugPrint('Parcours : personnage enregistré');
-    // Le message de confirmation ne reste que quelques secondes : il est
-    // attendu avant le retour complet sur la Fenêtre du Système.
-    await _waitFor(tester, find.text('Personnage enregistré.'));
-    await _waitFor(tester, find.text('Analyse musculaire'));
-
     // Boutique : essayage d'une cape sur le vrai rendu 3D, puis inventaire.
     debugPrint('Parcours : boutique');
     await _pumpFor(tester, 1500);
-    await tester.scrollUntilVisible(
-      find.text("Boutique d'Arisia"),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await _tapWithoutSettle(tester, find.text("Boutique d'Arisia"));
+    // Retour à la Fenêtre du Système, puis onglet Boutique de la barre.
+    for (
+      var i = 0;
+      i < 4 && find.byKey(HomeDock.shopKey).evaluate().isEmpty;
+      i++
+    ) {
+      await tester.tap(find.byType(BackButton).first);
+      await _pumpFor(tester, 1200);
+    }
+    await _tapWithoutSettle(tester, find.byKey(HomeDock.shopKey));
     await _pumpFor(tester, 4000);
     await _waitFor(tester, find.text('Dos'));
     await tester.dragUntilVisible(
@@ -280,12 +282,7 @@ void main() {
     debugPrint('Parcours : inventaire');
     await tester.tap(find.byType(BackButton).first);
     await _pumpFor(tester, 1200);
-    await tester.scrollUntilVisible(
-      find.text('Inventaire'),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await _tapWithoutSettle(tester, find.text('Inventaire'));
+    await _tapWithoutSettle(tester, find.byKey(HomeDock.inventoryKey));
     await _pumpFor(tester, 3000);
     await _waitFor(
       tester,

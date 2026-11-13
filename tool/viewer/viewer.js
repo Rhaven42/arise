@@ -441,6 +441,12 @@ function applyState(state) {
         (m.name.startsWith('beard_') ? colors.beard : null) ||
         (m.name === 'lashes' ? LASHES : null);
       if (tint) m.color.copy(tint);
+      if (m.name === 'iris' && tint) {
+        // La texture de l'iris est sombre : la teinte est éclaircie et
+        // l'iris brille un peu, pour que la couleur choisie se voie.
+        m.color.copy(tint).multiplyScalar(1.8);
+        m.emissive = tint.clone().multiplyScalar(0.35);
+      }
       if (m.name.startsWith('dye_')) {
         // Couleur d'origine gardée pour revenir sans teinture.
         if (!m.userData.base) m.userData.base = m.color.clone();

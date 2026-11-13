@@ -250,19 +250,14 @@ class HomeDock extends StatelessWidget {
   static const trainKey = Key('dock-train');
   static const questsKey = Key('dock-quests');
   static const heroKey = Key('dock-hero');
-  static const statsKey = Key('dock-stats');
+  static const shopKey = Key('dock-shop');
+  static const inventoryKey = Key('dock-inventory');
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return ActionDock(
       items: [
-        DockItem(
-          icon: Icons.shield_outlined,
-          label: l10n.dockSystem,
-          selected: true,
-          onTap: () => context.go(AppRoutes.systemHome),
-        ),
         DockItem(
           key: questsKey,
           icon: Icons.menu_book_outlined,
@@ -276,10 +271,16 @@ class HomeDock extends StatelessWidget {
           onTap: () => context.go(AppRoutes.character),
         ),
         DockItem(
-          key: statsKey,
-          icon: Icons.insights,
-          label: l10n.dockStats,
-          onTap: () => context.go(AppRoutes.stats),
+          key: shopKey,
+          icon: Icons.storefront_outlined,
+          label: l10n.dockShop,
+          onTap: () => context.go(AppRoutes.shop),
+        ),
+        DockItem(
+          key: inventoryKey,
+          icon: Icons.backpack_outlined,
+          label: l10n.dockInventory,
+          onTap: () => context.go(AppRoutes.inventory),
         ),
       ],
       center: DockItem(

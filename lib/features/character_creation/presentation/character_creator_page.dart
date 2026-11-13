@@ -376,22 +376,6 @@ class _BodyTab extends ConsumerWidget {
         ),
         const SizedBox(height: AriseSpacing.md),
         _SheetSlider(
-          label: l10n.characterSliderValue(
-            l10n.characterCorpulence,
-            corpulenceLabel(l10n, sheet),
-          ),
-          value: sheet.corpulence,
-          change: (s, v) => s.copyWith(corpulence: v),
-        ),
-        _SheetSlider(
-          label: l10n.characterSliderValue(
-            l10n.characterMusculature,
-            musculatureLabel(l10n, sheet),
-          ),
-          value: sheet.musculature,
-          change: (s, v) => s.copyWith(musculature: v),
-        ),
-        _SheetSlider(
           label: l10n.characterHeight(sheet.heightCm),
           value: sheet.heightCm.toDouble(),
           min: config.heightMinCm.toDouble(),

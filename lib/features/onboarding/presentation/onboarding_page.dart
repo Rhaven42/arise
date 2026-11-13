@@ -50,7 +50,8 @@ class _OnboardingBody extends ConsumerWidget {
     final saved = await ref
         .read(onboardingControllerProvider.notifier)
         .submit();
-    if (saved && context.mounted) context.go(AppRoutes.systemHome);
+    // Le personnage se crée juste après le questionnaire.
+    if (saved && context.mounted) context.go(AppRoutes.character);
   }
 
   @override

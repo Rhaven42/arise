@@ -42,6 +42,16 @@ const List<Swatch> hairColors = [
   Swatch('grey', 0xFF8E8A86),
   Swatch('white', 0xFFE8E4DE),
   Swatch('midnight_blue', 0xFF1E2A4A),
+  Swatch('platinum', 0xFFEFE6CF),
+  Swatch('strawberry', 0xFFC77A55),
+  Swatch('ginger', 0xFFD0661F),
+  Swatch('crimson', 0xFF8E1A22),
+  Swatch('rose', 0xFFD889A3),
+  Swatch('violet', 0xFF5B3A8C),
+  Swatch('sapphire', 0xFF2F5FB0),
+  Swatch('teal', 0xFF247A78),
+  Swatch('emerald', 0xFF2F7A3B),
+  Swatch('silver', 0xFFB9BEC6),
 ];
 
 /// Teintes de peau proposées pour une race.
@@ -66,4 +76,7 @@ const List<Swatch> eyeColors = [
   Swatch('grey', 0xFF7C8690),
   Swatch('amber', 0xFFB07A26),
   Swatch('violet', 0xFF6A4C8C),
+  Swatch('ice', 0xFF8FC7E8),
+  Swatch('gold', 0xFFD6A52E),
+  Swatch('red', 0xFFA8282E),
 ];

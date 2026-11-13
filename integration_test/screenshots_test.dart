@@ -377,12 +377,12 @@ void main() {
     debugPrint('capture 36_epreuve_de_rang');
     await binding.takeScreenshot('36_epreuve_de_rang');
 
-    // Écran des statistiques, depuis la barre d'action.
+    // Inventaire, depuis la barre d'action.
     await tester.binding.handlePopRoute();
     await pumpFor(1200);
-    await tester.tap(find.byKey(HomeDock.statsKey));
+    await tester.tap(find.byKey(HomeDock.inventoryKey));
     await pumpFor(1200);
-    debugPrint('capture 37_statistiques');
-    await binding.takeScreenshot('37_statistiques');
+    debugPrint('capture 37_inventaire');
+    await binding.takeScreenshot('37_inventaire');
   });
 }
