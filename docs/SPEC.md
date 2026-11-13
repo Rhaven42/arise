@@ -441,3 +441,14 @@ Demande de la propriétaire du projet : tenues, coiffures et barbes plus réalis
 - Chaque tenue est ajustée automatiquement sur les six corps (outil `tool/character/fit_outfits.py`) puis découpée par emplacement : tête, torse, mains, jambes, pieds. Chaque pièce s'achète et se porte séparément, et se combine avec le reste de l'équipement.
 - Les pièces d'une tenue sont dans un fichier à part (`assets/outfits/<tenue>/<race>_<sexe>.glb`), chargé seulement quand une de ses pièces est portée.
 
+
+## 40. Tri des contenus, création du héros et nouvelle barre (13/11/2026)
+- **Corps** : le corps sous les vêtements est un corps réaliste fourni par la propriétaire du projet (`external/bodies`), avec la tête du modèle MakeHuman (yeux, maquillage, réglages du visage conservés). Les anciennes sous-couches et les tenues qui ne s'ajustaient pas ont été retirées.
+- **Morphologies** : quatre au choix, Élancé(e), Équilibré(e), Robuste, Puissant(e) ; les curseurs de corpulence et de musculature disparaissent.
+- **Elfe et orc** : traits accentués (oreilles plus longues et mâchoire plus fine pour l'elfe ; mâchoire, arcades, nez et épaules plus marqués pour l'orc).
+- **Coiffures** : 35 (dont 25 fournies) et 11 barbes ; 10 couleurs de cheveux et 3 couleurs d'yeux en plus ; l'iris est éclairci pour que la couleur choisie se voie. Les coiffures et barbes fournies sont chacune dans un fichier à part, chargé seulement quand on les choisit.
+- **Maquillage** : neuf styles peints (fumé, œil de chat, doré, lèvres rouges, baie, rosé, taches de rousseur, peinture de guerre, tribal).
+- **Armures fournies** : 75 pièces (torse, jambes, pieds, tête), une par fichier, ajustées sur les six corps.
+- **Création du héros** : juste après le questionnaire d'arrivée ; modifiable ensuite depuis l'onglet Héros.
+- **Accueil** : la fiche de stats est sous le personnage ; la barre du bas devient Quêtes, Héros, S'entraîner, Boutique, Inventaire (la boutique et l'inventaire quittent la liste de l'accueil).
+- **Textes** : « Arisia » remplacé par « Hero Protocol » dans les hauts faits, les secrets et les autres textes.
