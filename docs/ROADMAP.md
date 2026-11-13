@@ -127,11 +127,11 @@
 - [x] Écran des statistiques dans la barre d'action
 - [x] Comptes locaux (plusieurs joueurs, code PIN facultatif)
 
-## Phase 11 — Santé
-- [ ] Health Connect / HealthKit en lecture seule
-- [ ] Conversion plafonnée en Endurance / Vitalité
-- [ ] Bonus sommeil ≥ 7 h
-- [ ] Saisie manuelle de l'hydratation
+## Phase 11 — Santé (13/11/2026)
+- [x] Health Connect / HealthKit en lecture seule
+- [x] Conversion plafonnée en Endurance / Vitalité
+- [x] Bonus sommeil ≥ 7 h
+- [x] Saisie manuelle de l'hydratation
 
 ## Phase 12 — Finitions et publication
 - [x] Sons et ambiance (musiques et jingle fournis par la propriétaire du projet, 11/11/2026)

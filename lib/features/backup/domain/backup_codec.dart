@@ -4,6 +4,7 @@ import 'package:arise/features/achievements/domain/achievements_state.dart';
 import 'package:arise/features/backup/domain/backup_data.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
+import 'package:arise/features/health/domain/health_log.dart';
 import 'package:arise/features/inventory/domain/inventory.dart';
 import 'package:arise/features/planning/domain/planned_session.dart';
 import 'package:arise/features/planning/domain/program.dart';
@@ -56,7 +57,7 @@ abstract final class BackupCodec {
   /// - v7 (phase 8A) : quête du jour et épreuves de rang ;
   /// - v8 (phase 8B) : quête hebdomadaire, donjon et événements ;
   /// - v9 (phase 9) : hauts faits, titre et aura portés, Ombres.
-  static const currentVersion = 9;
+  static const currentVersion = 10;
 
   /// Construit une sauvegarde au format courant.
   static BackupData create({
@@ -75,6 +76,7 @@ abstract final class BackupCodec {
     AchievementsState? achievements,
     TitlesState? titles,
     ShadowsState? shadows,
+    HealthLog? health,
   }) {
     return BackupData(
       format: format,
@@ -94,6 +96,7 @@ abstract final class BackupCodec {
       achievements: achievements,
       titles: titles,
       shadows: shadows,
+      health: health,
     );
   }
 

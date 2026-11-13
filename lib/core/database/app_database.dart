@@ -193,6 +193,19 @@ class AchievementStates extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
+/// Historique santé (une seule ligne, `id` = 1), en JSON.
+@DataClassName('HealthRow')
+class HealthStates extends Table {
+  IntColumn get id => integer()();
+
+  TextColumn get json => text()();
+
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
 /// Armée d'Ombres (une seule ligne, `id` = 1), en JSON.
 @DataClassName('ShadowRow')
 class ShadowStates extends Table {
@@ -222,6 +235,7 @@ class ShadowStates extends Table {
     TrialStates,
     AchievementStates,
     ShadowStates,
+    HealthStates,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -231,7 +245,7 @@ class AppDatabase extends _$AppDatabase {
   static const profileRowId = 1;
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -265,6 +279,9 @@ class AppDatabase extends _$AppDatabase {
         await migrator.createTable(achievementStates);
         await migrator.createTable(shadowStates);
       }
+      if (from < 10) {
+        await migrator.createTable(healthStates);
+      }
     },
   );
 
@@ -295,6 +312,7 @@ class AppDatabase extends _$AppDatabase {
   Future<void> eraseAll() {
     return transaction(() async {
       await delete(shadowStates).go();
+      await delete(healthStates).go();
       await delete(achievementStates).go();
       await delete(trialStates).go();
       await delete(questStates).go();
@@ -620,6 +638,21 @@ class AppDatabase extends _$AppDatabase {
   Future<void> saveShadowsJson(String json, {required DateTime updatedAt}) =>
       into(shadowStates).insertOnConflictUpdate(
         ShadowStatesCompanion(
+          id: const Value(profileRowId),
+          json: Value(json),
+          updatedAt: Value(updatedAt.toUtc()),
+        ),
+      );
+
+  // --- Santé ---------------------------------------------------------------
+
+  Stream<String?> watchHealthJson() => _watchRow(healthStates, profileRowId);
+
+  Future<String?> readHealthJson() => _readRow(healthStates, profileRowId);
+
+  Future<void> saveHealthJson(String json, {required DateTime updatedAt}) =>
+      into(healthStates).insertOnConflictUpdate(
+        HealthStatesCompanion(
           id: const Value(profileRowId),
           json: Value(json),
           updatedAt: Value(updatedAt.toUtc()),

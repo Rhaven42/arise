@@ -19,6 +19,7 @@ import 'package:arise/features/exercises/presentation/animation/coach_video_demo
 import 'package:arise/features/exercises/presentation/animation/figure_animation.dart';
 import 'package:arise/features/exercises/presentation/animation/figure_motion.dart';
 import 'package:arise/features/exercises/presentation/exercise_providers.dart';
+import 'package:arise/features/health/presentation/health_providers.dart';
 import 'package:arise/features/planning/presentation/planning_providers.dart';
 import 'package:arise/features/profile/domain/player_profile.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
@@ -31,6 +32,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'fake_accounts.dart';
 import 'fake_backup_file_gateway.dart';
 import 'fake_character_renderer.dart';
+import 'fake_health_source.dart';
 import 'fake_music_player.dart';
 import 'fake_reminder_scheduler.dart';
 import 'fake_workout_cues.dart';
@@ -92,6 +94,7 @@ ProviderContainer createTestContainer({
   FakeMusicPlayer? music,
   FakeAccountRepository? accounts,
   FakeAccountStorage? accountStorage,
+  FakeHealthSource? health,
 }) {
   return ProviderContainer.test(
     overrides: [
@@ -119,6 +122,7 @@ ProviderContainer createTestContainer({
       snapshotSharerProvider.overrideWithValue(sharer ?? FakeSnapshotSharer()),
       characterRandomProvider.overrideWithValue(Random(7)),
       musicPlayerProvider.overrideWithValue(music ?? FakeMusicPlayer()),
+      healthSourceProvider.overrideWithValue(health ?? FakeHealthSource()),
       exerciseCatalogProvider.overrideWith((_) async => testCatalog),
       figureMotionsProvider.overrideWith((_) async => testMotions),
       coachVideoIdsProvider.overrideWith((_, _) async => testCoachVideoIds),

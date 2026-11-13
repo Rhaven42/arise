@@ -638,12 +638,64 @@ class AccountConfig {
   };
 }
 
+/// Santé (SPEC §13) : conversion plafonnée des données du téléphone en XP
+/// d'Endurance et de Vitalité, et hydratation saisie à la main.
 class HealthConfig {
-  const HealthConfig({required this.sleepBonusMinHours});
+  const HealthConfig({
+    required this.sleepBonusMinHours,
+    required this.stepsPerBlock,
+    required this.xpPerStepBlock,
+    required this.stepsCap,
+    required this.activityMinutesPerXp,
+    required this.activityMinutesCap,
+    required this.sleepBonusXp,
+    required this.hydrationGoalGlasses,
+    required this.hydrationBonusXp,
+    required this.glassMl,
+    required this.maxGlasses,
+    required this.historyDays,
+  });
 
+  /// Nuit qui donne le bonus de Vitalité (jamais de pénalité en dessous).
   final int sleepBonusMinHours;
 
-  Map<String, Object> toJson() => {'sleepBonusMinHours': sleepBonusMinHours};
+  /// Pas : [xpPerStepBlock] XP d'Endurance par tranche de [stepsPerBlock],
+  /// au plus [stepsCap] pas comptés par jour.
+  final int stepsPerBlock;
+  final int xpPerStepBlock;
+  final int stepsCap;
+
+  /// Marche, course ou vélo enregistrés hors de l'application : 1 XP
+  /// d'Endurance par [activityMinutesPerXp] minutes, au plus
+  /// [activityMinutesCap] minutes par jour.
+  final int activityMinutesPerXp;
+  final int activityMinutesCap;
+
+  final int sleepBonusXp;
+
+  /// Hydratation : objectif en verres, bonus de Vitalité quand il est atteint.
+  final int hydrationGoalGlasses;
+  final int hydrationBonusXp;
+  final int glassMl;
+  final int maxGlasses;
+
+  /// Jours gardés dans l'historique santé.
+  final int historyDays;
+
+  Map<String, Object> toJson() => {
+    'sleepBonusMinHours': sleepBonusMinHours,
+    'stepsPerBlock': stepsPerBlock,
+    'xpPerStepBlock': xpPerStepBlock,
+    'stepsCap': stepsCap,
+    'activityMinutesPerXp': activityMinutesPerXp,
+    'activityMinutesCap': activityMinutesCap,
+    'sleepBonusXp': sleepBonusXp,
+    'hydrationGoalGlasses': hydrationGoalGlasses,
+    'hydrationBonusXp': hydrationBonusXp,
+    'glassMl': glassMl,
+    'maxGlasses': maxGlasses,
+    'historyDays': historyDays,
+  };
 }
 
 /// Configuration complète du jeu.
@@ -1478,7 +1530,20 @@ const gameConfig = GameConfig(
     pullExercises: ['pull_up_pronated', 'row', 'biceps_curl'],
     maxSuggestions: 3,
   ),
-  health: HealthConfig(sleepBonusMinHours: 7),
+  health: HealthConfig(
+    sleepBonusMinHours: 7,
+    stepsPerBlock: 1000,
+    xpPerStepBlock: 2,
+    stepsCap: 12000,
+    activityMinutesPerXp: 2,
+    activityMinutesCap: 60,
+    sleepBonusXp: 15,
+    hydrationGoalGlasses: 8,
+    hydrationBonusXp: 10,
+    glassMl: 250,
+    maxGlasses: 20,
+    historyDays: 30,
+  ),
   account: AccountConfig(nameMaxLength: 20, pinLength: 4, maxAccounts: 6),
   planning: PlanningConfig(reminderLeadMinutes: 30),
   xp: XpConfig(

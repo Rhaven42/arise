@@ -117,6 +117,13 @@ class ProgressionController extends _$ProgressionController {
     return progress;
   }
 
+  /// Verse de l'XP de stat gagnée hors séance (santé du téléphone).
+  Future<void> addStatXp(Map<StatId, int> xp) async {
+    if (xp.isEmpty) return;
+    final current = await _current();
+    await _save(grantStatXp(current.state, xp), report: current.report);
+  }
+
   /// Place un point de stat libre.
   Future<void> allocate(StatId stat) async {
     final current = await _current();

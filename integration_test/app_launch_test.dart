@@ -331,5 +331,24 @@ void main() {
     await _pumpFor(tester, 1500);
     await _expectVisible(tester, 'Régularité');
     await _expectVisible(tester, 'Premier pas');
+
+    // Phase 11 : santé (sans accord, rien n'est lu sur le téléphone).
+    debugPrint('Parcours : santé');
+    await tester.tap(find.byType(BackButton).first);
+    await _pumpFor(tester, 1200);
+    await tester.scrollUntilVisible(
+      find.text('Pas, sommeil et eau te font progresser'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await _tapWithoutSettle(
+      tester,
+      find.text('Pas, sommeil et eau te font progresser'),
+    );
+    await _pumpFor(tester, 1500);
+    await _expectVisible(tester, 'Hydratation');
+    await _tapWithoutSettle(tester, find.byTooltip("Ajouter un verre d'eau"));
+    await _pumpFor(tester, 800);
+    await _expectVisible(tester, '1 verre sur 8 (250 ml)');
   }, timeout: const Timeout(Duration(minutes: 8)));
 }
