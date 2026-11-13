@@ -25,6 +25,7 @@ import 'package:arise/features/progression/domain/progression_rules.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/progression/presentation/progression_labels.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
+import 'package:arise/features/progression/presentation/stats_page.dart';
 import 'package:arise/features/titles/presentation/titles_providers.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -136,6 +137,9 @@ class _SystemHomeBody extends ConsumerWidget {
             title: l10n.systemWelcomeTitle,
             child: Text(l10n.systemWelcomeBody, style: textTheme.bodyLarge),
           ),
+        // Fiche des statistiques, sous le personnage et le message du jour.
+        const SizedBox(height: AriseSpacing.md),
+        const StatsSheet(),
         if (state.isRankLocked && state.xpInLevel >= state.xpForNextLevel)
           Padding(
             padding: const EdgeInsets.only(top: AriseSpacing.sm),
@@ -201,18 +205,6 @@ class _SystemHomeBody extends ConsumerWidget {
           title: l10n.characterTitle,
           subtitle: l10n.characterHomeHint,
           onTap: () => context.go(AppRoutes.character),
-        ),
-        _HomeLink(
-          icon: Icons.storefront_outlined,
-          title: l10n.shopTitle,
-          subtitle: l10n.shopHomeHint,
-          onTap: () => context.go(AppRoutes.shop),
-        ),
-        _HomeLink(
-          icon: Icons.backpack_outlined,
-          title: l10n.inventoryTitle,
-          subtitle: l10n.inventoryHomeHint,
-          onTap: () => context.go(AppRoutes.inventory),
         ),
         _HomeLink(
           icon: Icons.favorite_outline,

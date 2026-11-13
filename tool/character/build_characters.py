@@ -23,6 +23,7 @@ CC BY (auteurs cités dans l'écran Crédits et dans docs/ASSETS.md).
 """
 
 import importlib
+import importlib.util
 import math
 import os
 
@@ -166,8 +167,9 @@ def _race_deform(race, coords, groups):
     out = [c.copy() for c in coords]
     ears = groups.get("ears", set())
     if race == "elf" and ears:
-        # Oreilles allongées vers le haut et l'arrière, de façon progressive.
-        reach = (0.012, 0.022, 0.05)
+        # Oreilles longues et pointues, vers le haut et l'arrière, de façon
+        # progressive (nettement plus marquées le 13/11/2026).
+        reach = (0.02, 0.04, 0.085)
         zs = [coords[i].z for i in ears]
         z0, z1 = min(zs), max(zs)
         for i in ears:
@@ -175,27 +177,55 @@ def _race_deform(race, coords, groups):
             t = t * t
             side = 1 if coords[i].x > 0 else -1
             out[i] += Vector((side * reach[0] * t, reach[1] * t, reach[2] * t))
-    if race == "orc":
-        lips = groups.get("lips", set())
-        mouth_z = sum(coords[i].z for i in lips) / max(len(lips), 1)
-        head = groups.get("body", set())
-        top = max(coords[i].z for i in head)
+    def ss(e0, e1, x):
+        # Transition douce de 0 (en e0) à 1 (en e1) : aucune cassure.
+        t = max(0.0, min(1.0, (x - e0) / (e1 - e0)))
+        return t * t * (3 - 2 * t)
+
+    lips = groups.get("lips", set())
+    mouth_z = sum(coords[i].z for i in lips) / max(len(lips), 1)
+    head = groups.get("body", set())
+    top = max(coords[i].z for i in head)
+    eye = groups.get("helper-l-eye", set())
+    eye_z = sum(coords[i].z for i in eye) / len(eye) if eye else mouth_z + 0.07
+
+    def jaw(c):
+        # Poids de la mâchoire : sous la bouche, à l'avant, avec des bords
+        # progressifs vers le cou et vers la nuque.
+        return (ss(mouth_z + 0.005, mouth_z - 0.055, c.z) * ss(top - 0.30, top - 0.24, c.z)
+                * (1 - ss(0.0, 0.05, c.y)))
+
+    if race == "elf":
+        # Visage plus fin : mâchoire resserrée, pommettes hautes.
         for i in head:
             c = coords[i]
+            out[i].x *= 1 - 0.08 * jaw(c)
+            cheek = ss(mouth_z + 0.02, mouth_z + 0.035, c.z) * (1 - ss(mouth_z + 0.05, mouth_z + 0.065, c.z))
+            out[i].z += 0.003 * cheek * ss(0.03, 0.05, -c.y) * ss(0.02, 0.04, abs(c.x))
+    if race == "orc":
+        for i in head:
+            c = coords[i]
+            front = ss(0.03, 0.06, -c.y)
             # Mâchoire plus large sous la bouche.
-            if top - 0.30 < c.z < mouth_z + 0.005 and c.y < 0.02:
-                k = min(1.0, (mouth_z + 0.005 - c.z) / 0.06)
-                out[i].x *= 1 + 0.16 * k
-            # Arcade sourcilière marquée.
-            if mouth_z + 0.07 < c.z < mouth_z + 0.10 and c.y < -0.06:
-                out[i].y -= 0.006
+            k = jaw(c)
+            out[i].x *= 1 + 0.28 * k
+            out[i].y -= 0.006 * k
+            # Arcade sourcilière lourde, au-dessus des paupières (les yeux ne
+            # bougent pas : on ne déplace pas leur contour).
+            brow = ss(eye_z + 0.012, eye_z + 0.024, c.z) * (1 - ss(eye_z + 0.045, eye_z + 0.065, c.z))
+            out[i].y -= 0.012 * brow * front
+            # Nez épaté et large.
+            nose = (ss(mouth_z + 0.01, mouth_z + 0.02, c.z) * (1 - ss(mouth_z + 0.045, mouth_z + 0.058, c.z))
+                    * (1 - ss(0.018, 0.034, abs(c.x))) * ss(0.06, 0.08, -c.y))
+            out[i].x *= 1 + 0.35 * nose
+            out[i].y += 0.004 * nose
             # Carrure plus large du buste et des épaules, avec une transition
             # douce (sans cassure aux poignets ni à la taille).
             t = (c.z / top - 0.60) / 0.12
             t = max(0.0, min(1.0, t))
             u = (top - 0.18 - c.z) / 0.06
             u = max(0.0, min(1.0, u))
-            out[i].x *= 1 + 0.07 * (t * t * (3 - 2 * t)) * u
+            out[i].x *= 1 + 0.12 * (t * t * (3 - 2 * t)) * u
     return out
 
 
@@ -834,87 +864,159 @@ def _eye_parts(template, groups, states, mats):
     return [eyes, iris_obj]
 
 
-MAKEUP_LOOKS = ("makeup_01", "makeup_02", "makeup_03", "makeup_04")
+MAKEUP_LOOKS = tuple(f"makeup_{i:02d}" for i in range(1, 10))
+MAKEUP_TEXTURE = 512
 
 
 def _makeups(template, groups, states, marks):
-    """Maquillages peints en dégradés doux (couleurs de sommets avec
-    transparence) sur une fine pellicule du visage."""
+    """Maquillages peints dans une texture (512 px, dégradés fins) posée
+    sur une fine pellicule du visage, en projection de face : khôl fumé,
+    trait de chat, fard doré, rouge à lèvres, lèvres prune, teint rosé,
+    taches de rousseur, peinture de guerre, tatouage tribal."""
+    import numpy as np
+
     co = states["base"]
     eyes = marks["eyes"]
     r = marks["eye_radius"]
-    lips = [co[i] for i in groups.get("lips", set())]
     lc = marks["lips_center"]
+    lips = [co[i] for i in groups.get("lips", set())]
+    # Contour des lèvres un peu en retrait (le groupe « lips » déborde).
+    lip_w = (max(abs(p.x - lc.x) for p in lips) if lips else 0.025) * 0.78
+    lip_h = ((marks["lips_top"] - marks["lips_bottom"]) / 2 or 0.008) * 0.8
+    face = _faces_where(template, co, groups["body"], lambda c: _front(c, marks) and c.z > marks["chin"].z - 0.01)
+    xs = [co[i].x for i in groups["body"] if _front(co[i], marks) and co[i].z > marks["chin"].z - 0.01]
+    zs = [co[i].z for i in groups["body"] if _front(co[i], marks) and co[i].z > marks["chin"].z - 0.01]
+    x0, x1, z0, z1 = min(xs), max(xs), min(zs), max(zs)
+    n = MAKEUP_TEXTURE
+    gx, gz = np.meshgrid(np.linspace(x0, x1, n), np.linspace(z0, z1, n))
 
-    def smooth(x, a, b):
-        t = max(0.0, min(1.0, (x - a) / (b - a)))
+    def sm(x, a, b):
+        t = np.clip((x - a) / (b - a), 0, 1)
         return t * t * (3 - 2 * t)
 
-    def eye_frame(c, e):
-        # Distance à l'œil (ellipse plus large que haute), côté extérieur.
-        dx = (c.x - e.x) / (r * 0.95)
-        dz = (c.z - e.z) / (r * 0.5)
-        outward = (c.x - e.x) * (1 if e.x > 0 else -1)
-        return (dx * dx + dz * dz) ** 0.5, outward
+    def eye(e, sx=1.0, sz=0.55):
+        return np.sqrt(((gx - e.x) / (r * sx)) ** 2 + ((gz - e.z) / (r * sz)) ** 2)
 
-    def kohl(c):
-        a = 0.0
+    inside = np.zeros_like(gx, dtype=bool)
+    for e in eyes:
+        inside |= eye(e, 0.95, 0.5) < 1.0
+    lipd = np.sqrt(((gx - lc.x) / lip_w) ** 2 + ((gz - lc.z) / lip_h) ** 2)
+    lips_a = 1 - sm(lipd, 0.85, 1.08)
+
+    def wing(e, length=0.8, thick=0.12):
+        side = 1 if e.x > 0 else -1
+        out = (gx - e.x) * side - r * 0.75
+        line = e.z + r * 0.15 + out * 0.45
+        return (1 - sm(np.abs(gz - line), r * thick * 0.5, r * thick)) * sm(out, -r * 0.1, 0) * (1 - sm(out, r * length * 0.7, r * length))
+
+    def smoky():
+        a = np.zeros_like(gx)
         for e in eyes:
-            d, outward = eye_frame(c, e)
-            ring = 1.0 - smooth(abs(d - 1.0), 0.0, 0.18)
-            wing = 0.0
-            if outward > 0:
-                t = (outward - r * 0.8) / (r * 0.7)
-                wing = (1 - smooth(t, 0.5, 1.0)) * smooth(t, -0.2, 0.0) * (1 - smooth(abs(c.z - (e.z + outward * 0.3)), 0.0, r * 0.12))
-            shadow = (1 - smooth(d, 1.0, 1.6)) * smooth(c.z - e.z, 0.0, r * 0.3) * 0.35
-            a = max(a, ring * 0.95, wing * 0.9, shadow)
-        return (0.015, 0.008, 0.01, a)
+            d = eye(e, 1.15, 0.75)
+            lid = (1 - sm(d, 1.0, 1.7)) * np.where(gz > e.z - r * 0.25, 1.0, 0.55)
+            a = np.maximum(a, lid * 0.85)
+            a = np.maximum(a, wing(e, 0.9, 0.2) * 0.9)
+        return (0.05, 0.035, 0.045), a
 
-    def lipstick(c):
-        if not lips:
-            return (0, 0, 0, 0)
-        d = min((c - p).length for p in lips)
-        a = 1.0 - smooth(d, 0.0008, 0.0035)
-        return (0.22, 0.012, 0.03, a * 0.8)
-
-    def blush(c):
-        a = 0.0
+    def cat():
+        a = np.zeros_like(gx)
         for e in eyes:
-            center = Vector((e.x * 1.25, e.y, e.z - r * 2.6))
-            d = ((c.x - center.x) ** 2 + (c.z - center.z) ** 2) ** 0.5
-            a = max(a, (1 - smooth(d, 0.0, r * 2.4)) * 0.5)
-        return (0.55, 0.12, 0.12, a)
+            d = eye(e, 0.98, 0.52)
+            rim = (1 - sm(np.abs(d - 1.0), 0.04, 0.12)) * np.where(gz > e.z - r * 0.05, 1.0, 0.35)
+            a = np.maximum(a, np.maximum(rim, wing(e, 1.1, 0.13)) * 0.95)
+        return (0.02, 0.015, 0.02), a
 
-    def war(c):
-        # Bandeau net à travers les yeux, prolongé d'un trait sous chaque œil.
+    def gold():
+        a = np.zeros_like(gx)
+        for e in eyes:
+            d = eye(e, 1.1, 0.7)
+            lid = (1 - sm(d, 0.95, 1.45)) * sm(gz - e.z, -r * 0.05, r * 0.2)
+            a = np.maximum(a, lid * 0.8)
+        return (0.85, 0.6, 0.2), a
+
+    def red_lips():
+        return (0.62, 0.04, 0.08), lips_a * 0.9
+
+    def berry():
+        return (0.36, 0.05, 0.18), lips_a * 0.9
+
+    def rosy():
+        a = lips_a * 0.45
+        for e in eyes:
+            c = Vector((e.x * 1.2, 0, e.z - r * 2.7))
+            d = np.sqrt((gx - c.x) ** 2 + (gz - c.z) ** 2)
+            a = np.maximum(a, (1 - sm(d, 0, r * 2.3)) * 0.45)
+        return (0.75, 0.25, 0.28), a
+
+    def freckles():
+        rng = np.random.default_rng(7)
+        a = np.zeros_like(gx)
+        zone = (np.abs(gx) < r * 4.2) & (gz < eyes[0].z - r * 0.9) & (gz > lc.z + lip_h * 3)
+        for _ in range(140):
+            px = rng.uniform(-r * 4.2, r * 4.2)
+            pz = rng.uniform(lc.z + lip_h * 3.2, eyes[0].z - r * 1.0)
+            rad = rng.uniform(0.0007, 0.0014)
+            d = np.sqrt((gx - px) ** 2 + (gz - pz) ** 2)
+            a = np.maximum(a, (1 - sm(d, rad * 0.4, rad)) * rng.uniform(0.35, 0.7))
+        return (0.36, 0.18, 0.09), a * zone
+
+    def war():
         e = eyes[0]
         ex = abs(e.x)
-        band = (1 - smooth(abs(c.z - (e.z + r * 0.1)), r * 0.85, r * 1.0)) * (1 - smooth(abs(c.x), ex + r * 1.7, ex + r * 1.9))
-        stripe = (1 - smooth(abs(abs(c.x) - ex), r * 0.28, r * 0.4)) * (1 - smooth(e.z - c.z, r * 2.6, r * 2.9)) * smooth(e.z - c.z, 0.0, r * 0.2)
-        inside_eye = any(eye_frame(c, ee)[0] < 1.0 for ee in eyes)
-        a = 0.0 if inside_eye else max(band, stripe) * 0.92
-        return (0.30, 0.035, 0.02, a)
+        band = (1 - sm(np.abs(gz - (e.z + r * 0.1)), r * 0.85, r * 1.0)) * (1 - sm(np.abs(gx), ex + r * 1.7, ex + r * 1.9))
+        stripe = (1 - sm(np.abs(np.abs(gx) - ex), r * 0.28, r * 0.4)) * (1 - sm(e.z - gz, r * 2.6, r * 2.9)) * sm(e.z - gz, 0, r * 0.2)
+        return (0.42, 0.04, 0.03), np.maximum(band, stripe) * 0.92
 
-    looks = dict(zip(MAKEUP_LOOKS, (kohl, lipstick, blush, war)))
-    face = _faces_where(template, co, groups["body"], lambda c: _front(c, marks) and c.z > marks["chin"].z - 0.01)
+    def tribal():
+        e = eyes[0]
+        a = np.zeros_like(gx)
+        for k in range(3):
+            # Trois arcs sur chaque joue, et un chevron sur le front.
+            zc = e.z - r * (1.6 + 0.55 * k)
+            arc = np.abs(np.abs(gx) - (abs(e.x) + r * (0.2 + 0.25 * k)) - (gz - zc) ** 2 / (r * 2.5))
+            a = np.maximum(a, (1 - sm(arc, r * 0.07, r * 0.13)) * sm(gz, zc - r * 0.9, zc - r * 0.5) * (1 - sm(gz, zc + r * 0.4, zc + r * 0.8)))
+        brow = e.z + r * 2.2
+        chev = np.abs(gz - (brow + 0.5 * np.abs(gx)))
+        a = np.maximum(a, (1 - sm(chev, r * 0.08, r * 0.15)) * (1 - sm(np.abs(gx), r * 1.6, r * 2.0)))
+        return (0.1, 0.18, 0.42), a * 0.9
+
+    looks = dict(zip(MAKEUP_LOOKS, (smoky, cat, gold, red_lips, berry, rosy, freckles, war, tribal)))
     objs = []
     for name, paint in looks.items():
+        rgb, alpha = paint()
+        alpha = np.where(inside, 0.0, alpha) if name not in ("makeup_04", "makeup_05") else alpha
+        img = bpy.data.images.new(name + "_tex", n, n, alpha=True)
+        px = np.zeros((n, n, 4), dtype=np.float32)
+        px[..., 0], px[..., 1], px[..., 2] = rgb
+        px[..., 3] = np.clip(alpha, 0, 1)
+        img.pixels[:] = px.ravel()
+        img.pack()
         obj = _extract(template, face, name, states, offset=0.00045)
         mesh = obj.data
-        colors = mesh.color_attributes.new("Color", "BYTE_COLOR", "POINT")
-        for i, v in enumerate(mesh.vertices):
-            colors.data[i].color = paint(v.co)
-        mesh.color_attributes.active_color = colors
+        uv = mesh.uv_layers.new(name="MakeupUV")
+        mesh.uv_layers.active = uv
+        for loop in mesh.loops:
+            v = mesh.vertices[loop.vertex_index].co
+            uv.data[loop.index].uv = ((v.x - x0) / (x1 - x0), (v.z - z0) / (z1 - z0))
+        for layer in [l for l in mesh.uv_layers if l.name != "MakeupUV"]:
+            mesh.uv_layers.remove(layer)
         # Seules les faces peintes sont gardées (fichier plus léger).
+        keep = set()
+        a_img = px[..., 3]
+        for poly in mesh.polygons:
+            for li in poly.loop_indices:
+                u, v = uv.data[li].uv
+                if a_img[min(n - 1, int(v * (n - 1))), min(n - 1, int(u * (n - 1)))] > 0.01:
+                    keep.add(poly.index)
+                    break
         bm = bmesh.new()
         bm.from_mesh(mesh)
-        layer = bm.verts.layers.color.get("Color")
-        drop = [f for f in bm.faces if max(v[layer][3] for v in f.verts) < 0.02]
-        bmesh.ops.delete(bm, geom=drop, context="FACES")
+        bm.faces.ensure_lookup_table()
+        bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.index not in keep], context="FACES")
         bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
         bm.to_mesh(mesh)
         bm.free()
-        mat = _material(name, (1.0, 1.0, 1.0, 1.0))
+        mat = _textured_material(name, img, alpha=True, roughness=0.5)
         mat.surface_render_method = "BLENDED"
         mesh.materials.append(mat)
         objs.append(obj)
@@ -1462,8 +1564,18 @@ def _rig_and_skin(sex, race, objects, rigid):
         obj.parent = arm
     bpy.data.objects.remove(source, do_unlink=True)
     _seat_weapons(arm, {o.name: o for o in objects})
+    # Les poses se calculent squelette seul : sans cela, chaque mise à jour
+    # redéformerait toutes les pièces (des centaines), ce qui prend des heures.
+    mods = [m for o in objects for m in o.modifiers if m.type == "ARMATURE"]
+    for m in mods:
+        m.show_viewport = False
     _make_actions(arm)
-    _exercise_actions(arm)
+    # Les démonstrations d'exercices sont des vidéos rendues à part
+    # (tool/exercise3d) : plus d'animations d'exercice dans le modèle.
+    if os.environ.get("ARISE_EXERCISE_CLIPS"):
+        _exercise_actions(arm)
+    for m in mods:
+        m.show_viewport = True
     return arm
 
 
@@ -2139,6 +2251,12 @@ def build(sex, race, out_dir):
         roughness=0.5,
     )
     body.data.materials.append(skin)
+    # Corps réaliste fourni (sous le cou), si présent : la tête MPFB reste.
+    fit = _fit_module()
+    real_body = os.path.join(os.path.dirname(os.path.abspath(__file__)), "external", "bodies", sex + ".glb")
+    if os.path.exists(real_body):
+        height0 = max(states["base"][i].z for i in groups["body"])
+        fit.replace_body(body, real_body, _joints(states["base"], groups), height0, _part)
     marks = _landmarks(states["base"], groups)
     _eye_parts(template, groups, states, mats)
     _eyebrows(template, groups, states, marks, mats["brow"])
@@ -2162,10 +2280,12 @@ def build(sex, race, out_dir):
     def bottom(c):
         return 0.17 * height < c.z < 0.62 * height and abs(c.x) < hand_x * 0.85
 
-    for name, test, look in (
+    # Sous-vêtements : ceux du corps réaliste ; sans lui, maillot et
+    # collant tirés de la peau (montrés quand un objet remplace la tenue).
+    for name, test, look in ([] if os.path.exists(real_body) else (
         ("outfit_under_top", top, "under_linen"),
         ("outfit_under_pants", bottom, "under_wool"),
-    ):
+    )):
         keep = _faces_where(template, co, body_faces, test)
         if keep:
             obj = _extract(template, keep, name, states, offset=0.0015)
@@ -2212,17 +2332,64 @@ def build(sex, race, out_dir):
             tusk.data.materials.append(mats["tusk"])
 
     _hair_styles(template, groups, states, mats["hair"])
+    # Coiffures et barbes fournies (pieces.json), posées sur la tête MPFB.
+    head_ids = {i for i in groups["body"] if co[i].z > _joints(co, groups)["neck"].z}
+    head_bm = bmesh.new()
+    head_verts = {i: head_bm.verts.new(co[i]) for i in head_ids}
+    for poly in template.polygons:
+        if all(v in head_ids for v in poly.vertices):
+            try:
+                head_bm.faces.new([head_verts[v] for v in poly.vertices])
+            except ValueError:
+                pass
+    head_bm.normal_update()
+    from mathutils.bvhtree import BVHTree
+
+    head_pieces = fit.add_head_pieces(BVHTree.FromBMesh(head_bm), [co[i] for i in head_ids], marks)
+    head_bm.free()
     held = _equipment(template, groups, states, marks)
+    # Vêtements tirés du corps MPFB : poussés hors du corps réaliste.
+    if os.path.exists(real_body):
+        fit.push_out(
+            [o for o in bpy.data.objects if o.type == "MESH" and o.name.startswith(("outfit_", "item_")) and o.name not in held],
+            bpy.data.objects["body"],
+            margin=0.007,
+        )
+    # Tenues Sketchfab (fit_outfits.py) : ajustées sur ce corps, exportées
+    # chacune dans son propre fichier.
+    # ARISE_NO_OUTFITS=1 : essai rapide sans les tenues.
+    outfit_sets = {} if os.environ.get("ARISE_NO_OUTFITS") else fit.add_outfits(bpy.data.objects["body"], _joints(co, groups), height, _part)
+    # Pièces d'armure fournies (pieces.json) : un fichier par pièce.
+    outfit_sets.update(fit.add_slot_pieces(bpy.data.objects["body"], _joints(co, groups), height, _part))
+    # Coiffures et barbes fournies : un fichier chacune, chargé seulement
+    # quand le joueur les choisit (le modèle de base reste léger).
+    for piece in head_pieces:
+        outfit_sets[piece.name] = [piece]
+    for set_id, pieces in outfit_sets.items():
+        tint = fit.load_outfits().get(set_id, {}).get("tint")
+        if tint:
+            # Tenue sans texture : teinte de base, et teignable en boutique
+            # (matériau « dye_<objet> »).
+            for piece in pieces:
+                fit.tint_material(piece, tint)
+                for slot in piece.material_slots:
+                    if slot.material:
+                        slot.material.name = "dye_" + piece.name[len("item_"):]
     bpy.data.meshes.remove(template)
 
     meshes = [o for o in bpy.data.objects if o.type == "MESH"]
     rigid = {o.name: "head" for o in meshes if o.name.startswith(("hair_", "tusks", "eye_", "brow_", "lashes"))}
     rigid.update(held)
+    rigid.update({o.name: "head" for o in head_pieces})
+    rigid.update({o.name: o["rigid_bone"] for o in meshes if "rigid_bone" in o})
     _rig_and_skin(sex, race, meshes, rigid)
 
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, f"{race}_{sex}.glb")
+    outfit_objects = {o for pieces in outfit_sets.values() for o in pieces}
     bpy.ops.object.select_all(action="SELECT")
+    for o in outfit_objects:
+        o.select_set(False)
     bpy.ops.export_scene.gltf(
         filepath=path,
         export_format="GLB",
@@ -2240,7 +2407,42 @@ def build(sex, race, out_dir):
         export_animation_mode="NLA_TRACKS",
         export_try_sparse_sk=True,
     )
+    # Une tenue par fichier (squelette + pièces), chargée à la demande par
+    # la visionneuse : outfits/<tenue>/<race>_<sexe>.glb.
+    rig = next(o for o in bpy.data.objects if o.type == "ARMATURE")
+    for set_id, pieces in outfit_sets.items():
+        bpy.ops.object.select_all(action="DESELECT")
+        rig.select_set(True)
+        for piece in pieces:
+            piece.select_set(True)
+        folder = os.path.join(out_dir, "outfits", set_id)
+        os.makedirs(folder, exist_ok=True)
+        bpy.ops.export_scene.gltf(
+            filepath=os.path.join(folder, f"{race}_{sex}.glb"),
+            export_format="GLB",
+            use_selection=True,
+            export_morph=True,
+            export_morph_normal=False,
+            export_apply=False,
+            export_materials="EXPORT",
+            export_texcoords=True,
+            export_image_format="AUTO",
+            export_yup=True,
+            export_skins=True,
+            export_animations=False,
+            export_try_sparse_sk=True,
+        )
     return path
+
+
+def _fit_module():
+    """Module fit_outfits.py, voisin de ce script."""
+    spec = importlib.util.spec_from_file_location(
+        "fit_outfits", os.path.join(os.path.dirname(os.path.abspath(__file__)), "fit_outfits.py")
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def build_all(out_dir):

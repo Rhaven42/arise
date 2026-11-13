@@ -297,7 +297,9 @@ function prepareMaterials(root) {
         m.depthWrite = true;
       }
       if (m.name.startsWith('makeup_')) {
-        m.vertexColors = true;
+        // Maquillage peint dans une texture (ou, à défaut, en couleurs de
+        // sommets).
+        m.vertexColors = !m.map;
         m.transparent = true;
         m.depthWrite = false;
         m.polygonOffset = true;
@@ -362,6 +364,9 @@ function setPose(rig, poseName) {
 
 const LASHES = new THREE.Color('#1c1410');
 
+// Tenues déjà rattachées (« <modèle>/<tenue> »).
+const packs = new Set();
+
 // Démonstration d'exercice : clip `ex_<mouvement>` en boucle, à la place de
 // la pose détendue et de la respiration ; sinon pose détendue.
 function setMotion(rig, motion, pose) {
@@ -416,7 +421,8 @@ function applyState(state) {
     if (!o.isMesh) return;
     const n = o.name || '';
     for (const [prefix, chosen] of Object.entries(choice)) {
-      if (n.startsWith(prefix)) o.visible = n === chosen;
+      // Une pièce à plusieurs matériaux devient « hair_11_1 »…
+      if (n.startsWith(prefix)) o.visible = !!chosen && (n === chosen || n.startsWith(chosen + '_'));
     }
     if (n.startsWith('outfit_under_')) {
       // Sous-vêtements : seulement quand un objet remplace la blouse ou le
@@ -434,10 +440,17 @@ function applyState(state) {
     for (const m of mats) {
       if (!m) continue;
       const tint = colors[m.name] ||
+        (m.name.startsWith('skin_body') ? colors.skin : null) ||
         (m.name.startsWith('hair_') || m.name.startsWith('brow_') ? colors.hair : null) ||
         (m.name.startsWith('beard_') ? colors.beard : null) ||
         (m.name === 'lashes' ? LASHES : null);
       if (tint) m.color.copy(tint);
+      if (m.name === 'iris' && tint) {
+        // La texture de l'iris est sombre : la teinte est éclaircie et
+        // l'iris brille un peu, pour que la couleur choisie se voie.
+        m.color.copy(tint).multiplyScalar(1.8);
+        m.emissive = tint.clone().multiplyScalar(0.35);
+      }
       if (m.name.startsWith('dye_')) {
         // Couleur d'origine gardée pour revenir sans teinture.
         if (!m.userData.base) m.userData.base = m.color.clone();
@@ -507,6 +520,59 @@ window.arise = {
   },
   hasModel(id) {
     return models.has(id);
+  },
+  // Tenue chargée à la demande (outfits/<tenue>/<modèle>.glb) : ses pièces
+  // sont rattachées au squelette du modèle déjà chargé, os par os (même nom).
+  endPack(key, modelId) {
+    const parts = uploads.get(key);
+    uploads.delete(key);
+    const model = models.get(modelId);
+    if (!parts || !model) return;
+    const size = parts.reduce((s, c) => s + c.length, 0);
+    const all = new Uint8Array(size);
+    let offset = 0;
+    for (const c of parts) {
+      all.set(c, offset);
+      offset += c.length;
+    }
+    loader.parse(
+      all.buffer,
+      '',
+      (gltf) => {
+        prepareMaterials(gltf.scene);
+        const bones = {};
+        let anchor = null;
+        model.traverse((o) => {
+          if (o.isBone) bones[o.name] = o;
+          if (!anchor && o.isSkinnedMesh) anchor = o;
+        });
+        const pieces = [];
+        gltf.scene.traverse((o) => {
+          if (o.isSkinnedMesh) pieces.push(o);
+        });
+        for (const piece of pieces) {
+          const skeleton = new THREE.Skeleton(
+            piece.skeleton.bones.map((b) => bones[b.name] || b),
+            piece.skeleton.boneInverses,
+          );
+          piece.removeFromParent();
+          piece.visible = false;
+          (anchor ? anchor.parent : model).add(piece);
+          if (anchor) {
+            piece.position.copy(anchor.position);
+            piece.quaternion.copy(anchor.quaternion);
+            piece.scale.copy(anchor.scale);
+          }
+          piece.bind(skeleton, anchor ? anchor.bindMatrix : piece.bindMatrix);
+        }
+        packs.add(key);
+        post('loaded', { id: key });
+      },
+      (err) => post('error', { message: String(err) }),
+    );
+  },
+  hasPack(key) {
+    return packs.has(key);
   },
   apply(json) {
     const ok = applyState(JSON.parse(json));

@@ -111,6 +111,7 @@ class Loadout {
     required this.hiddenOutfit,
     required this.dyes,
     required this.hidesHair,
+    this.packs = const [],
   });
 
   /// Rien de porté : tenue de départ complète.
@@ -123,6 +124,9 @@ class Loadout {
 
   /// Pièces 3D visibles (`item_<id>`).
   final List<String> itemNodes;
+
+  /// Tenues (fichiers 3D séparés) qui contiennent des pièces portées.
+  final List<String> packs;
 
   /// Pièces de la tenue de départ à masquer.
   final List<String> hiddenOutfit;
@@ -149,6 +153,7 @@ Loadout loadoutOf(Inventory inventory, {EquipmentItem? tryOn}) {
   ];
   return Loadout(
     itemNodes: [for (final item in items) item.nodeName],
+    packs: {for (final item in items) ?item.pack}.toList(),
     hiddenOutfit: [
       for (final item in items) ...?starterOutfitBySlot[item.slot],
     ],

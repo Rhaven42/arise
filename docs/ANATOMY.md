@@ -142,7 +142,29 @@ Format : **principaux** (P) puis **secondaires** (S). « Faiblement » est conse
 
 ## 2 bis. Propositions à relire
 
-Aucune proposition en attente. Les lots 2 à 6 (43 exercices) ont été validés par la propriétaire du projet le 11/11/2026 et intégrés au §2. Règle de volume (§3) des exercices de mobilité (lots 2 et 3) : `mobility`, indicateur de souplesse séparé, jamais le volume de renforcement ; `cardio` pour montées de genoux, talons-fesses, sauts du patineur et shadow boxing ; `strength` pour les autres.
+Les lots 2 à 6 (43 exercices) ont été validés par la propriétaire du projet le 11/11/2026 et intégrés au §2. Règle de volume (§3) des exercices de mobilité (lots 2 et 3) : `mobility`, indicateur de souplesse séparé, jamais le volume de renforcement ; `cardio` pour montées de genoux, talons-fesses, sauts du patineur et shadow boxing ; `strength` pour les autres.
+
+### Lot 7 — `pending_review` (proposé le 13/11/2026)
+
+Ces exercices ne sont **pas publiés** tant qu'ils ne sont pas validés : `tool/catalog.py` ne les ajoute au catalogue qu'une fois leur ligne déplacée au §2. Règle de volume : `cardio` pour les fentes sautées, les sauts en étoile et la marche de l'ours ; `mobility` pour l'étirement en figure 4 ; `strength` pour les autres.
+
+| Exercice (`id`) | Principaux | Secondaires |
+|---|---|---|
+| Fentes sautées (`jump_lunge`) | quadriceps, gluteus_maximus | hamstrings, gastrocnemius, soleus, adductors |
+| Fentes marchées (`walking_lunge`) | quadriceps, gluteus_maximus | hamstrings, adductors, gluteus_medius |
+| Planche commando (`plank_up_down`) | triceps_brachii, rectus_abdominis, transversus_abdominis | deltoid_anterior, pectoralis_mid_lower, obliques |
+| Pompes archer (`archer_push_up`) | pectoralis_mid_lower, triceps_brachii, deltoid_anterior | serratus_anterior, transversus_abdominis |
+| Élévations frontales (`front_raise`) | deltoid_anterior | pectoralis_upper, trapezius_upper |
+| Soulevé de terre (`deadlift`) | gluteus_maximus, hamstrings, erector_spinae | quadriceps, trapezius_upper, forearm_flexors |
+| Rowing un bras (`one_arm_row`) | latissimus_dorsi, rhomboids | biceps_brachii, deltoid_posterior, trapezius_mid_lower |
+| Développé au sol (`floor_press`) | pectoralis_mid_lower, triceps_brachii | deltoid_anterior |
+| Good morning (`good_morning`) | hamstrings, erector_spinae | gluteus_maximus |
+| Crunch inversé (`reverse_crunch`) | rectus_abdominis | obliques, hip_flexors |
+| Élévations de jambe latérales (`side_lying_leg_raise`) | gluteus_medius, abductors | gluteus_maximus |
+| Relevés de pointes de pieds (`tibialis_raise`) | tibialis_anterior | — |
+| Marche de l'ours (`bear_crawl`) | deltoid_anterior, transversus_abdominis, quadriceps | triceps_brachii, serratus_anterior, hip_flexors |
+| Sauts en étoile (`star_jump`) | quadriceps, gluteus_maximus | gastrocnemius, soleus, deltoid_lateral |
+| Étirement en figure 4 (`figure_four_stretch`) | gluteus_maximus | gluteus_medius |
 
 ## 3. Règles de conversion du volume
 

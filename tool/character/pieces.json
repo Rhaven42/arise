@@ -1,0 +1,604 @@
+{
+  "_comment": "Coiffures et barbes fournies par la propriétaire du projet (modèles Tripo de son compte). prep_pieces.py les allège et rend leurs textures teintables ; build_characters.py les pose sur la tête.",
+  "hair": [
+    {
+      "id": "hair_11",
+      "src": "tripo_convert_02b1783d-ebf2-44a1-b468-207039e7a7b8.glb",
+      "category": "short"
+    },
+    {
+      "id": "hair_12",
+      "src": "tripo_convert_0a555fd7-76f9-4dc5-a73b-2956dc6d558b.glb",
+      "category": "short"
+    },
+    {
+      "id": "hair_13",
+      "src": "tripo_convert_0e92a9e0-c4cd-4d6d-a8ab-f3f37400cd68.glb",
+      "category": "tied"
+    },
+    {
+      "id": "hair_14",
+      "src": "tripo_convert_12facbe8-0a65-42d7-bc23-90403c4d51c2.glb",
+      "category": "long"
+    },
+    {
+      "id": "hair_15",
+      "src": "tripo_convert_26f1d7fd-4c2e-445e-a5c3-a51969c5f21d.glb",
+      "category": "tied"
+    },
+    {
+      "id": "hair_16",
+      "src": "tripo_convert_38decca2-0f94-46a8-94da-254a75fe1c46.glb",
+      "category": "tied"
+    },
+    {
+      "id": "hair_17",
+      "src": "tripo_convert_49e84398-e0b8-4075-beec-6ab5a989bed7.glb",
+      "category": "tied"
+    },
+    {
+      "id": "hair_18",
+      "src": "tripo_convert_5c29a3b7-4416-4b43-929c-3913926bcd40.glb",
+      "category": "tied"
+    },
+    {
+      "id": "hair_19",
+      "src": "tripo_convert_60063dcd-b784-491e-a128-e16197fb6156.glb",
+      "category": "short"
+    },
+    {
+      "id": "hair_20",
+      "src": "tripo_convert_62243287-e95b-4119-a168-17e8350b9a7e.glb",
+      "category": "tied"
+    },
+    {
+      "id": "hair_21",
+      "src": "tripo_convert_667dbd53-4e78-42fb-aefa-fce7d8b06632.glb",
+      "category": "short"
+    },
+    {
+      "id": "hair_22",
+      "src": "tripo_convert_976fcf75-5838-4f91-ac24-f9a528ca96b0.glb",
+      "category": "short"
+    },
+    {
+      "id": "hair_23",
+      "src": "tripo_convert_a693c410-127a-4011-bc70-0a445264d967.glb",
+      "category": "short"
+    },
+    {
+      "id": "hair_24",
+      "src": "tripo_convert_a6d468e2-a33d-40e1-a669-f90c24f2868d.glb",
+      "category": "long"
+    },
+    {
+      "id": "hair_25",
+      "src": "tripo_convert_b2d0e7e0-f22e-4830-9cfb-90142bbead54.glb",
+      "category": "long"
+    },
+    {
+      "id": "hair_26",
+      "src": "tripo_convert_b3fb30ca-c4de-4f23-a6b9-10430d1318e2.glb",
+      "category": "tied"
+    },
+    {
+      "id": "hair_27",
+      "src": "tripo_convert_b4bcc3e9-fc46-49b1-bb0d-0ebd597b99b0.glb",
+      "category": "short"
+    },
+    {
+      "id": "hair_28",
+      "src": "tripo_convert_b90a1e22-d2a5-496d-a5b5-c26c3e7de2dc.glb",
+      "category": "long"
+    },
+    {
+      "id": "hair_29",
+      "src": "tripo_convert_bee91786-13c0-4760-806c-1bad496f8017.glb",
+      "category": "short"
+    },
+    {
+      "id": "hair_30",
+      "src": "tripo_convert_c1d9edd2-2107-45f5-b1a9-fd6def0a5338.glb",
+      "category": "tied"
+    },
+    {
+      "id": "hair_31",
+      "src": "tripo_convert_c8082a33-200b-47d2-a9d6-5fcda938b5e9.glb",
+      "category": "short"
+    },
+    {
+      "id": "hair_32",
+      "src": "tripo_convert_ca15fc8b-c5b3-4e35-8452-606f33355528.glb",
+      "category": "short"
+    },
+    {
+      "id": "hair_33",
+      "src": "tripo_convert_f85eb678-07b4-4e9e-9021-b84f617e8df0.glb",
+      "category": "long"
+    },
+    {
+      "id": "hair_34",
+      "src": "tripo_convert_fceead60-fd91-43b4-9ff9-96f64c77b310.glb",
+      "category": "short"
+    },
+    {
+      "id": "hair_35",
+      "src": "tripo_convert_fe8d5a02-734d-4906-ae7d-85c88d973347.glb",
+      "category": "short"
+    }
+  ],
+  "beards": [
+    {
+      "id": "beard_07",
+      "src": "beard 3d model.glb"
+    },
+    {
+      "id": "beard_08",
+      "src": "tripo_convert_178d45d3-8b1c-466f-b698-1a63fc5b947c.glb"
+    },
+    {
+      "id": "beard_09",
+      "src": "tripo_convert_37db764e-7a0a-4409-b1d9-a95df39d7bb9.glb"
+    },
+    {
+      "id": "beard_10",
+      "src": "tripo_convert_4b29b039-3c36-4f3e-a46a-d9a2b503b94b.glb"
+    },
+    {
+      "id": "beard_11",
+      "src": "tripo_convert_9d111069-466a-4657-97f5-5c6d25065eb3.glb"
+    }
+  ],
+  "armor": [
+    {
+      "id": "studded_vest",
+      "src": "fantasy armor 3d model.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "azure_plate",
+      "src": "plate armor 3d model.glb",
+      "slot": "chest",
+      "rarity": "epic"
+    },
+    {
+      "id": "scarlet_steel",
+      "src": "tripo_convert_06dfe85b-a654-43eb-b51e-4e2a66b3377d.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "crimson_mark",
+      "src": "tripo_convert_0cb086a9-fa38-45e7-8ce3-34c3d3be43b2.glb",
+      "slot": "chest",
+      "rarity": "epic"
+    },
+    {
+      "id": "sage_robe",
+      "src": "tripo_convert_0db4aaec-467b-40de-b5ab-4cbe05f27aac.glb",
+      "slot": "chest",
+      "rarity": "epic"
+    },
+    {
+      "id": "strap_harness",
+      "src": "tripo_convert_1b06a7fb-22ce-441d-9c78-b7c4acaf15b3.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "eye_plate",
+      "src": "tripo_convert_1d53fcd7-6dd3-4a28-b926-91edc162424b.glb",
+      "slot": "chest",
+      "rarity": "epic"
+    },
+    {
+      "id": "claw_vest",
+      "src": "tripo_convert_241168f2-987b-4fed-93df-830a2a39700b.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "gilded_scale",
+      "src": "tripo_convert_29604506-e969-47e2-af1b-287544ef10cb.glb",
+      "slot": "chest",
+      "rarity": "legendary"
+    },
+    {
+      "id": "nomad_vest",
+      "src": "tripo_convert_32c3269a-3037-410a-a7bc-68011062ec45.glb",
+      "slot": "chest",
+      "rarity": "common"
+    },
+    {
+      "id": "shadow_cuirass",
+      "src": "tripo_convert_35a36254-00fd-4cc1-a861-b106f51ebdf3.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "bone_raider",
+      "src": "tripo_convert_35b56bfe-667c-4aab-9879-9ff2ef4bfb36.glb",
+      "slot": "chest",
+      "rarity": "epic"
+    },
+    {
+      "id": "rust_plate",
+      "src": "tripo_convert_3aaf2e21-0244-4a84-801b-6344b89adf46.glb",
+      "slot": "chest",
+      "rarity": "common"
+    },
+    {
+      "id": "iron_brigand",
+      "src": "tripo_convert_616f4220-312e-4670-bf1e-c186e60d8d54.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "bronze_guard",
+      "src": "tripo_convert_64f362a2-8ef1-4d76-82c6-d39c1b8d3f5d.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "night_vest",
+      "src": "tripo_convert_68f11af7-b6a3-483a-b8f9-5a9550b7ba24.glb",
+      "slot": "chest",
+      "rarity": "common"
+    },
+    {
+      "id": "black_cuirass",
+      "src": "tripo_convert_7740d0d2-13a6-4a3f-88ef-37559c71713f.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "steel_vest",
+      "src": "tripo_convert_7c640987-ec24-40a3-b0e7-1b21920690cf.glb",
+      "slot": "chest",
+      "rarity": "common"
+    },
+    {
+      "id": "thorn_plate",
+      "src": "tripo_convert_7df92b31-ecf0-4e46-9b35-babc8add3691.glb",
+      "slot": "chest",
+      "rarity": "epic"
+    },
+    {
+      "id": "silver_cuirass",
+      "src": "tripo_convert_7ecd96bb-397f-464f-9774-634c7b9d23ba.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "hunter_jerkin",
+      "src": "tripo_convert_810a69f3-b61a-4a9f-9dbe-a5e2c9194b70.glb",
+      "slot": "chest",
+      "rarity": "common"
+    },
+    {
+      "id": "forest_gown",
+      "src": "tripo_convert_81dee5ed-70e9-4f78-aebf-d148a0a44b9e.glb",
+      "slot": "chest",
+      "rarity": "epic"
+    },
+    {
+      "id": "raider_scarf",
+      "src": "tripo_convert_8829691c-8e80-470d-9dba-6ec35ebcae2e.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "lion_plate",
+      "src": "tripo_convert_a2ff24fb-4924-490b-837d-6d31b0009d13.glb",
+      "slot": "chest",
+      "rarity": "epic"
+    },
+    {
+      "id": "dark_knight",
+      "src": "tripo_convert_ae4e5b66-2b73-4e0c-8746-d00c8b9f19d5.glb",
+      "slot": "chest",
+      "rarity": "epic"
+    },
+    {
+      "id": "leather_corset",
+      "src": "tripo_convert_bf4bade6-3bf9-4e4f-b85e-6f191e70dc4f.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "steel_breastplate",
+      "src": "tripo_convert_c29b1fd6-cc86-45a5-8374-b84357420ab2.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "dusk_tabard",
+      "src": "tripo_convert_cb4e3575-7526-422a-b1e6-b2157ab69b58.glb",
+      "slot": "chest",
+      "rarity": "rare"
+    },
+    {
+      "id": "ember_plate",
+      "src": "tripo_convert_cf7101e4-0805-47ad-bd36-554e5ede86bb.glb",
+      "slot": "chest",
+      "rarity": "legendary"
+    },
+    {
+      "id": "gambeson",
+      "src": "tripo_convert_e48f3fdc-39a4-43df-bcca-6348fc39b28a.glb",
+      "slot": "chest",
+      "rarity": "common"
+    },
+    {
+      "id": "peasant_tunic",
+      "src": "tripo_convert_f9394b9f-b2ba-4d99-8db8-e64009d6e848.glb",
+      "slot": "chest",
+      "rarity": "common"
+    },
+    {
+      "id": "brown_leathers",
+      "src": "brown leather pants 3d model.glb",
+      "slot": "legs",
+      "rarity": "common"
+    },
+    {
+      "id": "worn_trousers",
+      "src": "dirty pants 3d model.glb",
+      "slot": "legs",
+      "rarity": "common"
+    },
+    {
+      "id": "layered_hakama",
+      "src": "fantasy layered pants 3d model.glb",
+      "slot": "legs",
+      "rarity": "rare"
+    },
+    {
+      "id": "crimson_tatters",
+      "src": "gothic pants 3d model.glb",
+      "slot": "legs",
+      "rarity": "epic"
+    },
+    {
+      "id": "red_greaves",
+      "src": "leather armored pants 3d model.glb",
+      "slot": "legs",
+      "rarity": "rare"
+    },
+    {
+      "id": "riding_breeches",
+      "src": "leather pants 3d model.glb",
+      "slot": "legs",
+      "rarity": "common"
+    },
+    {
+      "id": "shadow_tatters",
+      "src": "pants 3d model.glb",
+      "slot": "legs",
+      "rarity": "rare"
+    },
+    {
+      "id": "patch_trousers",
+      "src": "patchwork leather pants 3d model.glb",
+      "slot": "legs",
+      "rarity": "common"
+    },
+    {
+      "id": "forest_trousers",
+      "src": "tripo_convert_127fab06-1380-41ea-a0f6-0083a9ec2c39.glb",
+      "slot": "legs",
+      "rarity": "common"
+    },
+    {
+      "id": "mystic_trousers",
+      "src": "tripo_convert_41d932e7-d83f-420a-8954-dad7c061eb41.glb",
+      "slot": "legs",
+      "rarity": "rare"
+    },
+    {
+      "id": "scout_trousers",
+      "src": "tripo_convert_459ba0de-7998-4a02-82f9-ad5e0a620834.glb",
+      "slot": "legs",
+      "rarity": "common"
+    },
+    {
+      "id": "azure_trousers",
+      "src": "tripo_convert_4810fdf2-5f8a-4498-a67b-9a723aea6f53.glb",
+      "slot": "legs",
+      "rarity": "rare"
+    },
+    {
+      "id": "duelist_leggings",
+      "src": "tripo_convert_4aa018da-1dd0-4d9e-ae37-d683025f1d80.glb",
+      "slot": "legs",
+      "rarity": "rare"
+    },
+    {
+      "id": "pouch_trousers",
+      "src": "tripo_convert_4c071b03-a72b-413c-a96d-0b3adef63505.glb",
+      "slot": "legs",
+      "rarity": "rare"
+    },
+    {
+      "id": "plain_trousers",
+      "src": "tripo_convert_7750533c-d23a-4b38-9ea8-b921fd1627f5.glb",
+      "slot": "legs",
+      "rarity": "common"
+    },
+    {
+      "id": "black_greaves",
+      "src": "tripo_convert_81ddb21b-9bbc-4eb6-bbb5-fb502c373a35.glb",
+      "slot": "legs",
+      "rarity": "epic"
+    },
+    {
+      "id": "ranger_trousers",
+      "src": "tripo_convert_b7f47253-dfe3-46e5-989b-765c59423063.glb",
+      "slot": "legs",
+      "rarity": "common"
+    },
+    {
+      "id": "rogue_trousers",
+      "src": "tripo_convert_e60258b5-699c-48ba-8579-cdbc3226a4b9.glb",
+      "slot": "legs",
+      "rarity": "rare"
+    },
+    {
+      "id": "sky_trousers",
+      "src": "tripo_convert_eba51284-a647-4ae7-82a5-ee626c941221.glb",
+      "slot": "legs",
+      "rarity": "rare"
+    },
+    {
+      "id": "iron_strap_boots",
+      "src": "armor boots 3d model.glb",
+      "slot": "feet",
+      "rarity": "rare"
+    },
+    {
+      "id": "skull_boots",
+      "src": "dark fantasy boots 3d model.glb",
+      "slot": "feet",
+      "rarity": "legendary"
+    },
+    {
+      "id": "runic_boots",
+      "src": "fantasy boots 3d model.glb",
+      "slot": "feet",
+      "rarity": "epic"
+    },
+    {
+      "id": "legend_boots",
+      "src": "legendary boots 3d model.glb",
+      "slot": "feet",
+      "rarity": "legendary"
+    },
+    {
+      "id": "knight_boots",
+      "src": "medieval armored boots 3d model.glb",
+      "slot": "feet",
+      "rarity": "rare"
+    },
+    {
+      "id": "buckle_boots",
+      "src": "tripo_convert_2400dbb3-2546-40a8-bfe2-7d260a551a27 (1).glb",
+      "slot": "feet",
+      "rarity": "common"
+    },
+    {
+      "id": "laced_boots",
+      "src": "tripo_convert_24b9cae2-4baa-4621-b2e7-3945bd006772.glb",
+      "slot": "feet",
+      "rarity": "rare"
+    },
+    {
+      "id": "city_boots",
+      "src": "tripo_convert_2edbf94d-29af-4e92-8e9e-7a874b5b6c2e.glb",
+      "slot": "feet",
+      "rarity": "common"
+    },
+    {
+      "id": "rider_boots",
+      "src": "tripo_convert_31e4e9fc-3c1b-47e3-985c-89989df9a4c7.glb",
+      "slot": "feet",
+      "rarity": "common"
+    },
+    {
+      "id": "arcane_boots",
+      "src": "tripo_convert_36440e0c-f580-4ba6-ac95-89eb635f03cd.glb",
+      "slot": "feet",
+      "rarity": "epic"
+    },
+    {
+      "id": "sylvan_boots",
+      "src": "tripo_convert_4216e99a-fc9f-4d13-a05f-cf59b4ebac39.glb",
+      "slot": "feet",
+      "rarity": "epic"
+    },
+    {
+      "id": "plate_boots",
+      "src": "tripo_convert_42bf8c56-9799-4f6d-a32d-52b7c6826e8d.glb",
+      "slot": "feet",
+      "rarity": "rare"
+    },
+    {
+      "id": "azure_boots",
+      "src": "tripo_convert_4425e51c-e618-4b52-a6fe-67e6e4e31a99.glb",
+      "slot": "feet",
+      "rarity": "rare"
+    },
+    {
+      "id": "diamond_boots",
+      "src": "tripo_convert_562ab181-f0d9-4c1c-b9c0-310aa8f472f2.glb",
+      "slot": "feet",
+      "rarity": "epic"
+    },
+    {
+      "id": "war_boots",
+      "src": "tripo_convert_6f52bdc5-d3f5-4979-9877-a5b8efba3059.glb",
+      "slot": "feet",
+      "rarity": "rare"
+    },
+    {
+      "id": "trail_boots",
+      "src": "tripo_convert_989f246e-e7ac-4d5d-be50-400a11d13e94.glb",
+      "slot": "feet",
+      "rarity": "common"
+    },
+    {
+      "id": "wanderer_boots",
+      "src": "tripo_convert_9af71773-69b6-47ee-b655-d2dbdbf93f65.glb",
+      "slot": "feet",
+      "rarity": "common"
+    },
+    {
+      "id": "frost_boots",
+      "src": "tripo_convert_a5b62b86-eeb7-44e6-b19f-937504184038.glb",
+      "slot": "feet",
+      "rarity": "epic"
+    },
+    {
+      "id": "cuff_boots",
+      "src": "tripo_convert_c5a5c102-d180-4c7b-92b0-4b8f58f63315.glb",
+      "slot": "feet",
+      "rarity": "common"
+    },
+    {
+      "id": "strap_boots",
+      "src": "tripo_convert_da8adc2f-7092-419c-b4cf-e719e6b38a6c.glb",
+      "slot": "feet",
+      "rarity": "common"
+    },
+    {
+      "id": "night_boots",
+      "src": "tripo_convert_ddfed3ac-1a11-4ee5-8b89-9b11dd68483d.glb",
+      "slot": "feet",
+      "rarity": "rare"
+    },
+    {
+      "id": "knight_helm",
+      "src": "medieval knight helmet 3d model 2K.glb",
+      "slot": "head",
+      "rarity": "rare"
+    },
+    {
+      "id": "spiked_helm",
+      "src": "tripo_convert_4babb010-8e0c-4d41-aaad-466ed330bb62.glb",
+      "slot": "head",
+      "rarity": "epic"
+    },
+    {
+      "id": "shade_hood",
+      "src": "tripo_convert_55ed5a10-69bb-4bd4-9d26-5f2b6985ffe1.glb",
+      "slot": "head",
+      "rarity": "rare"
+    },
+    {
+      "id": "crest_helm",
+      "src": "tripo_convert_b5e4fc62-f812-481d-9426-4296c6b41dcd.glb",
+      "slot": "head",
+      "rarity": "epic"
+    }
+  ]
+}

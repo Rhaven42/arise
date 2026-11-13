@@ -22,6 +22,7 @@ class CharacterAppearance {
     this.beardId,
     this.makeupId,
     this.itemNodes = const [],
+    this.packs = const [],
     this.hiddenOutfit = const [],
     this.dyes = const {},
     this.auraColor,
@@ -49,6 +50,8 @@ class CharacterAppearance {
       'face_ears': sheet.faceEars,
     };
     final beard = sheet.sex == CharacterSex.male ? sheet.beardStyle : 0;
+    final hairId = loadout.hidesHair ? '' : 'hair_${two(sheet.hairStyle)}';
+    final beardId = beard > 0 ? 'beard_${two(beard)}' : null;
     return CharacterAppearance(
       modelId: '${sheet.race.id}_${sheet.sex.name}',
       morphs: {
@@ -60,15 +63,22 @@ class CharacterAppearance {
       scale: sheet.heightCm / modelHeightCm[sheet.race]![sheet.sex]!,
       skinColor: sheet.skinColor,
       hairColor: sheet.hairColor,
-      hairStyleId: loadout.hidesHair ? '' : 'hair_${two(sheet.hairStyle)}',
+      hairStyleId: hairId,
       eyeColor: sheet.eyeColor,
       beardColor: sheet.beardColor ?? sheet.hairColor,
       eyebrowId: 'brow_${two(sheet.eyebrowStyle)}',
-      beardId: beard > 0 ? 'beard_${two(beard)}' : null,
+      beardId: beardId,
       makeupId: sheet.makeupStyle > 0
           ? 'makeup_${two(sheet.makeupStyle)}'
           : null,
       itemNodes: loadout.itemNodes,
+      // Coiffures et barbes récentes : un fichier chacune, comme les tenues.
+      packs: [
+        ...loadout.packs,
+        if (hairId.isNotEmpty && sheet.hairStyle >= firstPackedHairStyle)
+          hairId,
+        if (beardId != null && beard >= firstPackedBeardStyle) beardId,
+      ],
       hiddenOutfit: loadout.hiddenOutfit,
       dyes: loadout.dyes,
     );
@@ -94,6 +104,9 @@ class CharacterAppearance {
 
   /// Pièces d'équipement visibles.
   final List<String> itemNodes;
+
+  /// Tenues à charger en plus du modèle (fichiers séparés).
+  final List<String> packs;
 
   /// Pièces de la tenue de départ masquées.
   final List<String> hiddenOutfit;
@@ -123,6 +136,7 @@ class CharacterAppearance {
         beardId: beardId,
         makeupId: makeupId,
         itemNodes: itemNodes,
+        packs: packs,
         hiddenOutfit: hiddenOutfit,
         dyes: dyes,
         auraColor: auraColor,

@@ -1,0 +1,205 @@
+{
+  "_comment": "Tenues complètes importées de Sketchfab (licence CC-BY : auteur cité dans les crédits). prep_outfits.py les prépare dans external/outfits ; build_characters.py les ajuste sur chaque corps et les découpe par emplacement. Champs : uid Sketchfab, auteur, titre d'origine, rareté, éléments retirés (noms d'objets ou de matériaux), rotation autour de Z (degrés), hauteur couverte (fraction de la taille du corps), parties du corps retirées, emplacements produits.",
+  "obsidian_knight": {
+    "uid": "f4156f249ea34c19afb57519f6b032af",
+    "author": "Jhon Panesso",
+    "title": "Modular Medieval Armor",
+    "rarity": "epic",
+    "top": 1.03,
+    "slots": [
+      "head",
+      "chest",
+      "hands",
+      "legs",
+      "feet"
+    ]
+  },
+  "silver_knight": {
+    "uid": "428913948904425e8daec81eea9aa287",
+    "author": "INKXO",
+    "title": "Medieval Knight Armor (Low-poly / Rigged)",
+    "rarity": "epic",
+    "drop": [
+      "Scabbard",
+      "Holster",
+      "Type_Xiiia",
+      "FeatherRed"
+    ],
+    "rotx": 90,
+    "top": 1.03,
+    "slots": [
+      "head",
+      "chest",
+      "hands",
+      "legs",
+      "feet"
+    ]
+  },
+  "golden_king": {
+    "uid": "f5a4479d211e49d49937b55fd9478e85",
+    "author": "Pedro B. Goulart",
+    "title": "Old king armor",
+    "rarity": "legendary",
+    "drop": [
+      "Icosphere"
+    ],
+    "rotx": 90,
+    "top": 1.03,
+    "slots": [
+      "head",
+      "chest",
+      "hands",
+      "legs",
+      "feet"
+    ]
+  },
+  "wanderer_coat": {
+    "uid": "8009434a1776469ea8cb3225c2d63dfb",
+    "author": "DEYMAR",
+    "title": "free knight armor 2k",
+    "rarity": "rare",
+    "top": 0.84,
+    "slots": [
+      "chest",
+      "hands",
+      "legs",
+      "feet"
+    ]
+  },
+  "noble_gown": {
+    "uid": "5b40c2e4b40d48378d595268d2db69bb",
+    "author": "Meast",
+    "title": "Female Noble Knight Armor",
+    "rarity": "epic",
+    "top": 0.85,
+    "bottom": 0.0,
+    "slots": [
+      "chest",
+      "legs"
+    ]
+  },
+  "hunter_leather": {
+    "uid": "0693e6cbc82b47f7a8c08a7bb87ae72b",
+    "author": "Blueprint Games",
+    "title": "Leather Armor",
+    "rarity": "common",
+    "top": 0.98,
+    "slots": [
+      "head",
+      "chest",
+      "hands",
+      "legs",
+      "feet"
+    ]
+  },
+  "scale_warden": {
+    "uid": "c592ef6e41b346bca2e7de9109388276",
+    "author": "nordwar",
+    "title": "Fantasy scaled armor",
+    "rarity": "rare",
+    "top": 1.02,
+    "slots": [
+      "head",
+      "chest",
+      "hands",
+      "legs",
+      "feet"
+    ]
+  },
+  "north_lamellar": {
+    "uid": "297c2536534c4045aa0be028d10d39d4",
+    "author": "nordwar",
+    "title": "Viking lamellar armor",
+    "rarity": "rare",
+    "top": 1.02,
+    "slots": [
+      "head",
+      "chest",
+      "hands",
+      "legs",
+      "feet"
+    ]
+  },
+  "sylvan_ranger": {
+    "uid": "daed59994fd340bc8f7e1d9bb30d6cdf",
+    "author": "BiscuitEater",
+    "title": "Elven Ranger",
+    "rarity": "rare",
+    "drop": [
+      "_Hair_0",
+      "_Head_0",
+      "_Eyes_0"
+    ],
+    "top": 1.0,
+    "drop_parts": [
+      "head",
+      "neck"
+    ],
+    "slots": [
+      "chest",
+      "hands",
+      "legs",
+      "feet"
+    ]
+  },
+  "oath_knight": {
+    "uid": "6c619f8c392a469eac9fddcce9a3aa55",
+    "author": "klava88",
+    "title": "The Knight",
+    "rarity": "rare",
+    "top": 1.0,
+    "drop_parts": [
+      "head",
+      "neck"
+    ],
+    "slots": [
+      "chest",
+      "hands",
+      "legs",
+      "feet"
+    ]
+  },
+  "lotus_samurai": {
+    "uid": "a4fc24bfb52b4625945797ad01d0f8a0",
+    "author": "stasbelyk13",
+    "title": "samurai armor set female",
+    "rarity": "epic",
+    "top": 0.84,
+    "slots": [
+      "chest",
+      "hands",
+      "legs",
+      "feet"
+    ]
+  },
+  "city_guard": {
+    "uid": "ca548172f0984660bc4213b9404284fa",
+    "author": "Taylor",
+    "title": "Medieval Guard",
+    "rarity": "rare",
+    "top": 1.02,
+    "slots": [
+      "head",
+      "chest",
+      "hands",
+      "legs",
+      "feet"
+    ]
+  },
+  "pale_coat": {
+    "uid": "13532c211daf4d1b8852276eea74d845",
+    "author": "xdragonxallix",
+    "title": "Cloak / Robe",
+    "rarity": "common",
+    "top": 0.83,
+    "bottom": 0.05,
+    "tint": [
+      0.55,
+      0.5,
+      0.42
+    ],
+    "slots": [
+      "chest"
+    ]
+  }
+}

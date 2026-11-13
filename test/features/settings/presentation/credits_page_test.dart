@@ -11,7 +11,13 @@ void main() {
     for (final credit in ccByCredits) {
       expect(credit.license, CreditLicense.ccBy);
       expect(credit.author, isNotEmpty);
-      expect(credit.source, startsWith('makehumancommunity.org/node/'));
+      expect(
+        credit.source,
+        anyOf(
+          startsWith('makehumancommunity.org/node/'),
+          startsWith('sketchfab.com/3d-models/'),
+        ),
+      );
     }
   });
 

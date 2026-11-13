@@ -3,7 +3,7 @@
 # plus une image fixe (milieu du mouvement) pour la pause et les animations
 # réduites.
 #
-# Usage : tool/coach/encode.sh <dossier des images> <monde> [mouvement ...]
+# Usage : [ARISE_FPS=12] tool/coach/encode.sh <dossier des images> <monde> [mouvement ...]
 set -euo pipefail
 src="$1"
 world="$2"
@@ -16,7 +16,7 @@ if [ ${#ids[@]} -eq 0 ]; then
 fi
 for id in "${ids[@]}"; do
   frames=$(ls "$src"/"${id}"_[0-9][0-9][0-9].png | wc -l)
-  ffmpeg -y -loglevel error -framerate 15 -i "$src/${id}_%03d.png" -loop 0 \
+  ffmpeg -y -loglevel error -framerate "${ARISE_FPS:-15}" -i "$src/${id}_%03d.png" -loop 0 \
     -c:v libwebp_anim -quality 70 -compression_level 6 -preset picture "$out/$id.webp"
   mid=$(printf "%03d" $((frames / 2)))
   ffmpeg -y -loglevel error -i "$src/${id}_$mid.png" -c:v libwebp -quality 80 "$out/${id}_still.webp"

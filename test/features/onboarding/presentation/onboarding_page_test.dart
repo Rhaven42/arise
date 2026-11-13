@@ -1,6 +1,6 @@
+import 'package:arise/features/character_creation/presentation/character_creator_page.dart';
 import 'package:arise/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
-import 'package:arise/features/progression/presentation/system_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -46,9 +46,10 @@ void main() {
     // Étape 5 : santé et prudence.
     expect(_nextButton(tester).onPressed, isNull);
     await _tapText(tester, "J'ai lu et compris ce rappel");
-    await _tapText(tester, 'Entrer dans Arisia');
+    await _tapText(tester, 'Activer le Hero Protocol');
 
-    expect(find.byType(SystemHomePage), findsOneWidget);
+    // Le personnage se crée juste après le questionnaire.
+    expect(find.byType(CharacterCreatorPage), findsOneWidget);
     expect(container.read(playerProfileProvider).value, sampleProfile);
     await tester.unmountApp();
   });

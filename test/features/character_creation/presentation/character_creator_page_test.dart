@@ -40,12 +40,8 @@ void main() {
 
     expect(find.text('Création du personnage'), findsOneWidget);
     expect(find.text('rendu:human_female'), findsOneWidget);
-    await _scrollTo(
-      tester,
-      find.text('Corpulence : Équilibrée'),
-      tab: CreatorTab.body,
-    );
-    expect(find.text('Corpulence : Équilibrée'), findsOneWidget);
+    await _scrollTo(tester, find.text('Équilibrée'), tab: CreatorTab.body);
+    expect(find.text('Robuste'), findsOneWidget);
     await _scrollTo(
       tester,
       find.text('Humaine'),
@@ -65,12 +61,8 @@ void main() {
     await tester.tap(find.text('Homme').last);
     await tester.pumpAndSettle();
     expect(find.text('rendu:orc_male'), findsOneWidget);
-    await _scrollTo(
-      tester,
-      find.text('Corpulence : Équilibré'),
-      tab: CreatorTab.body,
-    );
-    expect(find.text('Corpulence : Équilibré'), findsOneWidget);
+    await _scrollTo(tester, find.text('Équilibré'), tab: CreatorTab.body);
+    expect(find.text('Puissant'), findsOneWidget);
 
     // Annuler revient à l'orque femme, puis à l'humaine.
     await tester.tap(find.byTooltip('Annuler'));
@@ -114,7 +106,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     await _scrollTo(tester, name);
     expect(
-      find.text("Ce nom n'est pas accepté dans Arisia. Choisis-en un autre."),
+      find.text(
+        "Ce nom n'est pas accepté dans Hero Protocol. Choisis-en un autre.",
+      ),
       findsOneWidget,
     );
     await tester.unmountApp();
@@ -172,12 +166,12 @@ void main() {
     CharacterSheet sheet() =>
         container.read(characterCreatorControllerProvider).value!.sheet;
 
-    // Silhouette « Nageuse ».
-    await _scrollTo(tester, find.text('Nageuse'), tab: CreatorTab.body);
-    await tester.tap(find.text('Nageuse'));
+    // Silhouette « Puissante ».
+    await _scrollTo(tester, find.text('Puissante'), tab: CreatorTab.body);
+    await tester.tap(find.text('Puissante'));
     await tester.pump();
-    expect(sheet().corpulence, 0.25);
-    expect(sheet().musculature, 0.75);
+    expect(sheet().corpulence, 0.5);
+    expect(sheet().musculature, 0.95);
 
     // L'onglet Visage cadre la caméra sur le visage.
     await _openTab(tester, 'Visage');
@@ -188,7 +182,7 @@ void main() {
     await _scrollTo(tester, find.text('Aucun'), tab: CreatorTab.face);
     await tester.tap(find.text('Aucun'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Khôl').last);
+    await tester.tap(find.text('Khôl fumé').last);
     await tester.pumpAndSettle();
     expect(sheet().makeupStyle, 1);
     expect(renderer.last?.makeupId, 'makeup_01');

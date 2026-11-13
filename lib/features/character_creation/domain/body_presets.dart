@@ -10,41 +10,17 @@ class BodyPreset {
   final double musculature;
 }
 
-/// Douze silhouettes féminines.
-const List<BodyPreset> femalePresets = [
-  BodyPreset('delicate', 0, 0),
-  BodyPreset('slender', 0.25, 0.25),
-  BodyPreset('athletic', 0.5, 0.5),
-  BodyPreset('swimmer', 0.25, 0.75),
-  BodyPreset('sprinter', 0.5, 0.75),
-  BodyPreset('muscular', 0.5, 1),
-  BodyPreset('bodybuilder', 0.75, 1),
-  BodyPreset('warrior', 0.75, 0.75),
-  BodyPreset('round', 0.75, 0.25),
-  BodyPreset('sturdy', 1, 0.75),
-  BodyPreset('generous', 1, 0.25),
-  BodyPreset('hourglass', 0.75, 0.5),
-];
-
-/// Douze silhouettes masculines.
-const List<BodyPreset> malePresets = [
-  BodyPreset('thin', 0, 0),
-  BodyPreset('slender', 0.25, 0.25),
-  BodyPreset('athletic', 0.5, 0.5),
-  BodyPreset('swimmer', 0.25, 0.75),
-  BodyPreset('sprinter', 0.5, 0.75),
-  BodyPreset('muscular', 0.5, 1),
-  BodyPreset('bodybuilder', 0.75, 1),
-  BodyPreset('colossus', 1, 1),
-  BodyPreset('robust', 0.75, 0.5),
-  BodyPreset('stocky', 1, 0.75),
-  BodyPreset('imposing', 1, 0.25),
-  BodyPreset('v_shape', 0.25, 1),
+/// Quatre silhouettes, les mêmes pour chaque sexe (13/11/2026) : élancée,
+/// équilibrée, robuste, puissante.
+const List<BodyPreset> bodyPresets = [
+  BodyPreset('slim', 0.15, 0.3),
+  BodyPreset('normal', 0.5, 0.5),
+  BodyPreset('heavy', 0.95, 0.5),
+  BodyPreset('muscular', 0.5, 0.95),
 ];
 
 /// Silhouettes proposées pour un sexe.
-List<BodyPreset> presetsFor(CharacterSex sex) =>
-    sex == CharacterSex.female ? femalePresets : malePresets;
+List<BodyPreset> presetsFor(CharacterSex sex) => bodyPresets;
 
 /// Applique une silhouette : seules corpulence et musculature changent.
 CharacterSheet applyPreset(CharacterSheet sheet, BodyPreset preset) => sheet

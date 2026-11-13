@@ -161,23 +161,21 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
     final id = appearance.modelId;
     try {
       if (!_loaded.contains(id)) {
-        // Un seul envoi à la fois : le suivant part quand le modèle en cours
-        // est chargé (message « loaded »).
-        if (_loading != null) return;
-        _loading = id;
-        final bytes = await rootBundle.load('assets/models/$id.glb');
-        final encoded = base64Encode(bytes.buffer.asUint8List());
-        await _controller.runJavaScript("arise.beginModel('$id')");
-        for (var i = 0; i < encoded.length; i += _chunkLength) {
-          final end = i + _chunkLength < encoded.length
-              ? i + _chunkLength
-              : encoded.length;
-          await _controller.runJavaScript(
-            "arise.appendChunk('$id', '${encoded.substring(i, end)}')",
-          );
-        }
-        await _controller.runJavaScript("arise.endModel('$id')");
+        await _upload(id, 'assets/models/$id.glb', 'endModel', "'$id'");
         return;
+      }
+      // Tenues portées : chargées une fois par modèle, à la demande.
+      for (final pack in appearance.packs) {
+        final key = '$id/$pack';
+        if (!_loaded.contains(key)) {
+          await _upload(
+            key,
+            'assets/outfits/$pack/$id.glb',
+            'endPack',
+            "'$key', '$id'",
+          );
+          return;
+        }
       }
       final state = jsonEncode({
         'model': id,
@@ -210,6 +208,31 @@ class _WebViewCharacterState extends State<_WebViewCharacter> {
       _loading = null;
       if (mounted) setState(() => _failed = true);
     }
+  }
+
+  /// Envoie un fichier .glb à la vue web par morceaux, puis appelle
+  /// `arise.<finish>(<args>)`. Un seul envoi à la fois : le suivant part
+  /// quand celui-ci est chargé (message « loaded »).
+  Future<void> _upload(
+    String key,
+    String asset,
+    String finish,
+    String args,
+  ) async {
+    if (_loading != null) return;
+    _loading = key;
+    final bytes = await rootBundle.load(asset);
+    final encoded = base64Encode(bytes.buffer.asUint8List());
+    await _controller.runJavaScript("arise.beginModel('$key')");
+    for (var i = 0; i < encoded.length; i += _chunkLength) {
+      final end = i + _chunkLength < encoded.length
+          ? i + _chunkLength
+          : encoded.length;
+      await _controller.runJavaScript(
+        "arise.appendChunk('$key', '${encoded.substring(i, end)}')",
+      );
+    }
+    await _controller.runJavaScript('arise.$finish($args)');
   }
 
   static const _gestures = {

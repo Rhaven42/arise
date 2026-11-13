@@ -1,7 +1,7 @@
 {
   "@@locale": "fr",
   "appTitle": "Hero Protocol",
-  "welcomeTagline": "Le royaume d'Arisia attend son prochain chasseur.",
+  "welcomeTagline": "Le Hero Protocol attend son prochain chasseur.",
   "welcomeDesignSystemButton": "Voir le design system",
   "designSystemTitle": "Design system",
   "designSystemColors": "Couleurs",
@@ -89,7 +89,7 @@
   },
   "onboardingBack": "Retour",
   "onboardingNext": "Continuer",
-  "onboardingFinish": "Entrer dans Arisia",
+  "onboardingFinish": "Activer le Hero Protocol",
   "onboardingGoalQuestion": "Quel est ton objectif principal ?",
   "goalLabel": "{goal, select, strength{Force} weightLoss{Perte de poids} endurance{Endurance} flexibility{Souplesse} generalFitness{Forme générale} other{?}}",
   "@goalLabel": {
@@ -1223,7 +1223,7 @@
     }
   },
   "characterHairStyle": "Coiffure",
-  "characterHairStyleName": "{id, select, h1{1 · Courte} h2{2 · Queue de cheval} h3{3 · Natte} h4{4 · Chignon} h5{5 · Longue} h6{6 · Mèches rebelles} h7{7 · Très courte} h8{8 · Double natte} h9{9 · Carré} h10{10 · Bouclée} other{?}}",
+  "characterHairStyleName": "{id, select, h1{1 · Courte} h2{2 · Queue de cheval} h3{3 · Natte} h4{4 · Chignon} h5{5 · Longue} h6{6 · Mèches rebelles} h7{7 · Très courte} h8{8 · Double natte} h9{9 · Carré} h10{10 · Bouclée} h11{11 · Bouclée courte} h12{12 · Hérissée} h13{13 · Queue haute} h14{14 · Carré long} h15{15 · Chignon noir} h16{16 · Double chignon} h17{17 · Tresse sur le côté} h18{18 · Chignon à frange} h19{19 · Mèche rebelle} h20{20 · Longue tresse} h21{21 · Hirsute} h22{22 · Boucles brunes} h23{23 · Épis} h24{24 · Longue ondulée} h25{25 · Carré dégradé} h26{26 · Queue de cheval longue} h27{27 · Plaquée en arrière} h28{28 · Longue lisse} h29{29 · Mi-longue} h30{30 · Chignon flou} h31{31 · Courte classique} h32{32 · Dégradée} h33{33 · Ondulée mi-longue} h34{34 · Courte claire} h35{35 · Ébouriffée} other{?}}",
   "@characterHairStyleName": {
     "placeholders": {
       "id": {
@@ -1232,7 +1232,7 @@
     }
   },
   "characterHairColor": "Couleur des cheveux",
-  "characterHairColorName": "{id, select, black{Noir} dark_brown{Brun} chestnut{Châtain} auburn{Auburn} copper{Cuivré} blond{Blond} ash_blond{Blond cendré} grey{Gris} white{Blanc} midnight_blue{Bleu nuit} other{?}}",
+  "characterHairColorName": "{id, select, black{Noir} dark_brown{Brun} chestnut{Châtain} auburn{Auburn} copper{Cuivré} blond{Blond} ash_blond{Blond cendré} grey{Gris} white{Blanc} midnight_blue{Bleu nuit} platinum{Platine} strawberry{Blond vénitien} ginger{Roux} crimson{Pourpre} rose{Rose} violet{Violet} sapphire{Saphir} teal{Bleu canard} emerald{Émeraude} silver{Argent} other{?}}",
   "@characterHairColorName": {
     "placeholders": {
       "id": {
@@ -1269,7 +1269,7 @@
     }
   },
   "characterNameInvalid": "Lettres, espaces, tirets et apostrophes uniquement.",
-  "characterNameForbidden": "Ce nom n'est pas accepté dans Arisia. Choisis-en un autre.",
+  "characterNameForbidden": "Ce nom n'est pas accepté dans Hero Protocol. Choisis-en un autre.",
   "characterUndo": "Annuler",
   "characterRedo": "Rétablir",
   "characterRandom": "Aléatoire",
@@ -1293,7 +1293,7 @@
   "characterTabSheet": "Nom & fiche",
   "characterPresets": "Silhouettes",
   "characterPresetsHint": "Un point de départ, ajustable ensuite avec les curseurs.",
-  "characterPresetName": "{id, select, female_delicate{Délicate} female_slender{Svelte} female_athletic{Athlétique} female_swimmer{Nageuse} female_sprinter{Sprinteuse} female_muscular{Musclée} female_bodybuilder{Culturiste} female_warrior{Guerrière} female_round{Ronde} female_sturdy{Costaude} female_generous{Généreuse} female_hourglass{Sablier} male_thin{Fin} male_slender{Svelte} male_athletic{Athlétique} male_swimmer{Nageur} male_sprinter{Sprinteur} male_muscular{Musclé} male_bodybuilder{Culturiste} male_colossus{Colosse} male_robust{Robuste} male_stocky{Costaud} male_imposing{Imposant} male_v_shape{En V} other{?}}",
+  "characterPresetName": "{id, select, female_slim{Élancée} female_normal{Équilibrée} female_heavy{Robuste} female_muscular{Puissante} male_slim{Élancé} male_normal{Équilibré} male_heavy{Robuste} male_muscular{Puissant} other{?}}",
   "@characterPresetName": {
     "placeholders": {
       "id": {
@@ -1315,7 +1315,7 @@
     }
   },
   "characterEyeColor": "Couleur des yeux",
-  "characterEyeColorName": "{id, select, dark_brown{Brun foncé} brown{Marron} hazel{Noisette} green{Vert} blue{Bleu} grey{Gris} amber{Ambre} violet{Violet} other{?}}",
+  "characterEyeColorName": "{id, select, dark_brown{Brun foncé} brown{Marron} hazel{Noisette} green{Vert} blue{Bleu} grey{Gris} amber{Ambre} violet{Violet} ice{Bleu glacier} gold{Or} red{Rouge} other{?}}",
   "@characterEyeColorName": {
     "placeholders": {
       "id": {
@@ -1333,7 +1333,7 @@
     }
   },
   "characterBeard": "Barbe",
-  "characterBeardName": "{id, select, b0{Aucune} b1{Collier} b2{Bouc} b3{Moustache} b4{Courte} b5{Longue} b6{Moustache en guidon} other{?}}",
+  "characterBeardName": "{id, select, b0{Aucune} b1{Collier} b2{Bouc} b3{Moustache} b4{Courte} b5{Longue} b6{Moustache en guidon} b7{Barbe fournie} b8{Barbe taillée} b9{Barbe de guerrier} b10{Barbiche} b11{Barbe épaisse} other{?}}",
   "@characterBeardName": {
     "placeholders": {
       "id": {
@@ -1344,7 +1344,7 @@
   "characterBeardColor": "Couleur de la barbe",
   "characterBeardColorSame": "Comme les cheveux",
   "characterMakeup": "Maquillage",
-  "characterMakeupName": "{id, select, m0{Aucun} m1{Khôl} m2{Lèvres} m3{Joues} m4{Peinture de guerre} other{?}}",
+  "characterMakeupName": "{id, select, m0{Aucun} m1{Khôl fumé} m2{Trait de chat} m3{Fard doré} m4{Rouge à lèvres} m5{Lèvres prune} m6{Teint rosé} m7{Taches de rousseur} m8{Peinture de guerre} m9{Tatouage tribal} other{?}}",
   "@characterMakeupName": {
     "placeholders": {
       "id": {
@@ -1386,7 +1386,7 @@
   "characterShare": "Partager une capture",
   "characterShareFailed": "La capture n'est pas prête. Réessaie dans un instant.",
   "characterSnapshotFileName": "arise_heros.png",
-  "shopTitle": "Boutique d'Arisia",
+  "shopTitle": "Boutique du Protocole",
   "shopHomeHint": "Armures, capes et coiffures, contre tes pièces",
   "inventoryTitle": "Inventaire",
   "inventoryHomeHint": "Équipe, retire et teins tes objets",
@@ -1472,7 +1472,7 @@
       }
     }
   },
-  "equipmentSetName": "{id, select, awakened_leather{Cuir de l'Éveillé} warden_mail{Maille du Veilleur} dawn_plate{Plates de l'Aube} other{?}}",
+  "equipmentSetName": "{id, select, awakened_leather{Cuir de l'Éveillé} warden_mail{Maille du Veilleur} dawn_plate{Plates de l'Aube} obsidian_knight{Chevalier d'Obsidienne} silver_knight{Chevalier d'Argent} golden_king{Armure du Roi doré} wanderer_coat{Tenue de l'Errant} noble_gown{Atours de la Noble} hunter_leather{Cuir du Traqueur} scale_warden{Écailles du Gardien} north_lamellar{Lamelles du Nord} sylvan_ranger{Rôdeur sylvestre} oath_knight{Chevalier du Serment} lotus_samurai{Armure du Lotus} city_guard{Garde de la Cité} pale_coat{Manteau pâle} other{?}}",
   "@equipmentSetName": {
     "placeholders": {
       "id": {
@@ -1480,7 +1480,7 @@
       }
     }
   },
-  "itemName": "{id, select, leather_chest{Veste de cuir de l'Éveillé} leather_hands{Gants de cuir de l'Éveillé} leather_belt{Ceinturon de l'Éveillé} leather_legs{Chausses de cuir de l'Éveillé} leather_feet{Bottes de l'Éveillé} mail_head{Camail du Veilleur} mail_chest{Haubert du Veilleur} mail_hands{Mitons de maille du Veilleur} mail_legs{Chausses de maille du Veilleur} mail_feet{Solerets du Veilleur} plate_head{Heaume de l'Aube} plate_shoulders{Spallières de l'Aube} plate_chest{Cuirasse de l'Aube} plate_hands{Gantelets de l'Aube} plate_belt{Tassette de l'Aube} plate_legs{Cuissards de l'Aube} plate_feet{Grèves de l'Aube} cape_wanderer{Cape du Vagabond} cape_dawn{Cape de l'Aube} hood_twilight{Capuche du Crépuscule} sword_dawn{Épée d'apparat de l'Aube} staff_ember{Bâton de Braise} great_helm_gilded{Grand heaume doré} horned_helm_void{Heaume cornu du Néant} staff_solar_crystal{Bâton du Cristal solaire} scepter_lunar_orb{Sceptre de l'Orbe lunaire} staff_rose_amethyst{Bâton d'Améthyste rose} staff_dusk{Bâton du Crépuscule} halberd_silver{Hallebarde d'argent} sword_warden{Épée longue du Gardien} sword_curved_shade{Lame courbe d'Ombreval} sword_carved_bone{Épée d'os ciselé} sword_frost{Épée de Givre} sword_dusk{Lame du Soir violet} sword_ember{Lame de Braise} scimitar_jade{Cimeterre de jade} glaive_curved{Glaive recourbé} dagger_desert{Dague des sables} dagger_golden{Dague dorée} dagger_ice{Dague de glace} dagger_amethyst{Dague d'améthyste} dagger_fire_fang{Croc de feu} dagger_sun{Poignard du Soleil} dagger_blaze{Dague flamboyante} mace_spiked{Masse à pointes} mace_moon{Masse de lune} axe_war{Hache de guerre} cleaver_battle{Fendoir de bataille} hammer_runic{Marteau runique} guardian_jacket{Veste du Gardien du Rocher} stag_cape{Cape du Cerf d'Argent} wind_hood{Capuche de la Danseuse des Vents} colossus_leggings{Chausses du Colosse de Basalte} comet_cape{Cape de la Comète Écarlate} tempest_hood{Capuche du Seigneur des Tempêtes} other{?}}",
+  "itemName": "{id, select, leather_chest{Veste de cuir de l'Éveillé} leather_hands{Gants de cuir de l'Éveillé} leather_belt{Ceinturon de l'Éveillé} leather_legs{Chausses de cuir de l'Éveillé} leather_feet{Bottes de l'Éveillé} mail_head{Camail du Veilleur} mail_chest{Haubert du Veilleur} mail_hands{Mitons de maille du Veilleur} mail_legs{Chausses de maille du Veilleur} mail_feet{Solerets du Veilleur} plate_head{Heaume de l'Aube} plate_shoulders{Spallières de l'Aube} plate_chest{Cuirasse de l'Aube} plate_hands{Gantelets de l'Aube} plate_belt{Tassette de l'Aube} plate_legs{Cuissards de l'Aube} plate_feet{Grèves de l'Aube} cape_wanderer{Cape du Vagabond} cape_dawn{Cape de l'Aube} hood_twilight{Capuche du Crépuscule} sword_dawn{Épée d'apparat de l'Aube} staff_ember{Bâton de Braise} great_helm_gilded{Grand heaume doré} horned_helm_void{Heaume cornu du Néant} staff_solar_crystal{Bâton du Cristal solaire} scepter_lunar_orb{Sceptre de l'Orbe lunaire} staff_rose_amethyst{Bâton d'Améthyste rose} staff_dusk{Bâton du Crépuscule} halberd_silver{Hallebarde d'argent} sword_warden{Épée longue du Gardien} sword_curved_shade{Lame courbe d'Ombreval} sword_carved_bone{Épée d'os ciselé} sword_frost{Épée de Givre} sword_dusk{Lame du Soir violet} sword_ember{Lame de Braise} scimitar_jade{Cimeterre de jade} glaive_curved{Glaive recourbé} dagger_desert{Dague des sables} dagger_golden{Dague dorée} dagger_ice{Dague de glace} dagger_amethyst{Dague d'améthyste} dagger_fire_fang{Croc de feu} dagger_sun{Poignard du Soleil} dagger_blaze{Dague flamboyante} mace_spiked{Masse à pointes} mace_moon{Masse de lune} axe_war{Hache de guerre} cleaver_battle{Fendoir de bataille} hammer_runic{Marteau runique} guardian_jacket{Veste du Gardien du Rocher} stag_cape{Cape du Cerf d'Argent} wind_hood{Capuche de la Danseuse des Vents} colossus_leggings{Chausses du Colosse de Basalte} comet_cape{Cape de la Comète Écarlate} tempest_hood{Capuche du Seigneur des Tempêtes} obsidian_knight_head{Heaume d'Obsidienne} obsidian_knight_chest{Cuirasse d'Obsidienne} obsidian_knight_hands{Gantelets d'Obsidienne} obsidian_knight_legs{Jambières d'Obsidienne} obsidian_knight_feet{Solerets d'Obsidienne} silver_knight_head{Heaume d'Argent} silver_knight_chest{Cuirasse d'Argent} silver_knight_hands{Gantelets d'Argent} silver_knight_legs{Jambières d'Argent} silver_knight_feet{Solerets d'Argent} golden_king_head{Heaume du Roi doré} golden_king_chest{Cuirasse du Roi doré} golden_king_hands{Gantelets du Roi doré} golden_king_legs{Jambières du Roi doré} golden_king_feet{Solerets du Roi doré} wanderer_coat_chest{Manteau de l'Errant} wanderer_coat_hands{Gants de l'Errant} wanderer_coat_legs{Chausses de l'Errant} wanderer_coat_feet{Bottes de l'Errant} noble_gown_chest{Corsage de la Noble} noble_gown_legs{Jupe de la Noble} hunter_leather_head{Capuche du Traqueur} hunter_leather_chest{Plastron du Traqueur} hunter_leather_hands{Brassards du Traqueur} hunter_leather_legs{Jambières du Traqueur} hunter_leather_feet{Bottes du Traqueur} scale_warden_head{Casque d'écailles} scale_warden_chest{Broigne d'écailles} scale_warden_hands{Gants d'écailles} scale_warden_legs{Chausses d'écailles} scale_warden_feet{Bottes d'écailles} north_lamellar_head{Casque du Nord} north_lamellar_chest{Lamellaire du Nord} north_lamellar_hands{Brassards du Nord} north_lamellar_legs{Braies du Nord} north_lamellar_feet{Bottes du Nord} sylvan_ranger_chest{Pourpoint sylvestre} sylvan_ranger_legs{Chausses sylvestres} sylvan_ranger_feet{Bottes sylvestres} oath_knight_chest{Cuirasse du Serment} oath_knight_hands{Gantelets du Serment} oath_knight_legs{Jambières du Serment} oath_knight_feet{Solerets du Serment} lotus_samurai_chest{Cuirasse du Lotus} lotus_samurai_hands{Manches du Lotus} lotus_samurai_legs{Jupe d'armure du Lotus} lotus_samurai_feet{Sandales du Lotus} city_guard_head{Casque de la Garde} city_guard_chest{Brigandine de la Garde} city_guard_hands{Gants de la Garde} city_guard_legs{Jambières de la Garde} city_guard_feet{Bottes de la Garde} pale_coat_chest{Manteau pâle} studded_vest{Veste cloutée} azure_plate{Cuirasse d'azur} scarlet_steel{Plastron écarlate} crimson_mark{Cuirasse à la marque pourpre} sage_robe{Robe du sage} strap_harness{Harnais à sangles} eye_plate{Plastron de l'Œil} claw_vest{Veste aux griffes} gilded_scale{Cuirasse d'écailles dorées} nomad_vest{Gilet du nomade} shadow_cuirass{Cuirasse de l'ombre} bone_raider{Armure d'os du pillard} rust_plate{Plastron rouillé} iron_brigand{Brigandine de fer} bronze_guard{Garde de bronze} night_vest{Gilet de nuit} black_cuirass{Cuirasse noire} steel_vest{Gilet d'acier} thorn_plate{Plastron d'épines} silver_cuirass{Cuirasse d'argent poli} hunter_jerkin{Pourpoint du chasseur} forest_gown{Robe de la forêt} raider_scarf{Gilet du maraudeur} lion_plate{Cuirasse du lion} dark_knight{Armure du chevalier noir} leather_corset{Corset de cuir} steel_breastplate{Plastron d'acier} dusk_tabard{Tabard du crépuscule} ember_plate{Cuirasse de braise ciselée} gambeson{Gambison} peasant_tunic{Tunique paysanne} brown_leathers{Chausses de cuir brun} worn_trousers{Pantalon usé} layered_hakama{Hakama en couches} crimson_tatters{Haillons pourpres} red_greaves{Jambières rouges} riding_breeches{Culotte de cavalier} shadow_tatters{Haillons de l'ombre} patch_trousers{Pantalon rapiécé} forest_trousers{Pantalon forestier} mystic_trousers{Pantalon mystique} scout_trousers{Pantalon d'éclaireur} azure_trousers{Pantalon d'azur} duelist_leggings{Collant du duelliste} pouch_trousers{Pantalon à sacoches} plain_trousers{Pantalon simple} black_greaves{Jambières noires} ranger_trousers{Pantalon du rôdeur} rogue_trousers{Pantalon du voleur} sky_trousers{Sarouel céleste} iron_strap_boots{Bottes à sangles de fer} skull_boots{Bottes aux crânes} runic_boots{Bottes runiques} legend_boots{Bottes légendaires} knight_boots{Bottes de chevalier} buckle_boots{Bottes à boucles} laced_boots{Bottes lacées} city_boots{Bottes de ville} rider_boots{Bottes de cavalier} arcane_boots{Bottes arcaniques} sylvan_boots{Bottes sylvestres} plate_boots{Solerets de plates} azure_boots{Bottines d'azur} diamond_boots{Bottes au losange} war_boots{Bottes de guerre} trail_boots{Bottes de piste} wanderer_boots{Bottes du vagabond} frost_boots{Bottes de givre} cuff_boots{Bottes à revers} strap_boots{Bottes à lanières} night_boots{Bottes de nuit} knight_helm{Heaume de chevalier} spiked_helm{Casque à pointes} shade_hood{Capuche de l'ombre} crest_helm{Casque à crête} other{?}}",
   "@itemName": {
     "placeholders": {
       "id": {
@@ -1595,7 +1595,7 @@
       }
     }
   },
-  "bossLore": "{boss, select, rockGuardian{Un gardien de pierre barre le col d'Arisia. Seule une force patiente peut le faire reculer.} silverStag{Un cerf aux bois d'argent court à travers les brumes. Tiens son rythme jusqu'au bout.} windDancer{Une danseuse faite de vent tourbillonne sans jamais s'arrêter. Suis sa cadence.} basaltColossus{Un colosse de basalte s'éveille sous la montagne. Ta force doit égaler la sienne.} crimsonComet{Une comète écarlate trace sa route dans le ciel. Endure aussi longtemps qu'elle brille.} stormLord{Le Seigneur des Tempêtes règne sur les éclairs. Danse avec l'orage pour le soumettre.} other{}}",
+  "bossLore": "{boss, select, rockGuardian{Un gardien de pierre barre le col du Nord. Seule une force patiente peut le faire reculer.} silverStag{Un cerf aux bois d'argent court à travers les brumes. Tiens son rythme jusqu'au bout.} windDancer{Une danseuse faite de vent tourbillonne sans jamais s'arrêter. Suis sa cadence.} basaltColossus{Un colosse de basalte s'éveille sous la montagne. Ta force doit égaler la sienne.} crimsonComet{Une comète écarlate trace sa route dans le ciel. Endure aussi longtemps qu'elle brille.} stormLord{Le Seigneur des Tempêtes règne sur les éclairs. Danse avec l'orage pour le soumettre.} other{}}",
   "@bossLore": {
     "placeholders": {
       "boss": {
@@ -1603,7 +1603,7 @@
       }
     }
   },
-  "titleName": "{title, select, title_rockGuardian{Briseur de Rocher} title_silverStag{Coureur des Brumes} title_windDancer{Pied-de-Vent} title_basaltColossus{Brise-Colosse} title_crimsonComet{Sillage de Comète} title_stormLord{Œil de la Tempête} title_awakened{L'Éveillé} title_veteran{Vétéran d'Arisia} title_unshakable{L'Inébranlable} title_tireless{L'Infatigable} title_legend{Légende d'Arisia} title_rock_breaker{Poigne de Fer} title_balanced{L'Équilibré} title_explorer{Explorateur des Arts} title_never_skips_legs{Celui qui ne saute jamais les jambes} title_body_cartographer{Cartographe du Corps} title_willow{Souple comme le Saule} title_dawn_monarch{Monarque de l'Aube} title_rest_sage{Sage du Repos} title_shadow_master{Maître des Ombres} other{?}}",
+  "titleName": "{title, select, title_rockGuardian{Briseur de Rocher} title_silverStag{Coureur des Brumes} title_windDancer{Pied-de-Vent} title_basaltColossus{Brise-Colosse} title_crimsonComet{Sillage de Comète} title_stormLord{Œil de la Tempête} title_awakened{L'Éveillé} title_veteran{Vétéran du Protocole} title_unshakable{L'Inébranlable} title_tireless{L'Infatigable} title_legend{Légende du Protocole} title_rock_breaker{Poigne de Fer} title_balanced{L'Équilibré} title_explorer{Explorateur des Arts} title_never_skips_legs{Celui qui ne saute jamais les jambes} title_body_cartographer{Cartographe du Corps} title_willow{Souple comme le Saule} title_dawn_monarch{Monarque de l'Aube} title_rest_sage{Sage du Repos} title_shadow_master{Maître des Ombres} other{?}}",
   "@titleName": {
     "placeholders": {
       "title": {
@@ -2032,7 +2032,7 @@
   },
   "settingsMusic": "Musique",
   "settingsMusicHint": "Musiques d'ambiance et jingle de niveau (mode silencieux respecté)",
-  "achievementName": "{id, select, first_session{Premier pas} sessions_10{Habitude naissante} sessions_50{Chasseur assidu} sessions_100{Centurion} sessions_250{Vétéran d'Arisia} streak_7{Une semaine sans faillir} streak_30{Un mois de constance} streak_100{Inébranlable} daily_quests_10{Serviteur du Système} daily_quests_50{Élu du Système} minutes_60{Première heure} minutes_600{Dix heures de sueur} minutes_3000{Cinquante heures} minutes_10000{Infatigable} reps_1000{Mille répétitions} reps_10000{Dix mille répétitions} reps_50000{Marée de répétitions} sets_500{Cinq cents séries} long_session{Souffle long} level_5{Éveil} level_10{Ascension} level_25{Élite} level_50{Légende d'Arisia} level_100{Sommet} strength_20{Poigne de fer} endurance_20{Second souffle} agility_20{Pas de chat} vitality_20{Cœur de chêne} willpower_20{Volonté d'acier} all_stats_10{Équilibré} boss_1{Premier boss} boss_2{Deux trophées} boss_3{Tueur de géants} boss_4{Fléau des colosses} boss_5{Chasseur de comètes} boss_6{Maître des épreuves} first_try_boss{Du premier coup} shadow_1{Première Ombre} shadow_5{Escouade des Ombres} exercises_10{Curieux} exercises_25{Polyvalent} exercises_50{Explorateur des Arts} custom_exercise{Inventeur} first_program{Stratège} all_formats{Touche-à-tout} dungeon_1{Premier donjon} dungeon_5{Pilleur de donjons} first_item{Premier trésor} first_event{Héros de saison} legs_4_weeks{Fondations solides} legs_12_weeks{Celui qui ne saute jamais les jambes} push_pull_4_weeks{Pousser et tirer} front_back_4_weeks{Face et dos} muscles_15{Carte en cours} muscles_all{Cartographe du Corps} flexibility_60{Corps délié} flexibility_300{Souple comme le Saule} dawn_10{Monarque de l'Aube} evening_10{Gardien du crépuscule} new_year{Bonne résolution} rest_sage{Sage du Repos} listen_body{À l’écoute de soi} shadow_army{Armée des Ombres} other{?}}",
+  "achievementName": "{id, select, first_session{Premier pas} sessions_10{Habitude naissante} sessions_50{Chasseur assidu} sessions_100{Centurion} sessions_250{Vétéran du Protocole} streak_7{Une semaine sans faillir} streak_30{Un mois de constance} streak_100{Inébranlable} daily_quests_10{Serviteur du Système} daily_quests_50{Élu du Système} minutes_60{Première heure} minutes_600{Dix heures de sueur} minutes_3000{Cinquante heures} minutes_10000{Infatigable} reps_1000{Mille répétitions} reps_10000{Dix mille répétitions} reps_50000{Marée de répétitions} sets_500{Cinq cents séries} long_session{Souffle long} level_5{Éveil} level_10{Ascension} level_25{Élite} level_50{Légende du Protocole} level_100{Sommet} strength_20{Poigne de fer} endurance_20{Second souffle} agility_20{Pas de chat} vitality_20{Cœur de chêne} willpower_20{Volonté d'acier} all_stats_10{Équilibré} boss_1{Premier boss} boss_2{Deux trophées} boss_3{Tueur de géants} boss_4{Fléau des colosses} boss_5{Chasseur de comètes} boss_6{Maître des épreuves} first_try_boss{Du premier coup} shadow_1{Première Ombre} shadow_5{Escouade des Ombres} exercises_10{Curieux} exercises_25{Polyvalent} exercises_50{Explorateur des Arts} custom_exercise{Inventeur} first_program{Stratège} all_formats{Touche-à-tout} dungeon_1{Premier donjon} dungeon_5{Pilleur de donjons} first_item{Premier trésor} first_event{Héros de saison} legs_4_weeks{Fondations solides} legs_12_weeks{Celui qui ne saute jamais les jambes} push_pull_4_weeks{Pousser et tirer} front_back_4_weeks{Face et dos} muscles_15{Carte en cours} muscles_all{Cartographe du Corps} flexibility_60{Corps délié} flexibility_300{Souple comme le Saule} dawn_10{Monarque de l'Aube} evening_10{Gardien du crépuscule} new_year{Bonne résolution} rest_sage{Sage du Repos} listen_body{À l’écoute de soi} shadow_army{Armée des Ombres} other{?}}",
   "@achievementName": {
     "placeholders": {
       "id": {
@@ -2081,7 +2081,7 @@
     }
   },
   "achievementSecretName": "Haut fait secret",
-  "achievementSecretHint": "Continue d’explorer Arisia pour le découvrir.",
+  "achievementSecretHint": "Continue d’explorer Hero Protocol pour le découvrir.",
   "achievementUnlockedOn": "Obtenu le {date}",
   "@achievementUnlockedOn": {
     "placeholders": {
@@ -2290,5 +2290,7 @@
   "healthHistoryEmpty": "Aucune donnée pour l'instant.",
   "healthHistoryLine": "{date} : {steps} pas, {sleepHours} h de sommeil, {glasses} verres",
   "@healthHistoryLine": {"placeholders": {"date": {"type": "DateTime", "format": "MMMEd"}, "steps": {"type": "int"}, "sleepHours": {"type": "int"}, "glasses": {"type": "int"}}},
-  "healthStatusFailed": "Lecture impossible pour le moment. Réessaie plus tard."
+  "healthStatusFailed": "Lecture impossible pour le moment. Réessaie plus tard.",
+  "dockShop": "Boutique",
+  "dockInventory": "Inventaire"
 }
