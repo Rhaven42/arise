@@ -27,7 +27,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", "coach"))
 from poses import EXERCISES, REST  # noqa: E402
 
-FPS = 15
+FPS = int(os.environ.get("ARISE_FPS", "15"))
 SIZE = (600, 450)
 # Pièces visibles : corps, tête, tenue de départ, coiffure courte.
 VISIBLE = ("body", "eye_", "lashes", "brow_01", "hair_07", "outfit_tunic", "outfit_pants", "outfit_boots")
