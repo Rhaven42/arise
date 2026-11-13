@@ -771,7 +771,8 @@ def add_slot_pieces(body, j, height, part_of):
                 shift = Vector((0.0, top.y + 0.01, top.z + 0.02)) - c
                 return [p + shift for p in ps]
 
-            _search(obj, [base * (0.85 + 0.05 * k) for k in range(8)], place, [p for p in head if p.z > top.z - 0.1], bvh, 0.004)
+            # Casque : jamais plus petit que le crâne (les cheveux dessous).
+            _search(obj, [base * (1.0 + 0.05 * k) for k in range(8)], place, [p for p in head if p.z > top.z - 0.1], bvh, 0.012)
         for poly in obj.data.polygons:
             poly.use_smooth = True
         for i, mslot in enumerate(obj.material_slots):

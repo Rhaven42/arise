@@ -30,6 +30,8 @@ def _gray(img):
     lum = np.clip(lum / max(float(lum.mean()), 1e-3) * 0.75, 0, 1)
     for k in range(3):
         px[:, k] = lum
+    # Opaque : les mèches sont du vrai volume (pas de cartes transparentes).
+    px[:, 3] = 1.0
     img.pixels[:] = px.ravel()
 
 
@@ -56,13 +58,31 @@ def prepare(entry, src_dir, folder):
     lo = Vector([min(p[k] for p in pts) for k in range(3)])
     hi = Vector([max(p[k] for p in pts) for k in range(3)])
     obj.data.transform(Matrix.Translation(-(lo + hi) / 2))
+    # Sommets dédoublés à l'import (coutures UV) : refusionnés, sinon la
+    # décimation bute sur des triangles isolés.
+    import bmesh
+
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5 * (hi - lo).length)
+    bm.to_mesh(obj.data)
+    bm.free()
     tris = sum(len(p.vertices) - 2 for p in obj.data.polygons)
-    limit = 20000 if folder == "armor" else MAX_TRIS
+    limit = {"armor": 12000, "hair": 12000, "beards": 8000}[folder]
     if tris > limit:
         mod = obj.modifiers.new("dec", "DECIMATE")
         mod.ratio = limit / tris
         mod.use_collapse_triangulate = True
         bpy.ops.object.modifier_apply(modifier="dec")
+        left = sum(len(p.vertices) - 2 for p in obj.data.polygons)
+        if left > limit * 1.3:
+            # Décimation bloquée par la topologie : seconde passe en
+            # dissolution plane puis nouvel effondrement.
+            mod = obj.modifiers.new("dec2", "DECIMATE")
+            mod.ratio = limit / left
+            mod.use_collapse_triangulate = True
+            mod.use_symmetry = False
+            bpy.ops.object.modifier_apply(modifier="dec2")
     for img in bpy.data.images:
         if img.size[0] == 0:
             continue
@@ -75,6 +95,22 @@ def prepare(entry, src_dir, folder):
             for node in mat.node_tree.nodes:
                 if node.type == "BSDF_PRINCIPLED" and not node.inputs["Base Color"].is_linked:
                     node.inputs["Base Color"].default_value = (0.75, 0.75, 0.75, 1.0)
+    if folder != "armor":
+        if not obj.data.materials:
+            mat = bpy.data.materials.new(entry["id"] + "_mat")
+            mat.use_nodes = True
+            obj.data.materials.append(mat)
+        for mat in obj.data.materials:
+            if mat:
+                mat.blend_method = "OPAQUE"
+                if mat.use_nodes:
+                    for node in mat.node_tree.nodes:
+                        if node.type == "BSDF_PRINCIPLED":
+                            node.inputs["Alpha"].default_value = 1.0
+                            if node.inputs["Alpha"].is_linked:
+                                mat.node_tree.links.remove(node.inputs["Alpha"].links[0])
+                            if not node.inputs["Base Color"].is_linked:
+                                node.inputs["Base Color"].default_value = (0.75, 0.75, 0.75, 1.0)
     out = os.path.join(HERE, "external", folder, entry["id"] + ".glb")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     bpy.ops.export_scene.gltf(filepath=out, export_format="GLB", use_selection=True, export_image_format="WEBP", export_apply=True)

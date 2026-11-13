@@ -871,8 +871,9 @@ def _makeups(template, groups, states, marks):
     r = marks["eye_radius"]
     lc = marks["lips_center"]
     lips = [co[i] for i in groups.get("lips", set())]
-    lip_w = max(abs(p.x - lc.x) for p in lips) if lips else 0.025
-    lip_h = (marks["lips_top"] - marks["lips_bottom"]) / 2 or 0.008
+    # Contour des lèvres un peu en retrait (le groupe « lips » déborde).
+    lip_w = (max(abs(p.x - lc.x) for p in lips) if lips else 0.025) * 0.78
+    lip_h = ((marks["lips_top"] - marks["lips_bottom"]) / 2 or 0.008) * 0.8
     face = _faces_where(template, co, groups["body"], lambda c: _front(c, marks) and c.z > marks["chin"].z - 0.01)
     xs = [co[i].x for i in groups["body"] if _front(co[i], marks) and co[i].z > marks["chin"].z - 0.01]
     zs = [co[i].z for i in groups["body"] if _front(co[i], marks) and co[i].z > marks["chin"].z - 0.01]
@@ -2350,6 +2351,10 @@ def build(sex, race, out_dir):
     outfit_sets = {} if os.environ.get("ARISE_NO_OUTFITS") else fit.add_outfits(bpy.data.objects["body"], _joints(co, groups), height, _part)
     # Pièces d'armure fournies (pieces.json) : un fichier par pièce.
     outfit_sets.update(fit.add_slot_pieces(bpy.data.objects["body"], _joints(co, groups), height, _part))
+    # Coiffures et barbes fournies : un fichier chacune, chargé seulement
+    # quand le joueur les choisit (le modèle de base reste léger).
+    for piece in head_pieces:
+        outfit_sets[piece.name] = [piece]
     for set_id, pieces in outfit_sets.items():
         tint = fit.load_outfits().get(set_id, {}).get("tint")
         if tint:

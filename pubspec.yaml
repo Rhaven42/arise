@@ -145,6 +145,36 @@ flutter:
     - assets/outfits/lotus_samurai/
     - assets/outfits/city_guard/
     - assets/outfits/pale_coat/
+    - assets/outfits/hair_11/
+    - assets/outfits/hair_12/
+    - assets/outfits/hair_13/
+    - assets/outfits/hair_14/
+    - assets/outfits/hair_15/
+    - assets/outfits/hair_16/
+    - assets/outfits/hair_17/
+    - assets/outfits/hair_18/
+    - assets/outfits/hair_19/
+    - assets/outfits/hair_20/
+    - assets/outfits/hair_21/
+    - assets/outfits/hair_22/
+    - assets/outfits/hair_23/
+    - assets/outfits/hair_24/
+    - assets/outfits/hair_25/
+    - assets/outfits/hair_26/
+    - assets/outfits/hair_27/
+    - assets/outfits/hair_28/
+    - assets/outfits/hair_29/
+    - assets/outfits/hair_30/
+    - assets/outfits/hair_31/
+    - assets/outfits/hair_32/
+    - assets/outfits/hair_33/
+    - assets/outfits/hair_34/
+    - assets/outfits/hair_35/
+    - assets/outfits/beard_07/
+    - assets/outfits/beard_08/
+    - assets/outfits/beard_09/
+    - assets/outfits/beard_10/
+    - assets/outfits/beard_11/
     - assets/items/
     - assets/viewer/
     - assets/fonts/cinzel/OFL.txt
