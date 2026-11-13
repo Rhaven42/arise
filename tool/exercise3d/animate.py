@@ -265,7 +265,7 @@ def add_prop(prop, arm):
     wood = _mat("wood", (0.28, 0.16, 0.08), 0.0, 0.7)
     if kind == "dumbbells":
         bones = arm.data.bones
-        for s in ("l", "r"):
+        for s in prop.get("sides", ("l", "r")):
             # Haltère dans le poing (pose de repos) : poignée selon l'axe des
             # doigts (index → auriculaire), au creux de la main.
             idx = arm.matrix_world @ bones["index_01_" + s].head_local

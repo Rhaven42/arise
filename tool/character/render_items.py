@@ -3,12 +3,16 @@ fond transparent, à partir du modèle humain masculin de référence.
 
 Lancement sans interface (module « bpy » de PyPI + extension MPFB, voir
 build_characters.py) :
-    ARISE_MH_ASSETS=<paquets MakeHuman> python3 tool/character/render_items.py assets/items
+    ARISE_MH_ASSETS=<paquets MakeHuman> python3 tool/character/render_items.py assets/items [dossier des modèles]
+
+Avec un dossier des modèles, le modèle humain masculin construit pour les
+vignettes y est gardé (évite une seconde construction).
 """
 
 import math
 import os
 import runpy
+import shutil
 import sys
 
 import bpy
@@ -92,9 +96,10 @@ def _render(scene, camera, objects, path, view=(0.55, -1.0, 0.25), frame=None, o
     bpy.ops.render.render(write_still=True)
 
 
-def main(out_dir):
+def main(out_dir, model_dir=None):
     ns = runpy.run_path(os.path.join(HERE, "build_characters.py"))
-    ns["build"]("male", "human", os.path.join(out_dir, "_tmp"))
+    tmp = model_dir or os.path.join(out_dir, "_tmp")
+    ns["build"]("male", "human", tmp)
     os.makedirs(out_dir, exist_ok=True)
     for mat in bpy.data.materials:
         if mat.name.startswith("hair_"):
@@ -121,11 +126,9 @@ def main(out_dir):
         elif obj.name.startswith("hair_"):
             # Coiffure portée sur une tête neutre, de trois quarts arrière.
             _render(scene, camera, [body, obj], os.path.join(out_dir, "hairstyle_" + obj.name[5:] + ".png"), (0.8, 0.6, 0.15), frame=[obj])
-    tmp = os.path.join(out_dir, "_tmp")
-    for name in os.listdir(tmp):
-        os.remove(os.path.join(tmp, name))
-    os.rmdir(tmp)
+    if model_dir is None:
+        shutil.rmtree(tmp)
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)

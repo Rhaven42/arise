@@ -832,3 +832,237 @@ EXERCISES["pigeon_stretch"] = {
              "hand_l": (0.2, -0.35, 0.05), "hand_r": (-0.2, -0.35, 0.05)},
     "keys": [(0.0, {}), (0.5, {"body": (40.0, 0.0, 0.0), "hand_l": (0.2, -0.55, 0.05), "hand_r": (-0.2, -0.55, 0.05)})],
 }
+
+# --- Corrections --------------------------------------------------------------------
+# Planche, tapes sur les épaules : la main levée vient toucher l'épaule
+# opposée, le bassin reste fixe (pieds écartés pour la stabilité).
+EXERCISES["plank_shoulder_taps"] = {
+    "view": "three_quarter",
+    "seconds": 2.0,
+    "props": [{"type": "mat"}],
+    "base": {**PLANK_UP, "foot_l": (0.2, 0.83, 0.1), "foot_r": (-0.2, 0.83, 0.1)},
+    "keys": [
+        (0.0, {}),
+        (0.25, {"hand_l": (-0.12, -0.42, 0.42), "hand_l_pole": (0.5, -0.2, 0.2)}),
+        (0.5, {}),
+        (0.75, {"hand_r": (0.12, -0.42, 0.42), "hand_r_pole": (-0.5, -0.2, 0.2)}),
+    ],
+}
+# Assis, buste incliné en arrière, pieds décollés : les mains jointes passent
+# d'une hanche à l'autre avec la rotation du buste.
+SEATED_V = {
+    "pelvis": (0.0, 0.0, 0.14),
+    "body": (-35.0, 0.0, 0.0),
+    "head": 10.0,
+    "foot_l": (0.1, -0.5, 0.22),
+    "foot_r": (-0.1, -0.5, 0.22),
+    "foot_l_pole": (0.2, -0.5, 1.2),
+    "foot_r_pole": (-0.2, -0.5, 1.2),
+    "hand_l_pole": (0.5, 0.3, 0.4),
+    "hand_r_pole": (-0.5, 0.3, 0.4),
+}
+EXERCISES["russian_twist"] = {
+    "view": "three_quarter",
+    "seconds": 2.0,
+    "props": [{"type": "mat"}],
+    "base": SEATED_V,
+    "keys": [
+        (0.0, {"spine": (0.0, 30.0, 0.0), "hand_l": (0.3, -0.2, 0.22), "hand_r": (0.22, -0.26, 0.22)}),
+        (0.5, {"spine": (0.0, -30.0, 0.0), "hand_l": (-0.22, -0.26, 0.22), "hand_r": (-0.3, -0.2, 0.22)}),
+    ],
+}
+# Rotation thoracique : bras croisés sur la poitrine, bassin immobile.
+EXERCISES["thoracic_rotation"] = {
+    "view": "front",
+    "seconds": 3.0,
+    "base": {**WIDE, "hand_l": (-0.14, -0.14, 1.38), "hand_r": (0.14, -0.14, 1.4), "hand_l_pole": (0.4, -0.5, 1.1), "hand_r_pole": (-0.4, -0.5, 1.1)},
+    "keys": [(0.0, {}), (0.25, {"spine": (0.0, 40.0, 0.0)}), (0.5, {}), (0.75, {"spine": (0.0, -40.0, 0.0)})],
+}
+
+# --- Mouvements du catalogue sans clé propre ------------------------------------------
+EXERCISES["calf_raise"] = EXERCISES["standing_calf_raise"]
+EXERCISES["pull_up"] = EXERCISES["pull_up_pronated"]
+CROUCH_HANDS_DOWN = {
+    "pelvis": (0.0, 0.18, 0.5),
+    "body": (45.0, 0.0, 0.0),
+    "head": -25.0,
+    "foot_l": (0.14, 0.0, 0.075),
+    "foot_r": (-0.14, 0.0, 0.075),
+    "hand_l": (0.2, -0.32, 0.06),
+    "hand_r": (-0.2, -0.32, 0.06),
+    "hand_l_pole": (0.5, 0.3, 0.5),
+    "hand_r_pole": (-0.5, 0.3, 0.5),
+}
+EXERCISES["burpee"] = {
+    "view": "side",
+    "seconds": 3.0,
+    "props": [{"type": "mat"}],
+    "keys": [
+        (0.0, {}),
+        (0.18, CROUCH_HANDS_DOWN),
+        (0.38, {**PLANK_UP}),
+        (0.58, CROUCH_HANDS_DOWN),
+        (0.78, {"pelvis": (0.0, 0.0, 1.06), "foot_l": (0.12, 0.0, 0.22), "foot_r": (-0.12, 0.0, 0.22), "toes_l": -40.0, "toes_r": -40.0,
+                "hand_l": (0.28, -0.08, 1.92), "hand_r": (-0.28, -0.08, 1.92), "hand_l_pole": (0.9, 0.3, 1.6), "hand_r_pole": (-0.9, 0.3, 1.6)}),
+    ],
+}
+
+# --- Lot 7 (ANATOMY §2 bis, en attente de validation) --------------------------------
+LUNGE_L = {"pelvis": (0.0, 0.04, 0.52), "foot_l": (0.12, -0.38, 0.075), "foot_r": (-0.12, 0.42, 0.12), "toes_r": -50.0,
+           "foot_r_pole": (-0.15, -0.4, -0.3), "hand_l": (0.2, 0.0, 0.92), "hand_r": (-0.2, 0.0, 0.92)}
+LUNGE_R = {"pelvis": (0.0, 0.04, 0.52), "foot_r": (-0.12, -0.38, 0.075), "foot_l": (0.12, 0.42, 0.12), "toes_l": -50.0,
+           "foot_l_pole": (0.15, -0.4, -0.3), "hand_l": (0.2, 0.0, 0.92), "hand_r": (-0.2, 0.0, 0.92)}
+AIR = {"pelvis": (0.0, 0.02, 1.02), "foot_l": (0.12, -0.05, 0.3), "foot_r": (-0.12, 0.05, 0.3), "toes_l": -30.0, "toes_r": -30.0,
+       "hand_l": (0.25, -0.15, 1.1), "hand_r": (-0.25, -0.15, 1.1)}
+EXERCISES["jump_lunge"] = {
+    "view": "side",
+    "seconds": 1.8,
+    "keys": [(0.0, LUNGE_L), (0.25, AIR), (0.5, LUNGE_R), (0.75, AIR)],
+}
+EXERCISES["walking_lunge"] = {
+    "view": "side",
+    "seconds": 3.0,
+    "keys": [(0.0, LUNGE_L), (0.25, {"hand_l": (0.2, 0.0, 0.92), "hand_r": (-0.2, 0.0, 0.92)}),
+             (0.5, LUNGE_R), (0.75, {"hand_l": (0.2, 0.0, 0.92), "hand_r": (-0.2, 0.0, 0.92)})],
+}
+EXERCISES["plank_up_down"] = {
+    "view": "side",
+    "seconds": 3.2,
+    "props": [{"type": "mat"}],
+    "keys": [
+        (0.0, FOREARM_PLANK),
+        (0.25, {**FOREARM_PLANK, "pelvis": (0.0, 0.03, 0.38), "body": (72.0, 0.0, 0.0),
+                "hand_r": PLANK_UP["hand_r"], "hand_r_pole": PLANK_UP["hand_r_pole"]}),
+        (0.5, PLANK_UP),
+        (0.75, {**PLANK_UP, "pelvis": (0.0, 0.03, 0.38), "body": (72.0, 0.0, 0.0),
+                "hand_l": FOREARM_PLANK["hand_l"], "hand_l_pole": FOREARM_PLANK["hand_l_pole"]}),
+    ],
+}
+ARCHER_UP = {**PLANK_UP, "hand_l": (0.45, -0.43, 0.06), "hand_r": (-0.45, -0.43, 0.06), "foot_l": (0.2, 0.83, 0.1), "foot_r": (-0.2, 0.83, 0.1)}
+EXERCISES["archer_push_up"] = {
+    "view": "front",
+    "seconds": 3.2,
+    "props": [{"type": "mat"}],
+    "keys": [
+        (0.0, ARCHER_UP),
+        (0.25, {**ARCHER_UP, "pelvis": (0.12, 0.0, 0.3), "body": (78.0, 0.0, 0.0), "hand_l_pole": (0.7, 0.3, 0.4), "hand_r_pole": (-0.6, -0.4, 0.3)}),
+        (0.5, ARCHER_UP),
+        (0.75, {**ARCHER_UP, "pelvis": (-0.12, 0.0, 0.3), "body": (78.0, 0.0, 0.0), "hand_r_pole": (-0.7, 0.3, 0.4), "hand_l_pole": (0.6, -0.4, 0.3)}),
+    ],
+}
+EXERCISES["front_raise"] = {
+    "view": "side",
+    "seconds": 2.2,
+    "props": [{"type": "dumbbells"}],
+    "base": {"foot_l": (0.14, 0.0, 0.075), "foot_r": (-0.14, 0.0, 0.075), "hand_l_pole": (0.3, 0.6, 1.2), "hand_r_pole": (-0.3, 0.6, 1.2)},
+    "keys": [
+        (0.0, {"hand_l": (0.18, -0.08, 0.86), "hand_r": (-0.18, -0.08, 0.86)}),
+        (0.5, {"hand_l": (0.2, -0.68, 1.44), "hand_r": (-0.2, -0.68, 1.44)}),
+    ],
+}
+EXERCISES["deadlift"] = {
+    "view": "side",
+    "seconds": 2.6,
+    "props": [{"type": "dumbbells"}],
+    "base": {"foot_l": (0.14, 0.0, 0.075), "foot_r": (-0.14, 0.0, 0.075), "hand_l": (0.16, -0.06, 0.8), "hand_r": (-0.16, -0.06, 0.8)},
+    "keys": [(0.0, {}), (0.5, {"pelvis": (0.0, 0.2, 0.62), "body": (52.0, 0.0, 0.0), "head": -20.0,
+                                "hand_l": (0.16, -0.12, 0.2), "hand_r": (-0.16, -0.12, 0.2)})],
+}
+EXERCISES["one_arm_row"] = {
+    "view": "side",
+    "seconds": 2.4,
+    "props": [{"type": "dumbbells", "sides": ("r",)}, {"type": "bench", "size": (0.5, 0.5, 0.45), "y": -0.42}],
+    "base": {**BENT, "body": (65.0, 0.0, 0.0), "foot_l": (0.2, 0.05, 0.075), "foot_r": (-0.2, 0.05, 0.075),
+             "hand_l": (0.16, -0.48, 0.47), "hand_l_pole": (0.4, 0.4, 1.0), "hand_r_pole": (-0.3, 0.8, 1.4)},
+    "keys": [(0.0, {"hand_r": (-0.18, -0.3, 0.4)}), (0.5, {"hand_r": (-0.2, 0.0, 0.8)})],
+}
+EXERCISES["floor_press"] = {
+    "view": "side",
+    "seconds": 2.4,
+    "props": [{"type": "mat"}, {"type": "dumbbells"}],
+    "base": {**SUPINE, "hand_l_pole": (0.7, -0.35, -0.2), "hand_r_pole": (-0.7, -0.35, -0.2)},
+    "keys": [
+        (0.0, {"hand_l": (0.2, -0.42, 0.78), "hand_r": (-0.2, -0.42, 0.78)}),
+        (0.5, {"hand_l": (0.26, -0.42, 0.32), "hand_r": (-0.26, -0.42, 0.32)}),
+    ],
+}
+EXERCISES["good_morning"] = {
+    "view": "side",
+    "seconds": 2.6,
+    "base": {**WIDE, "hand_l_pole": (0.7, -0.1, 1.5), "hand_r_pole": (-0.7, -0.1, 1.5)},
+    "keys": [
+        (0.0, {"hand_l": (0.08, 0.1, 1.6), "hand_r": (-0.08, 0.1, 1.6)}),
+        (0.5, {"pelvis": (0.0, 0.15, 0.88), "body": (65.0, 0.0, 0.0), "head": -10.0,
+               "hand_l": (0.08, -0.4, 1.24), "hand_r": (-0.08, -0.4, 1.24), "hand_l_pole": (0.7, -0.3, 1.0), "hand_r_pole": (-0.7, -0.3, 1.0)}),
+    ],
+}
+EXERCISES["reverse_crunch"] = {
+    "view": "side",
+    "seconds": 2.2,
+    "props": [{"type": "mat"}],
+    "base": {**SUPINE, "hand_l": (0.25, 0.1, 0.05), "hand_r": (-0.25, 0.1, 0.05), "foot_l_pole": (0.1, -0.3, 1.2), "foot_r_pole": (-0.1, -0.3, 1.2)},
+    "keys": [
+        (0.0, {"foot_l": (0.08, 0.32, 0.45), "foot_r": (-0.08, 0.32, 0.45)}),
+        (0.5, {"pelvis": (0.0, 0.0, 0.17), "foot_l": (0.08, -0.12, 0.7), "foot_r": (-0.08, -0.12, 0.7)}),
+    ],
+}
+SIDE_LYING = {
+    "pelvis": (0.0, 0.0, 0.17),
+    "body": (0.0, -90.0, 0.0),
+    "head": 0.0,
+    "hand_r": (-0.72, 0.0, 0.12),
+    "hand_r_pole": (-0.5, 0.5, 0.2),
+    "hand_l": (-0.2, -0.22, 0.05),
+    "hand_l_pole": (-0.2, 0.2, 0.6),
+    "foot_r": (0.88, 0.0, 0.06),
+    "foot_l": (0.88, 0.0, 0.2),
+    "foot_l_pole": (0.4, -0.8, 0.2),
+    "foot_r_pole": (0.4, -0.8, 0.06),
+}
+EXERCISES["side_lying_leg_raise"] = {
+    "view": "front",
+    "seconds": 2.2,
+    "props": [{"type": "mat"}],
+    "base": SIDE_LYING,
+    "keys": [(0.0, {}), (0.5, {"foot_l": (0.8, 0.0, 0.58)})],
+}
+EXERCISES["tibialis_raise"] = {
+    "view": "side",
+    "seconds": 1.8,
+    "props": [{"type": "box", "size": (1.2, 0.2, 1.8), "y": 0.3}],
+    "base": {"pelvis": (0.0, 0.08, 0.9), "body": (-6.0, 0.0, 0.0), "foot_l": (0.12, -0.25, 0.075), "foot_r": (-0.12, -0.25, 0.075),
+             "hand_l": (0.22, 0.12, 0.85), "hand_r": (-0.22, 0.12, 0.85)},
+    "keys": [(0.0, {}), (0.5, {"toes_l": 35.0, "toes_r": 35.0, "foot_l": (0.12, -0.25, 0.11), "foot_r": (-0.12, -0.25, 0.11)})],
+}
+BEAR = {**QUADRUPED, "pelvis": (0.0, 0.25, 0.64), "toes_l": -60.0, "toes_r": -60.0,
+        "foot_l": (0.14, 0.55, 0.08), "foot_r": (-0.14, 0.55, 0.08), "foot_l_pole": (0.15, -0.6, 0.5), "foot_r_pole": (-0.15, -0.6, 0.5)}
+EXERCISES["bear_crawl"] = {
+    "view": "side",
+    "seconds": 1.6,
+    "props": [{"type": "mat"}],
+    "base": BEAR,
+    "keys": [
+        (0.0, {"hand_l": (0.18, -0.38, 0.06), "foot_r": (-0.14, 0.42, 0.1)}),
+        (0.5, {"hand_r": (-0.18, -0.38, 0.06), "foot_l": (0.14, 0.42, 0.1)}),
+    ],
+}
+EXERCISES["star_jump"] = {
+    "view": "front",
+    "seconds": 1.6,
+    "keys": [
+        (0.0, {"pelvis": (0.0, 0.12, 0.62), "body": (22.0, 0.0, 0.0), "head": -15.0, "foot_l": (0.15, 0.0, 0.075), "foot_r": (-0.15, 0.0, 0.075),
+               "hand_l": (0.16, -0.3, 0.7), "hand_r": (-0.16, -0.3, 0.7)}),
+        (0.4, {"pelvis": (0.0, 0.0, 1.2), "foot_l": (0.42, 0.0, 0.35), "foot_r": (-0.42, 0.0, 0.35), "toes_l": -30.0, "toes_r": -30.0,
+               "hand_l": (0.8, -0.05, 1.95), "hand_r": (-0.8, -0.05, 1.95), "hand_l_pole": (0.9, 0.3, 1.6), "hand_r_pole": (-0.9, 0.3, 1.6)}),
+        (0.7, {}),
+    ],
+}
+EXERCISES["figure_four_stretch"] = {
+    "view": "three_quarter",
+    "seconds": 2.4,
+    "props": [{"type": "mat"}],
+    "base": {**SUPINE, "foot_l": (0.12, -0.02, 0.55), "foot_l_pole": (0.15, -0.3, 1.2),
+             "foot_r": (0.06, 0.08, 0.5), "foot_r_pole": (-0.7, 0.0, 0.6), "toes_r": 0.0,
+             "hand_l": (0.16, -0.1, 0.42), "hand_r": (0.0, -0.1, 0.42), "hand_l_pole": (0.5, -0.3, 0.3), "hand_r_pole": (-0.5, -0.3, 0.3)},
+    "keys": [(0.0, {}), (0.5, {"foot_l": (0.12, -0.1, 0.58), "foot_r": (0.06, 0.0, 0.53), "hand_l": (0.16, -0.18, 0.45), "hand_r": (0.0, -0.18, 0.45)})],
+}
