@@ -10,7 +10,6 @@ const Map<CharacterRace, Map<CharacterSex, int>> modelHeightCm = {
   CharacterRace.human: {CharacterSex.female: 159, CharacterSex.male: 173},
   CharacterRace.elf: {CharacterSex.female: 187, CharacterSex.male: 200},
   CharacterRace.orc: {CharacterSex.female: 179, CharacterSex.male: 193},
-  CharacterRace.highElf: {CharacterSex.female: 193, CharacterSex.male: 206},
 };
 
 /// Fiche de départ pour un sexe et une race.

@@ -428,5 +428,10 @@ Demande de la propriétaire du projet : tenues, coiffures et barbes plus réalis
 - Paramètres → Mon compte : pseudo, code PIN (définir, changer, retirer), changer de compte, supprimer le compte (confirmation ; ses données sont effacées du téléphone).
 - La sauvegarde exporte et restaure le compte ouvert (format inchangé).
 
-## 37. Race Haut-elfe (12/11/2026)
-- Quatrième race jouable, originale : plus grande (193 cm / 206 cm) et plus élancée que l'Elfe, oreilles très longues balayées vers l'arrière. Mêmes curseurs, coiffures, teintes et équipements que les autres races.
+## 37. Race Haut-elfe (12/11/2026, retirée le 13/11/2026)
+- Ajoutée le 12/11/2026 puis retirée à la demande de la propriétaire du projet (trop proche de l'Elfe). Une fiche enregistrée en Haut-elfe se relit comme Elfe.
+
+## 38. Pose et armes en main (13/11/2026)
+- Au repos, le personnage se tient naturellement : bras le long du corps, paumes vers les cuisses, doigts relâchés.
+- Arme à une main (épée, dague, masse, hache, marteau) : poing fermé sur la poignée, lame vers l'avant et le bas, écartée de la jambe.
+- Bâton, sceptre ou hallebarde : avant-bras levé vers l'avant, poing fermé, arme verticale tenue vers le tiers inférieur.

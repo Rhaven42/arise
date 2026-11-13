@@ -55,8 +55,6 @@ SEXES = {"female": 0.0, "male": 1.0}
 RACES = {
     "human": {"height": 0.5, "proportions": 0.55},
     "elf": {"height": 0.7, "proportions": 0.85},
-    # Haut-elfe : plus grand et plus élancé encore, oreilles très longues.
-    "high_elf": {"height": 0.82, "proportions": 0.95},
     "orc": {"height": 0.65, "proportions": 0.35},
 }
 
@@ -167,10 +165,9 @@ def _race_deform(race, coords, groups):
         return coords
     out = [c.copy() for c in coords]
     ears = groups.get("ears", set())
-    if race in ("elf", "high_elf") and ears:
-        # Oreilles allongées vers le haut et l'arrière, de façon progressive ;
-        # celles du haut-elfe, bien plus longues, sont balayées vers l'arrière.
-        reach = (0.012, 0.022, 0.05) if race == "elf" else (0.02, 0.075, 0.075)
+    if race == "elf" and ears:
+        # Oreilles allongées vers le haut et l'arrière, de façon progressive.
+        reach = (0.012, 0.022, 0.05)
         zs = [coords[i].z for i in ears]
         z0, z1 = min(zs), max(zs)
         for i in ears:
@@ -939,30 +936,103 @@ def _muscle_states(states):
 
 # --- Squelette et poses -------------------------------------------------------
 
-# Rotations (os, axe dans le repère du corps au repos, degrés). L'axe X fait
-# avancer un membre vers l'arrière pour les bras et les jambes, et pencher le
-# buste ou la tête vers l'avant ; l'axe Y rapproche le bras gauche du corps.
-# Pose détendue et naturelle : bras le long du corps, coudes et doigts
-# légèrement fléchis, poids du corps sur la jambe gauche (bassin incliné,
-# genou droit relâché), épaules et tête un peu inclinées en contrepoids.
-_FINGERS = [f"{f}_{k}_{side}" for f in ("index", "middle", "ring", "pinky") for k in ("01", "02", "03") for side in ("l", "r")]
-POSES = {
-    "pose_a": [],
-    "pose_relaxed": [
-        ("upperarm_l", (0, 1, 0), 41), ("upperarm_r", (0, -1, 0), 41),
-        ("upperarm_l", (1, 0, 0), 2), ("upperarm_r", (1, 0, 0), 2),
-        ("lowerarm_l", (1, 0, 0), -9), ("lowerarm_r", (1, 0, 0), -9),
-        ("lowerarm_l", "twist", 35), ("lowerarm_r", "twist", -35),
-        ("hand_l", "twist", 15), ("hand_r", "twist", -15),
-        *[(bone, (1, 0, 0), -14) for bone in _FINGERS],
-        ("pelvis", (0, 1, 0), 2.5),
-        ("thigh_l", (0, 1, 0), 1.5), ("thigh_r", (0, -1, 0), 0.5),
-        ("thigh_r", (1, 0, 0), -5), ("calf_r", (1, 0, 0), 10),
-        ("spine_02", (0, -1, 0), 2.0),
-        ("neck_01", (1, 0, 0), 2.0),
-        ("head", (0, 1, 0), 2.5), ("head", (0, 0, 1), 4.0),
-    ],
-}
+# Pose de repos naturelle (13/11/2026) : bras le long du corps, paumes vers
+# les cuisses, doigts relâchés ; poids du corps sur la jambe gauche. Deux
+# variantes pour les armes : poing droit fermé (arme à une main), avant-bras
+# droit levé vers l'avant (bâton, sceptre, hallebarde). Les bras sont orientés
+# par la direction voulue de chaque os (repère du corps : X vers la gauche du
+# personnage, -Y vers l'avant, Z vers le haut).
+POSES = ("pose_a", "pose_relaxed", "pose_hold", "pose_staff")
+ARM_HANG = (0.13, 0.03)      # écart vers l'extérieur, recul du bras
+ELBOW_BEND = 0.2             # avancée de l'avant-bras (coude un peu fléchi)
+STAFF_UPPER = (-0.12, -0.12, -1.0)
+STAFF_FORE = (-0.05, -1.0, 0.12)
+FINGERS_SOFT = (-18, -22, -14)
+THUMB_SOFT = (-8, -10, 0)
+FINGERS_FIST = (-78, -95, -60)
+THUMB_FIST = (-30, -35, -20)
+
+
+def _hand_frame(arm, side):
+    """Repère de la main au repos : poignet, direction de l'avant-bras, axe
+    du poing (de l'auriculaire vers l'index), normale de la paume, base du
+    majeur."""
+    bones = arm.data.bones
+    def h(n):
+        return bones[n].head_local.copy()
+    wrist, elbow = h("hand_" + side), h("lowerarm_" + side)
+    fore = (wrist - elbow).normalized()
+    across = (h("index_01_" + side) - h("pinky_01_" + side)).normalized()
+    normal = fore.cross(across).normalized()
+    # En pose A, la paume regarde vers le bas.
+    if normal.z > 0:
+        normal = -normal
+    return wrist, fore, across, normal, h("middle_01_" + side)
+
+
+def _aim(arm, name, child, target):
+    """Oriente l'os [name] (vers la tête de [child]) dans la direction voulue."""
+    bpy.context.view_layer.update()
+    pb = arm.pose.bones[name]
+    current = (arm.pose.bones[child].head - pb.head).normalized()
+    q = current.rotation_difference(Vector(target).normalized())
+    m = pb.matrix.copy()
+    r = (q.to_matrix() @ m.to_3x3()).to_4x4()
+    r.translation = m.translation
+    pb.matrix = r
+
+
+def _palm_towards(arm, side, want, sign):
+    """Tourne l'avant-bras autour de son axe pour que la paume regarde [want]."""
+    bpy.context.view_layer.update()
+    pb = arm.pose.bones["lowerarm_" + side]
+    bones = arm.pose.bones
+    axis = (bones["hand_" + side].head - pb.head).normalized()
+    across = (bones["index_01_" + side].head - bones["pinky_01_" + side].head).normalized()
+    normal = axis.cross(across).normalized() * sign
+    w = Vector(want)
+    w = (w - axis * w.dot(axis)).normalized()
+    n = (normal - axis * normal.dot(axis)).normalized()
+    angle = math.atan2(axis.dot(n.cross(w)), n.dot(w))
+    m = pb.matrix.copy()
+    r = (Quaternion(axis, angle).to_matrix() @ m.to_3x3()).to_4x4()
+    r.translation = m.translation
+    pb.matrix = r
+
+
+def _curl(arm, side, fingers, thumb):
+    """Plie les doigts (et le pouce) vers la paume."""
+    _, _, _, normal, _ = _hand_frame(arm, side)
+    for finger, amounts in [(f, fingers) for f in ("index", "middle", "ring", "pinky")] + [("thumb", thumb)]:
+        for k, degrees in zip(("01", "02", "03"), amounts):
+            name = f"{finger}_{k}_{side}"
+            bone = arm.data.bones[name]
+            d = (bone.tail_local - bone.head_local).normalized()
+            _rotate(arm, name, d.cross(normal).normalized(), degrees)
+
+
+def _pose_body(arm, kind):
+    """Pose [kind] : « relaxed », « hold » (arme à une main) ou « staff »."""
+    for side, sx in (("l", 1), ("r", -1)):
+        _, fore, across, normal, _ = _hand_frame(arm, side)
+        sign = 1 if fore.cross(across).normalized().dot(normal) > 0 else -1
+        upper = (sx * ARM_HANG[0], ARM_HANG[1], -1.0)
+        lower = (sx * 0.04, -ELBOW_BEND, -1.0)
+        if side == "r" and kind == "staff":
+            upper, lower = STAFF_UPPER, STAFF_FORE
+        _aim(arm, "upperarm_" + side, "lowerarm_" + side, upper)
+        _aim(arm, "lowerarm_" + side, "hand_" + side, lower)
+        _aim(arm, "hand_" + side, "middle_01_" + side, lower)
+        _palm_towards(arm, side, (-sx, 0, 0), sign)
+        bpy.context.view_layer.update()
+        fist = side == "r" and kind != "relaxed"
+        _curl(arm, side, FINGERS_FIST if fist else FINGERS_SOFT, THUMB_FIST if fist else THUMB_SOFT)
+    for bone, axis, degrees in (
+        ("pelvis", (0, 1, 0), 2.5), ("thigh_l", (0, 1, 0), 1.5), ("thigh_r", (0, -1, 0), 0.5),
+        ("thigh_r", (1, 0, 0), -5), ("calf_r", (1, 0, 0), 10), ("spine_02", (0, -1, 0), 2.0),
+        ("neck_01", (1, 0, 0), 2.0), ("head", (0, 1, 0), 2.5), ("head", (0, 0, 1), 4.0),
+    ):
+        _rotate(arm, bone, axis, degrees)
 
 
 def _rotate(arm, name, axis, degrees):
@@ -993,12 +1063,12 @@ def _key_all(arm, frame):
 def _make_actions(arm):
     arm.animation_data_create()
     actions = []
-    for name, ops in POSES.items():
+    for name in POSES:
         _reset_pose(arm)
         action = bpy.data.actions.new(name)
         arm.animation_data.action = action
-        for bone, axis, degrees in ops:
-            _rotate(arm, bone, axis, degrees)
+        if name != "pose_a":
+            _pose_body(arm, name[len("pose_"):])
         _key_all(arm, 1)
         _key_all(arm, 2)
         action.use_fake_user = True
@@ -1391,6 +1461,7 @@ def _rig_and_skin(sex, race, objects, rigid):
         mod.object = arm
         obj.parent = arm
     bpy.data.objects.remove(source, do_unlink=True)
+    _seat_weapons(arm, {o.name: o for o in objects})
     _make_actions(arm)
     _exercise_actions(arm)
     return arm
@@ -1551,10 +1622,11 @@ ITEM_SOURCES = {
     "hood_twilight": ("clothes/donitz_monk_robe_hood", "cloth_violet", None),
 }
 
-# Gonflement des vraies pièces portées sur les mains et les pieds (mètres).
+# Gonflement des vraies pièces (mètres) : les vêtements du torse et des
+# jambes tombent plus amples (13/11/2026).
 ITEM_INFLATE = {
-    "leather_chest": 0.007,
-    "leather_legs": 0.005,
+    "leather_chest": 0.015,
+    "leather_legs": 0.011,
     "leather_hands": 0.003,
     "leather_feet": 0.006,
     "mail_hands": 0.003,
@@ -1693,6 +1765,45 @@ EXTERNAL_HELMS = {
     "great_helm_gilded": ("great_helm_gilded.glb", 1.5, 0.022, 0.006, 90),
     "horned_helm_void": ("horned_helm_void.glb", 2.1, 0.03, 0.006, 0),
 }
+
+# Armes en main : objet -> (tenue « up » ou « down », point de poignée au
+# moment de la construction, pointe construite vers le bas).
+WEAPON_FRAMES = {}
+WEAPON_TILT = 58     # lame inclinée vers le bas (degrés), arme à une main
+WEAPON_FLARE = 0.18   # écart de la lame vers l'extérieur, loin de la jambe
+
+
+def _seat_weapons(arm, objects):
+    """Met chaque arme dans le poing droit : poignée au creux de la main, axe
+    du poing pour un bâton (vertical une fois l'avant-bras levé), lame vers
+    l'avant, le bas et l'extérieur pour une arme à une main."""
+    wrist, fore, across, normal, middle = _hand_frame(arm, "r")
+    height = max(v.co.z for v in objects["body"].data.vertices)
+    seat = (wrist + middle) / 2 + normal * 0.0065 * height
+    back = -normal  # dos de la main : vers l'extérieur une fois le bras baissé
+    for name, (hold, grip, flipped) in WEAPON_FRAMES.items():
+        obj = objects.get(name)
+        if obj is None:
+            continue
+        if hold == "up":
+            tip = across
+        else:
+            a = math.radians(WEAPON_TILT)
+            tip = (across * math.cos(a) + fore * math.sin(a) + back * WEAPON_FLARE).normalized()
+        y = (normal - tip * normal.dot(tip)).normalized()
+        x = y.cross(tip)
+        rot = Matrix((x, y, tip)).transposed()
+        if flipped:
+            rot = rot @ Matrix.Rotation(math.radians(180), 3, "X")
+        basis = [v.co.copy() for v in obj.data.vertices]
+        moved = [seat + rot @ (co - grip) for co in basis]
+        keys = obj.data.shape_keys.key_blocks if obj.data.shape_keys else []
+        for key in keys:
+            for i, kd in enumerate(key.data):
+                kd.co = moved[i] + (kd.co - basis[i])
+        for i, v in enumerate(obj.data.vertices):
+            v.co = moved[i]
+
 
 # Armes importées (tool/character/external/weapons, préparées par
 # prep_weapons.py : poignée à l'origine, tête vers le haut) : tenue (« up »
@@ -1841,15 +1952,15 @@ def _equipment(template, groups, states, marks):
         ("mail_head", "mail", lambda c, p: (p == "head" and not face_open(c)) or (p == "neck"), 0.012, None),
         ("mail_chest", "mail", torso(0, 0.47, ("upperarm",)), 0.024, (0.53 * H, 0.9)),
         ("mail_hands", "mail", lambda c, p: p == "hand", 0.009, None),
-        ("mail_legs", "mail", lambda c, p: p in ("thigh", "shin"), 0.017, None),
+        ("mail_legs", "mail", lambda c, p: p in ("thigh", "shin"), 0.024, None),
         ("mail_feet", "steel", lambda c, p: p == "foot", 0.02, None),
         # Plates de l'Aube.
         ("plate_head", "steel", lambda c, p: p == "head" and not face_open(c), 0.026, None),
         ("plate_shoulders", "gold", lambda c, p: p in ("upperarm", "torso") and abs(c.x) > abs(j["shoulder_l"].x) * 0.55 and c.z > j["shoulder_l"].z - 0.045 * H and c.z < neck_z, 0.045, None),
-        ("plate_chest", "steel", torso(0, 0.585), 0.04, None),
+        ("plate_chest", "steel", torso(0, 0.585), 0.055, None),
         ("plate_hands", "steel", lambda c, p: p == "hand" or p == "forearm", 0.016, None),
         ("plate_belt", "gold", lambda c, p: p in ("torso", "thigh") and 0.47 * H < c.z < 0.585 * H, 0.05, (0.56 * H, 1.6)),
-        ("plate_legs", "steel", lambda c, p: p in ("thigh", "shin") and c.z > j["ankle_l"].z + 0.07 * H, 0.03, None),
+        ("plate_legs", "steel", lambda c, p: p in ("thigh", "shin") and c.z > j["ankle_l"].z + 0.07 * H, 0.04, None),
         ("plate_feet", "steel", lambda c, p: p == "foot" or (p == "shin" and c.z < j["ankle_l"].z + 0.1 * H), 0.028, None),
         # Capuche du Crépuscule : tête, nuque et haut des épaules.
         ("hood_twilight", "cloth_violet", lambda c, p: (p == "head" and not face_open(c)) or p == "neck" or (p == "torso" and c.z > j["shoulder_l"].z and abs(c.x) < abs(j["shoulder_l"].x)), 0.032, None),
@@ -1900,6 +2011,8 @@ def _equipment(template, groups, states, marks):
     ]
     sword[-1].data.materials.append(gold)
     _rigid_item("sword_dawn", sword, hand_r, states, None)
+    # Lame construite vers le bas : retournée avant d'être mise en main.
+    WEAPON_FRAMES["item_sword_dawn"] = ("down", grip.copy(), True)
 
     held["item_sword_dawn"] = "hand_r"
 
@@ -1913,6 +2026,7 @@ def _equipment(template, groups, states, marks):
     ]
     staff[1].data.materials.append(ember)
     _rigid_item("staff_ember", staff, hand_r, states, None)
+    WEAPON_FRAMES["item_staff_ember"] = ("up", grip - Vector((0, 0, 0.08 * H)), False)
     held["item_staff_ember"] = "hand_r"
 
     # Casques importés (modèles 3D créés par la propriétaire du projet, déjà
@@ -1972,11 +2086,15 @@ def _equipment(template, groups, states, marks):
         bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
         zs = [v.co.z for part in parts for v in part.data.vertices]
         scale = length * H / (max(zs) - min(zs))
-        flip = Matrix.Rotation(math.radians(180), 4, "X") if hold == "down" else Matrix.Identity(4)
+        # Bâtons tenus vers 40 % de leur longueur ; les autres armes gardent
+        # la poignée préparée par prep_weapons.py. Pointe vers +Z, puis mise
+        # dans le poing une fois le squelette créé (_seat_weapons).
+        shift = Vector((0, 0, min(zs) + 0.4 * (max(zs) - min(zs)))) if hold == "up" else Vector()
         for part in parts:
             for v in part.data.vertices:
-                v.co = grip + (flip @ (v.co * scale))
+                v.co = grip + (v.co - shift) * scale
         _rigid_item(item_id, parts, hand_r, states, None, smooth=True)
+        WEAPON_FRAMES["item_" + item_id] = (hold, grip.copy(), False)
         held["item_" + item_id] = "hand_r"
     return held
 

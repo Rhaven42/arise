@@ -10,16 +10,10 @@ enum CharacterSex { female, male }
 enum CharacterRace {
   human,
   elf,
-  orc,
+  orc;
 
-  /// Haut-elfe : plus grand et plus élancé, oreilles très longues.
-  highElf;
-
-  /// Identifiant stable des fichiers et des textes (`high_elf`).
-  String get id => switch (this) {
-    CharacterRace.highElf => 'high_elf',
-    _ => name,
-  };
+  /// Identifiant stable des fichiers et des textes.
+  String get id => name;
 }
 
 /// Fiche du personnage, enregistrée en JSON sur le téléphone.
@@ -31,7 +25,9 @@ enum CharacterRace {
 abstract class CharacterSheet with _$CharacterSheet {
   const factory CharacterSheet({
     required CharacterSex sex,
-    required CharacterRace race,
+
+    /// Une race retirée (Haut-elfe, 13/11/2026) se relit comme Elfe.
+    @JsonKey(unknownEnumValue: CharacterRace.elf) required CharacterRace race,
 
     /// Taille en centimètres.
     required int heightCm,

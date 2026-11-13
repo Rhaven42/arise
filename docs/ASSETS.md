@@ -25,7 +25,7 @@ Une nouvelle implémentation de `ExerciseAnimationPlayer` lira le `.glb`, jouera
 ## 2. Personnage (phases 6A et 6B)
 
 ### État actuel
-Huit modèles de substitution générés par `tool/character/build_characters.py` (Blender + extension MPFB, maillage de base MakeHuman, licence CC0) : `assets/models/{human,elf,orc,high_elf}_{female,male}.glb` (race Haut-elfe ajoutée le 12/11/2026 : plus grande et plus élancée, oreilles très longues balayées vers l'arrière). Aucun asset tiers protégé. Chaque fichier contient :
+Six modèles de substitution générés par `tool/character/build_characters.py` (Blender + extension MPFB, maillage de base MakeHuman, licence CC0) : `assets/models/{human,elf,orc}_{female,male}.glb` (race Haut-elfe retirée le 13/11/2026). Aucun asset tiers protégé. Chaque fichier contient :
 - `body` (matériau `skin`, texture de peau réaliste ramenée à une teinte neutre : la couleur choisie dans l'application est appliquée par-dessus ; peaux MakeHuman `young_caucasian_male` / `young_caucasian_female`, CC0), `tusks` pour les orques ;
 - `eye_sclera` (texture) et `eye_iris` (matériau `iris`, teinté par la couleur des yeux) — yeux MakeHuman « high-poly » (CC0) ;
 - `lashes` (cils MakeHuman `eyelashes01`, CC0) ;

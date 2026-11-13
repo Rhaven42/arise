@@ -313,6 +313,17 @@ function prepareMaterials(root) {
   });
 }
 
+// Pose selon l'arme portée : bâton, sceptre et hallebarde se tiennent
+// avant-bras levé ; les autres armes, poing fermé le long du corps.
+const STAFF_WEAPONS = ['item_staff_', 'item_scepter_', 'item_halberd_'];
+const HAND_WEAPONS = ['item_sword_', 'item_dagger_', 'item_mace_', 'item_axe_', 'item_cleaver_', 'item_hammer_', 'item_scimitar_', 'item_glaive_'];
+function restPose(items) {
+  const list = items || [];
+  if (list.some((i) => STAFF_WEAPONS.some((p) => i.startsWith(p)))) return 'pose_staff';
+  if (list.some((i) => HAND_WEAPONS.some((p) => i.startsWith(p)))) return 'pose_hold';
+  return 'pose_relaxed';
+}
+
 // Pose détendue fixe et respiration (clip additif).
 function buildRig(gltf) {
   const mixer = new THREE.AnimationMixer(gltf.scene);
@@ -353,9 +364,10 @@ const LASHES = new THREE.Color('#1c1410');
 
 // Démonstration d'exercice : clip `ex_<mouvement>` en boucle, à la place de
 // la pose détendue et de la respiration ; sinon pose détendue.
-function setMotion(rig, motion) {
+function setMotion(rig, motion, pose) {
   const clip = motion ? rig.clips['ex_' + motion] : null;
-  if (rig.motion === (clip ? clip.name : null) && rig.motionSet) return;
+  const rest = pose || 'pose_relaxed';
+  if (rig.motion === (clip ? clip.name : null) && rig.motionSet && (clip || rig.pose === rest)) return;
   rig.motionSet = true;
   rig.motion = clip ? clip.name : null;
   if (rig.exerciseAction) {
@@ -377,8 +389,8 @@ function setMotion(rig, motion) {
     action.reset().setLoop(THREE.LoopRepeat, Infinity).play();
     rig.exerciseAction = action;
   } else {
-    if (rig.breathAction) rig.breathAction.reset().play();
-    setPose(rig, 'pose_relaxed');
+    if (rig.breathAction && !rig.breathAction.isRunning()) rig.breathAction.reset().play();
+    setPose(rig, rest);
   }
 }
 
@@ -435,7 +447,7 @@ function applyState(state) {
     }
   });
   const rig = rigs.get(state.model);
-  if (rig) setMotion(rig, state.motion || null);
+  if (rig) setMotion(rig, state.motion || null, restPose(state.items));
   setLighting(state.lighting);
   const height = model.userData.top * (state.scale || 1);
   const shadows = state.motion ? [] : state.shadows || [];
