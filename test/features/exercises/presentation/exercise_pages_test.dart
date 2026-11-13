@@ -39,6 +39,8 @@ void main() {
       await tester.pump();
       // Mannequin 2D animé, avec pause.
       expect(find.byType(FigureAnimation), findsOneWidget);
+      // Le mouvement se charge après la liste des vidéos du prof.
+      await tester.pump(const Duration(milliseconds: 100));
       await tester.tap(find.byKey(FigureAnimation.pauseKey));
       await tester.pump();
       expect(find.byTooltip("Lancer l'animation"), findsOneWidget);
