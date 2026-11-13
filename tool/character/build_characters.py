@@ -177,39 +177,48 @@ def _race_deform(race, coords, groups):
             t = t * t
             side = 1 if coords[i].x > 0 else -1
             out[i] += Vector((side * reach[0] * t, reach[1] * t, reach[2] * t))
+    def ss(e0, e1, x):
+        # Transition douce de 0 (en e0) à 1 (en e1) : aucune cassure.
+        t = max(0.0, min(1.0, (x - e0) / (e1 - e0)))
+        return t * t * (3 - 2 * t)
+
+    lips = groups.get("lips", set())
+    mouth_z = sum(coords[i].z for i in lips) / max(len(lips), 1)
+    head = groups.get("body", set())
+    top = max(coords[i].z for i in head)
+    eye = groups.get("helper-l-eye", set())
+    eye_z = sum(coords[i].z for i in eye) / len(eye) if eye else mouth_z + 0.07
+
+    def jaw(c):
+        # Poids de la mâchoire : sous la bouche, à l'avant, avec des bords
+        # progressifs vers le cou et vers la nuque.
+        return (ss(mouth_z + 0.005, mouth_z - 0.055, c.z) * ss(top - 0.30, top - 0.24, c.z)
+                * (1 - ss(0.0, 0.05, c.y)))
+
     if race == "elf":
         # Visage plus fin : mâchoire resserrée, pommettes hautes.
-        lips = groups.get("lips", set())
-        mouth_z = sum(coords[i].z for i in lips) / max(len(lips), 1)
-        head = groups.get("body", set())
-        top = max(coords[i].z for i in head)
         for i in head:
             c = coords[i]
-            if top - 0.30 < c.z < mouth_z + 0.01 and c.y < 0.03:
-                k = min(1.0, (mouth_z + 0.01 - c.z) / 0.06)
-                out[i].x *= 1 - 0.08 * k
-            if mouth_z + 0.03 < c.z < mouth_z + 0.06 and c.y < -0.04 and abs(c.x) > 0.03:
-                out[i].z += 0.003
+            out[i].x *= 1 - 0.08 * jaw(c)
+            cheek = ss(mouth_z + 0.02, mouth_z + 0.035, c.z) * (1 - ss(mouth_z + 0.05, mouth_z + 0.065, c.z))
+            out[i].z += 0.003 * cheek * ss(0.03, 0.05, -c.y) * ss(0.02, 0.04, abs(c.x))
     if race == "orc":
-        lips = groups.get("lips", set())
-        mouth_z = sum(coords[i].z for i in lips) / max(len(lips), 1)
-        head = groups.get("body", set())
-        top = max(coords[i].z for i in head)
         for i in head:
             c = coords[i]
+            front = ss(0.03, 0.06, -c.y)
             # Mâchoire plus large sous la bouche.
-            if top - 0.30 < c.z < mouth_z + 0.005 and c.y < 0.02:
-                k = min(1.0, (mouth_z + 0.005 - c.z) / 0.06)
-                out[i].x *= 1 + 0.28 * k
-                out[i].y -= 0.006 * k
-            # Arcade sourcilière lourde.
-            if mouth_z + 0.065 < c.z < mouth_z + 0.105 and c.y < -0.05:
-                out[i].y -= 0.014
-                out[i].z -= 0.004
+            k = jaw(c)
+            out[i].x *= 1 + 0.28 * k
+            out[i].y -= 0.006 * k
+            # Arcade sourcilière lourde, au-dessus des paupières (les yeux ne
+            # bougent pas : on ne déplace pas leur contour).
+            brow = ss(eye_z + 0.012, eye_z + 0.024, c.z) * (1 - ss(eye_z + 0.045, eye_z + 0.065, c.z))
+            out[i].y -= 0.012 * brow * front
             # Nez épaté et large.
-            if mouth_z + 0.015 < c.z < mouth_z + 0.055 and c.y < -0.07 and abs(c.x) < 0.025:
-                out[i].x *= 1.35
-                out[i].y += 0.005
+            nose = (ss(mouth_z + 0.01, mouth_z + 0.02, c.z) * (1 - ss(mouth_z + 0.045, mouth_z + 0.058, c.z))
+                    * (1 - ss(0.018, 0.034, abs(c.x))) * ss(0.06, 0.08, -c.y))
+            out[i].x *= 1 + 0.35 * nose
+            out[i].y += 0.004 * nose
             # Carrure plus large du buste et des épaules, avec une transition
             # douce (sans cassure aux poignets ni à la taille).
             t = (c.z / top - 0.60) / 0.12
@@ -2344,6 +2353,7 @@ def build(sex, race, out_dir):
         fit.push_out(
             [o for o in bpy.data.objects if o.type == "MESH" and o.name.startswith(("outfit_", "item_")) and o.name not in held],
             bpy.data.objects["body"],
+            margin=0.007,
         )
     # Tenues Sketchfab (fit_outfits.py) : ajustées sur ce corps, exportées
     # chacune dans son propre fichier.

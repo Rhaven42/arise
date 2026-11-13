@@ -30,6 +30,8 @@ def _tint_textured(mat, rgba):
     bsdf = next(n for n in nodes if n.bl_idname == "ShaderNodeBsdfPrincipled")
     tex = next((n for n in nodes if n.bl_idname == "ShaderNodeTexImage"), None)
     if tex is None:
+        # Pièce sans texture : la teinte devient sa couleur.
+        bsdf.inputs["Base Color"].default_value = rgba
         return
     mix = nodes.new("ShaderNodeMix")
     mix.data_type = "RGBA"

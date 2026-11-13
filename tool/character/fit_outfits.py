@@ -483,16 +483,41 @@ def push_out(objects, body, margin=0.003):
     bm.free()
     for obj in objects:
         keys = obj.data.shape_keys.key_blocks if obj.data.shape_keys else []
-        for i, v in enumerate(obj.data.vertices):
+        verts = obj.data.vertices
+        n = len(verts)
+        need = [Vector() for _ in range(n)]
+        for i, v in enumerate(verts):
             loc, nrm, _, _ = bvh.find_nearest(v.co)
-            if loc is None:
-                continue
-            d = (v.co - loc).dot(nrm)
-            if d < margin:
-                delta = nrm * (margin - d)
-                v.co += delta
+            if loc is not None:
+                d = (v.co - loc).dot(nrm)
+                if d < margin:
+                    need[i] = nrm * (margin - d)
+        # Déplacement lissé sur les voisins : le tissu se soulève d'un bloc
+        # au lieu de se hérisser sommet par sommet.
+        links = [[] for _ in range(n)]
+        for e in obj.data.edges:
+            a, b = e.vertices
+            links[a].append(b)
+            links[b].append(a)
+        delta = [d.copy() for d in need]
+        for _ in range(6):
+            nxt = []
+            for i in range(n):
+                if links[i]:
+                    avg = sum((delta[j] for j in links[i]), Vector()) / len(links[i])
+                    m = (delta[i] + avg) / 2
+                else:
+                    m = delta[i]
+                # Jamais moins que ce qu'exige le sommet lui-même.
+                if need[i].length_squared > 0 and m.dot(need[i]) < need[i].length_squared:
+                    m = m + need[i] * (1 - m.dot(need[i]) / need[i].length_squared)
+                nxt.append(m)
+            delta = nxt
+        for i, v in enumerate(verts):
+            if delta[i].length_squared > 0:
+                v.co += delta[i]
                 for key in keys:
-                    key.data[i].co += delta
+                    key.data[i].co += delta[i]
 
 
 def _split_skin(obj):
@@ -534,7 +559,13 @@ def _split_skin(obj):
     obj.data.materials.append(underwear)
     uv = obj.data.uv_layers.active.data
     mask = skin
+    # Au-dessus du buste (cou, épaules), tout est de la peau : les taches
+    # sombres de la texture d'origine ne sont pas des sous-vêtements.
+    top = max(v.co.z for v in obj.data.vertices)
     for poly in obj.data.polygons:
+        if poly.center.z > 0.8 * top:
+            poly.material_index = 0
+            continue
         u = sum(uv[i].uv.x for i in poly.loop_indices) / poly.loop_total
         v = sum(uv[i].uv.y for i in poly.loop_indices) / poly.loop_total
         x = min(w - 1, max(0, int(u % 1.0 * w)))
