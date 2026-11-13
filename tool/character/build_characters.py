@@ -167,8 +167,9 @@ def _race_deform(race, coords, groups):
     out = [c.copy() for c in coords]
     ears = groups.get("ears", set())
     if race == "elf" and ears:
-        # Oreilles allongées vers le haut et l'arrière, de façon progressive.
-        reach = (0.012, 0.022, 0.05)
+        # Oreilles longues et pointues, vers le haut et l'arrière, de façon
+        # progressive (nettement plus marquées le 13/11/2026).
+        reach = (0.02, 0.04, 0.085)
         zs = [coords[i].z for i in ears]
         z0, z1 = min(zs), max(zs)
         for i in ears:
@@ -176,6 +177,19 @@ def _race_deform(race, coords, groups):
             t = t * t
             side = 1 if coords[i].x > 0 else -1
             out[i] += Vector((side * reach[0] * t, reach[1] * t, reach[2] * t))
+    if race == "elf":
+        # Visage plus fin : mâchoire resserrée, pommettes hautes.
+        lips = groups.get("lips", set())
+        mouth_z = sum(coords[i].z for i in lips) / max(len(lips), 1)
+        head = groups.get("body", set())
+        top = max(coords[i].z for i in head)
+        for i in head:
+            c = coords[i]
+            if top - 0.30 < c.z < mouth_z + 0.01 and c.y < 0.03:
+                k = min(1.0, (mouth_z + 0.01 - c.z) / 0.06)
+                out[i].x *= 1 - 0.08 * k
+            if mouth_z + 0.03 < c.z < mouth_z + 0.06 and c.y < -0.04 and abs(c.x) > 0.03:
+                out[i].z += 0.003
     if race == "orc":
         lips = groups.get("lips", set())
         mouth_z = sum(coords[i].z for i in lips) / max(len(lips), 1)
@@ -186,17 +200,23 @@ def _race_deform(race, coords, groups):
             # Mâchoire plus large sous la bouche.
             if top - 0.30 < c.z < mouth_z + 0.005 and c.y < 0.02:
                 k = min(1.0, (mouth_z + 0.005 - c.z) / 0.06)
-                out[i].x *= 1 + 0.16 * k
-            # Arcade sourcilière marquée.
-            if mouth_z + 0.07 < c.z < mouth_z + 0.10 and c.y < -0.06:
-                out[i].y -= 0.006
+                out[i].x *= 1 + 0.28 * k
+                out[i].y -= 0.006 * k
+            # Arcade sourcilière lourde.
+            if mouth_z + 0.065 < c.z < mouth_z + 0.105 and c.y < -0.05:
+                out[i].y -= 0.014
+                out[i].z -= 0.004
+            # Nez épaté et large.
+            if mouth_z + 0.015 < c.z < mouth_z + 0.055 and c.y < -0.07 and abs(c.x) < 0.025:
+                out[i].x *= 1.35
+                out[i].y += 0.005
             # Carrure plus large du buste et des épaules, avec une transition
             # douce (sans cassure aux poignets ni à la taille).
             t = (c.z / top - 0.60) / 0.12
             t = max(0.0, min(1.0, t))
             u = (top - 0.18 - c.z) / 0.06
             u = max(0.0, min(1.0, u))
-            out[i].x *= 1 + 0.07 * (t * t * (3 - 2 * t)) * u
+            out[i].x *= 1 + 0.12 * (t * t * (3 - 2 * t)) * u
     return out
 
 
@@ -1534,8 +1554,15 @@ def _rig_and_skin(sex, race, objects, rigid):
         obj.parent = arm
     bpy.data.objects.remove(source, do_unlink=True)
     _seat_weapons(arm, {o.name: o for o in objects})
+    # Les poses se calculent squelette seul : sans cela, chaque mise à jour
+    # redéformerait toutes les pièces (des centaines), ce qui prend des heures.
+    mods = [m for o in objects for m in o.modifiers if m.type == "ARMATURE"]
+    for m in mods:
+        m.show_viewport = False
     _make_actions(arm)
     _exercise_actions(arm)
+    for m in mods:
+        m.show_viewport = True
     return arm
 
 
@@ -2321,7 +2348,7 @@ def build(sex, race, out_dir):
     # Pièces d'armure fournies (pieces.json) : un fichier par pièce.
     outfit_sets.update(fit.add_slot_pieces(bpy.data.objects["body"], _joints(co, groups), height, _part))
     for set_id, pieces in outfit_sets.items():
-        tint = fit.load_outfits()[set_id].get("tint")
+        tint = fit.load_outfits().get(set_id, {}).get("tint")
         if tint:
             # Tenue sans texture : teinte de base, et teignable en boutique
             # (matériau « dye_<objet> »).

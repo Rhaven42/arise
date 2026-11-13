@@ -232,7 +232,7 @@ def _fit_arm(vs, j, side, body_points, part_of_point, islands, smooth=False):
     sh, el, wr = j["shoulder_" + side], j["elbow_" + side], j["wrist_" + side]
     sg = 1 if side == "l" else -1
     rest_dir = (wr - sh).normalized()
-    sample = [v.co for v in list(vs)[:: max(1, len(vs) // 3000)]]
+    sample = [v.co for v in list(vs)[:: max(1, len(vs) // 800)]]
 
     def score(q):
         e, w = sh + q @ (el - sh), sh + q @ (wr - sh)
@@ -247,8 +247,8 @@ def _fit_arm(vs, j, side, body_points, part_of_point, islands, smooth=False):
         return n
 
     best, best_q = -1, None
-    for down in range(-10, 90, 5):
-        for fwd in range(-30, 35, 10):
+    for down in range(-10, 90, 8):
+        for fwd in range(-20, 25, 10):
             r, f = math.radians(down), math.radians(fwd)
             d = Vector((sg * math.cos(r) * math.cos(f), -math.cos(r) * math.sin(f), -math.sin(r)))
             q = rest_dir.rotation_difference(d).to_matrix()
