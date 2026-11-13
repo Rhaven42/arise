@@ -92,6 +92,84 @@ const List<Credit> ccByCredits = [
     license: CreditLicense.ccBy,
     source: 'makehumancommunity.org/node/1448',
   ),
+  Credit(
+    work: 'Modular Medieval Armor',
+    author: 'Jhon Panesso',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/f4156f249ea34c19afb57519f6b032af',
+  ),
+  Credit(
+    work: 'Medieval Knight Armor (Low-poly / Rigged)',
+    author: 'INKXO',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/428913948904425e8daec81eea9aa287',
+  ),
+  Credit(
+    work: 'Old king armor',
+    author: 'Pedro B. Goulart',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/f5a4479d211e49d49937b55fd9478e85',
+  ),
+  Credit(
+    work: 'free knight armor 2k',
+    author: 'DEYMAR',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/8009434a1776469ea8cb3225c2d63dfb',
+  ),
+  Credit(
+    work: 'Female Noble Knight Armor',
+    author: 'Meast',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/5b40c2e4b40d48378d595268d2db69bb',
+  ),
+  Credit(
+    work: 'Leather Armor',
+    author: 'Blueprint Games',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/0693e6cbc82b47f7a8c08a7bb87ae72b',
+  ),
+  Credit(
+    work: 'Fantasy scaled armor',
+    author: 'nordwar',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/c592ef6e41b346bca2e7de9109388276',
+  ),
+  Credit(
+    work: 'Viking lamellar armor',
+    author: 'nordwar',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/297c2536534c4045aa0be028d10d39d4',
+  ),
+  Credit(
+    work: 'Elven Ranger',
+    author: 'BiscuitEater',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/daed59994fd340bc8f7e1d9bb30d6cdf',
+  ),
+  Credit(
+    work: 'The Knight',
+    author: 'klava88',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/6c619f8c392a469eac9fddcce9a3aa55',
+  ),
+  Credit(
+    work: 'samurai armor set female',
+    author: 'stasbelyk13',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/a4fc24bfb52b4625945797ad01d0f8a0',
+  ),
+  Credit(
+    work: 'Medieval Guard',
+    author: 'Taylor',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/ca548172f0984660bc4213b9404284fa',
+  ),
+  Credit(
+    work: 'Cloak / Robe',
+    author: 'xdragonxallix',
+    license: CreditLicense.ccBy,
+    source: 'sketchfab.com/3d-models/13532c211daf4d1b8852276eea74d845',
+  ),
 ];
 
 /// Autres ressources (mention non obligatoire, faite par courtoisie).

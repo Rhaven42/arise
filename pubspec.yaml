@@ -57,6 +57,19 @@ flutter:
     - assets/sounds/
     - assets/music/
     - assets/models/
+    - assets/outfits/obsidian_knight/
+    - assets/outfits/silver_knight/
+    - assets/outfits/golden_king/
+    - assets/outfits/wanderer_coat/
+    - assets/outfits/noble_gown/
+    - assets/outfits/hunter_leather/
+    - assets/outfits/scale_warden/
+    - assets/outfits/north_lamellar/
+    - assets/outfits/sylvan_ranger/
+    - assets/outfits/oath_knight/
+    - assets/outfits/lotus_samurai/
+    - assets/outfits/city_guard/
+    - assets/outfits/pale_coat/
     - assets/items/
     - assets/viewer/
     - assets/fonts/cinzel/OFL.txt

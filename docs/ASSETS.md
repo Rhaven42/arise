@@ -102,3 +102,9 @@ Les bips du lecteur de séance (`countdown`, `start`, `rest`, `finish`) restent 
 - Préparation : soudure des sommets puis réduction à environ 15 000 triangles, textures 1024 px en WebP, rugosité du métal relevée à 0,38 au minimum (le modèle brut est presque un miroir). Source allégée versionnée dans `tool/character/external/`.
 - Intégration : `EXTERNAL_HELMS` dans `tool/character/build_characters.py` (quart de tour, largeur rapportée à celle de la tête, hauteur et recul), pièce rigide portée par l'os de la tête dans les huit modèles.
 - Pièces : `great_helm_gilded` (Grand heaume doré, tête, épique).
+
+## Tenues Sketchfab (13/11/2026)
+- Liste, auteurs et licences : `tool/character/outfits.json` (CC-BY, crédits dans l'application).
+- Chaîne : téléchargement brut (hors dépôt) → `tool/character/prep_outfits.py` (nettoyage, 30 000 triangles et textures 1024 px au plus, `tool/character/external/outfits/`) → `build_characters.py` + `fit_outfits.py` (ajustement sur chaque corps, découpe par emplacement, formes de corpulence, poids de peau) → `compress_models.sh … assets/models assets/outfits`.
+- Une vraie tenue d'artiste reste préférable : livrer chaque pièce séparée, en pose A, pour le squelette MPFB « game_engine ».
+

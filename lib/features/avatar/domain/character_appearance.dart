@@ -22,6 +22,7 @@ class CharacterAppearance {
     this.beardId,
     this.makeupId,
     this.itemNodes = const [],
+    this.packs = const [],
     this.hiddenOutfit = const [],
     this.dyes = const {},
     this.auraColor,
@@ -69,6 +70,7 @@ class CharacterAppearance {
           ? 'makeup_${two(sheet.makeupStyle)}'
           : null,
       itemNodes: loadout.itemNodes,
+      packs: loadout.packs,
       hiddenOutfit: loadout.hiddenOutfit,
       dyes: loadout.dyes,
     );
@@ -94,6 +96,9 @@ class CharacterAppearance {
 
   /// Pièces d'équipement visibles.
   final List<String> itemNodes;
+
+  /// Tenues à charger en plus du modèle (fichiers séparés).
+  final List<String> packs;
 
   /// Pièces de la tenue de départ masquées.
   final List<String> hiddenOutfit;
@@ -123,6 +128,7 @@ class CharacterAppearance {
         beardId: beardId,
         makeupId: makeupId,
         itemNodes: itemNodes,
+        packs: packs,
         hiddenOutfit: hiddenOutfit,
         dyes: dyes,
         auraColor: auraColor,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:arise/core/config/game_config.dart';
 import 'package:arise/features/inventory/domain/equipment.dart';
 import 'package:arise/features/inventory/domain/inventory.dart';
@@ -50,6 +52,45 @@ void main() {
     final swap = loadoutOf(bag, tryOn: itemById('plate_chest'));
     expect(swap.itemNodes, isNot(contains('item_leather_chest')));
   });
+
+  test(
+    'tenues importées : chaque pièce vient de son fichier, chargé une fois',
+    () {
+      final imported = equipmentCatalog.where((i) => i.pack != null).toList();
+      expect(imported, isNotEmpty);
+      for (final item in imported) {
+        expect(item.id, startsWith('${item.pack}_'));
+        expect(item.setId, item.pack);
+        expect(equipmentSets, contains(item.pack));
+        expect(
+          File('assets/outfits/${item.pack}/human_male.glb').existsSync(),
+          isTrue,
+        );
+      }
+      const bag = Inventory(
+        owned: [
+          'obsidian_knight_chest',
+          'obsidian_knight_legs',
+          'leather_feet',
+        ],
+        equipped: {
+          EquipmentSlot.chest: 'obsidian_knight_chest',
+          EquipmentSlot.legs: 'obsidian_knight_legs',
+          EquipmentSlot.feet: 'leather_feet',
+        },
+      );
+      final loadout = loadoutOf(bag);
+      expect(loadout.packs, ['obsidian_knight']);
+      expect(
+        loadout.itemNodes,
+        containsAll([
+          'item_obsidian_knight_chest',
+          'item_obsidian_knight_legs',
+        ]),
+      );
+      expect(loadoutOf(const Inventory()).packs, isEmpty);
+    },
+  );
 
   test('coiffures de la boutique', () {
     final locked = gameConfig.shop.lockedHairStyles.first;

@@ -34,6 +34,7 @@ class EquipmentItem {
     this.hidesHair = false,
     this.baseId,
     this.tint,
+    this.pack,
   });
 
   /// Identifiant stable ; la pièce 3D s'appelle `item_<id>`.
@@ -57,6 +58,10 @@ class EquipmentItem {
   /// Teinte par défaut d'un objet exclusif (ARGB), remplaçable par une
   /// teinture.
   final int? tint;
+
+  /// Tenue importée (fichier 3D séparé `assets/outfits/<pack>/`) qui
+  /// contient la pièce, ou `null` si elle est dans le modèle du personnage.
+  final String? pack;
 
   bool get isExclusive => baseId != null;
 
@@ -128,6 +133,19 @@ const List<String> equipmentSets = [
   'awakened_leather',
   'warden_mail',
   'dawn_plate',
+  'obsidian_knight',
+  'silver_knight',
+  'golden_king',
+  'wanderer_coat',
+  'noble_gown',
+  'hunter_leather',
+  'scale_warden',
+  'north_lamellar',
+  'sylvan_ranger',
+  'oath_knight',
+  'lotus_samurai',
+  'city_guard',
+  'pale_coat',
 ];
 
 /// Catalogue complet des objets (créations originales, docs/ASSETS.md §3).
@@ -408,6 +426,398 @@ const List<EquipmentItem> equipmentCatalog = [
     id: 'hammer_runic',
     slot: EquipmentSlot.weapon,
     rarity: Rarity.epic,
+  ),
+  // Chevalier d'Obsidienne (Sketchfab, Jhon Panesso, CC-BY).
+  EquipmentItem(
+    id: 'obsidian_knight_head',
+    slot: EquipmentSlot.head,
+    rarity: Rarity.epic,
+    setId: 'obsidian_knight',
+    hidesHair: true,
+    pack: 'obsidian_knight',
+  ),
+  EquipmentItem(
+    id: 'obsidian_knight_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    setId: 'obsidian_knight',
+    pack: 'obsidian_knight',
+  ),
+  EquipmentItem(
+    id: 'obsidian_knight_hands',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.epic,
+    setId: 'obsidian_knight',
+    pack: 'obsidian_knight',
+  ),
+  EquipmentItem(
+    id: 'obsidian_knight_legs',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.epic,
+    setId: 'obsidian_knight',
+    pack: 'obsidian_knight',
+  ),
+  EquipmentItem(
+    id: 'obsidian_knight_feet',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.epic,
+    setId: 'obsidian_knight',
+    pack: 'obsidian_knight',
+  ),
+  // Chevalier d'Argent (Sketchfab, INKXO, CC-BY).
+  EquipmentItem(
+    id: 'silver_knight_head',
+    slot: EquipmentSlot.head,
+    rarity: Rarity.epic,
+    setId: 'silver_knight',
+    hidesHair: true,
+    pack: 'silver_knight',
+  ),
+  EquipmentItem(
+    id: 'silver_knight_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    setId: 'silver_knight',
+    pack: 'silver_knight',
+  ),
+  EquipmentItem(
+    id: 'silver_knight_hands',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.epic,
+    setId: 'silver_knight',
+    pack: 'silver_knight',
+  ),
+  EquipmentItem(
+    id: 'silver_knight_legs',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.epic,
+    setId: 'silver_knight',
+    pack: 'silver_knight',
+  ),
+  EquipmentItem(
+    id: 'silver_knight_feet',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.epic,
+    setId: 'silver_knight',
+    pack: 'silver_knight',
+  ),
+  // Armure du Roi doré (Sketchfab, Pedro B. Goulart, CC-BY).
+  EquipmentItem(
+    id: 'golden_king_head',
+    slot: EquipmentSlot.head,
+    rarity: Rarity.legendary,
+    setId: 'golden_king',
+    hidesHair: true,
+    pack: 'golden_king',
+  ),
+  EquipmentItem(
+    id: 'golden_king_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.legendary,
+    setId: 'golden_king',
+    pack: 'golden_king',
+  ),
+  EquipmentItem(
+    id: 'golden_king_hands',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.legendary,
+    setId: 'golden_king',
+    pack: 'golden_king',
+  ),
+  EquipmentItem(
+    id: 'golden_king_legs',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.legendary,
+    setId: 'golden_king',
+    pack: 'golden_king',
+  ),
+  EquipmentItem(
+    id: 'golden_king_feet',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.legendary,
+    setId: 'golden_king',
+    pack: 'golden_king',
+  ),
+  // Tenue de l'Errant (Sketchfab, DEYMAR, CC-BY).
+  EquipmentItem(
+    id: 'wanderer_coat_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    setId: 'wanderer_coat',
+    pack: 'wanderer_coat',
+  ),
+  EquipmentItem(
+    id: 'wanderer_coat_hands',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.rare,
+    setId: 'wanderer_coat',
+    pack: 'wanderer_coat',
+  ),
+  EquipmentItem(
+    id: 'wanderer_coat_legs',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.rare,
+    setId: 'wanderer_coat',
+    pack: 'wanderer_coat',
+  ),
+  EquipmentItem(
+    id: 'wanderer_coat_feet',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.rare,
+    setId: 'wanderer_coat',
+    pack: 'wanderer_coat',
+  ),
+  // Atours de la Noble (Sketchfab, Meast, CC-BY).
+  EquipmentItem(
+    id: 'noble_gown_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    setId: 'noble_gown',
+    pack: 'noble_gown',
+  ),
+  EquipmentItem(
+    id: 'noble_gown_legs',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.epic,
+    setId: 'noble_gown',
+    pack: 'noble_gown',
+  ),
+  // Cuir du Traqueur (Sketchfab, Blueprint Games, CC-BY).
+  EquipmentItem(
+    id: 'hunter_leather_head',
+    slot: EquipmentSlot.head,
+    rarity: Rarity.common,
+    setId: 'hunter_leather',
+    hidesHair: true,
+    pack: 'hunter_leather',
+  ),
+  EquipmentItem(
+    id: 'hunter_leather_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.common,
+    setId: 'hunter_leather',
+    pack: 'hunter_leather',
+  ),
+  EquipmentItem(
+    id: 'hunter_leather_hands',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.common,
+    setId: 'hunter_leather',
+    pack: 'hunter_leather',
+  ),
+  EquipmentItem(
+    id: 'hunter_leather_legs',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.common,
+    setId: 'hunter_leather',
+    pack: 'hunter_leather',
+  ),
+  EquipmentItem(
+    id: 'hunter_leather_feet',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.common,
+    setId: 'hunter_leather',
+    pack: 'hunter_leather',
+  ),
+  // Écailles du Gardien (Sketchfab, nordwar, CC-BY).
+  EquipmentItem(
+    id: 'scale_warden_head',
+    slot: EquipmentSlot.head,
+    rarity: Rarity.rare,
+    setId: 'scale_warden',
+    hidesHair: true,
+    pack: 'scale_warden',
+  ),
+  EquipmentItem(
+    id: 'scale_warden_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    setId: 'scale_warden',
+    pack: 'scale_warden',
+  ),
+  EquipmentItem(
+    id: 'scale_warden_hands',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.rare,
+    setId: 'scale_warden',
+    pack: 'scale_warden',
+  ),
+  EquipmentItem(
+    id: 'scale_warden_legs',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.rare,
+    setId: 'scale_warden',
+    pack: 'scale_warden',
+  ),
+  EquipmentItem(
+    id: 'scale_warden_feet',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.rare,
+    setId: 'scale_warden',
+    pack: 'scale_warden',
+  ),
+  // Lamelles du Nord (Sketchfab, nordwar, CC-BY).
+  EquipmentItem(
+    id: 'north_lamellar_head',
+    slot: EquipmentSlot.head,
+    rarity: Rarity.rare,
+    setId: 'north_lamellar',
+    hidesHair: true,
+    pack: 'north_lamellar',
+  ),
+  EquipmentItem(
+    id: 'north_lamellar_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    setId: 'north_lamellar',
+    pack: 'north_lamellar',
+  ),
+  EquipmentItem(
+    id: 'north_lamellar_hands',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.rare,
+    setId: 'north_lamellar',
+    pack: 'north_lamellar',
+  ),
+  EquipmentItem(
+    id: 'north_lamellar_legs',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.rare,
+    setId: 'north_lamellar',
+    pack: 'north_lamellar',
+  ),
+  EquipmentItem(
+    id: 'north_lamellar_feet',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.rare,
+    setId: 'north_lamellar',
+    pack: 'north_lamellar',
+  ),
+  // Rôdeur sylvestre (Sketchfab, BiscuitEater, CC-BY).
+  EquipmentItem(
+    id: 'sylvan_ranger_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    setId: 'sylvan_ranger',
+    pack: 'sylvan_ranger',
+  ),
+  EquipmentItem(
+    id: 'sylvan_ranger_legs',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.rare,
+    setId: 'sylvan_ranger',
+    pack: 'sylvan_ranger',
+  ),
+  EquipmentItem(
+    id: 'sylvan_ranger_feet',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.rare,
+    setId: 'sylvan_ranger',
+    pack: 'sylvan_ranger',
+  ),
+  // Chevalier du Serment (Sketchfab, klava88, CC-BY).
+  EquipmentItem(
+    id: 'oath_knight_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    setId: 'oath_knight',
+    pack: 'oath_knight',
+  ),
+  EquipmentItem(
+    id: 'oath_knight_hands',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.rare,
+    setId: 'oath_knight',
+    pack: 'oath_knight',
+  ),
+  EquipmentItem(
+    id: 'oath_knight_legs',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.rare,
+    setId: 'oath_knight',
+    pack: 'oath_knight',
+  ),
+  EquipmentItem(
+    id: 'oath_knight_feet',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.rare,
+    setId: 'oath_knight',
+    pack: 'oath_knight',
+  ),
+  // Armure du Lotus (Sketchfab, stasbelyk13, CC-BY).
+  EquipmentItem(
+    id: 'lotus_samurai_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    setId: 'lotus_samurai',
+    pack: 'lotus_samurai',
+  ),
+  EquipmentItem(
+    id: 'lotus_samurai_hands',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.epic,
+    setId: 'lotus_samurai',
+    pack: 'lotus_samurai',
+  ),
+  EquipmentItem(
+    id: 'lotus_samurai_legs',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.epic,
+    setId: 'lotus_samurai',
+    pack: 'lotus_samurai',
+  ),
+  EquipmentItem(
+    id: 'lotus_samurai_feet',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.epic,
+    setId: 'lotus_samurai',
+    pack: 'lotus_samurai',
+  ),
+  // Garde de la Cité (Sketchfab, Taylor, CC-BY).
+  EquipmentItem(
+    id: 'city_guard_head',
+    slot: EquipmentSlot.head,
+    rarity: Rarity.rare,
+    setId: 'city_guard',
+    hidesHair: true,
+    pack: 'city_guard',
+  ),
+  EquipmentItem(
+    id: 'city_guard_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    setId: 'city_guard',
+    pack: 'city_guard',
+  ),
+  EquipmentItem(
+    id: 'city_guard_hands',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.rare,
+    setId: 'city_guard',
+    pack: 'city_guard',
+  ),
+  EquipmentItem(
+    id: 'city_guard_legs',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.rare,
+    setId: 'city_guard',
+    pack: 'city_guard',
+  ),
+  EquipmentItem(
+    id: 'city_guard_feet',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.rare,
+    setId: 'city_guard',
+    pack: 'city_guard',
+  ),
+  // Manteau pâle (Sketchfab, xdragonxallix, CC-BY).
+  EquipmentItem(
+    id: 'pale_coat_chest',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.common,
+    setId: 'pale_coat',
+    dyeable: true,
+    pack: 'pale_coat',
   ),
 ];
 

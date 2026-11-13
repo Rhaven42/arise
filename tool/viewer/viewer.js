@@ -362,6 +362,9 @@ function setPose(rig, poseName) {
 
 const LASHES = new THREE.Color('#1c1410');
 
+// Tenues déjà rattachées (« <modèle>/<tenue> »).
+const packs = new Set();
+
 // Démonstration d'exercice : clip `ex_<mouvement>` en boucle, à la place de
 // la pose détendue et de la respiration ; sinon pose détendue.
 function setMotion(rig, motion, pose) {
@@ -507,6 +510,59 @@ window.arise = {
   },
   hasModel(id) {
     return models.has(id);
+  },
+  // Tenue chargée à la demande (outfits/<tenue>/<modèle>.glb) : ses pièces
+  // sont rattachées au squelette du modèle déjà chargé, os par os (même nom).
+  endPack(key, modelId) {
+    const parts = uploads.get(key);
+    uploads.delete(key);
+    const model = models.get(modelId);
+    if (!parts || !model) return;
+    const size = parts.reduce((s, c) => s + c.length, 0);
+    const all = new Uint8Array(size);
+    let offset = 0;
+    for (const c of parts) {
+      all.set(c, offset);
+      offset += c.length;
+    }
+    loader.parse(
+      all.buffer,
+      '',
+      (gltf) => {
+        prepareMaterials(gltf.scene);
+        const bones = {};
+        let anchor = null;
+        model.traverse((o) => {
+          if (o.isBone) bones[o.name] = o;
+          if (!anchor && o.isSkinnedMesh) anchor = o;
+        });
+        const pieces = [];
+        gltf.scene.traverse((o) => {
+          if (o.isSkinnedMesh) pieces.push(o);
+        });
+        for (const piece of pieces) {
+          const skeleton = new THREE.Skeleton(
+            piece.skeleton.bones.map((b) => bones[b.name] || b),
+            piece.skeleton.boneInverses,
+          );
+          piece.removeFromParent();
+          piece.visible = false;
+          (anchor ? anchor.parent : model).add(piece);
+          if (anchor) {
+            piece.position.copy(anchor.position);
+            piece.quaternion.copy(anchor.quaternion);
+            piece.scale.copy(anchor.scale);
+          }
+          piece.bind(skeleton, anchor ? anchor.bindMatrix : piece.bindMatrix);
+        }
+        packs.add(key);
+        post('loaded', { id: key });
+      },
+      (err) => post('error', { message: String(err) }),
+    );
+  },
+  hasPack(key) {
+    return packs.has(key);
   },
   apply(json) {
     const ok = applyState(JSON.parse(json));

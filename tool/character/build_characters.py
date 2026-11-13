@@ -23,6 +23,7 @@ CC BY (auteurs cités dans l'écran Crédits et dans docs/ASSETS.md).
 """
 
 import importlib
+import importlib.util
 import math
 import os
 
@@ -2213,6 +2214,20 @@ def build(sex, race, out_dir):
 
     _hair_styles(template, groups, states, mats["hair"])
     held = _equipment(template, groups, states, marks)
+    # Tenues Sketchfab (fit_outfits.py) : ajustées sur ce corps, exportées
+    # chacune dans son propre fichier.
+    fit = _fit_module()
+    outfit_sets = fit.add_outfits(bpy.data.objects["body"], _joints(co, groups), height, _part)
+    for set_id, pieces in outfit_sets.items():
+        tint = fit.load_outfits()[set_id].get("tint")
+        if tint:
+            # Tenue sans texture : teinte de base, et teignable en boutique
+            # (matériau « dye_<objet> »).
+            for piece in pieces:
+                fit.tint_material(piece, tint)
+                for slot in piece.material_slots:
+                    if slot.material:
+                        slot.material.name = "dye_" + piece.name[len("item_"):]
     bpy.data.meshes.remove(template)
 
     meshes = [o for o in bpy.data.objects if o.type == "MESH"]
@@ -2222,7 +2237,10 @@ def build(sex, race, out_dir):
 
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, f"{race}_{sex}.glb")
+    outfit_objects = {o for pieces in outfit_sets.values() for o in pieces}
     bpy.ops.object.select_all(action="SELECT")
+    for o in outfit_objects:
+        o.select_set(False)
     bpy.ops.export_scene.gltf(
         filepath=path,
         export_format="GLB",
@@ -2240,7 +2258,42 @@ def build(sex, race, out_dir):
         export_animation_mode="NLA_TRACKS",
         export_try_sparse_sk=True,
     )
+    # Une tenue par fichier (squelette + pièces), chargée à la demande par
+    # la visionneuse : outfits/<tenue>/<race>_<sexe>.glb.
+    rig = next(o for o in bpy.data.objects if o.type == "ARMATURE")
+    for set_id, pieces in outfit_sets.items():
+        bpy.ops.object.select_all(action="DESELECT")
+        rig.select_set(True)
+        for piece in pieces:
+            piece.select_set(True)
+        folder = os.path.join(out_dir, "outfits", set_id)
+        os.makedirs(folder, exist_ok=True)
+        bpy.ops.export_scene.gltf(
+            filepath=os.path.join(folder, f"{race}_{sex}.glb"),
+            export_format="GLB",
+            use_selection=True,
+            export_morph=True,
+            export_morph_normal=False,
+            export_apply=False,
+            export_materials="EXPORT",
+            export_texcoords=True,
+            export_image_format="AUTO",
+            export_yup=True,
+            export_skins=True,
+            export_animations=False,
+            export_try_sparse_sk=True,
+        )
     return path
+
+
+def _fit_module():
+    """Module fit_outfits.py, voisin de ce script."""
+    spec = importlib.util.spec_from_file_location(
+        "fit_outfits", os.path.join(os.path.dirname(os.path.abspath(__file__)), "fit_outfits.py")
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def build_all(out_dir):

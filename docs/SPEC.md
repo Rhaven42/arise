@@ -435,3 +435,9 @@ Demande de la propriétaire du projet : tenues, coiffures et barbes plus réalis
 - Au repos, le personnage se tient naturellement : bras le long du corps, paumes vers les cuisses, doigts relâchés.
 - Arme à une main (épée, dague, masse, hache, marteau) : poing fermé sur la poignée, lame vers l'avant et le bas, écartée de la jambe.
 - Bâton, sceptre ou hallebarde : avant-bras levé vers l'avant, poing fermé, arme verticale tenue vers le tiers inférieur.
+
+## 39. Armures importées (13/11/2026)
+- 13 tenues complètes téléchargées sur Sketchfab sous licence CC-BY (auteurs cités dans Paramètres → Crédits), sans aucune reprise d'une œuvre protégée : chevaliers (Obsidienne, Argent, Serment), Roi doré, Garde de la Cité, Écailles du Gardien, Lamelles du Nord, Cuir du Traqueur, Rôdeur sylvestre, Tenue de l'Errant, Atours de la Noble, Armure du Lotus, Manteau pâle (teignable).
+- Chaque tenue est ajustée automatiquement sur les six corps (outil `tool/character/fit_outfits.py`) puis découpée par emplacement : tête, torse, mains, jambes, pieds. Chaque pièce s'achète et se porte séparément, et se combine avec le reste de l'équipement.
+- Les pièces d'une tenue sont dans un fichier à part (`assets/outfits/<tenue>/<race>_<sexe>.glb`), chargé seulement quand une de ses pièces est portée.
+
