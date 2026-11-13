@@ -70,8 +70,14 @@ void main() {
     await tapText(tester, "J'ai lu et compris ce rappel");
     debugPrint('capture 06_sante');
     await binding.takeScreenshot('06_sante');
-    await tapText(tester, 'Entrer dans Arisia');
+    await tapText(tester, 'Activer le Hero Protocol');
     await tester.pumpAndSettle(const Duration(seconds: 1));
+    // Création du personnage juste après le questionnaire : on la valide.
+    await tester.pump(const Duration(seconds: 3));
+    await tester.tap(find.text('Nom & fiche'));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.tap(find.text('Valider le personnage'));
+    await tester.pump(const Duration(seconds: 3));
     debugPrint('capture 07_fenetre_du_systeme');
     await binding.takeScreenshot('07_fenetre_du_systeme');
 
@@ -314,7 +320,7 @@ void main() {
     await pumpFor(500);
     await tester.tap(find.text('Valider le personnage'));
     await pumpFor(2500);
-    final shop = find.text("Boutique d'Arisia");
+    final shop = find.text('Boutique du Protocole');
     await tester.scrollUntilVisible(
       shop,
       200,

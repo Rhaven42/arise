@@ -128,7 +128,7 @@ void main() {
     await _tapText(tester, 'Samedi');
     await _tapText(tester, 'Continuer');
     await _tapText(tester, "J'ai lu et compris ce rappel");
-    await _tapText(tester, 'Entrer dans Arisia');
+    await _tapText(tester, 'Activer le Hero Protocol');
     // Création du personnage, juste après le questionnaire : rendu 3D réel
     // (vue web), silhouette, nom, validation.
     debugPrint('Parcours : création du personnage');

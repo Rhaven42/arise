@@ -106,7 +106,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     await _scrollTo(tester, name);
     expect(
-      find.text("Ce nom n'est pas accepté dans Arisia. Choisis-en un autre."),
+      find.text(
+        "Ce nom n'est pas accepté dans Hero Protocol. Choisis-en un autre.",
+      ),
       findsOneWidget,
     );
     await tester.unmountApp();

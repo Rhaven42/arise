@@ -18,7 +18,7 @@ import '../../../helpers/test_app.dart';
 Future<void> _scrollTo(WidgetTester tester, Finder finder, Key list) =>
     tester.scrollUntilVisible(
       finder,
-      200,
+      600,
       scrollable: find
           .descendant(of: find.byKey(list), matching: find.byType(Scrollable))
           .first,
@@ -38,7 +38,7 @@ void main() {
     await tester.openWithProfile(container, AppRoutes.shop);
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.text("Boutique d'Arisia"), findsOneWidget);
+    expect(find.text('Boutique du Protocole'), findsOneWidget);
     expect(find.textContaining('Ta bourse'), findsOneWidget);
 
     // Filtre « Dos » puis essayage de la cape.

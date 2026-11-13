@@ -1,7 +1,7 @@
 {
   "@@locale": "fr",
   "appTitle": "Hero Protocol",
-  "welcomeTagline": "Le royaume d'Arisia attend son prochain chasseur.",
+  "welcomeTagline": "Le Hero Protocol attend son prochain chasseur.",
   "welcomeDesignSystemButton": "Voir le design system",
   "designSystemTitle": "Design system",
   "designSystemColors": "Couleurs",
@@ -89,7 +89,7 @@
   },
   "onboardingBack": "Retour",
   "onboardingNext": "Continuer",
-  "onboardingFinish": "Entrer dans Arisia",
+  "onboardingFinish": "Activer le Hero Protocol",
   "onboardingGoalQuestion": "Quel est ton objectif principal ?",
   "goalLabel": "{goal, select, strength{Force} weightLoss{Perte de poids} endurance{Endurance} flexibility{Souplesse} generalFitness{Forme générale} other{?}}",
   "@goalLabel": {
@@ -1269,7 +1269,7 @@
     }
   },
   "characterNameInvalid": "Lettres, espaces, tirets et apostrophes uniquement.",
-  "characterNameForbidden": "Ce nom n'est pas accepté dans Arisia. Choisis-en un autre.",
+  "characterNameForbidden": "Ce nom n'est pas accepté dans Hero Protocol. Choisis-en un autre.",
   "characterUndo": "Annuler",
   "characterRedo": "Rétablir",
   "characterRandom": "Aléatoire",
@@ -1386,7 +1386,7 @@
   "characterShare": "Partager une capture",
   "characterShareFailed": "La capture n'est pas prête. Réessaie dans un instant.",
   "characterSnapshotFileName": "arise_heros.png",
-  "shopTitle": "Boutique d'Arisia",
+  "shopTitle": "Boutique du Protocole",
   "shopHomeHint": "Armures, capes et coiffures, contre tes pièces",
   "inventoryTitle": "Inventaire",
   "inventoryHomeHint": "Équipe, retire et teins tes objets",
@@ -1595,7 +1595,7 @@
       }
     }
   },
-  "bossLore": "{boss, select, rockGuardian{Un gardien de pierre barre le col d'Arisia. Seule une force patiente peut le faire reculer.} silverStag{Un cerf aux bois d'argent court à travers les brumes. Tiens son rythme jusqu'au bout.} windDancer{Une danseuse faite de vent tourbillonne sans jamais s'arrêter. Suis sa cadence.} basaltColossus{Un colosse de basalte s'éveille sous la montagne. Ta force doit égaler la sienne.} crimsonComet{Une comète écarlate trace sa route dans le ciel. Endure aussi longtemps qu'elle brille.} stormLord{Le Seigneur des Tempêtes règne sur les éclairs. Danse avec l'orage pour le soumettre.} other{}}",
+  "bossLore": "{boss, select, rockGuardian{Un gardien de pierre barre le col du Nord. Seule une force patiente peut le faire reculer.} silverStag{Un cerf aux bois d'argent court à travers les brumes. Tiens son rythme jusqu'au bout.} windDancer{Une danseuse faite de vent tourbillonne sans jamais s'arrêter. Suis sa cadence.} basaltColossus{Un colosse de basalte s'éveille sous la montagne. Ta force doit égaler la sienne.} crimsonComet{Une comète écarlate trace sa route dans le ciel. Endure aussi longtemps qu'elle brille.} stormLord{Le Seigneur des Tempêtes règne sur les éclairs. Danse avec l'orage pour le soumettre.} other{}}",
   "@bossLore": {
     "placeholders": {
       "boss": {
@@ -1603,7 +1603,7 @@
       }
     }
   },
-  "titleName": "{title, select, title_rockGuardian{Briseur de Rocher} title_silverStag{Coureur des Brumes} title_windDancer{Pied-de-Vent} title_basaltColossus{Brise-Colosse} title_crimsonComet{Sillage de Comète} title_stormLord{Œil de la Tempête} title_awakened{L'Éveillé} title_veteran{Vétéran d'Arisia} title_unshakable{L'Inébranlable} title_tireless{L'Infatigable} title_legend{Légende d'Arisia} title_rock_breaker{Poigne de Fer} title_balanced{L'Équilibré} title_explorer{Explorateur des Arts} title_never_skips_legs{Celui qui ne saute jamais les jambes} title_body_cartographer{Cartographe du Corps} title_willow{Souple comme le Saule} title_dawn_monarch{Monarque de l'Aube} title_rest_sage{Sage du Repos} title_shadow_master{Maître des Ombres} other{?}}",
+  "titleName": "{title, select, title_rockGuardian{Briseur de Rocher} title_silverStag{Coureur des Brumes} title_windDancer{Pied-de-Vent} title_basaltColossus{Brise-Colosse} title_crimsonComet{Sillage de Comète} title_stormLord{Œil de la Tempête} title_awakened{L'Éveillé} title_veteran{Vétéran du Protocole} title_unshakable{L'Inébranlable} title_tireless{L'Infatigable} title_legend{Légende du Protocole} title_rock_breaker{Poigne de Fer} title_balanced{L'Équilibré} title_explorer{Explorateur des Arts} title_never_skips_legs{Celui qui ne saute jamais les jambes} title_body_cartographer{Cartographe du Corps} title_willow{Souple comme le Saule} title_dawn_monarch{Monarque de l'Aube} title_rest_sage{Sage du Repos} title_shadow_master{Maître des Ombres} other{?}}",
   "@titleName": {
     "placeholders": {
       "title": {
@@ -2032,7 +2032,7 @@
   },
   "settingsMusic": "Musique",
   "settingsMusicHint": "Musiques d'ambiance et jingle de niveau (mode silencieux respecté)",
-  "achievementName": "{id, select, first_session{Premier pas} sessions_10{Habitude naissante} sessions_50{Chasseur assidu} sessions_100{Centurion} sessions_250{Vétéran d'Arisia} streak_7{Une semaine sans faillir} streak_30{Un mois de constance} streak_100{Inébranlable} daily_quests_10{Serviteur du Système} daily_quests_50{Élu du Système} minutes_60{Première heure} minutes_600{Dix heures de sueur} minutes_3000{Cinquante heures} minutes_10000{Infatigable} reps_1000{Mille répétitions} reps_10000{Dix mille répétitions} reps_50000{Marée de répétitions} sets_500{Cinq cents séries} long_session{Souffle long} level_5{Éveil} level_10{Ascension} level_25{Élite} level_50{Légende d'Arisia} level_100{Sommet} strength_20{Poigne de fer} endurance_20{Second souffle} agility_20{Pas de chat} vitality_20{Cœur de chêne} willpower_20{Volonté d'acier} all_stats_10{Équilibré} boss_1{Premier boss} boss_2{Deux trophées} boss_3{Tueur de géants} boss_4{Fléau des colosses} boss_5{Chasseur de comètes} boss_6{Maître des épreuves} first_try_boss{Du premier coup} shadow_1{Première Ombre} shadow_5{Escouade des Ombres} exercises_10{Curieux} exercises_25{Polyvalent} exercises_50{Explorateur des Arts} custom_exercise{Inventeur} first_program{Stratège} all_formats{Touche-à-tout} dungeon_1{Premier donjon} dungeon_5{Pilleur de donjons} first_item{Premier trésor} first_event{Héros de saison} legs_4_weeks{Fondations solides} legs_12_weeks{Celui qui ne saute jamais les jambes} push_pull_4_weeks{Pousser et tirer} front_back_4_weeks{Face et dos} muscles_15{Carte en cours} muscles_all{Cartographe du Corps} flexibility_60{Corps délié} flexibility_300{Souple comme le Saule} dawn_10{Monarque de l'Aube} evening_10{Gardien du crépuscule} new_year{Bonne résolution} rest_sage{Sage du Repos} listen_body{À l’écoute de soi} shadow_army{Armée des Ombres} other{?}}",
+  "achievementName": "{id, select, first_session{Premier pas} sessions_10{Habitude naissante} sessions_50{Chasseur assidu} sessions_100{Centurion} sessions_250{Vétéran du Protocole} streak_7{Une semaine sans faillir} streak_30{Un mois de constance} streak_100{Inébranlable} daily_quests_10{Serviteur du Système} daily_quests_50{Élu du Système} minutes_60{Première heure} minutes_600{Dix heures de sueur} minutes_3000{Cinquante heures} minutes_10000{Infatigable} reps_1000{Mille répétitions} reps_10000{Dix mille répétitions} reps_50000{Marée de répétitions} sets_500{Cinq cents séries} long_session{Souffle long} level_5{Éveil} level_10{Ascension} level_25{Élite} level_50{Légende du Protocole} level_100{Sommet} strength_20{Poigne de fer} endurance_20{Second souffle} agility_20{Pas de chat} vitality_20{Cœur de chêne} willpower_20{Volonté d'acier} all_stats_10{Équilibré} boss_1{Premier boss} boss_2{Deux trophées} boss_3{Tueur de géants} boss_4{Fléau des colosses} boss_5{Chasseur de comètes} boss_6{Maître des épreuves} first_try_boss{Du premier coup} shadow_1{Première Ombre} shadow_5{Escouade des Ombres} exercises_10{Curieux} exercises_25{Polyvalent} exercises_50{Explorateur des Arts} custom_exercise{Inventeur} first_program{Stratège} all_formats{Touche-à-tout} dungeon_1{Premier donjon} dungeon_5{Pilleur de donjons} first_item{Premier trésor} first_event{Héros de saison} legs_4_weeks{Fondations solides} legs_12_weeks{Celui qui ne saute jamais les jambes} push_pull_4_weeks{Pousser et tirer} front_back_4_weeks{Face et dos} muscles_15{Carte en cours} muscles_all{Cartographe du Corps} flexibility_60{Corps délié} flexibility_300{Souple comme le Saule} dawn_10{Monarque de l'Aube} evening_10{Gardien du crépuscule} new_year{Bonne résolution} rest_sage{Sage du Repos} listen_body{À l’écoute de soi} shadow_army{Armée des Ombres} other{?}}",
   "@achievementName": {
     "placeholders": {
       "id": {
@@ -2081,7 +2081,7 @@
     }
   },
   "achievementSecretName": "Haut fait secret",
-  "achievementSecretHint": "Continue d’explorer Arisia pour le découvrir.",
+  "achievementSecretHint": "Continue d’explorer Hero Protocol pour le découvrir.",
   "achievementUnlockedOn": "Obtenu le {date}",
   "@achievementUnlockedOn": {
     "placeholders": {
