@@ -26,7 +26,9 @@ if [ -n "$outfits" ] && [ -d "$src/outfits" ]; then
     for file in "$dir"*.glb; do
       name="$(basename "$file")"
       "$bin" webp "$file" "$tmp/${set_id}_$name" --quality 85
-      "$bin" meshopt "$tmp/${set_id}_$name" "$outfits/$set_id/$name"
+      # Textures des tenues en 512 px : elles sont répétées pour les six corps.
+      "$bin" resize "$tmp/${set_id}_$name" "$tmp/${set_id}_small_$name" --width 512 --height 512
+      "$bin" meshopt "$tmp/${set_id}_small_$name" "$outfits/$set_id/$name"
     done
   done
 fi

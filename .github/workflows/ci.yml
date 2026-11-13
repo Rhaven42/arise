@@ -58,14 +58,15 @@ jobs:
         run: "! grep -rnI 'TODO' lib test integration_test android/app/src ios/Runner --include='*.dart' --include='*.kt' --include='*.kts' --include='*.swift' --include='*.xml'"
       - name: Tests
         run: flutter test --coverage
-      - name: APK de debug
+      - name: APK à installer
         # Numéro de build croissant : Android accepte la mise à jour.
-        # arm64 seulement (téléphones actuels) : l'APK reste sous 500 Mo.
-        run: flutter build apk --debug --target-platform android-arm64 --build-number=${{ github.run_number }}
+        # Version optimisée (release, signée avec la même clé que le debug),
+        # arm64 seulement (téléphones actuels) : l'APK reste sous 400 Mo.
+        run: flutter build apk --release --target-platform android-arm64 --build-number=${{ github.run_number }}
       - uses: actions/upload-artifact@v4
         with:
           name: arise-debug-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
           retention-days: 14
 
   android-launch:
