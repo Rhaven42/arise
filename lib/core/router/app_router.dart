@@ -14,6 +14,7 @@ import 'package:arise/features/character_creation/presentation/character_creator
 import 'package:arise/features/exercises/presentation/custom_exercise_editor_page.dart';
 import 'package:arise/features/exercises/presentation/exercise_detail_page.dart';
 import 'package:arise/features/exercises/presentation/exercise_list_page.dart';
+import 'package:arise/features/health/presentation/health_page.dart';
 import 'package:arise/features/inventory/presentation/inventory_page.dart';
 import 'package:arise/features/muscle_analysis/presentation/muscle_analysis_page.dart';
 import 'package:arise/features/onboarding/presentation/onboarding_page.dart';
@@ -191,6 +192,10 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
             path: AppRoutes.inventorySegment,
             builder: (_, _) => const InventoryPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.healthSegment,
+            builder: (_, _) => const HealthPage(),
           ),
           GoRoute(
             path: AppRoutes.achievementsSegment,

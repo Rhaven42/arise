@@ -413,3 +413,20 @@ ProgressionState replaySessionXp(
   }
   return next;
 }
+
+/// Ajoute de l'XP à des stats (santé, hors séance). La Volonté ne se gagne
+/// jamais ainsi : elle vient seulement de la régularité.
+ProgressionState grantStatXp(ProgressionState state, Map<StatId, int> xp) {
+  final gains = {
+    for (final e in xp.entries)
+      if (e.key != StatId.willpower && e.value > 0) e.key: e.value,
+  };
+  if (gains.isEmpty) return state;
+  return state.copyWith(
+    statXp: {
+      ...state.statXp,
+      for (final e in gains.entries)
+        e.key: (state.statXp[e.key] ?? 0) + e.value,
+    },
+  );
+}

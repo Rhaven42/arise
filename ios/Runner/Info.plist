@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Hero Protocol lit tes pas, ton sommeil et tes activités pour te faire progresser. Rien n'est écrit ni envoyé : tout reste sur ton iPhone.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Hero Protocol n'écrit jamais dans Santé.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

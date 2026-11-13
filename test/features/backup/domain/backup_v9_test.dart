@@ -53,7 +53,7 @@ void main() {
       titles: _titles,
       shadows: _shadows,
     );
-    expect(data.version, 9);
+    expect(data.version, BackupCodec.currentVersion);
     expect(BackupCodec.decode(BackupCodec.encode(data)), data);
   });
 

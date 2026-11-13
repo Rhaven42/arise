@@ -1,6 +1,7 @@
 import 'package:arise/features/achievements/domain/achievements_state.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
+import 'package:arise/features/health/domain/health_log.dart';
 import 'package:arise/features/inventory/domain/inventory.dart';
 import 'package:arise/features/planning/domain/planned_session.dart';
 import 'package:arise/features/planning/domain/program.dart';
@@ -55,6 +56,9 @@ abstract class BackupData with _$BackupData {
     AchievementsState? achievements,
     TitlesState? titles,
     ShadowsState? shadows,
+
+    /// Historique santé (format 10 et suivants).
+    HealthLog? health,
   }) = _BackupData;
 
   factory BackupData.fromJson(Map<String, dynamic> json) =>

@@ -7,6 +7,7 @@ import 'package:arise/features/backup/domain/backup_data.dart';
 import 'package:arise/features/backup/domain/backup_repository.dart';
 import 'package:arise/features/character_creation/data/drift_character_repository.dart';
 import 'package:arise/features/exercises/data/drift_custom_exercise_repository.dart';
+import 'package:arise/features/health/data/drift_health_repository.dart';
 import 'package:arise/features/inventory/data/drift_inventory_repository.dart';
 import 'package:arise/features/inventory/domain/inventory_rules.dart';
 import 'package:arise/features/planning/data/drift_planning_repositories.dart';
@@ -83,6 +84,10 @@ class DriftBackupRepository implements BackupRepository {
       },
       shadows: switch (await _database.readShadowsJson()) {
         final json? => DriftShadowsRepository.decode(json),
+        null => null,
+      },
+      health: switch (await _database.readHealthJson()) {
+        final json? => DriftHealthRepository.decode(json),
         null => null,
       },
     );
@@ -181,6 +186,12 @@ class DriftBackupRepository implements BackupRepository {
       if (data.shadows case final shadows?) {
         await _database.saveShadowsJson(
           jsonEncode(shadows.toJson()),
+          updatedAt: now,
+        );
+      }
+      if (data.health case final health?) {
+        await _database.saveHealthJson(
+          jsonEncode(health.toJson()),
           updatedAt: now,
         );
       }

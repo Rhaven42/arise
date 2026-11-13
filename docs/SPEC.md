@@ -185,10 +185,17 @@ Conservé ci-dessous à titre d'idée pour une version future.
 - **Aucune image stockée ni envoyée** ; seul le nombre de répétitions validées est transmis.
 
 ## 13. Santé
-- Lecture seule (jamais d'écriture) : pas, marche, course, vélo, sommeil, fréquence cardiaque.
-- Conversion en Endurance ou Vitalité, avec **plafond journalier** **[À PRÉCISER : valeurs]**.
-- Sommeil ≥ 7 h : bonus de Vitalité. Hydratation saisie manuellement.
-- Synchronisation via une Cloud Function.
+- Lecture seule (jamais d'écriture) via Health Connect (Android) et Santé (iOS) : pas, activités (marche, course, vélo, randonnée) et sommeil. La fréquence cardiaque n'est pas lue (inutile au jeu).
+- Lecture seulement si le joueur l'a autorisée (accord donné à l'accueil ou dans l'écran Santé / les paramètres). Rien ne quitte le téléphone (§21).
+- À chaque ouverture de l'écran Santé (ou sur « Relire mon téléphone ») : relecture d'hier et d'aujourd'hui ; une valeur relue ne baisse jamais.
+- Conversion en XP de stat (valeurs dans `HealthConfig`, 13/11/2026) :
+  - **Endurance** : +2 XP par tranche de 1 000 pas (plafond 12 000 pas/jour) ; +1 XP par 2 min d'activité hors application (plafond 60 min/jour). Le temps qui recouvre une séance faite dans l'application n'est pas compté deux fois.
+  - **Vitalité** : +15 XP pour une nuit d'au moins 7 h ; +10 XP quand l'objectif de 8 verres d'eau (250 ml) est atteint.
+  - La Volonté ne se gagne jamais ainsi. Jamais de pénalité.
+- L'XP déjà versée est notée par journée : elle n'est jamais versée deux fois (retirer puis remettre un verre ne paie pas deux fois).
+- Hydratation saisie à la main (0 à 20 verres par jour).
+- Historique des 30 derniers jours dans la base (table `health_states`, schéma v10) et dans la sauvegarde (format v10 ; une sauvegarde v9 reste lisible).
+- Rappel sur l'écran : le repos fait partie de l'entraînement ; en cas de douleur ou de grosse fatigue, s'arrêter.
 
 ## 14. Boutique, inventaire, titres, hauts faits, Ombres
 ### 14.1 Boutique et inventaire
