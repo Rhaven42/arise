@@ -1560,7 +1560,10 @@ def _rig_and_skin(sex, race, objects, rigid):
     for m in mods:
         m.show_viewport = False
     _make_actions(arm)
-    _exercise_actions(arm)
+    # Les démonstrations d'exercices sont des vidéos rendues à part
+    # (tool/exercise3d) : plus d'animations d'exercice dans le modèle.
+    if os.environ.get("ARISE_EXERCISE_CLIPS"):
+        _exercise_actions(arm)
     for m in mods:
         m.show_viewport = True
     return arm
