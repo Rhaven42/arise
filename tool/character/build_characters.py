@@ -1690,7 +1690,29 @@ def _drop_face_keys(obj):
 # à celle de la tête, hauteur du sommet au-dessus du crâne et recul (en
 # fraction de la taille du personnage).
 EXTERNAL_HELMS = {
-    "great_helm_gilded": ("great_helm_gilded.glb", 1.5, 0.022, 0.006),
+    "great_helm_gilded": ("great_helm_gilded.glb", 1.5, 0.022, 0.006, 90),
+    "horned_helm_void": ("horned_helm_void.glb", 2.1, 0.03, 0.006, 0),
+}
+
+# Armes importées (tool/character/external/weapons, préparées par
+# prep_weapons.py : poignée à l'origine, tête vers le haut) : tenue (« up »
+# tête en haut, « down » pointe vers le bas) et longueur en fraction de la
+# taille du personnage.
+EXTERNAL_WEAPONS = {
+    "staff_solar_crystal": ("up", 0.95), "scepter_lunar_orb": ("up", 0.9),
+    "staff_rose_amethyst": ("up", 0.95), "staff_dusk": ("up", 0.95),
+    "halberd_silver": ("up", 1.0),
+    "sword_warden": ("down", 0.55), "sword_curved_shade": ("down", 0.5),
+    "sword_carved_bone": ("down", 0.5), "sword_frost": ("down", 0.55),
+    "sword_dusk": ("down", 0.52), "sword_ember": ("down", 0.52),
+    "scimitar_jade": ("down", 0.5), "glaive_curved": ("down", 0.6),
+    "dagger_desert": ("down", 0.24), "dagger_golden": ("down", 0.24),
+    "dagger_ice": ("down", 0.24), "dagger_amethyst": ("down", 0.24),
+    "dagger_fire_fang": ("down", 0.24), "dagger_sun": ("down", 0.24),
+    "dagger_blaze": ("down", 0.24),
+    "mace_spiked": ("down", 0.42), "mace_moon": ("down", 0.42),
+    "axe_war": ("down", 0.45), "cleaver_battle": ("down", 0.45),
+    "hammer_runic": ("down", 0.45),
 }
 
 
@@ -1905,7 +1927,7 @@ def _equipment(template, groups, states, marks):
     def head(coords):
         return _joints(coords, groups)["head"]
 
-    for item_id, (file, width_ratio, lift, back) in EXTERNAL_HELMS.items():
+    for item_id, (file, width_ratio, lift, back, quarter) in EXTERNAL_HELMS.items():
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "external", file)
         before = set(bpy.data.objects)
         bpy.ops.import_scene.gltf(filepath=path)
@@ -1917,10 +1939,10 @@ def _equipment(template, groups, states, marks):
             part.parent = None
             part.select_set(True)
             bpy.context.view_layer.objects.active = part
-            # La face des modèles Tripo regarde vers -X : quart de tour.
+            # Face du casque ramenée vers l'avant du personnage (-Y).
             part.rotation_mode = "XYZ"
             part.rotation_euler = (0, 0, 0)
-            part.matrix_world = Matrix.Rotation(math.radians(90), 4, "Z") @ part.matrix_world
+            part.matrix_world = Matrix.Rotation(math.radians(quarter), 4, "Z") @ part.matrix_world
         bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
         pts = [v.co for part in parts for v in part.data.vertices]
         lo = Vector([min(p[k] for p in pts) for k in range(3)])
@@ -1933,6 +1955,29 @@ def _equipment(template, groups, states, marks):
                 v.co = target + (v.co - anchor) * scale
         _rigid_item(item_id, parts, head, states, None, smooth=True)
         held["item_" + item_id] = "head"
+
+    # Armes importées, dans la main droite.
+    for item_id, (hold, length) in EXTERNAL_WEAPONS.items():
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "external", "weapons", item_id + ".glb")
+        before = set(bpy.data.objects)
+        bpy.ops.import_scene.gltf(filepath=path)
+        parts = [o for o in bpy.data.objects if o not in before and o.type == "MESH"]
+        for extra in [o for o in bpy.data.objects if o not in before and o.type != "MESH"]:
+            bpy.data.objects.remove(extra, do_unlink=True)
+        bpy.ops.object.select_all(action="DESELECT")
+        for part in parts:
+            part.parent = None
+            part.select_set(True)
+            bpy.context.view_layer.objects.active = part
+        bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+        zs = [v.co.z for part in parts for v in part.data.vertices]
+        scale = length * H / (max(zs) - min(zs))
+        flip = Matrix.Rotation(math.radians(180), 4, "X") if hold == "down" else Matrix.Identity(4)
+        for part in parts:
+            for v in part.data.vertices:
+                v.co = grip + (flip @ (v.co * scale))
+        _rigid_item(item_id, parts, hand_r, states, None, smooth=True)
+        held["item_" + item_id] = "hand_r"
     return held
 
 

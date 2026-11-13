@@ -278,6 +278,137 @@ const List<EquipmentItem> equipmentCatalog = [
     rarity: Rarity.epic,
     hidesHair: true,
   ),
+  EquipmentItem(
+    id: 'horned_helm_void',
+    slot: EquipmentSlot.head,
+    rarity: Rarity.legendary,
+    hidesHair: true,
+  ),
+  EquipmentItem(
+    id: 'staff_solar_crystal',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.legendary,
+  ),
+  EquipmentItem(
+    id: 'scepter_lunar_orb',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.epic,
+  ),
+  EquipmentItem(
+    id: 'staff_rose_amethyst',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.epic,
+  ),
+  EquipmentItem(
+    id: 'staff_dusk',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'halberd_silver',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.epic,
+  ),
+  EquipmentItem(
+    id: 'sword_warden',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.common,
+  ),
+  EquipmentItem(
+    id: 'sword_curved_shade',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'sword_carved_bone',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'sword_frost',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.epic,
+  ),
+  EquipmentItem(
+    id: 'sword_dusk',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.epic,
+  ),
+  EquipmentItem(
+    id: 'sword_ember',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.legendary,
+  ),
+  EquipmentItem(
+    id: 'scimitar_jade',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'glaive_curved',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'dagger_desert',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.common,
+  ),
+  EquipmentItem(
+    id: 'dagger_golden',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'dagger_ice',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'dagger_amethyst',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'dagger_fire_fang',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.epic,
+  ),
+  EquipmentItem(
+    id: 'dagger_sun',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.epic,
+  ),
+  EquipmentItem(
+    id: 'dagger_blaze',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.legendary,
+  ),
+  EquipmentItem(
+    id: 'mace_spiked',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.common,
+  ),
+  EquipmentItem(
+    id: 'mace_moon',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'axe_war',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.common,
+  ),
+  EquipmentItem(
+    id: 'cleaver_battle',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'hammer_runic',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.epic,
+  ),
 ];
 
 /// Objet du catalogue, ou `null` s'il n'existe pas (sauvegarde ancienne).
