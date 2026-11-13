@@ -60,7 +60,8 @@ jobs:
         run: flutter test --coverage
       - name: APK de debug
         # Numéro de build croissant : Android accepte la mise à jour.
-        run: flutter build apk --debug --build-number=${{ github.run_number }}
+        # arm64 seulement (téléphones actuels) : l'APK reste sous 500 Mo.
+        run: flutter build apk --debug --target-platform android-arm64 --build-number=${{ github.run_number }}
       - uses: actions/upload-artifact@v4
         with:
           name: arise-debug-apk
