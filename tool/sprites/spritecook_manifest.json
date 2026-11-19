@@ -1,0 +1,693 @@
+{
+ "_comment": "Images générées avec SpriteCook (gpt-image-2, qualité basse) : identifiant de l'asset et empreinte du fichier brut.",
+ "human_male": {
+  "asset_id": "f83de9d0-d5e1-48a8-9027-a21d59e17fe8",
+  "sha12": "64cf960dbd6f",
+  "label": "base humain homme chauve"
+ },
+ "human_female": {
+  "asset_id": "46fda3ea-64fb-4447-92ce-40847e304669",
+  "sha12": "5361a04b2962",
+  "label": "base humain femme chauve"
+ },
+ "elf_male": {
+  "asset_id": "8a007068-00a7-450c-bf77-129c35c5ba35",
+  "sha12": "672932d7acc6",
+  "label": "base elfe homme"
+ },
+ "elf_female": {
+  "asset_id": "5219455a-8675-493a-b2c4-8fe4589d950b",
+  "sha12": "c6bfe0447966",
+  "label": "base elfe femme"
+ },
+ "highelf_male": {
+  "asset_id": "93ae8b55-64b4-4c84-ba15-b3b02300fed7",
+  "sha12": "f6835a881f0b",
+  "label": "base haut-elfe homme"
+ },
+ "highelf_female": {
+  "asset_id": "f919b201-6a90-4586-af46-528a4284576b",
+  "sha12": "fee7dc607d75",
+  "label": "base haut-elfe femme"
+ },
+ "orc_male": {
+  "asset_id": "261730bb-a129-4fc0-a548-5095a826ef80",
+  "sha12": "9a48f750cc92",
+  "label": "base orc homme"
+ },
+ "orc_female": {
+  "asset_id": "b6166920-af57-457c-98e8-d31b2a07964f",
+  "sha12": "fc4e2778a8eb",
+  "label": "base orc femme"
+ },
+ "dwarf_male": {
+  "asset_id": "8c9a6811-cf52-46d8-bdf8-6d244fe42957",
+  "sha12": "ee7c14adb143",
+  "label": "base nain homme"
+ },
+ "dwarf_female": {
+  "asset_id": "7ae3f285-77b2-427b-ada8-fb2e7a404d24",
+  "sha12": "3af4bba73895",
+  "label": "base naine femme"
+ },
+ "gnome_male": {
+  "asset_id": "b0f79a6e-8528-4335-97b5-411930f8f8d1",
+  "sha12": "cb701c769f81",
+  "label": "base gnome homme"
+ },
+ "gnome_female": {
+  "asset_id": "0038e9b2-c26c-4c4a-8386-5f54d7ad8c2e",
+  "sha12": "9928455cf580",
+  "label": "base gnome femme"
+ },
+ "goblin_male": {
+  "asset_id": "2f46f344-f320-49df-bd7c-0de3dd6243e0",
+  "sha12": "f31d50d61fd5",
+  "label": "base gobelin homme"
+ },
+ "goblin_female": {
+  "asset_id": "ed407b39-d701-4ce9-b6a0-b5be651f786a",
+  "sha12": "ad10e668e04e",
+  "label": "base gobeline femme"
+ },
+ "demon_male": {
+  "asset_id": "e265d1f2-cf71-4d5a-b8e7-c4995b25e824",
+  "sha12": "7597e436db7c",
+  "label": "base démon homme"
+ },
+ "demon_female": {
+  "asset_id": "a3f88c26-e0ad-4fed-8f74-ded0940f91da",
+  "sha12": "a8e733d91991",
+  "label": "base démone femme"
+ },
+ "minotaur_male": {
+  "asset_id": "d6a4db4b-73a9-433c-a7c9-c3442addf2f7",
+  "sha12": "a602b651d652",
+  "label": "base minotaure homme"
+ },
+ "minotaur_female": {
+  "asset_id": "ec49e742-3e85-4198-b34d-6601b55cc8c7",
+  "sha12": "f2a0003c4b3e",
+  "label": "base minotaure femme"
+ },
+ "undead_male": {
+  "asset_id": "5d2bb276-358e-483c-879b-81e5354e25f5",
+  "sha12": "90a33b7c2a6c",
+  "label": "base mort-vivant homme"
+ },
+ "undead_female": {
+  "asset_id": "10cb7c34-7082-4741-a648-161ddc976a20",
+  "sha12": "3456ac3bfe56",
+  "label": "base morte-vivante femme"
+ },
+ "hair_m01": {
+  "asset_id": "338d2b40-4820-4ee8-8656-f71644c873d2",
+  "sha12": "4ecde64a4df4",
+  "label": "coiffure homme 01 longs raides (magenta)"
+ },
+ "hair_m02": {
+  "asset_id": "b430255a-aa96-4c21-8daf-830d08110468",
+  "sha12": "5e9cda2e16e2",
+  "label": "coiffure homme 02 court"
+ },
+ "hair_m03": {
+  "asset_id": "80e0222a-9438-4e84-aef8-edb1e8006c44",
+  "sha12": "73aba79ef159",
+  "label": "coiffure homme 03 queue de cheval"
+ },
+ "hair_m04": {
+  "asset_id": "b56127cc-9d41-4170-b5c9-6903a7aa43f9",
+  "sha12": "b737b39b1fb6",
+  "label": "coiffure homme 04 crête"
+ },
+ "hair_m05": {
+  "asset_id": "1a26bd46-9336-4ece-8777-d8b23d265a9c",
+  "sha12": "e0502f602091",
+  "label": "coiffure homme 05 afro"
+ },
+ "hair_m06": {
+  "asset_id": "b1969f47-4616-4671-a23f-bfc658dd8e0f",
+  "sha12": "3224f9431a3e",
+  "label": "coiffure homme 06 ébouriffé"
+ },
+ "hair_m07": {
+  "asset_id": "ff57f5ac-90bf-4a6c-934f-0c782575c8de",
+  "sha12": "984af37ccf8a",
+  "label": "coiffure homme 07 tresse viking"
+ },
+ "hair_m08": {
+  "asset_id": "db260a2b-0f13-4d80-9cca-85b501a67a7a",
+  "sha12": "3c98b435adfe",
+  "label": "coiffure homme 08 chignon"
+ },
+ "hair_m09": {
+  "asset_id": "44aa88a1-6f6c-4048-89fd-aace0d1c59c9",
+  "sha12": "653e3c7dd03f",
+  "label": "coiffure homme 09 ondulé noble"
+ },
+ "hair_m10": {
+  "asset_id": "756446c8-ccc7-4920-b3c9-4829b832c70e",
+  "sha12": "f6f7cf3b4c96",
+  "label": "coiffure homme 10 très longs"
+ },
+ "hair_f01": {
+  "asset_id": "988e5e97-ccb2-49f2-883b-dc467c4f3914",
+  "sha12": "643e9d09567e",
+  "label": "coiffure femme 01 longs frange"
+ },
+ "hair_f02": {
+  "asset_id": "5df202bf-ec47-4680-b3d9-f8a06744ebc2",
+  "sha12": "7ecfc3176aff",
+  "label": "coiffure femme 02 queue haute"
+ },
+ "hair_f03": {
+  "asset_id": "de4bd588-f3fc-4803-8b97-2ec21178dc91",
+  "sha12": "2a505269bff3",
+  "label": "coiffure femme 03 deux tresses"
+ },
+ "hair_f04": {
+  "asset_id": "8d4edf6b-1884-446e-b0f5-5cecd716811f",
+  "sha12": "79808429c731",
+  "label": "coiffure femme 04 carré"
+ },
+ "hair_f05": {
+  "asset_id": "ba8d69a1-6a1b-47a7-a6c6-58aca91c5275",
+  "sha12": "f60605cea75b",
+  "label": "coiffure femme 05 courte"
+ },
+ "hair_f06": {
+  "asset_id": "2bf2d929-9975-48b3-a7e3-a83eaa589a4a",
+  "sha12": "13c28bb5c41a",
+  "label": "coiffure femme 06 bouclés"
+ },
+ "hair_f07": {
+  "asset_id": "db6b07ad-9173-4727-890b-c902bac469d2",
+  "sha12": "ef6c7a5a64a3",
+  "label": "coiffure femme 07 chignon haut"
+ },
+ "hair_f08": {
+  "asset_id": "1aaa2b9e-06f0-4ba3-bb76-6dccd3c93318",
+  "sha12": "689c1db76eaf",
+  "label": "coiffure femme 08 tresse sur l'épaule"
+ },
+ "hair_f09": {
+  "asset_id": "68e3b605-0578-4351-8328-c5e5d3d9433e",
+  "sha12": "160d180ef834",
+  "label": "coiffure femme 09 côté rasé"
+ },
+ "hair_f10": {
+  "asset_id": "b5b3143c-2d57-4674-940f-8b7218a40e1b",
+  "sha12": "ae77f69171a8",
+  "label": "coiffure femme 10 ondulé mi-long"
+ },
+ "beard_01": {
+  "asset_id": "918049f8-ac19-4044-9751-457459960cb9",
+  "sha12": "01e23d9a7247",
+  "label": "barbe 01 courte"
+ },
+ "beard_02": {
+  "asset_id": "9c22d983-0a54-4bbb-b5f2-3b1fc25db7e0",
+  "sha12": "f1c7d3f87374",
+  "label": "barbe 02 longue"
+ },
+ "beard_03": {
+  "asset_id": "173b9356-4161-44e3-8666-0ab582a83082",
+  "sha12": "e79ead46d880",
+  "label": "barbe 03 bouc"
+ },
+ "beard_04": {
+  "asset_id": "4dbb80a8-da38-4aea-9ac7-67cbf1e6dcb5",
+  "sha12": "7496781a3763",
+  "label": "barbe 04 tressée"
+ },
+ "beard_05": {
+  "asset_id": "bfe2d270-a6bb-4a3a-bd75-8bb9ee246f99",
+  "sha12": "bcb2d0187459",
+  "label": "barbe 05 moustache"
+ },
+ "beard_06": {
+  "asset_id": "213eab88-3eae-490c-a6d8-ffc168916d4b",
+  "sha12": "1ecc3c23fdda",
+  "label": "barbe 06 naissante"
+ },
+ "armor_awakened_leather_mm": {
+  "asset_id": "7edc024b-cd5d-4cb4-a75a-97a7c8650a56",
+  "sha12": "20168eda9d32",
+  "label": "armure cuir éveillé homme moyen"
+ },
+ "armor_awakened_leather_mf": {
+  "asset_id": "cbe7138e-8336-447e-b3c7-3ffc5c107ca3",
+  "sha12": "5a2bed33554e",
+  "label": "armure cuir éveillé femme moyenne"
+ },
+ "armor_awakened_leather_large": {
+  "asset_id": "26ea746d-ae52-4e19-8075-df7f1bf2d225",
+  "sha12": "1e6e06db69df",
+  "label": "armure cuir éveillé grand"
+ },
+ "armor_awakened_leather_stocky": {
+  "asset_id": "b7adcbf7-e098-4e76-b702-3bd56dd5bc47",
+  "sha12": "8c0f524a8f11",
+  "label": "armure cuir éveillé trapu"
+ },
+ "armor_awakened_leather_small": {
+  "asset_id": "15e0ca0a-5cbe-4b5d-bcd6-82e9d1ebc3c5",
+  "sha12": "068741ded259",
+  "label": "armure cuir éveillé petit"
+ },
+ "armor_warden_mail_mm": {
+  "asset_id": "398c27dd-9dd4-4197-86b1-40b78ab6f97c",
+  "sha12": "c375af83f482",
+  "label": "warden_mail mm"
+ },
+ "armor_warden_mail_mf": {
+  "asset_id": "d0a1196a-0c7c-4fe4-8834-bec50faaa530",
+  "sha12": "a3d931a3f968",
+  "label": "warden_mail mf"
+ },
+ "armor_warden_mail_large": {
+  "asset_id": "fe1a6776-fe8b-42a2-a103-7a0639890d90",
+  "sha12": "73cfe3766bdc",
+  "label": "warden_mail large"
+ },
+ "armor_warden_mail_stocky": {
+  "asset_id": "1bfc4d76-50b5-4e20-a20b-ff81302ac7ee",
+  "sha12": "7aa0d5efb1a6",
+  "label": "warden_mail stocky"
+ },
+ "armor_warden_mail_small": {
+  "asset_id": "bd06cdf6-9ecc-4951-9ade-db16e4bc6959",
+  "sha12": "bd5ffc6746a7",
+  "label": "warden_mail small"
+ },
+ "armor_dawn_plate_mm": {
+  "asset_id": "a6bb3156-4f60-4939-9f49-5becc930326e",
+  "sha12": "a4d43c7efaa3",
+  "label": "dawn_plate mm"
+ },
+ "armor_dawn_plate_mf": {
+  "asset_id": "204f90da-7cd9-450b-b221-c50fc1dab0b2",
+  "sha12": "881b4af6025f",
+  "label": "dawn_plate mf"
+ },
+ "armor_dawn_plate_large": {
+  "asset_id": "dbbdcf27-1d7c-4543-9314-8f41247fe956",
+  "sha12": "214e563549e4",
+  "label": "dawn_plate large"
+ },
+ "armor_dawn_plate_stocky": {
+  "asset_id": "ee48f1aa-b143-4ff8-9537-75f1769975ee",
+  "sha12": "96ae9e6f30f4",
+  "label": "dawn_plate stocky"
+ },
+ "armor_dawn_plate_small": {
+  "asset_id": "93ee33a0-313b-4aa6-a97d-7bdea89af440",
+  "sha12": "63b81d47d8e1",
+  "label": "dawn_plate small"
+ },
+ "armor_obsidian_knight_mm": {
+  "asset_id": "301b0189-5559-4cb7-a637-94570066c5d3",
+  "sha12": "1be4fdb71f69",
+  "label": "obsidian mm"
+ },
+ "armor_obsidian_knight_mf": {
+  "asset_id": "67cad24c-7b86-4477-ac7c-0ddb22372892",
+  "sha12": "6c8bb1cce7ab",
+  "label": "obsidian mf"
+ },
+ "armor_obsidian_knight_large": {
+  "asset_id": "6b7a8f9e-53f3-41d0-b97f-159001cab816",
+  "sha12": "f382c4a85e8d",
+  "label": "obsidian large"
+ },
+ "armor_obsidian_knight_stocky": {
+  "asset_id": "27403e5f-81d4-49f6-bd39-5eb7d27246a4",
+  "sha12": "5724ab2c627e",
+  "label": "obsidian stocky"
+ },
+ "armor_obsidian_knight_small": {
+  "asset_id": "1fa3f632-29c8-4d77-8d44-c528fbb0e5a7",
+  "sha12": "f6b43de1d39f",
+  "label": "obsidian small"
+ },
+ "armor_silver_knight_mm": {
+  "asset_id": "35c104ef-f709-40fe-9588-1a80efa2cc44",
+  "sha12": "428ac9df7848",
+  "label": "silver mm"
+ },
+ "armor_silver_knight_mf": {
+  "asset_id": "d5467d78-a275-4329-b2af-38107c31053f",
+  "sha12": "f3e805bc42e9",
+  "label": "silver mf"
+ },
+ "armor_silver_knight_large": {
+  "asset_id": "825fccbb-090c-4888-a82a-956295aa0815",
+  "sha12": "6bd919b67a6a",
+  "label": "silver large"
+ },
+ "armor_silver_knight_stocky": {
+  "asset_id": "5f30631a-0b75-40a0-8282-c334143f85b7",
+  "sha12": "d4337d29e5c2",
+  "label": "silver stocky"
+ },
+ "armor_silver_knight_small": {
+  "asset_id": "782b55a2-dbfc-41ef-a2c3-563e69606b3f",
+  "sha12": "ba90547d9212",
+  "label": "silver small"
+ },
+ "armor_golden_king_mm": {
+  "asset_id": "3ae0eee9-e564-4c8f-874a-d48133399586",
+  "sha12": "1f315a71ff76",
+  "label": "golden mm"
+ },
+ "armor_golden_king_mf": {
+  "asset_id": "e3afddc0-a079-4b5e-b71e-19dfe6d1e8e2",
+  "sha12": "3d55824df37c",
+  "label": "golden mf"
+ },
+ "armor_golden_king_large": {
+  "asset_id": "ff573d76-d603-461b-be11-e4bcf0c2968b",
+  "sha12": "4a4d5cd34147",
+  "label": "golden large"
+ },
+ "armor_golden_king_stocky": {
+  "asset_id": "9a076a2e-4fb9-4ad4-ba91-6bc011d1ff61",
+  "sha12": "b9c6ef9a79f4",
+  "label": "golden stocky"
+ },
+ "armor_golden_king_small": {
+  "asset_id": "f484e660-f1a6-4b4c-ba0c-fbc2df98bfb4",
+  "sha12": "e898d1dcb59d",
+  "label": "golden small"
+ },
+ "armor_wanderer_coat_mm": {
+  "asset_id": "14cc9abc-d819-4222-9878-1977e1ea8d85",
+  "sha12": "66cc2cfd32c9",
+  "label": "wanderer mm"
+ },
+ "armor_wanderer_coat_mf": {
+  "asset_id": "edcdbc8e-a60c-4382-9d8c-7fb85ff19a8c",
+  "sha12": "9a05e53ff385",
+  "label": "wanderer mf"
+ },
+ "armor_wanderer_coat_large": {
+  "asset_id": "5dcb65d6-9a22-4540-a3c4-e201db380719",
+  "sha12": "c5f5a4e480d5",
+  "label": "wanderer large"
+ },
+ "armor_wanderer_coat_stocky": {
+  "asset_id": "ece0e637-fd47-4dee-a5d7-e6813f747a5d",
+  "sha12": "120c4386ad37",
+  "label": "wanderer stocky"
+ },
+ "armor_wanderer_coat_small": {
+  "asset_id": "90a42450-7e6e-40d5-8986-bb5f913e4656",
+  "sha12": "6484f014dd5b",
+  "label": "wanderer small"
+ },
+ "armor_noble_gown_mm": {
+  "asset_id": "4de71279-fe4e-45ab-a0b1-54e7387a6855",
+  "sha12": "83fe3cdc63c4",
+  "label": "noble mm"
+ },
+ "armor_noble_gown_mf": {
+  "asset_id": "12a4f22a-e800-4941-9a10-fc7a2df42cd8",
+  "sha12": "18a5705e1672",
+  "label": "noble mf"
+ },
+ "armor_noble_gown_large": {
+  "asset_id": "a6fe7de2-878f-4b9f-84be-812263024bdd",
+  "sha12": "43633521465f",
+  "label": "noble large"
+ },
+ "armor_noble_gown_stocky": {
+  "asset_id": "a03f247c-7c3d-43a5-b992-da203ff501d1",
+  "sha12": "fc275ce88589",
+  "label": "noble stocky"
+ },
+ "armor_noble_gown_small": {
+  "asset_id": "f4fa9260-8dff-458c-a4ec-a04cf8ea0a97",
+  "sha12": "86162f9f4c0e",
+  "label": "noble small"
+ },
+ "armor_hunter_leather_mm": {
+  "asset_id": "285f292d-9615-4bb2-81b1-3fdfe2dafdeb",
+  "sha12": "9590311be55c",
+  "label": "hunter mm"
+ },
+ "armor_hunter_leather_mf": {
+  "asset_id": "64315eb5-73d0-4d16-bbad-523eba7da682",
+  "sha12": "305f922579cb",
+  "label": "hunter mf"
+ },
+ "armor_hunter_leather_large": {
+  "asset_id": "a9f6b352-757e-42de-92ca-7cc3c951e067",
+  "sha12": "f32408411515",
+  "label": "hunter large"
+ },
+ "armor_hunter_leather_stocky": {
+  "asset_id": "0ee0d043-976e-402e-94ed-0fd55ac8be73",
+  "sha12": "99b6be16c1d6",
+  "label": "hunter stocky"
+ },
+ "armor_hunter_leather_small": {
+  "asset_id": "cb90985e-be53-4dee-9a68-110d49bff125",
+  "sha12": "cbf904106b98",
+  "label": "hunter small"
+ },
+ "armor_scale_warden_mm": {
+  "asset_id": "2f2a96d8-e8fb-4193-a680-135767886701",
+  "sha12": "12baf7fa1400",
+  "label": "scale mm"
+ },
+ "armor_scale_warden_mf": {
+  "asset_id": "382b1d73-cc7b-4ee3-987a-f530d8a5aee7",
+  "sha12": "260b9f1e36dc",
+  "label": "scale mf"
+ },
+ "armor_scale_warden_large": {
+  "asset_id": "ab80acd4-6dd4-41ef-9f3e-d80b9b333c09",
+  "sha12": "9e8b28c283bd",
+  "label": "scale large"
+ },
+ "armor_scale_warden_stocky": {
+  "asset_id": "5a50343b-e426-45fe-9019-f0261ac949cd",
+  "sha12": "6e302352aa7c",
+  "label": "scale stocky"
+ },
+ "armor_scale_warden_small": {
+  "asset_id": "072c6090-e386-4de1-a926-b50eb7a983b2",
+  "sha12": "537a081f0909",
+  "label": "scale small"
+ },
+ "armor_north_lamellar_mm": {
+  "asset_id": "d7339a1e-66ad-4a30-93b3-6b6177ebd634",
+  "sha12": "8e398238cd60",
+  "label": "north mm"
+ },
+ "armor_north_lamellar_mf": {
+  "asset_id": "2fb494b2-58a5-4d3f-a6e0-51f20a1d7461",
+  "sha12": "9fec9df83ab7",
+  "label": "north mf"
+ },
+ "armor_north_lamellar_large": {
+  "asset_id": "2b219db2-7533-4481-a6e3-e6e361e86f13",
+  "sha12": "f94afbd8003f",
+  "label": "north large"
+ },
+ "armor_north_lamellar_stocky": {
+  "asset_id": "080c43bb-4b0e-43be-8191-ebf92f24c8e4",
+  "sha12": "377958823fe0",
+  "label": "north stocky"
+ },
+ "armor_north_lamellar_small": {
+  "asset_id": "4d16bc76-96a6-4a37-8b82-755246b40202",
+  "sha12": "8ce5d82b10bf",
+  "label": "north small"
+ },
+ "armor_sylvan_ranger_mm": {
+  "asset_id": "65e6d92c-ab7f-4097-85c8-6c47710bc475",
+  "sha12": "aa86792ad72a",
+  "label": "sylvan mm"
+ },
+ "armor_sylvan_ranger_mf": {
+  "asset_id": "a8b841aa-006d-4f91-8bce-2d14fd4358b7",
+  "sha12": "f3cd8ef8b119",
+  "label": "sylvan mf"
+ },
+ "armor_sylvan_ranger_large": {
+  "asset_id": "5f665a54-3461-4e17-8ab8-60b1beff7b09",
+  "sha12": "5cd198e93618",
+  "label": "sylvan large"
+ },
+ "armor_sylvan_ranger_stocky": {
+  "asset_id": "318a3840-c90b-41d0-99a9-c15e5102a5da",
+  "sha12": "3c447f855037",
+  "label": "sylvan stocky"
+ },
+ "armor_sylvan_ranger_small": {
+  "asset_id": "865abe45-889a-412c-9bd5-8b8548f9a71e",
+  "sha12": "f9a2d83b91c1",
+  "label": "sylvan small"
+ },
+ "armor_oath_knight_mm": {
+  "asset_id": "db454621-cd35-4061-ac46-8fa9bdbdff41",
+  "sha12": "d0dc77f7f532",
+  "label": "oath mm"
+ },
+ "armor_oath_knight_mf": {
+  "asset_id": "fbe7ac82-f683-49e5-9ff5-90de4dc67cc2",
+  "sha12": "09292232ca8f",
+  "label": "oath mf"
+ },
+ "armor_oath_knight_large": {
+  "asset_id": "70155ca6-4ab2-4455-9b2f-e1aa49057bb2",
+  "sha12": "2a45b8f893bb",
+  "label": "oath large"
+ },
+ "armor_oath_knight_stocky": {
+  "asset_id": "fab9f61e-2e37-4250-8fe3-1181a01d2fdd",
+  "sha12": "5a7e312081c5",
+  "label": "oath stocky"
+ },
+ "armor_oath_knight_small": {
+  "asset_id": "a0862009-9f83-4ccb-b0fe-cad4518b4916",
+  "sha12": "b2b1459cced4",
+  "label": "oath small"
+ },
+ "armor_lotus_samurai_mm": {
+  "asset_id": "aeea02b9-c049-4823-8c2e-65902d40c0c8",
+  "sha12": "e79d287e5321",
+  "label": "lotus mm"
+ },
+ "armor_lotus_samurai_mf": {
+  "asset_id": "7fce71a9-9c70-454e-8eb0-0139e6ffe989",
+  "sha12": "128f6c8ef46b",
+  "label": "lotus mf"
+ },
+ "armor_lotus_samurai_large": {
+  "asset_id": "778f888d-12e4-409d-b51e-6513afc0a8cc",
+  "sha12": "bfb1e4a56551",
+  "label": "lotus large"
+ },
+ "armor_lotus_samurai_stocky": {
+  "asset_id": "45b93cd1-990b-4e3d-9518-879359d5930a",
+  "sha12": "89d283306f74",
+  "label": "lotus stocky"
+ },
+ "armor_lotus_samurai_small": {
+  "asset_id": "23bc0b4e-a735-4574-a6b5-e91cdd5fbed2",
+  "sha12": "69e8b52afdab",
+  "label": "lotus small"
+ },
+ "armor_city_guard_mm": {
+  "asset_id": "f1c699e4-25e2-486e-9884-9106b98430e1",
+  "sha12": "a27340c9b6a2",
+  "label": "guard mm"
+ },
+ "armor_city_guard_mf": {
+  "asset_id": "03b6afa5-b6fc-4fb1-8134-19afc718cd56",
+  "sha12": "d0cf81ee64b7",
+  "label": "guard mf"
+ },
+ "armor_city_guard_large": {
+  "asset_id": "f8d20e83-171b-411d-af49-6ed23064061e",
+  "sha12": "4eb8b02f216e",
+  "label": "guard large"
+ },
+ "armor_city_guard_stocky": {
+  "asset_id": "498fe7c6-d9ca-4d3c-88a5-3babd1809610",
+  "sha12": "c8cad6cd6214",
+  "label": "guard stocky"
+ },
+ "armor_city_guard_small": {
+  "asset_id": "e113354a-2edc-4c91-b389-11d66684e7da",
+  "sha12": "34ccad51d535",
+  "label": "guard small"
+ },
+ "armor_pale_coat_mm": {
+  "asset_id": "cc02a887-ca09-4bf0-801e-bf361d90993b",
+  "sha12": "284006429836",
+  "label": "pale mm"
+ },
+ "armor_pale_coat_mf": {
+  "asset_id": "b029285f-4593-45b1-b5cc-51e78230b2cb",
+  "sha12": "9e76b78713d0",
+  "label": "pale mf"
+ },
+ "armor_pale_coat_large": {
+  "asset_id": "f97b6dec-2a09-42fe-b9e2-09af038d7bad",
+  "sha12": "6eb575c5bf87",
+  "label": "pale large"
+ },
+ "armor_pale_coat_stocky": {
+  "asset_id": "32052d21-7a8c-490a-a357-feb9ced170c0",
+  "sha12": "faa5e991c913",
+  "label": "pale stocky"
+ },
+ "armor_pale_coat_small": {
+  "asset_id": "6422b568-8870-49b8-9d56-b69c5b8d4b2f",
+  "sha12": "aa9142ba6247",
+  "label": "pale small"
+ },
+ "weapon_sword_warden": {
+  "asset_id": "dee8c29b-4424-4ffc-950f-b5dc0faf5ac7",
+  "sha12": "7907ea2a7d96",
+  "label": "épée du gardien"
+ },
+ "weapon_axe_war": {
+  "asset_id": "f217c4cf-e0ba-4ed2-9bac-55277ca65578",
+  "sha12": "9a06ba27991a",
+  "label": "hache de guerre"
+ },
+ "weapon_mace_spiked": {
+  "asset_id": "81099d7c-4705-41f1-9e50-bdc0c7d570b2",
+  "sha12": "a8e7136d2fae",
+  "label": "masse"
+ },
+ "weapon_dagger_desert": {
+  "asset_id": "3c0baa39-8997-420e-a946-de72db648bf6",
+  "sha12": "cc1337e67790",
+  "label": "dague des sables"
+ },
+ "weapon_sword_frost": {
+  "asset_id": "35541010-d688-47fc-81fa-16ce8f336076",
+  "sha12": "70ffd260c844",
+  "label": "épée de givre"
+ },
+ "weapon_sword_ember": {
+  "asset_id": "5a0e624c-6fdd-4e18-b38f-975d2ca41db3",
+  "sha12": "1500257a3ece",
+  "label": "lame de braise"
+ },
+ "weapon_sword_dawn": {
+  "asset_id": "71712538-443e-4e70-a718-1e565e8992a3",
+  "sha12": "f14bff1024aa",
+  "label": "épée de l'aube"
+ },
+ "weapon_staff_ember": {
+  "asset_id": "6daeb4fc-ed87-458b-a95b-1955dc4f1260",
+  "sha12": "9b03f6c4dc96",
+  "label": "bâton de braise"
+ },
+ "weapon_staff_dusk": {
+  "asset_id": "60eec023-308b-4eae-9d24-392adfea1fbd",
+  "sha12": "2c67a94174db",
+  "label": "bâton du crépuscule"
+ },
+ "weapon_halberd_silver": {
+  "asset_id": "5f834790-c0fa-463f-9e62-af5bd086f0d4",
+  "sha12": "a982a89b4ee8",
+  "label": "hallebarde d'argent"
+ },
+ "weapon_hammer_runic": {
+  "asset_id": "90050fd5-7df1-4972-8e04-47ae7989f322",
+  "sha12": "87eeb70c2d87",
+  "label": "marteau runique"
+ },
+ "weapon_scimitar_jade": {
+  "asset_id": "9b2abd1f-963f-45a2-b735-3769c20205c6",
+  "sha12": "430379d97ffb",
+  "label": "cimeterre de jade"
+ }
+}

@@ -1,0 +1,589 @@
+{
+ "canvas": [
+  144,
+  256
+ ],
+ "skinAlpha": 254,
+ "bodies": {
+  "human_male": {
+   "gabarit": "mm",
+   "skull": [
+    59,
+    6,
+    84.5
+   ],
+   "neck": 36,
+   "top": 6,
+   "feet": 247,
+   "cx": 69.5,
+   "torso": 77.5,
+   "hand": [
+    35.0,
+    140.5
+   ],
+   "skinRef": [
+    222,
+    144,
+    79
+   ]
+  },
+  "human_female": {
+   "gabarit": "mf",
+   "skull": [
+    59,
+    12,
+    84.5
+   ],
+   "neck": 41,
+   "top": 12,
+   "feet": 247,
+   "cx": 71.5,
+   "torso": 67.5,
+   "hand": [
+    54.1,
+    180.6
+   ],
+   "skinRef": [
+    117,
+    63,
+    30
+   ]
+  },
+  "elf_male": {
+   "gabarit": "mm",
+   "skull": [
+    57,
+    7,
+    83
+   ],
+   "neck": 38,
+   "top": 7,
+   "feet": 251,
+   "cx": 68.0,
+   "torso": 75.0,
+   "hand": [
+    37.8,
+    152.8
+   ],
+   "skinRef": [
+    228,
+    149,
+    81
+   ]
+  },
+  "elf_female": {
+   "gabarit": "mf",
+   "skull": [
+    59.5,
+    8,
+    84.5
+   ],
+   "neck": 40,
+   "top": 8,
+   "feet": 248,
+   "cx": 71.5,
+   "torso": 67.0,
+   "hand": [
+    38.8,
+    139.0
+   ],
+   "skinRef": [
+    228,
+    154,
+    91
+   ]
+  },
+  "high_elf_male": {
+   "gabarit": "mm",
+   "skull": [
+    58,
+    7,
+    79.5
+   ],
+   "neck": 36,
+   "top": 7,
+   "feet": 249,
+   "cx": 68.5,
+   "torso": 74.0,
+   "hand": [
+    32.6,
+    138.6
+   ],
+   "skinRef": [
+    235,
+    190,
+    116
+   ]
+  },
+  "high_elf_female": {
+   "gabarit": "mf",
+   "skull": [
+    59.5,
+    12,
+    83
+   ],
+   "neck": 44,
+   "top": 11,
+   "feet": 246,
+   "cx": 70.0,
+   "torso": 68.0,
+   "hand": [
+    38.3,
+    142.3
+   ],
+   "skinRef": [
+    231,
+    167,
+    82
+   ]
+  },
+  "orc_male": {
+   "gabarit": "large",
+   "skull": [
+    53,
+    8,
+    84.5
+   ],
+   "neck": 33,
+   "top": 8,
+   "feet": 249,
+   "cx": 68.0,
+   "torso": 112.0,
+   "hand": [
+    45.9,
+    177.6
+   ],
+   "skinRef": [
+    110,
+    88,
+    32
+   ]
+  },
+  "orc_female": {
+   "gabarit": "mm",
+   "skull": [
+    59.5,
+    8,
+    84.5
+   ],
+   "neck": 41,
+   "top": 8,
+   "feet": 250,
+   "cx": 70.0,
+   "torso": 77.0,
+   "hand": [
+    53.1,
+    179.6
+   ],
+   "skinRef": [
+    110,
+    62,
+    31
+   ]
+  },
+  "dwarf_male": {
+   "gabarit": "stocky",
+   "skull": [
+    52,
+    79,
+    83
+   ],
+   "neck": 103,
+   "top": 79,
+   "feet": 235,
+   "cx": 70.0,
+   "torso": 88.0,
+   "hand": [
+    30.7,
+    172.2
+   ],
+   "skinRef": [
+    215,
+    129,
+    55
+   ]
+  },
+  "dwarf_female": {
+   "gabarit": "stocky",
+   "skull": [
+    56,
+    70,
+    84.5
+   ],
+   "neck": 103,
+   "top": 70,
+   "feet": 241,
+   "cx": 72.0,
+   "torso": 83.0,
+   "hand": [
+    33.7,
+    171.1
+   ],
+   "skinRef": [
+    228,
+    150,
+    83
+   ]
+  },
+  "gnome_male": {
+   "gabarit": "small",
+   "skull": [
+    49.5,
+    124,
+    93
+   ],
+   "neck": 171,
+   "top": 124,
+   "feet": 239,
+   "cx": 72.5,
+   "torso": 49.0,
+   "hand": [
+    59.5,
+    201.8
+   ],
+   "skinRef": [
+    214,
+    135,
+    75
+   ]
+  },
+  "gnome_female": {
+   "gabarit": "small",
+   "skull": [
+    51,
+    103,
+    92
+   ],
+   "neck": 151,
+   "top": 103,
+   "feet": 228,
+   "cx": 70.0,
+   "torso": 38.0,
+   "hand": [
+    51.5,
+    191.3
+   ],
+   "skinRef": [
+    237,
+    161,
+    96
+   ]
+  },
+  "goblin_male": {
+   "gabarit": "stocky",
+   "skull": [
+    57,
+    82,
+    87
+   ],
+   "neck": 123,
+   "top": 82,
+   "feet": 250,
+   "cx": 72.5,
+   "torso": 63.0,
+   "hand": [
+    42.1,
+    189.7
+   ],
+   "skinRef": [
+    166,
+    167,
+    54
+   ]
+  },
+  "goblin_female": {
+   "gabarit": "stocky",
+   "skull": [
+    56,
+    67,
+    87
+   ],
+   "neck": 108,
+   "top": 67,
+   "feet": 236,
+   "cx": 71.5,
+   "torso": 52.0,
+   "hand": [
+    45.3,
+    171.3
+   ],
+   "skinRef": [
+    149,
+    153,
+    66
+   ]
+  },
+  "demon_male": {
+   "gabarit": "mm",
+   "skull": [
+    63,
+    15,
+    84.5
+   ],
+   "neck": 39,
+   "top": 4,
+   "feet": 248,
+   "cx": 69.5,
+   "torso": 76.0,
+   "hand": [
+    33.4,
+    138.9
+   ],
+   "skinRef": [
+    156,
+    31,
+    24
+   ]
+  },
+  "demon_female": {
+   "gabarit": "mf",
+   "skull": [
+    62,
+    17.5,
+    84.5
+   ],
+   "neck": 48,
+   "top": 5,
+   "feet": 253,
+   "cx": 70.5,
+   "torso": 70.0,
+   "hand": [
+    36.9,
+    144.6
+   ],
+   "skinRef": [
+    177,
+    46,
+    37
+   ]
+  },
+  "minotaur_male": {
+   "gabarit": "large",
+   "skull": [
+    57,
+    17,
+    92
+   ],
+   "neck": 45,
+   "top": 5,
+   "feet": 250,
+   "cx": 71.5,
+   "torso": 107.0,
+   "hand": [
+    28.0,
+    151.3
+   ],
+   "skinRef": [
+    127,
+    77,
+    37
+   ]
+  },
+  "minotaur_female": {
+   "gabarit": "mm",
+   "skull": [
+    57,
+    14,
+    87
+   ],
+   "neck": 40,
+   "top": 4,
+   "feet": 248,
+   "cx": 70.5,
+   "torso": 78.0,
+   "hand": [
+    54.0,
+    176.9
+   ],
+   "skinRef": [
+    126,
+    73,
+    37
+   ]
+  },
+  "undead_male": {
+   "gabarit": "mm",
+   "skull": [
+    53,
+    6,
+    79.5
+   ],
+   "neck": 38,
+   "top": 6,
+   "feet": 250,
+   "cx": 64.5,
+   "torso": 74.0,
+   "hand": [
+    29.2,
+    138.5
+   ],
+   "skinRef": [
+    157,
+    148,
+    114
+   ]
+  },
+  "undead_female": {
+   "gabarit": "mf",
+   "skull": [
+    56,
+    7,
+    82
+   ],
+   "neck": 40,
+   "top": 7,
+   "feet": 250,
+   "cx": 70.5,
+   "torso": 68.5,
+   "hand": [
+    35.0,
+    137.4
+   ],
+   "skinRef": [
+    192,
+    175,
+    148
+   ]
+  }
+ },
+ "templates": {
+  "mm": {
+   "neck": 36,
+   "top": 6,
+   "feet": 247,
+   "cx": 69.5,
+   "torso": 77.5
+  },
+  "mf": {
+   "neck": 41,
+   "top": 12,
+   "feet": 247,
+   "cx": 71.5,
+   "torso": 67.5
+  },
+  "large": {
+   "neck": 33,
+   "top": 8,
+   "feet": 249,
+   "cx": 68.0,
+   "torso": 112.0
+  },
+  "stocky": {
+   "neck": 103,
+   "top": 79,
+   "feet": 235,
+   "cx": 70.0,
+   "torso": 88.0
+  },
+  "small": {
+   "neck": 171,
+   "top": 124,
+   "feet": 239,
+   "cx": 72.5,
+   "torso": 49.0
+  }
+ },
+ "hairSources": {
+  "male": [
+   59,
+   6,
+   84.5
+  ],
+  "female": [
+   59,
+   12,
+   84.5
+  ],
+  "beard": [
+   59,
+   6,
+   84.5
+  ]
+ },
+ "weapons": {
+  "axe_war": {
+   "size": [
+    35,
+    96
+   ],
+   "grip": 0.72
+  },
+  "dagger_desert": {
+   "size": [
+    25,
+    96
+   ],
+   "grip": 0.8
+  },
+  "halberd_silver": {
+   "size": [
+    27,
+    96
+   ],
+   "grip": 0.6
+  },
+  "hammer_runic": {
+   "size": [
+    37,
+    96
+   ],
+   "grip": 0.74
+  },
+  "mace_spiked": {
+   "size": [
+    35,
+    96
+   ],
+   "grip": 0.74
+  },
+  "scimitar_jade": {
+   "size": [
+    28,
+    96
+   ],
+   "grip": 0.86
+  },
+  "staff_dusk": {
+   "size": [
+    22,
+    96
+   ],
+   "grip": 0.62
+  },
+  "staff_ember": {
+   "size": [
+    19,
+    96
+   ],
+   "grip": 0.62
+  },
+  "sword_dawn": {
+   "size": [
+    39,
+    96
+   ],
+   "grip": 0.86
+  },
+  "sword_ember": {
+   "size": [
+    25,
+    96
+   ],
+   "grip": 0.86
+  },
+  "sword_frost": {
+   "size": [
+    31,
+    96
+   ],
+   "grip": 0.86
+  },
+  "sword_warden": {
+   "size": [
+    26,
+    96
+   ],
+   "grip": 0.86
+  }
+ }
+}
