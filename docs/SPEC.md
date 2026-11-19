@@ -452,3 +452,10 @@ Demande de la propriétaire du projet : tenues, coiffures et barbes plus réalis
 - **Création du héros** : juste après le questionnaire d'arrivée ; modifiable ensuite depuis l'onglet Héros.
 - **Accueil** : la fiche de stats est sous le personnage ; la barre du bas devient Quêtes, Héros, S'entraîner, Boutique, Inventaire (la boutique et l'inventaire quittent la liste de l'accueil).
 - **Textes** : « Arisia » remplacé par « Hero Protocol » dans les hauts faits, les secrets et les autres textes.
+
+## 41. Héros en pixel art (19/11/2026)
+- **Rendu** : le héros 3D (modèles `.glb`, vue web three.js) est remplacé par un héros **en pied, en pixel art**, assemblé dans l'appli à partir de calques générés avec SpriteCook (docs/ASSETS.md §2). L'APK perd les modèles, les tenues 3D et les vidéos (environ 330 Mo).
+- **Races** : 10, humain, elfe, haut-elfe, orc, nain, gnome, gobelin, démon, minotaure, mort-vivant (« Tauren » est un nom déposé : la race s'appelle Minotaure).
+- **Création** : race, sexe, teinte de peau (palette propre à chaque race), 10 coiffures par sexe (ou crâne rasé) et 20 couleurs, 6 barbes et leur couleur, prénom. Les coiffures 6, 8 et 10 restent à débloquer en boutique. Les silhouettes, réglages du visage, taille, couleur des yeux, sourcils et maquillage disparaissent ; les fiches enregistrées se relisent sans perte de la race, des couleurs, de la coiffure (ramenée entre 1 et 10), de la barbe et du nom.
+- **Boutique** : 16 tenues complètes (emplacement « Tenue ») et 12 armes ; une tenue commune coûte 8 pièces d'argent. Les tenues se teignent. Les anciennes pièces possédées sont converties (pièce d'un ensemble → tenue complète, arme retirée → arme proche) ; les pièces isolées disparaissent.
+- **Démonstration des exercices** : retour au mannequin 2D articulé ; les vidéos 3D du prof médiéval sont retirées.

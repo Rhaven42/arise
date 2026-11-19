@@ -6,7 +6,7 @@ import 'package:arise/features/avatar/domain/snapshot_sharer.dart';
 import 'package:arise/features/avatar/presentation/character_renderer.dart';
 import 'package:flutter/widgets.dart';
 
-/// Rendu factice pour les tests : affiche l'identifiant du modèle, garde la
+/// Rendu factice pour les tests : affiche l'identifiant du corps, garde la
 /// dernière apparence et la dernière scène, et fournit une capture fixe.
 class FakeCharacterRenderer implements CharacterRenderer {
   CharacterAppearance? last;
@@ -25,7 +25,7 @@ class FakeCharacterRenderer implements CharacterRenderer {
     last = appearance;
     lastScene = scene;
     snapshots?.handler = () async => png;
-    return Center(key: key, child: Text('rendu:${appearance.modelId}'));
+    return Center(key: key, child: Text('rendu:${appearance.bodyId}'));
   }
 }
 

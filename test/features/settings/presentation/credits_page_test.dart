@@ -1,27 +1,20 @@
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/features/settings/domain/credits.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/test_app.dart';
 
 void main() {
-  test('chaque ressource CC BY a un auteur et une source', () {
-    expect(ccByCredits, isNotEmpty);
-    for (final credit in ccByCredits) {
-      expect(credit.license, CreditLicense.ccBy);
+  test('chaque ressource a un auteur et une source', () {
+    for (final credit in [...artCredits, ...otherCredits]) {
+      expect(credit.work, isNotEmpty);
       expect(credit.author, isNotEmpty);
-      expect(
-        credit.source,
-        anyOf(
-          startsWith('makehumancommunity.org/node/'),
-          startsWith('sketchfab.com/3d-models/'),
-        ),
-      );
+      expect(credit.source, isNotEmpty);
     }
+    expect(artCredits.single.license, CreditLicense.generated);
   });
 
-  testWidgets('les crédits citent les auteurs des ressources CC BY', (
+  testWidgets('les crédits citent l’origine des illustrations et les polices', (
     tester,
   ) async {
     final container = createTestContainer();
@@ -29,13 +22,14 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(find.text('Crédits'), findsOneWidget);
-    expect(find.text('Lace up blouse — punkduck'), findsOneWidget);
-    await tester.scrollUntilVisible(
-      find.text('three.js — three.js authors'),
-      200,
-      scrollable: find.byType(Scrollable).first,
+    expect(
+      find.text(
+        'Héros, coiffures, tenues et armes en pixel art — Hero Protocol, '
+        'généré avec SpriteCook',
+      ),
+      findsOneWidget,
     );
-    expect(find.text('three.js — three.js authors'), findsOneWidget);
+    expect(find.text('Cinzel — Natanael Gama'), findsOneWidget);
     await tester.unmountApp();
   });
 }

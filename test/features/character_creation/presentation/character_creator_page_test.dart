@@ -1,4 +1,3 @@
-import 'package:arise/core/config/game_config.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/features/avatar/domain/character_scene.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
@@ -40,29 +39,20 @@ void main() {
 
     expect(find.text('Création du personnage'), findsOneWidget);
     expect(find.text('rendu:human_female'), findsOneWidget);
-    await _scrollTo(tester, find.text('Équilibrée'), tab: CreatorTab.body);
-    expect(find.text('Robuste'), findsOneWidget);
-    await _scrollTo(
-      tester,
-      find.text('Humaine'),
-      tab: CreatorTab.body,
-      delta: -200,
-    );
+    // Dix races au choix.
+    expect(find.text('Gobeline'), findsOneWidget);
 
-    await tester.tap(find.text('Humaine'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Orque').last);
+    await tester.tap(find.text('Orque'));
     await tester.pumpAndSettle();
     expect(find.text('rendu:orc_female'), findsOneWidget);
-    expect(renderer.last?.modelId, 'orc_female');
+    expect(renderer.last?.bodyId, 'orc_female');
 
     await tester.tap(find.text('Femme'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Homme').last);
     await tester.pumpAndSettle();
     expect(find.text('rendu:orc_male'), findsOneWidget);
-    await _scrollTo(tester, find.text('Équilibré'), tab: CreatorTab.body);
-    expect(find.text('Puissant'), findsOneWidget);
+    expect(find.text('Minotaure'), findsOneWidget);
 
     // Annuler revient à l'orque femme, puis à l'humaine.
     await tester.tap(find.byTooltip('Annuler'));
@@ -155,9 +145,12 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('silhouettes, visage, coiffures favorites et scène', (
-    tester,
-  ) async {
+  testWidgets('peau, coiffure, barbe et scène', (tester) async {
+    // Écran de téléphone en hauteur : place pour l'aperçu et les réglages.
+    tester.view
+      ..physicalSize = const Size(1080, 2400)
+      ..devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
     final renderer = FakeCharacterRenderer();
     final sharer = FakeSnapshotSharer();
     final container = createTestContainer(renderer: renderer, sharer: sharer);
@@ -166,87 +159,76 @@ void main() {
     CharacterSheet sheet() =>
         container.read(characterCreatorControllerProvider).value!.sheet;
 
-    // Silhouette « Puissante ».
-    await _scrollTo(tester, find.text('Puissante'), tab: CreatorTab.body);
-    await tester.tap(find.text('Puissante'));
+    // Teinte de peau : pastilles nommées.
+    await _scrollTo(tester, find.byTooltip('Ébène'), tab: CreatorTab.body);
+    await tester.ensureVisible(find.byTooltip('Ébène'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Ébène'));
     await tester.pump();
-    expect(sheet().corpulence, 0.5);
-    expect(sheet().musculature, 0.95);
+    expect(sheet().skinColor, 0xFF45281A);
+    expect(find.text('Couleur de peau : Ébène'), findsOneWidget);
 
-    // L'onglet Visage cadre la caméra sur le visage.
-    await _openTab(tester, 'Visage');
-    expect(renderer.lastScene?.focus, SceneFocus.face);
-    expect(find.text('Mâchoire : Moyenne'), findsOneWidget);
-    // Pas de barbe pour un personnage féminin.
-    expect(find.text('Barbe'), findsNothing);
-    await _scrollTo(tester, find.text('Aucun'), tab: CreatorTab.face);
-    await tester.tap(find.text('Aucun'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Khôl fumé').last);
-    await tester.pumpAndSettle();
-    expect(sheet().makeupStyle, 1);
-    expect(renderer.last?.makeupId, 'makeup_01');
-
-    // Coiffures : favorites jusqu'à la limite.
+    // L'onglet Coiffure cadre le visage ; pas de barbe pour une femme.
     await _openTab(tester, 'Coiffure');
-    expect(renderer.lastScene?.focus, SceneFocus.body);
-    await tester.tap(find.text('Favorites'));
-    await tester.pump();
-    expect(
-      find.text(
-        "Aucune favorite : touche l'étoile d'une coiffure pour la garder "
-        'sous la main.',
-      ),
-      findsOneWidget,
-    );
-    final controller = container.read(
-      characterCreatorControllerProvider.notifier,
-    );
-    final max = gameConfig.character.favoriteHairstylesMax;
-    for (var i = 1; i <= max; i++) {
-      controller.toggleFavorite(i);
-    }
-    await tester.pump();
-    expect(sheet().favoriteHairStyles, hasLength(max));
-    await tester.tap(find.text('Longues'));
-    await tester.pump();
-    await tester.tap(find.byTooltip('Ajouter aux favorites').first);
-    await tester.pump();
-    expect(
-      find.text(
-        'Tu as déjà $max coiffures favorites. Retires-en une '
-        "d'abord.",
-      ),
-      findsOneWidget,
-    );
+    expect(renderer.lastScene?.focus, SceneFocus.face);
+    expect(find.text('Barbe'), findsNothing);
     // Les coiffures de la boutique sont verrouillées.
-    await tester.tap(find.text('Courtes'));
-    await tester.pump();
-    await _scrollTo(tester, find.text('10 · Bouclée'), tab: CreatorTab.hair);
-    await tester.tap(find.text('10 · Bouclée'));
-    await tester.pump();
-    expect(sheet().hairStyle, isNot(10));
-    expect(find.text('Coiffure à débloquer dans la boutique.'), findsWidgets);
     await _scrollTo(
       tester,
-      find.text('Longues'),
+      find.text('10 · Mi-longue ondulée'),
+      tab: CreatorTab.hair,
+    );
+    await tester.ensureVisible(find.text('10 · Mi-longue ondulée'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('10 · Mi-longue ondulée'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(sheet().hairStyle, isNot(10));
+    expect(find.text('Coiffure à débloquer dans la boutique.'), findsOneWidget);
+    ScaffoldMessenger.of(tester.element(find.byType(Scaffold).first))
+        .removeCurrentSnackBar();
+    await tester.pumpAndSettle();
+    await _scrollTo(
+      tester,
+      find.text('3 · Deux tresses'),
       tab: CreatorTab.hair,
       delta: -200,
     );
-    await tester.tap(find.text('Longues'));
+    await tester.ensureVisible(find.text('3 · Deux tresses'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('3 · Deux tresses'));
     await tester.pump();
-    await tester.tap(find.text('5 · Longue'));
+    expect(sheet().hairStyle, 3);
+    expect(renderer.last?.hairId, 'f03');
+    await _scrollTo(tester, find.byTooltip('Platine'), tab: CreatorTab.hair);
+    await tester.ensureVisible(find.byTooltip('Platine'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Platine'));
     await tester.pump();
-    expect(sheet().hairStyle, 5);
+    expect(renderer.last?.hairColor, 0xFFEFE6CF);
+
+    // Un homme a des barbes, de la couleur des cheveux par défaut.
+    container
+        .read(characterCreatorControllerProvider.notifier)
+        .setSex(CharacterSex.male);
+    await tester.pump();
+    await _scrollTo(tester, find.text('Tressée'), tab: CreatorTab.hair);
+    await tester.ensureVisible(find.text('Tressée'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Tressée'));
+    await tester.pump();
+    expect(renderer.last?.beardId, 'b04');
+    expect(renderer.last?.hairId, 'm03');
+    expect(renderer.last?.beardColor, 0xFFEFE6CF);
 
     // Avant / après : l'aperçu montre la fiche d'ouverture.
     await tester.tap(find.byTooltip('Avant / après'));
     await tester.pump();
     expect(find.text('Aperçu : avant tes changements'), findsOneWidget);
-    expect(renderer.last?.hairStyleId, 'hair_01');
+    expect(renderer.last?.hairId, 'f01');
     await tester.tap(find.byTooltip('Avant / après'));
     await tester.pump();
-    expect(renderer.last?.hairStyleId, 'hair_05');
+    expect(renderer.last?.hairId, 'm03');
 
     // Éclairage de nuit.
     await tester.tap(find.byTooltip('Éclairage'));

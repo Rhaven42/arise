@@ -141,7 +141,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                     _hairFilter = false;
                   }),
                 ),
-                for (final slot in EquipmentSlot.values)
+                for (final slot in usedSlots)
                   _FilterChip(
                     label: slotLabel(l10n, slot),
                     selected: _slot == slot,
@@ -342,7 +342,7 @@ class _AfterRouteTransitionState extends State<_AfterRouteTransition> {
   }
 }
 
-/// Vignette de l'objet seul (rendue hors application, `assets/items/`).
+/// Vignette de l'objet seul (sprite en pixel art, `assets/sprites/icons/`).
 class _ArticleImage extends StatelessWidget {
   const _ArticleImage({required this.article, required this.rarity});
 
@@ -350,9 +350,9 @@ class _ArticleImage extends StatelessWidget {
   final Rarity rarity;
 
   static String assetOf(ShopArticle article) => switch (article) {
-    ItemArticle(:final item) => 'assets/items/${item.modelId}.png',
+    ItemArticle(:final item) => 'assets/sprites/icons/${item.spriteId}.png',
     HairStyleArticle(:final style) =>
-      'assets/items/hairstyle_${style.toString().padLeft(2, '0')}.png',
+      'assets/sprites/icons/hairstyle_${style.toString().padLeft(2, '0')}.png',
   };
 
   @override
@@ -373,6 +373,7 @@ class _ArticleImage extends StatelessWidget {
         child: Image.asset(
           assetOf(article),
           fit: BoxFit.contain,
+          filterQuality: FilterQuality.none,
           errorBuilder: (_, _, _) => const Icon(Icons.image_not_supported),
         ),
       ),
@@ -402,10 +403,7 @@ class _ArticleTile extends StatelessWidget {
       ItemArticle(:final item) => (
         item.rarity,
         slotIcon(item.slot),
-        [
-          slotLabel(l10n, item.slot),
-          if (item.setId != null) l10n.equipmentSetName(item.setId!),
-        ].join(' · '),
+        slotLabel(l10n, item.slot),
       ),
       HairStyleArticle() => (
         Rarity.rare,

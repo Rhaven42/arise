@@ -225,7 +225,7 @@ void main() {
     debugPrint('capture 22_analyse_conseils');
     await binding.takeScreenshot('22_analyse_conseils');
 
-    // Phase 6 : le créateur de personnage (rendu 3D réel).
+    // Phase 6 : le créateur de personnage (sprites en pixel art).
     await tester.binding.handlePopRoute();
     await pumpFor(1200);
     final creator = find.text('Création du personnage');
@@ -238,9 +238,7 @@ void main() {
     await pumpFor(6000);
     debugPrint('capture 23_createur');
     await binding.takeScreenshot('23_createur');
-    await tester.tap(find.text('Humaine'));
-    await pumpFor(800);
-    await tester.tap(find.text('Orque').last);
+    await tester.tap(find.text('Orque'));
     await pumpFor(800);
     await tester.tap(find.text('Femme'));
     await pumpFor(800);
@@ -248,12 +246,10 @@ void main() {
     await pumpFor(5000);
     debugPrint('capture 24_createur_orque');
     await binding.takeScreenshot('24_createur_orque');
-    await tester.tap(find.text('Orque').first);
-    await pumpFor(800);
-    await tester.tap(find.text('Elfe').last);
-    await pumpFor(5000);
-    debugPrint('capture 25_createur_elfe');
-    await binding.takeScreenshot('25_createur_elfe');
+    await tester.tap(find.text('Nain'));
+    await pumpFor(3000);
+    debugPrint('capture 25_createur_nain');
+    await binding.takeScreenshot('25_createur_nain');
     await tester.tap(find.text('Nom & fiche'));
     await pumpFor(1000);
     await tester.tap(find.text('Fiche du personnage (JSON)'));
@@ -261,46 +257,22 @@ void main() {
     debugPrint('capture 26_createur_fiche');
     await binding.takeScreenshot('26_createur_fiche');
 
-    // Phase 6B : silhouettes, visage, coiffures, poses et éclairages.
-    await tester.tap(find.text('Corps'));
-    await pumpFor(1000);
-    await tester.tap(find.text('Colosse'));
-    await pumpFor(800);
-    Future<void> pick(
-      String menu,
-      String choice, {
-      CreatorTab tab = CreatorTab.body,
-    }) async {
-      final list = find
-          .descendant(
-            of: find.byKey(CharacterCreatorPage.tabKey(tab)),
-            matching: find.byType(Scrollable),
-          )
-          .first;
-      await tester.scrollUntilVisible(find.text(menu), 200, scrollable: list);
-      // Remonte le menu au milieu de la liste pour le toucher sans gêne.
-      await tester.drag(list, const Offset(0, -150));
-      await pumpFor(600);
-      await tester.tap(find.text(menu));
-      await pumpFor(800);
-      await tester.tap(find.text(choice).last);
-      await pumpFor(800);
-    }
-
-    await pumpFor(2500);
-    debugPrint('capture 27_createur_silhouette');
-    await binding.takeScreenshot('27_createur_silhouette');
-    await tester.tap(find.text('Visage'));
-    await pumpFor(800);
-    await pick('Aucune', 'Collier', tab: CreatorTab.face);
-    await pumpFor(2500);
-    debugPrint('capture 28_createur_visage');
-    await binding.takeScreenshot('28_createur_visage');
+    // Coiffure, barbe et éclairage.
     await tester.tap(find.text('Coiffure'));
     await pumpFor(1500);
-    await tester.tap(find.text('Longues'));
+    await tester.tap(find.text('7 · Tresse nordique'));
     await pumpFor(800);
-    await tester.tap(find.text('5 · Longue'));
+    await tester.scrollUntilVisible(
+      find.text('Tressée'),
+      200,
+      scrollable: find
+          .descendant(
+            of: find.byKey(CharacterCreatorPage.tabKey(CreatorTab.hair)),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.tap(find.text('Tressée'));
     await pumpFor(2500);
     debugPrint('capture 29_createur_coiffures');
     await binding.takeScreenshot('29_createur_coiffures');
@@ -343,10 +315,8 @@ void main() {
       await tester.ensureVisible(button);
       await pumpFor(300);
       await tester.tap(button);
-      // Le premier rendu d'un modèle dans une nouvelle vue web est très lent
-      // sur l'émulateur (rendu logiciel, sans carte graphique : shaders et
-      // textures préparés par le processeur) : on attend qu'il soit dessiné.
-      for (var t = 0; t < 60000; t += 500) {
+      // On attend que le personnage soit assemblé et dessiné.
+      for (var t = 0; t < 20000; t += 500) {
         if (find.text('Le Système façonne ton héros…').evaluate().isEmpty) {
           break;
         }
@@ -358,8 +328,7 @@ void main() {
       await pumpFor(800);
     }
 
-    await tryOn('Torse', 2, '32_boutique_cuirasse');
-    await tryOn('Dos', 1, '33_boutique_cape');
+    await tryOn('Tenue', 2, '32_boutique_tenue');
     await tryOn('Arme', 0, '34_boutique_epee');
 
     // Phase 8A : quête du jour et épreuve de rang.

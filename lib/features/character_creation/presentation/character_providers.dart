@@ -4,12 +4,10 @@ import 'dart:math';
 import 'package:arise/core/database/app_database.dart';
 import 'package:arise/core/utils/clock.dart';
 import 'package:arise/features/character_creation/data/drift_character_repository.dart';
-import 'package:arise/features/character_creation/domain/body_presets.dart';
 import 'package:arise/features/character_creation/domain/character_repository.dart';
 import 'package:arise/features/character_creation/domain/character_rules.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/character_creation/domain/edit_history.dart';
-import 'package:arise/features/character_creation/domain/hair_styles.dart';
 import 'package:arise/features/character_creation/domain/name_rules.dart';
 import 'package:arise/features/inventory/domain/inventory.dart';
 import 'package:arise/features/inventory/domain/inventory_rules.dart';
@@ -98,28 +96,6 @@ class CharacterCreatorController extends _$CharacterCreatorController {
     _set(current.history.push(sanitizeSheet(change(current.sheet))));
   }
 
-  CharacterSheet? _gestureBase;
-
-  /// Début d'un glissement de curseur : un seul retour en arrière annulera
-  /// tout le geste.
-  void beginGesture() => _gestureBase = _state?.sheet;
-
-  /// Valeur affichée pendant le glissement (pas encore dans l'historique).
-  void preview(CharacterSheet Function(CharacterSheet sheet) change) {
-    final current = _state;
-    if (current == null) return;
-    final next = sanitizeSheet(change(current.sheet));
-    state = AsyncData(current.copyWith(history: current.history.replace(next)));
-  }
-
-  void endGesture() {
-    final current = _state;
-    final base = _gestureBase;
-    _gestureBase = null;
-    if (current == null || base == null) return;
-    _set(current.history.replace(base).push(current.sheet));
-  }
-
   void setSex(CharacterSex sex) => edit((s) => changeSex(s, sex));
 
   void setRace(CharacterRace race) => edit((s) => changeRace(s, race));
@@ -160,7 +136,6 @@ class CharacterCreatorController extends _$CharacterCreatorController {
       (s) => randomSheet(
         ref.read(characterRandomProvider),
         name: s.name,
-        keep: s,
         hairStyles: availableHairStyles(
           inventory,
           count: hairStyleCount,
@@ -170,27 +145,7 @@ class CharacterCreatorController extends _$CharacterCreatorController {
     );
   }
 
-  void reset() => edit(
-    (s) =>
-        defaultSheet(sex: s.sex)
-            .copyWith(name: s.name, favoriteHairStyles: s.favoriteHairStyles),
-  );
-
-  void applyBodyPreset(BodyPreset preset) =>
-      edit((s) => applyPreset(s, preset));
-
-  /// Étoile d'une coiffure ; renvoie le résultat pour prévenir quand la
-  /// liste des favorites est pleine. Hors historique (préférence, pas
-  /// apparence).
-  FavoriteToggle toggleFavorite(int style) {
-    final current = _state;
-    if (current == null) return FavoriteToggle.full;
-    final toggled = toggleFavoriteHairStyle(current.sheet, style);
-    if (toggled.result != FavoriteToggle.full) {
-      _set(current.history.replace(toggled.sheet));
-    }
-    return toggled.result;
-  }
+  void reset() => edit((s) => defaultSheet(sex: s.sex).copyWith(name: s.name));
 
   /// Valide le personnage ; renvoie `false` si le nom est refusé.
   Future<bool> confirm() async {

@@ -3,87 +3,62 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'character_sheet.freezed.dart';
 part 'character_sheet.g.dart';
 
-/// Sexe du personnage : deux maillages distincts.
+/// Sexe du personnage : deux corps distincts par race.
 enum CharacterSex { female, male }
 
-/// Race du royaume d'Arisia.
+/// Race du héros : un corps en pixel art par race et par sexe.
 enum CharacterRace {
   human,
   elf,
-  orc;
+  highElf,
+  orc,
+  dwarf,
+  gnome,
+  goblin,
+  demon,
+  minotaur,
+  undead;
 
-  /// Identifiant stable des fichiers et des textes.
-  String get id => name;
+  /// Identifiant stable des fichiers et des textes (`snake_case`).
+  String get id => switch (this) {
+    CharacterRace.highElf => 'high_elf',
+    _ => name,
+  };
 }
 
 /// Fiche du personnage, enregistrée en JSON sur le téléphone.
 ///
-/// Les curseurs [corpulence], [musculature] et ceux du visage vont de 0 à 1
-/// (0,5 = milieu). Chaque champ ajouté a une valeur par défaut : une fiche
-/// enregistrée par une version précédente se relit sans perte.
+/// Les clés des versions précédentes (silhouette, visage, taille, yeux,
+/// maquillage) sont ignorées à la relecture : une fiche ancienne se relit
+/// sans erreur et garde race, sexe, couleurs, coiffure, barbe et nom.
 @freezed
 abstract class CharacterSheet with _$CharacterSheet {
   const factory CharacterSheet({
     required CharacterSex sex,
-
-    /// Une race retirée (Haut-elfe, 13/11/2026) se relit comme Elfe.
-    @JsonKey(unknownEnumValue: CharacterRace.elf) required CharacterRace race,
-
-    /// Taille en centimètres.
-    required int heightCm,
+    @JsonKey(unknownEnumValue: CharacterRace.human) required CharacterRace race,
 
     /// Couleurs au format ARGB (0xAARRGGBB).
     required int skinColor,
     required int hairColor,
     @Default('') String name,
-    @Default(0.5) double corpulence,
-    @Default(0.5) double musculature,
 
-    /// Coiffure, de 1 à [hairStyleCount].
+    /// Coiffure, de 0 (crâne rasé) à [hairStyleCount] ; la liste dépend du
+    /// sexe.
     @Default(1) int hairStyle,
-
-    /// Coiffures favorites (au plus `favoriteHairstylesMax`).
-    @Default(<int>[]) List<int> favoriteHairStyles,
-    @Default(0.5) double faceJaw,
-    @Default(0.5) double faceNose,
-    @Default(0.5) double faceMouth,
-    @Default(0.5) double faceCheeks,
-    @Default(0.5) double faceEars,
-
-    /// Couleur des yeux (ARGB).
-    @Default(0xFF5A3A22) int eyeColor,
-
-    /// Sourcils, de 1 à [eyebrowStyleCount].
-    @Default(1) int eyebrowStyle,
 
     /// Barbe, de 0 (aucune) à [beardStyleCount] ; hommes uniquement.
     @Default(0) int beardStyle,
 
     /// Couleur de la barbe (ARGB) ; `null` = celle des cheveux.
     int? beardColor,
-
-    /// Maquillage, de 0 (aucun) à [makeupStyleCount].
-    @Default(0) int makeupStyle,
   }) = _CharacterSheet;
 
   factory CharacterSheet.fromJson(Map<String, dynamic> json) =>
       _$CharacterSheetFromJson(json);
 }
 
-/// Nombre de coiffures disponibles.
-const int hairStyleCount = 35;
-
-/// Nombre de styles de sourcils.
-const int eyebrowStyleCount = 6;
+/// Nombre de coiffures par sexe.
+const int hairStyleCount = 10;
 
 /// Nombre de barbes (sans compter « aucune »).
-const int beardStyleCount = 11;
-
-/// Première coiffure livrée dans son propre fichier (chargé à la demande).
-const int firstPackedHairStyle = 11;
-
-/// Première barbe livrée dans son propre fichier (chargée à la demande).
-const int firstPackedBeardStyle = 7;
-
-/// Nombre de maquillages (sans compter « aucun »).
-const int makeupStyleCount = 9;
+const int beardStyleCount = 6;

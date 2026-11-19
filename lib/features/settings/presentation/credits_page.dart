@@ -48,7 +48,7 @@ class CreditsPage extends StatelessWidget {
         children: [
           Text(l10n.creditsIntro, style: textTheme.bodyLarge),
           section(l10n.creditsCcBySection),
-          for (final credit in ccByCredits) entry(credit),
+          for (final credit in artCredits) entry(credit),
           section(l10n.creditsOtherSection),
           for (final credit in otherCredits) entry(credit),
         ],

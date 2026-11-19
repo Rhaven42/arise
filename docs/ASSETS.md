@@ -1,6 +1,6 @@
-# ASSETS.md — Cahier des charges de l'artiste 3D
+# ASSETS.md — Illustrations, animations et sons
 
-> Tout ce qu'un artiste devra fournir pour remplacer les éléments de substitution. **Uniquement des créations originales ou sous licence compatible avec une publication commerciale sur les stores** : aucun asset de Solo Leveling, de World of Warcraft, de Wowhead ni de toute autre œuvre protégée. La partie « création du personnage » est décrite au §2 (phase 6A) et sera complétée en phase 6B.
+> Origine des illustrations, des animations et des sons, et ce qu'un artiste pourrait fournir. **Uniquement des créations originales ou sous licence compatible avec une publication commerciale sur les stores** : aucun asset de Solo Leveling, de World of Warcraft, de Wowhead ni de toute autre œuvre protégée.
 
 ## 1. Animations des exercices (phase 2)
 
@@ -9,7 +9,7 @@ Démonstration par un **mannequin 2D animé** (12/11/2026, à la demande de la p
 
 - 75 mouvements dans `assets/animations/motions.json`, générés par `tool/motions.py` : chaque exercice du catalogue a le sien ou partage celui d'une variante identique vue de profil (pompes larges ou diamant, chin-up, curl marteau, fente arrière).
 - Appuis vérifiés image par image (planche de contrôle et test : mains et pieds ne traversent pas le sol, prises fixes par cinématique inverse).
-- Les photos (free-exercise-db) et les vidéos de capture de mouvement ont été retirées ; les clips 3D `ex_<mouvement>` restent dans les modèles et le visualiseur, inutilisés par les écrans.
+- Les photos, les vidéos de capture de mouvement et les vidéos 3D du prof médiéval ont été retirées (19/11/2026).
 
 ### Livrable attendu (version 3D)
 - **Un modèle anatomique** homme et un modèle femme, « écorché » ou semi-réaliste, avec **un maillage séparé par muscle** pour les 33 muscles de docs/ANATOMY.md §1. Chaque maillage est nommé exactement comme l'identifiant (`pectoralis_upper`, `gluteus_medius`…), y compris les côtés gauche et droit (`_l` / `_r`).
@@ -22,59 +22,31 @@ Démonstration par un **mannequin 2D animé** (12/11/2026, à la demande de la p
 ### Intégration côté code
 Une nouvelle implémentation de `ExerciseAnimationPlayer` lira le `.glb`, jouera l'animation dont le nom vaut `exercise.motion` et colorera les maillages des muscles de l'exercice. Aucun écran n'a besoin d'être modifié.
 
-## 2. Personnage (phases 6A et 6B)
+## 2. Héros en pixel art (19/11/2026)
 
 ### État actuel
-Six modèles de substitution générés par `tool/character/build_characters.py` (Blender + extension MPFB, maillage de base MakeHuman, licence CC0) : `assets/models/{human,elf,orc}_{female,male}.glb` (race Haut-elfe retirée le 13/11/2026). Aucun asset tiers protégé. Chaque fichier contient :
-- `body` (matériau `skin`, texture de peau réaliste ramenée à une teinte neutre : la couleur choisie dans l'application est appliquée par-dessus ; peaux MakeHuman `young_caucasian_male` / `young_caucasian_female`, CC0), `tusks` pour les orques ;
-- `eye_sclera` (texture) et `eye_iris` (matériau `iris`, teinté par la couleur des yeux) — yeux MakeHuman « high-poly » (CC0) ;
-- `lashes` (cils MakeHuman `eyelashes01`, CC0) ;
-- tenue de départ en vraies pièces de vêtement, texturées, ajustées sur chaque morphologie : `outfit_tunic` (blouse lacée « Lace up blouse » de punkduck, **CC BY**, teinte lin), `outfit_pants` et `outfit_boots` (pantalon et bottes « viking » de RehmanPolanski, CC0) ; `outfit_under_top` et `outfit_under_pants` : maillot et collant sombres tirés de la peau, affichés seulement quand un objet de la boutique remplace la blouse ou le pantalon ;
-- `hair_01` à `hair_10` (une seule visible, matériaux `hair_01`…`hair_10`, texture en niveaux de gris teintée par la couleur des cheveux) : Grump hair (Elvaerwyn, **CC BY**), ponytail01 (CC0), Unkempt french braid (Elvaerwyn, CC0), Braid bun (Elvaerwyn, **CC BY**), Alpha 7 long (punkduck, **CC BY**), culturalibre_hair_02 (CC0), short02 (CC0), Double braid (Elvaerwyn, CC0), Wavy bob (Elvaerwyn, **CC BY**), Alpha 7 curly (punkduck, **CC BY**) ;
-- `brow_01` à `brow_06` (sourcils MakeHuman eyebrow006, 001, 002, 004, 012, 009, CC0, teintés comme les cheveux) ;
-- `beard_01` à `beard_06` (hommes, barbes en mèches, matériaux `beard_01`…`beard_06` teintés par la couleur de la barbe) : Full beard (grinsegold, **CC BY**), Faun beard (culturalibre, CC0), Viking moustache (RehmanPolanski, CC0), Scruffy beard 1 (Elvaerwyn, **CC BY**), Viking beard (RehmanPolanski, CC0), Dal moustache (culturalibre, **CC BY**) ;
-- `makeup_01` à `makeup_04` : pellicule du visage peinte en couleurs de sommets avec transparence (khôl, lèvres, joues, peinture de guerre) ;
-- formes (morph targets) : `corp_low`, `corp_high`, `musc_low`, `musc_high`, et pour le visage `face_jaw_*`, `face_nose_*`, `face_mouth_*`, `face_cheeks_*`, `face_ears_*` (`_low` / `_high`). La musculature ne change pas le volume d'ensemble (SPEC §29.1) ;
-- un squelette (os `Root`, `pelvis`, `spine_01`–`03`, `clavicle`, `upperarm`, `lowerarm`, `hand`, doigts, `neck_01`, `head`, `thigh`, `calf`, `foot`, `ball`, suffixes `_l` / `_r`) et trois animations : `pose_a` (référence), `pose_relaxed` (pose affichée : bras le long du corps, coudes et doigts fléchis, poids sur la jambe gauche, tête légèrement inclinée ; SPEC §32), `breath` (respiration, additive).
+Le héros est dessiné en **pixel art**, en pied, à partir d'images générées avec **SpriteCook** sur le compte de la propriétaire du projet (modèle `gpt-image-2`, qualité basse, 2 crédits l'image). Toutes les images brutes sont dans `tool/sprites/raw/` et leur identifiant SpriteCook dans `tool/sprites/spritecook_manifest.json`.
 
-Toutes les ressources MakeHuman viennent des paquets officiels de makehumancommunity.org (pages des paquets : « makehuman_system_assets », « hair01 », « hair02 », « hair03 », « bodyparts05 », « bodyparts06 », « shirts02 », « suits02 »). Les ressources **CC BY** (licence Creative Commons Attribution) sont citées dans l'écran Paramètres → Crédits, avec leur auteur et leur page d'origine.
+- **Corps** : 20 (10 races × 2 sexes), même pose et même cadrage, tous dérivés d'un humain chauve. Races : humain, elfe, haut-elfe, orc, nain, gnome, gobelin, démon, minotaure, mort-vivant.
+- **Coiffures** : 10 par sexe ; **barbes** : 6. Elles sont générées en magenta vif sur l'humain, détourées par leur teinte, puis recolorées dans l'appli (la luminance garde le modelé) et posées sur le crâne de chaque race (repères mesurés dans `tool/sprites/heads.json`).
+- **Peau** : marquée dans chaque corps (alpha 254) et recolorée dans la teinte choisie (palettes par race).
+- **Tenues** : 16, générées sur 5 gabarits (homme moyen, femme moyenne, grand, trapu, petit). Chaque corps reçoit le gabarit qui le déforme le moins ; la tenue remplace les vêtements sous le cou et laisse voir la peau nue de la race.
+- **Armes** : 12, dessinées à la verticale, tenues à la main (point de prise par famille d'armes).
+- **Construction** : `python3 tool/sprites/build.py` produit `assets/sprites/` (calques, vignettes de la boutique et repères `sprites.json`) ; `python3 tool/sprites/preview.py sortie.png` assemble des héros au hasard avec la même logique que l'appli (`SpriteComposer`).
 
-Fabrication : `ARISE_MH_ASSETS=<dossier où les paquets MakeHuman sont décompressés (sous-dossiers clothes, hair, eyebrows, eyelashes, eyes, skins…)> python3 tool/character/build_characters.py <sortie>` puis `tool/character/compress_models.sh <sortie> assets/models` (textures WebP, géométrie meshopt ; 4 à 5,2 Mo par modèle). Les vignettes de la boutique viennent de `tool/character/render_items.py assets/items`.
+### Ajouter un élément
+- **Coiffure ou barbe** : éditer l'humain chauve (`human_male` ou `human_female`, voir le manifeste) avec « Only add hair … dyed a vivid saturated magenta pink color », enregistrer l'image dans `raw/hair_mNN.png`, `raw/hair_fNN.png` ou `raw/beard_NN.png`, relancer `build.py`.
+- **Tenue** : ajouter sa description dans `tool/sprites/outfits.json`, l'éditer sur les 5 gabarits (`raw/armor_<id>_<gabarit>.png`), relancer `build.py`, puis l'ajouter au catalogue (`equipment.dart`) et aux textes.
+- **Race** : éditer l'humain chauve dans la même pose, mesurer son crâne dans `heads.json`.
 
-### Livrable attendu (version définitive)
-- **Six personnages** (3 races × 2 sexes) de style fantasy héroïque semi-réaliste, homme et femme sur des **maillages distincts**, conformes à SPEC §3.1.
-- **Mêmes noms d'objets, de matériaux, de formes, d'os et d'animations** que ci-dessus, pour que le code fonctionne sans modification. Les textures des cheveux, sourcils et iris restent en niveaux de gris (teinte appliquée par l'application).
-- **Règle des équipements** : toute pièce de tenue, armure ou coiffure livrée pour la boutique doit porter les **quatre mêmes formes** (`corp_low`, `corp_high`, `musc_low`, `musc_high`), calculées sur le corps de la même race et du même sexe, pour suivre les proportions sans traverser le corps. Un exemplaire par race et par sexe.
-- **Squelette humanoïde** aux noms ci-dessus, doigts compris, avec la pose détendue, la pose de référence en A et la boucle de respiration.
-- **Équipements de la boutique** (phase 7) : chaque pièce est liée au même squelette (poids de peau) **et** porte les formes du corps, pour suivre à la fois la pose et la morphologie.
-- **Budget mobile** : 25 000 triangles au plus pour le corps, 8 000 par pièce d'équipement, textures 2048 × 2048 au plus.
-- **Licence** : créations originales ou licences compatibles avec une publication commerciale ; pour les achats sur Fab, licence standard ou professionnelle uniquement (pas « Reference Only » ni l'ancienne licence Marketplace), avec la source et la licence de chaque asset notées ici.
+### Limites connues
+- Pas de couleur des yeux ni de maquillage : sur des yeux de 2 à 3 pixels, la recoloration n'est ni fiable sur toutes les races ni visible.
+- Une coiffure longue posée sur un petit corps (gnome, gobelin) descend plus bas, à l'échelle de sa tête.
+- Le style de chaque tenue varie légèrement d'un gabarit à l'autre (générée séparément sur chaque corps).
 
-## 3. Équipement de la boutique (phase 7, refait le 11/11/2026)
+## 3. Équipement de la boutique
 
-### État actuel
-Pièces générées par la fonction `_equipment` de `tool/character/build_characters.py`, incluses dans chacun des six modèles (variables `ARISE_MH_ASSETS` pour les paquets MakeHuman et `ARISE_PBR` pour les matières ambientCG décompressées).
-- **Vraies pièces MakeHuman** ajustées sur chaque morphologie (mêmes formes que le corps, poids de peau transférés) : `item_leather_chest` (Male boho top 1, Elvaerwyn, **CC BY**), `item_leather_legs` (Wool pants, Margaret Toigo, CC0), `item_leather_hands`, `item_mail_hands`, `item_plate_hands` (gants courts, moyens et longs, Margaret Toigo, CC0), `item_leather_feet` (Medieval boots, punkduck, **CC BY**), `item_mail_chest` (Viking tunic, RehmanPolanski, CC0), `item_mail_feet` (Tight leather boots, madmanny, **CC BY**), `item_plate_head` (Templar knight helmet, javherre, CC0, lié à l'os `head`), `item_plate_feet` (Hero boots 4, culturalibre, CC0), `item_hood_twilight` (Monk robe hood, Donitz, CC0). Gants et bottes sont légèrement gonflés pour que le corps ne les traverse pas.
-- **Pièces tirées du corps**, lissées pour perdre le relief du corps (plaques forgées) : `item_mail_head`, `item_mail_legs`, `item_plate_shoulders`, `item_plate_chest`, `item_plate_belt`, `item_plate_legs` ; ceinture `item_leather_belt` ; capes `item_cape_wanderer`, `item_cape_dawn` (nappes recalculées pour chaque morphologie, avec UV).
-- **Armes rigides** liées à l'os `hand_r` : `item_sword_dawn`, `item_staff_ember` (orbe lumineux).
-- **Matières** (ambientCG, CC0) : cuir Leather037, maille Chainmail004, acier Metal009, or Metal048A, tissu Fabric061 ; texture répétée en niveaux de gris × couleur de la pièce, relief (normal map) et rugosité pour les métaux. Matériaux `dye_<id>` pour les objets teignables (la couleur de base sert quand aucune teinture n'est choisie).
-- Limites connues : la coiffe de maille et les jambières restent tirées du corps ; les capes ne flottent pas.
-
-### Livrable attendu
-- Chaque objet en version définitive, **un exemplaire par race et par sexe**, sous le même nom `item_<id>`, lié au même squelette (poids de peau) et portant les formes `corp_low`, `corp_high`, `musc_low`, `musc_high` (plus `face_*` pour les coiffes), afin de suivre la pose et la morphologie sans traverser le corps.
-- Objets teignables : un matériau `dye_<id>` dont la couleur de base est multipliée par la teinte choisie (texture en niveaux de gris conseillée).
-- Budget : 8 000 triangles par pièce, textures 1024 × 1024 (2048 pour les capes et les plastrons), même licence que le §2.
-
-
-## 4. Récompenses des boss (phase 8A)
-
-### État actuel
-Les six objets exclusifs réutilisent une pièce de la boutique avec leur propre teinte (`baseId` et `tint` dans `lib/features/inventory/domain/equipment.dart`) : `guardian_jacket` (veste de cuir), `stag_cape` (cape du Vagabond), `wind_hood` et `tempest_hood` (capuche du Crépuscule), `colossus_leggings` (chausses de cuir), `comet_cape` (cape de l'Aube). Aucune pièce 3D supplémentaire n'est incluse dans les modèles.
-
-### Livrable attendu
-- Une pièce propre par objet, nommée `item_<id>` (par exemple `item_guardian_jacket`), avec les mêmes exigences que le §3 (squelette, formes de morphologie, matériau `dye_<id>`, budget). Il suffira alors de retirer `baseId` de l'objet dans le catalogue.
-- Une vignette `assets/items/<id>.png` par objet (rendu de l'objet seul, comme pour la boutique).
-- Une courte cinématique de victoire par boss (silhouette du boss, effet de lumière), en remplacement de la fenêtre animée du bilan.
+16 tenues complètes et 12 armes (`outfitCatalog`, `weaponCatalog`), plus 6 récompenses de boss qui reprennent une tenue avec leur propre teinte. Les anciennes pièces 3D possédées sont converties à la relecture (`legacyItemIds`) : chaque pièce d'un ensemble devient la tenue complète, les armes retirées deviennent l'arme la plus proche.
 
 ## 5. Musiques et jingles
 
@@ -90,27 +62,5 @@ Les bips du lecteur de séance (`countdown`, `start`, `rest`, `finish`) restent 
 ## 6. Auras et Ombres (phase 9)
 
 ### État actuel
-- **Auras** : générées par le visualiseur (`tool/viewer/viewer.js`) : anneau lumineux au sol, halo et particules qui montent, dans la couleur de l'aura (`gameConfig.achievements.auras`).
-- **Ombres** : copies du personnage du joueur, au corps presque noir, teintées et translucides, placées derrière lui (jusqu'à sept).
-
-### Livrable possible (artiste)
-- Effets d'aura plus riches (flammes, givre, feuilles, éclairs) : textures de particules en PNG 256 × 256 (fond transparent, licence CC0 ou CC BY), une par aura.
-- Effet d'« éveil » d'une Ombre (fumée qui se lève) : courte texture animée en planche de 4 × 4 images.
-
-## Pièces importées (modèles Tripo de la propriétaire du projet)
-- Créées par la propriétaire du projet sur Tripo Studio (compte Pro, usage commercial autorisé), déposées dans un dossier Google Drive partagé.
-- Préparation : soudure des sommets puis réduction à environ 15 000 triangles, textures 1024 px en WebP, rugosité du métal relevée à 0,38 au minimum (le modèle brut est presque un miroir). Source allégée versionnée dans `tool/character/external/`.
-- Intégration : `EXTERNAL_HELMS` dans `tool/character/build_characters.py` (quart de tour, largeur rapportée à celle de la tête, hauteur et recul), pièce rigide portée par l'os de la tête dans les huit modèles.
-- Pièces : `great_helm_gilded` (Grand heaume doré, tête, épique).
-
-## Tenues Sketchfab (13/11/2026)
-- Liste, auteurs et licences : `tool/character/outfits.json` (CC-BY, crédits dans l'application).
-- Chaîne : téléchargement brut (hors dépôt) → `tool/character/prep_outfits.py` (nettoyage, 30 000 triangles et textures 1024 px au plus, `tool/character/external/outfits/`) → `build_characters.py` + `fit_outfits.py` (ajustement sur chaque corps, découpe par emplacement, formes de corpulence, poids de peau) → `compress_models.sh … assets/models assets/outfits`.
-- Une vraie tenue d'artiste reste préférable : livrer chaque pièce séparée, en pose A, pour le squelette MPFB « game_engine ».
-
-## Corps, coiffures, barbes et armures fournis (13/11/2026)
-- Source : modèles 3D du Drive de la propriétaire du projet (générés sur son compte Tripo). Liste et emplacements : `tool/character/pieces.json`.
-- Préparation (hors dépôt, trop lourd) : `prep_bodies.py` (corps homme / femme, socle retiré, 100 000 triangles) et `prep_pieces.py` (coiffures et barbes teintables, armures 20 000 triangles) écrivent dans `tool/character/external/{bodies,hair,beards,armor}/`.
-- Le corps fourni remplace le corps MakeHuman sous le cou (`fit_outfits.replace_body`) : la tête MakeHuman reste (yeux teintables, maquillage, visage réglable). Peau ramenée au gris et teintée ; sous-vêtements d'origine gardés.
-- Chaque pièce d'armure est ajustée sur le corps (`fit_outfits.add_slot_pieces`) et exportée dans son propre fichier `assets/outfits/<pièce>/<race>_<sexe>.glb`.
-
+- **Auras** : halo flou derrière le héros, dans la couleur de l'aura (`gameConfig.achievements.auras`).
+- **Ombres** : silhouettes du héros, teintées et translucides, en retrait de chaque côté (jusqu'à sept).

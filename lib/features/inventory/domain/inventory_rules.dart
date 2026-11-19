@@ -76,23 +76,25 @@ List<int> availableHairStyles(
     if (hairStyleAvailable(inventory, i, worn: worn, config: config)) i,
 ];
 
-/// Nettoie un inventaire relu (sauvegarde, ancienne version) : objets
-/// inconnus retirés, objets portés possédés et à leur emplacement, teintes
-/// limitées aux objets teignables possédés.
+/// Nettoie un inventaire relu (sauvegarde, ancienne version) : anciens
+/// objets remplacés par leur équivalent actuel, objets inconnus retirés,
+/// objets portés possédés et à leur emplacement, teintes limitées aux
+/// objets teignables possédés.
 Inventory sanitizeInventory(Inventory inventory) {
   final owned = <String>[];
-  for (final id in inventory.owned) {
+  for (final old in inventory.owned) {
+    final id = currentItemId(old);
     if (itemById(id) != null && !owned.contains(id)) owned.add(id);
   }
   final equipped = <EquipmentSlot, String>{};
-  inventory.equipped.forEach((slot, id) {
+  inventory.equipped.forEach((_, old) {
+    final id = currentItemId(old);
     final item = itemById(id);
-    if (item != null && item.slot == slot && owned.contains(id)) {
-      equipped[slot] = id;
-    }
+    if (item != null && owned.contains(id)) equipped[item.slot] = id;
   });
   final dyes = <String, int>{};
-  inventory.dyes.forEach((id, color) {
+  inventory.dyes.forEach((old, color) {
+    final id = currentItemId(old);
     final item = itemById(id);
     if (item != null && item.dyeable && owned.contains(id)) dyes[id] = color;
   });
@@ -106,64 +108,37 @@ Inventory sanitizeInventory(Inventory inventory) {
 
 /// Ce que le rendu doit afficher pour l'équipement porté.
 class Loadout {
-  const Loadout({
-    required this.itemNodes,
-    required this.hiddenOutfit,
-    required this.dyes,
-    required this.hidesHair,
-    this.packs = const [],
-  });
+  const Loadout({this.outfitId, this.outfitTint, this.weaponId});
 
-  /// Rien de porté : tenue de départ complète.
-  static const Loadout none = Loadout(
-    itemNodes: [],
-    hiddenOutfit: [],
-    dyes: {},
-    hidesHair: false,
-  );
+  /// Rien de porté : vêtements de base du personnage.
+  static const Loadout none = Loadout();
 
-  /// Pièces 3D visibles (`item_<id>`).
-  final List<String> itemNodes;
+  /// Sprite de la tenue portée, ou `null`.
+  final String? outfitId;
 
-  /// Tenues (fichiers 3D séparés) qui contiennent des pièces portées.
-  final List<String> packs;
+  /// Teinte de la tenue (teinture ou couleur d'un objet exclusif), ou `null`.
+  final int? outfitTint;
 
-  /// Pièces de la tenue de départ à masquer.
-  final List<String> hiddenOutfit;
-
-  /// Couleur par matériau teint (`dye_<id>`).
-  final Map<String, int> dyes;
-
-  /// La coiffure est cachée (casque, capuche).
-  final bool hidesHair;
+  /// Sprite de l'arme tenue, ou `null`.
+  final String? weaponId;
 }
 
 /// Calcule l'apparence de l'équipement porté (un objet essayé en boutique
 /// peut remplacer celui de son emplacement).
 Loadout loadoutOf(Inventory inventory, {EquipmentItem? tryOn}) {
-  final worn = <EquipmentSlot, EquipmentItem>{};
-  inventory.equipped.forEach((slot, id) {
-    final item = itemById(id);
-    if (item != null) worn[slot] = item;
-  });
-  if (tryOn != null) worn[tryOn.slot] = tryOn;
-  final items = [
-    for (final slot in EquipmentSlot.values)
-      if (worn[slot] != null) worn[slot]!,
-  ];
+  EquipmentItem? worn(EquipmentSlot slot) {
+    if (tryOn != null && tryOn.slot == slot) return tryOn;
+    final id = inventory.equipped[slot];
+    return id == null ? null : itemById(id);
+  }
+
+  final outfit = worn(EquipmentSlot.chest);
+  final weapon = worn(EquipmentSlot.weapon);
   return Loadout(
-    itemNodes: [for (final item in items) item.nodeName],
-    packs: {for (final item in items) ?item.pack}.toList(),
-    hiddenOutfit: [
-      for (final item in items) ...?starterOutfitBySlot[item.slot],
-    ],
-    dyes: {
-      for (final item in items)
-        if (item.dyeable && inventory.dyes[item.id] != null)
-          item.dyeMaterial: inventory.dyes[item.id]!
-        else if (item.tint != null)
-          item.dyeMaterial: item.tint!,
-    },
-    hidesHair: items.any((item) => item.hidesHair),
+    outfitId: outfit?.spriteId,
+    outfitTint: outfit == null
+        ? null
+        : (outfit.dyeable ? inventory.dyes[outfit.id] : null) ?? outfit.tint,
+    weaponId: weapon?.spriteId,
   );
 }

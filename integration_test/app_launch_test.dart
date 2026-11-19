@@ -129,15 +129,17 @@ void main() {
     await _tapText(tester, 'Continuer');
     await _tapText(tester, "J'ai lu et compris ce rappel");
     await _tapText(tester, 'Activer le Hero Protocol');
-    // Création du personnage, juste après le questionnaire : rendu 3D réel
-    // (vue web), silhouette, nom, validation.
+    // Création du personnage, juste après le questionnaire : sprites en
+    // pixel art, race, coiffure, nom, validation.
     debugPrint('Parcours : création du personnage');
-    await _pumpFor(tester, 4000);
-    debugPrint('Parcours : silhouette, visage, onglet fiche');
-    await tester.tap(find.text('Puissante'));
+    await _pumpFor(tester, 3000);
+    debugPrint('Parcours : race, coiffure, onglet fiche');
+    await tester.tap(find.text('Démone'));
     await _pumpFor(tester, 800);
-    await tester.tap(find.text('Visage'));
+    await tester.tap(find.text('Coiffure'));
     await _pumpFor(tester, 1500);
+    await tester.tap(find.text('2 · Queue haute'));
+    await _pumpFor(tester, 1000);
     await tester.tap(find.text('Nom & fiche'));
     await _pumpFor(tester, 1000);
     final name = find.byType(TextField);

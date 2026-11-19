@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:arise/core/config/game_config.dart';
@@ -7,96 +8,86 @@ import 'package:arise/features/inventory/domain/inventory_rules.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('catalogue : identifiants uniques, trois ensembles complets', () {
+  test('catalogue : identifiants uniques, tenues et armes dessinées', () {
     final ids = equipmentCatalog.map((i) => i.id).toList();
     expect(ids.toSet(), hasLength(ids.length));
-    for (final set in equipmentSets) {
-      expect(equipmentCatalog.where((i) => i.setId == set), isNotEmpty);
+    expect(outfitCatalog, hasLength(16));
+    expect(weaponCatalog, hasLength(12));
+    final meta = jsonDecode(
+      File('assets/sprites/sprites.json').readAsStringSync(),
+    ) as Map<String, dynamic>;
+    final gabarits = {
+      for (final body in (meta['bodies'] as Map<String, dynamic>).values)
+        (body as Map<String, dynamic>)['gabarit'],
+    };
+    for (final item in [...outfitCatalog, ...bossRewardItems]) {
+      expect(item.slot, EquipmentSlot.chest);
+      for (final g in gabarits) {
+        expect(
+          File('assets/sprites/outfits/${item.spriteId}_$g.png').existsSync(),
+          isTrue,
+          reason: '${item.id} $g',
+        );
+      }
+      expect(
+        File('assets/sprites/icons/${item.spriteId}.png').existsSync(),
+        isTrue,
+      );
     }
-    for (final slot in EquipmentSlot.values) {
-      expect(equipmentCatalog.where((i) => i.slot == slot), isNotEmpty);
+    for (final item in weaponCatalog) {
+      expect(item.slot, EquipmentSlot.weapon);
+      expect(
+        (meta['weapons'] as Map<String, dynamic>).containsKey(item.id),
+        isTrue,
+      );
     }
-    expect(itemById('cape_dawn')?.slot, EquipmentSlot.back);
     expect(itemById('inconnu'), isNull);
   });
 
+  test('anciens objets : chaque remplaçant existe', () {
+    for (final entry in legacyItemIds.entries) {
+      expect(itemById(entry.value), isNotNull, reason: entry.key);
+      expect(itemById(entry.key), isNull, reason: entry.key);
+    }
+    expect(currentItemId('plate_chest'), 'dawn_plate');
+    expect(currentItemId('sword_dawn'), 'sword_dawn');
+  });
+
   test('équiper : objet possédé, un seul par emplacement', () {
-    const bag = Inventory(owned: ['leather_chest', 'mail_chest']);
-    expect(equip(bag, 'plate_chest').issue, EquipIssue.notOwned);
+    const bag = Inventory(owned: ['awakened_leather', 'warden_mail']);
+    expect(equip(bag, 'dawn_plate').issue, EquipIssue.notOwned);
     expect(equip(bag, 'inconnu').issue, EquipIssue.unknownItem);
-    final first = equip(bag, 'leather_chest').inventory;
-    final second = equip(first, 'mail_chest').inventory;
-    expect(second.equipped, {EquipmentSlot.chest: 'mail_chest'});
+    final first = equip(bag, 'awakened_leather').inventory;
+    final second = equip(first, 'warden_mail').inventory;
+    expect(second.equipped, {EquipmentSlot.chest: 'warden_mail'});
     expect(unequip(second, EquipmentSlot.chest).equipped, isEmpty);
   });
 
-  test('tenue affichée : pièces masquées, teinture, coiffure cachée', () {
+  test('tenue affichée : sprite, teinture, arme, essayage', () {
     const bag = Inventory(
-      owned: ['leather_chest', 'mail_head', 'cape_wanderer'],
+      owned: ['awakened_leather', 'sword_warden', 'comet_cape'],
       equipped: {
-        EquipmentSlot.chest: 'leather_chest',
-        EquipmentSlot.back: 'cape_wanderer',
+        EquipmentSlot.chest: 'awakened_leather',
+        EquipmentSlot.weapon: 'sword_warden',
       },
-      dyes: {'cape_wanderer': 0xFF3E6B34},
+      dyes: {'awakened_leather': 0xFF3E6B34},
     );
     final loadout = loadoutOf(bag);
-    expect(loadout.itemNodes, ['item_leather_chest', 'item_cape_wanderer']);
-    expect(loadout.hiddenOutfit, ['outfit_tunic', 'outfit_tunic_skirt']);
-    expect(loadout.dyes, {'dye_cape_wanderer': 0xFF3E6B34});
-    expect(loadout.hidesHair, isFalse);
+    expect(loadout.outfitId, 'awakened_leather');
+    expect(loadout.outfitTint, 0xFF3E6B34);
+    expect(loadout.weaponId, 'sword_warden');
 
-    final trying = loadoutOf(bag, tryOn: itemById('mail_head'));
-    expect(trying.hidesHair, isTrue);
-    expect(trying.itemNodes, contains('item_mail_head'));
-    // L'essayage remplace l'objet du même emplacement.
-    final swap = loadoutOf(bag, tryOn: itemById('plate_chest'));
-    expect(swap.itemNodes, isNot(contains('item_leather_chest')));
+    final trying = loadoutOf(bag, tryOn: itemById('dawn_plate'));
+    expect(trying.outfitId, 'dawn_plate');
+    expect(trying.outfitTint, isNull);
+    expect(trying.weaponId, 'sword_warden');
+
+    // Objet exclusif : sprite de sa tenue de base, avec sa teinte.
+    final reward = loadoutOf(bag, tryOn: itemById('comet_cape'));
+    expect(reward.outfitId, 'golden_king');
+    expect(reward.outfitTint, itemById('comet_cape')?.tint);
+    expect(loadoutOf(const Inventory()).outfitId, isNull);
   });
-
-  test(
-    'tenues importées : chaque pièce vient de son fichier, chargé une fois',
-    () {
-      final imported = equipmentCatalog.where((i) => i.pack != null).toList();
-      expect(imported, isNotEmpty);
-      for (final item in imported) {
-        // Pièce d'une tenue (fichier de la tenue) ou pièce seule (son
-        // propre fichier).
-        if (item.setId != null) {
-          expect(item.id, startsWith('${item.pack}_'));
-          expect(item.setId, item.pack);
-          expect(equipmentSets, contains(item.pack));
-        } else {
-          expect(item.id, item.pack);
-        }
-        expect(
-          File('assets/outfits/${item.pack}/human_male.glb').existsSync(),
-          isTrue,
-        );
-      }
-      const bag = Inventory(
-        owned: [
-          'obsidian_knight_chest',
-          'obsidian_knight_legs',
-          'leather_feet',
-        ],
-        equipped: {
-          EquipmentSlot.chest: 'obsidian_knight_chest',
-          EquipmentSlot.legs: 'obsidian_knight_legs',
-          EquipmentSlot.feet: 'leather_feet',
-        },
-      );
-      final loadout = loadoutOf(bag);
-      expect(loadout.packs, ['obsidian_knight']);
-      expect(
-        loadout.itemNodes,
-        containsAll([
-          'item_obsidian_knight_chest',
-          'item_obsidian_knight_legs',
-        ]),
-      );
-      expect(loadoutOf(const Inventory()).packs, isEmpty);
-    },
-  );
 
   test('coiffures de la boutique', () {
     final locked = gameConfig.shop.lockedHairStyles.first;
@@ -111,23 +102,33 @@ void main() {
     );
   });
 
-  test('nettoyage d’un inventaire relu', () {
+  test('nettoyage d’un inventaire relu : anciens objets convertis', () {
     final clean = sanitizeInventory(
       const Inventory(
-        owned: ['leather_belt', 'leather_belt', 'inconnu', 'cape_dawn'],
+        owned: [
+          'leather_chest',
+          'leather_belt',
+          'inconnu',
+          'peasant_tunic',
+          'dagger_ice',
+          'sword_dawn',
+        ],
         hairStyles: [8, 6, 8],
         equipped: {
           EquipmentSlot.belt: 'leather_belt',
-          EquipmentSlot.head: 'cape_dawn',
-          EquipmentSlot.weapon: 'sword_dawn',
+          EquipmentSlot.legs: 'inconnu',
+          EquipmentSlot.weapon: 'dagger_ice',
         },
-        dyes: {'leather_belt': 1, 'cape_dawn': 2, 'cape_wanderer': 3},
+        dyes: {'leather_chest': 1, 'dagger_ice': 2},
       ),
     );
-    expect(clean.owned, ['leather_belt', 'cape_dawn']);
+    expect(clean.owned, ['awakened_leather', 'dagger_desert', 'sword_dawn']);
     expect(clean.hairStyles, [6, 8]);
-    expect(clean.equipped, {EquipmentSlot.belt: 'leather_belt'});
-    expect(clean.dyes, {'cape_dawn': 2});
+    expect(clean.equipped, {
+      EquipmentSlot.chest: 'awakened_leather',
+      EquipmentSlot.weapon: 'dagger_desert',
+    });
+    expect(clean.dyes, {'awakened_leather': 1});
   });
 
   test('l’inventaire se relit à l’identique en JSON', () {

@@ -71,7 +71,6 @@
     }
   },
   "systemHomeTitle": "Fenêtre du Système",
-  "backButtonLabel": "Retour",
   "titleStartButton": "Commencer l'aventure",
   "titleContinueButton": "Continuer",
   "titleRestoreButton": "Restaurer une sauvegarde",
@@ -1014,14 +1013,6 @@
   },
   "analysisPrevious": "Période précédente",
   "analysisNext": "Période suivante",
-  "analysisRangeDay": "{date}",
-  "@analysisRangeDay": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "analysisRangeSpan": "Du {start} au {end}",
   "@analysisRangeSpan": {
     "placeholders": {
@@ -1121,7 +1112,6 @@
     }
   },
   "analysisMusclesTitle": "Détail par muscle",
-  "analysisLegendTitle": "Légende",
   "coinGold": "{count, plural, =0{0 pièce d'or} =1{1 pièce d'or} other{{count} pièces d'or}}",
   "@coinGold": {
     "placeholders": {
@@ -1156,7 +1146,9 @@
   },
   "characterTitle": "Création du personnage",
   "heroUnnamed": "Chasseur sans nom",
-  "@heroUnnamed": {"description": "Nom affiché sur l'accueil tant que le héros n'a pas de nom"},
+  "@heroUnnamed": {
+    "description": "Nom affiché sur l'accueil tant que le héros n'a pas de nom"
+  },
   "characterHomeHint": "Race, silhouette et coiffure de ton héros",
   "characterSex": "Sexe",
   "characterSexName": "{sex, select, female{Femme} male{Homme} other{?}}",
@@ -1168,7 +1160,7 @@
     }
   },
   "characterRace": "Race",
-  "characterRaceName": "{key, select, human_female{Humaine} human_male{Humain} elf_female{Elfe} elf_male{Elfe} orc_female{Orque} orc_male{Orque} other{?}}",
+  "characterRaceName": "{key, select, human_female{Humaine} human_male{Humain} elf_female{Elfe} elf_male{Elfe} high_elf_female{Haute-elfe} high_elf_male{Haut-elfe} orc_female{Orque} orc_male{Orque} dwarf_female{Naine} dwarf_male{Nain} gnome_female{Gnome} gnome_male{Gnome} goblin_female{Gobeline} goblin_male{Gobelin} demon_female{Démone} demon_male{Démon} minotaur_female{Minotaure} minotaur_male{Minotaure} undead_female{Morte-vivante} undead_male{Mort-vivant} other{?}}",
   "@characterRaceName": {
     "placeholders": {
       "key": {
@@ -1176,45 +1168,8 @@
       }
     }
   },
-  "characterCorpulence": "Corpulence",
-  "characterCorpulenceStep": "{key, select, female_0{Élancée} female_1{Fine} female_2{Équilibrée} female_3{Pulpeuse} female_4{Généreuse} male_0{Élancé} male_1{Mince} male_2{Équilibré} male_3{Robuste} male_4{Imposant} other{?}}",
-  "@characterCorpulenceStep": {
-    "placeholders": {
-      "key": {
-        "type": "String"
-      }
-    }
-  },
-  "characterMusculature": "Musculature",
-  "characterMusculatureStep": "{key, select, female_0{Légère} female_1{Tonique} female_2{Athlétique} female_3{Musclée} female_4{Puissante} male_0{Léger} male_1{Tonique} male_2{Athlétique} male_3{Musclé} male_4{Puissant} other{?}}",
-  "@characterMusculatureStep": {
-    "placeholders": {
-      "key": {
-        "type": "String"
-      }
-    }
-  },
-  "characterSliderValue": "{label} : {value}",
-  "@characterSliderValue": {
-    "placeholders": {
-      "label": {
-        "type": "String"
-      },
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "characterHeight": "Taille : {cm} cm",
-  "@characterHeight": {
-    "placeholders": {
-      "cm": {
-        "type": "int"
-      }
-    }
-  },
   "characterSkin": "Couleur de peau",
-  "characterSkinName": "{id, select, porcelain{Porcelaine} ivory{Ivoire} sand{Sable} honey{Miel} amber{Ambre} cinnamon{Cannelle} bronze{Bronze} ebony{Ébène} moss{Mousse} jade{Jade} olive{Olive} lichen{Lichen} slate{Ardoise} ash{Cendre} other{?}}",
+  "characterSkinName": "{id, select, porcelain{Porcelaine} ivory{Ivoire} sand{Sable} honey{Miel} amber{Ambre} cinnamon{Cannelle} bronze{Bronze} ebony{Ébène} golden{Doré} moon{Lunaire} moss{Mousse} jade{Jade} olive{Olive} lichen{Lichen} slate{Ardoise} ash{Cendre} lime{Citron vert} swamp{Marais} teal{Sarcelle} crimson{Cramoisi} scarlet{Écarlate} wine{Lie-de-vin} violet{Violet} azure{Azur} obsidian{Obsidienne} chestnut{Châtaigne} tawny{Fauve} umber{Terre d'ombre} black{Noir} cream{Crème} grey{Gris} bone{Os} grave{Tombe} frost{Givre} dusk{Crépuscule} other{?}}",
   "@characterSkinName": {
     "placeholders": {
       "id": {
@@ -1223,7 +1178,7 @@
     }
   },
   "characterHairStyle": "Coiffure",
-  "characterHairStyleName": "{id, select, h1{1 · Courte} h2{2 · Queue de cheval} h3{3 · Natte} h4{4 · Chignon} h5{5 · Longue} h6{6 · Mèches rebelles} h7{7 · Très courte} h8{8 · Double natte} h9{9 · Carré} h10{10 · Bouclée} h11{11 · Bouclée courte} h12{12 · Hérissée} h13{13 · Queue haute} h14{14 · Carré long} h15{15 · Chignon noir} h16{16 · Double chignon} h17{17 · Tresse sur le côté} h18{18 · Chignon à frange} h19{19 · Mèche rebelle} h20{20 · Longue tresse} h21{21 · Hirsute} h22{22 · Boucles brunes} h23{23 · Épis} h24{24 · Longue ondulée} h25{25 · Carré dégradé} h26{26 · Queue de cheval longue} h27{27 · Plaquée en arrière} h28{28 · Longue lisse} h29{29 · Mi-longue} h30{30 · Chignon flou} h31{31 · Courte classique} h32{32 · Dégradée} h33{33 · Ondulée mi-longue} h34{34 · Courte claire} h35{35 · Ébouriffée} other{?}}",
+  "characterHairStyleName": "{id, select, none{Rasée} m1{1 · Longs raides} m2{2 · Courte} m3{3 · Queue de guerrier} m4{4 · Crête} m5{5 · Afro} m6{6 · Ébouriffée} m7{7 · Tresse nordique} m8{8 · Chignon haut} m9{9 · Ondulée} m10{10 · Très longue} f1{1 · Longue à frange} f2{2 · Queue haute} f3{3 · Deux tresses} f4{4 · Carré} f5{5 · Courte} f6{6 · Bouclée} f7{7 · Chignon} f8{8 · Tresse sur l'épaule} f9{9 · Côté rasé} f10{10 · Mi-longue ondulée} other{?}}",
   "@characterHairStyleName": {
     "placeholders": {
       "id": {
@@ -1288,52 +1243,10 @@
   "characterPreviewLoading": "Le Système façonne ton héros…",
   "characterPreviewError": "Le rendu 3D n'a pas pu s'afficher sur cet appareil. Tes choix restent enregistrés.",
   "characterTabBody": "Corps",
-  "characterTabFace": "Visage",
   "characterTabHair": "Coiffure",
   "characterTabSheet": "Nom & fiche",
-  "characterPresets": "Silhouettes",
-  "characterPresetsHint": "Un point de départ, ajustable ensuite avec les curseurs.",
-  "characterPresetName": "{id, select, female_slim{Élancée} female_normal{Équilibrée} female_heavy{Robuste} female_muscular{Puissante} male_slim{Élancé} male_normal{Équilibré} male_heavy{Robuste} male_muscular{Puissant} other{?}}",
-  "@characterPresetName": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
-  "characterFaceJaw": "Mâchoire",
-  "characterFaceNose": "Nez",
-  "characterFaceMouth": "Bouche",
-  "characterFaceCheeks": "Pommettes",
-  "characterFaceEars": "Oreilles",
-  "characterFaceStep": "{step, select, s0{Très fine} s1{Fine} s2{Moyenne} s3{Marquée} s4{Très marquée} other{?}}",
-  "@characterFaceStep": {
-    "placeholders": {
-      "step": {
-        "type": "String"
-      }
-    }
-  },
-  "characterEyeColor": "Couleur des yeux",
-  "characterEyeColorName": "{id, select, dark_brown{Brun foncé} brown{Marron} hazel{Noisette} green{Vert} blue{Bleu} grey{Gris} amber{Ambre} violet{Violet} ice{Bleu glacier} gold{Or} red{Rouge} other{?}}",
-  "@characterEyeColorName": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
-  "characterEyebrows": "Sourcils",
-  "characterEyebrowName": "{id, select, b1{Fins} b2{Épais} b3{Arqués} b4{Droits} b5{Courts} b6{Broussailleux} other{?}}",
-  "@characterEyebrowName": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
   "characterBeard": "Barbe",
-  "characterBeardName": "{id, select, b0{Aucune} b1{Collier} b2{Bouc} b3{Moustache} b4{Courte} b5{Longue} b6{Moustache en guidon} b7{Barbe fournie} b8{Barbe taillée} b9{Barbe de guerrier} b10{Barbiche} b11{Barbe épaisse} other{?}}",
+  "characterBeardName": "{id, select, b0{Aucune} b1{Courte} b2{Longue} b3{Bouc} b4{Tressée} b5{Moustache en guidon} b6{Naissante} other{?}}",
   "@characterBeardName": {
     "placeholders": {
       "id": {
@@ -1342,36 +1255,6 @@
     }
   },
   "characterBeardColor": "Couleur de la barbe",
-  "characterBeardColorSame": "Comme les cheveux",
-  "characterMakeup": "Maquillage",
-  "characterMakeupName": "{id, select, m0{Aucun} m1{Khôl fumé} m2{Trait de chat} m3{Fard doré} m4{Rouge à lèvres} m5{Lèvres prune} m6{Teint rosé} m7{Taches de rousseur} m8{Peinture de guerre} m9{Tatouage tribal} other{?}}",
-  "@characterMakeupName": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
-  "characterHairCategory": "Famille",
-  "characterHairCategoryName": "{id, select, favorites{Favorites} short{Courtes} tied{Attachées} long{Longues} other{?}}",
-  "@characterHairCategoryName": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
-  "characterHairFavoritesEmpty": "Aucune favorite : touche l'étoile d'une coiffure pour la garder sous la main.",
-  "characterFavoriteAdd": "Ajouter aux favorites",
-  "characterFavoriteRemove": "Retirer des favorites",
-  "characterFavoritesFull": "Tu as déjà {max} coiffures favorites. Retires-en une d'abord.",
-  "@characterFavoritesFull": {
-    "placeholders": {
-      "max": {
-        "type": "int"
-      }
-    }
-  },
   "characterLighting": "Éclairage",
   "characterLightingName": "{id, select, day{Jour} night{Nuit} tavern{Taverne} other{?}}",
   "@characterLightingName": {
@@ -1387,9 +1270,7 @@
   "characterShareFailed": "La capture n'est pas prête. Réessaie dans un instant.",
   "characterSnapshotFileName": "arise_heros.png",
   "shopTitle": "Boutique du Protocole",
-  "shopHomeHint": "Armures, capes et coiffures, contre tes pièces",
   "inventoryTitle": "Inventaire",
-  "inventoryHomeHint": "Équipe, retire et teins tes objets",
   "shopAll": "Tout",
   "shopHairStyles": "Coiffures",
   "shopOwned": "Possédé",
@@ -1404,7 +1285,6 @@
   "shopAlreadyOwned": "Tu possèdes déjà cet article.",
   "shopNotForSale": "Cet article n'est pas en vente.",
   "shopNotOwned": "Achète d'abord cet objet.",
-  "shopFilter": "Emplacement",
   "inventoryEmpty": "Ton inventaire est vide. Passe à la boutique !",
   "inventoryEquip": "Équiper",
   "inventoryUnequip": "Retirer",
@@ -1456,7 +1336,7 @@
       }
     }
   },
-  "equipmentSlotName": "{id, select, head{Tête} shoulders{Épaules} chest{Torse} hands{Mains} belt{Ceinture} legs{Jambes} feet{Pieds} back{Dos} weapon{Arme} other{?}}",
+  "equipmentSlotName": "{id, select, head{Tête} shoulders{Épaules} chest{Tenue} hands{Mains} belt{Ceinture} legs{Jambes} feet{Pieds} back{Dos} weapon{Arme} other{?}}",
   "@equipmentSlotName": {
     "placeholders": {
       "id": {
@@ -1472,15 +1352,7 @@
       }
     }
   },
-  "equipmentSetName": "{id, select, awakened_leather{Cuir de l'Éveillé} warden_mail{Maille du Veilleur} dawn_plate{Plates de l'Aube} obsidian_knight{Chevalier d'Obsidienne} silver_knight{Chevalier d'Argent} golden_king{Armure du Roi doré} wanderer_coat{Tenue de l'Errant} noble_gown{Atours de la Noble} hunter_leather{Cuir du Traqueur} scale_warden{Écailles du Gardien} north_lamellar{Lamelles du Nord} sylvan_ranger{Rôdeur sylvestre} oath_knight{Chevalier du Serment} lotus_samurai{Armure du Lotus} city_guard{Garde de la Cité} pale_coat{Manteau pâle} other{?}}",
-  "@equipmentSetName": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
-  "itemName": "{id, select, leather_chest{Veste de cuir de l'Éveillé} leather_hands{Gants de cuir de l'Éveillé} leather_belt{Ceinturon de l'Éveillé} leather_legs{Chausses de cuir de l'Éveillé} leather_feet{Bottes de l'Éveillé} mail_head{Camail du Veilleur} mail_chest{Haubert du Veilleur} mail_hands{Mitons de maille du Veilleur} mail_legs{Chausses de maille du Veilleur} mail_feet{Solerets du Veilleur} plate_head{Heaume de l'Aube} plate_shoulders{Spallières de l'Aube} plate_chest{Cuirasse de l'Aube} plate_hands{Gantelets de l'Aube} plate_belt{Tassette de l'Aube} plate_legs{Cuissards de l'Aube} plate_feet{Grèves de l'Aube} cape_wanderer{Cape du Vagabond} cape_dawn{Cape de l'Aube} hood_twilight{Capuche du Crépuscule} sword_dawn{Épée d'apparat de l'Aube} staff_ember{Bâton de Braise} great_helm_gilded{Grand heaume doré} horned_helm_void{Heaume cornu du Néant} staff_solar_crystal{Bâton du Cristal solaire} scepter_lunar_orb{Sceptre de l'Orbe lunaire} staff_rose_amethyst{Bâton d'Améthyste rose} staff_dusk{Bâton du Crépuscule} halberd_silver{Hallebarde d'argent} sword_warden{Épée longue du Gardien} sword_curved_shade{Lame courbe d'Ombreval} sword_carved_bone{Épée d'os ciselé} sword_frost{Épée de Givre} sword_dusk{Lame du Soir violet} sword_ember{Lame de Braise} scimitar_jade{Cimeterre de jade} glaive_curved{Glaive recourbé} dagger_desert{Dague des sables} dagger_golden{Dague dorée} dagger_ice{Dague de glace} dagger_amethyst{Dague d'améthyste} dagger_fire_fang{Croc de feu} dagger_sun{Poignard du Soleil} dagger_blaze{Dague flamboyante} mace_spiked{Masse à pointes} mace_moon{Masse de lune} axe_war{Hache de guerre} cleaver_battle{Fendoir de bataille} hammer_runic{Marteau runique} guardian_jacket{Veste du Gardien du Rocher} stag_cape{Cape du Cerf d'Argent} wind_hood{Capuche de la Danseuse des Vents} colossus_leggings{Chausses du Colosse de Basalte} comet_cape{Cape de la Comète Écarlate} tempest_hood{Capuche du Seigneur des Tempêtes} obsidian_knight_head{Heaume d'Obsidienne} obsidian_knight_chest{Cuirasse d'Obsidienne} obsidian_knight_hands{Gantelets d'Obsidienne} obsidian_knight_legs{Jambières d'Obsidienne} obsidian_knight_feet{Solerets d'Obsidienne} silver_knight_head{Heaume d'Argent} silver_knight_chest{Cuirasse d'Argent} silver_knight_hands{Gantelets d'Argent} silver_knight_legs{Jambières d'Argent} silver_knight_feet{Solerets d'Argent} golden_king_head{Heaume du Roi doré} golden_king_chest{Cuirasse du Roi doré} golden_king_hands{Gantelets du Roi doré} golden_king_legs{Jambières du Roi doré} golden_king_feet{Solerets du Roi doré} wanderer_coat_chest{Manteau de l'Errant} wanderer_coat_hands{Gants de l'Errant} wanderer_coat_legs{Chausses de l'Errant} wanderer_coat_feet{Bottes de l'Errant} noble_gown_chest{Corsage de la Noble} noble_gown_legs{Jupe de la Noble} hunter_leather_head{Capuche du Traqueur} hunter_leather_chest{Plastron du Traqueur} hunter_leather_hands{Brassards du Traqueur} hunter_leather_legs{Jambières du Traqueur} hunter_leather_feet{Bottes du Traqueur} scale_warden_head{Casque d'écailles} scale_warden_chest{Broigne d'écailles} scale_warden_hands{Gants d'écailles} scale_warden_legs{Chausses d'écailles} scale_warden_feet{Bottes d'écailles} north_lamellar_head{Casque du Nord} north_lamellar_chest{Lamellaire du Nord} north_lamellar_hands{Brassards du Nord} north_lamellar_legs{Braies du Nord} north_lamellar_feet{Bottes du Nord} sylvan_ranger_chest{Pourpoint sylvestre} sylvan_ranger_legs{Chausses sylvestres} sylvan_ranger_feet{Bottes sylvestres} oath_knight_chest{Cuirasse du Serment} oath_knight_hands{Gantelets du Serment} oath_knight_legs{Jambières du Serment} oath_knight_feet{Solerets du Serment} lotus_samurai_chest{Cuirasse du Lotus} lotus_samurai_hands{Manches du Lotus} lotus_samurai_legs{Jupe d'armure du Lotus} lotus_samurai_feet{Sandales du Lotus} city_guard_head{Casque de la Garde} city_guard_chest{Brigandine de la Garde} city_guard_hands{Gants de la Garde} city_guard_legs{Jambières de la Garde} city_guard_feet{Bottes de la Garde} pale_coat_chest{Manteau pâle} studded_vest{Veste cloutée} azure_plate{Cuirasse d'azur} scarlet_steel{Plastron écarlate} crimson_mark{Cuirasse à la marque pourpre} sage_robe{Robe du sage} strap_harness{Harnais à sangles} eye_plate{Plastron de l'Œil} claw_vest{Veste aux griffes} gilded_scale{Cuirasse d'écailles dorées} nomad_vest{Gilet du nomade} shadow_cuirass{Cuirasse de l'ombre} bone_raider{Armure d'os du pillard} rust_plate{Plastron rouillé} iron_brigand{Brigandine de fer} bronze_guard{Garde de bronze} night_vest{Gilet de nuit} black_cuirass{Cuirasse noire} steel_vest{Gilet d'acier} thorn_plate{Plastron d'épines} silver_cuirass{Cuirasse d'argent poli} hunter_jerkin{Pourpoint du chasseur} forest_gown{Robe de la forêt} raider_scarf{Gilet du maraudeur} lion_plate{Cuirasse du lion} dark_knight{Armure du chevalier noir} leather_corset{Corset de cuir} steel_breastplate{Plastron d'acier} dusk_tabard{Tabard du crépuscule} ember_plate{Cuirasse de braise ciselée} gambeson{Gambison} peasant_tunic{Tunique paysanne} brown_leathers{Chausses de cuir brun} worn_trousers{Pantalon usé} layered_hakama{Hakama en couches} crimson_tatters{Haillons pourpres} red_greaves{Jambières rouges} riding_breeches{Culotte de cavalier} shadow_tatters{Haillons de l'ombre} patch_trousers{Pantalon rapiécé} forest_trousers{Pantalon forestier} mystic_trousers{Pantalon mystique} scout_trousers{Pantalon d'éclaireur} azure_trousers{Pantalon d'azur} duelist_leggings{Collant du duelliste} pouch_trousers{Pantalon à sacoches} plain_trousers{Pantalon simple} black_greaves{Jambières noires} ranger_trousers{Pantalon du rôdeur} rogue_trousers{Pantalon du voleur} sky_trousers{Sarouel céleste} iron_strap_boots{Bottes à sangles de fer} skull_boots{Bottes aux crânes} runic_boots{Bottes runiques} legend_boots{Bottes légendaires} knight_boots{Bottes de chevalier} buckle_boots{Bottes à boucles} laced_boots{Bottes lacées} city_boots{Bottes de ville} rider_boots{Bottes de cavalier} arcane_boots{Bottes arcaniques} sylvan_boots{Bottes sylvestres} plate_boots{Solerets de plates} azure_boots{Bottines d'azur} diamond_boots{Bottes au losange} war_boots{Bottes de guerre} trail_boots{Bottes de piste} wanderer_boots{Bottes du vagabond} frost_boots{Bottes de givre} cuff_boots{Bottes à revers} strap_boots{Bottes à lanières} night_boots{Bottes de nuit} knight_helm{Heaume de chevalier} spiked_helm{Casque à pointes} shade_hood{Capuche de l'ombre} crest_helm{Casque à crête} other{?}}",
+  "itemName": "{id, select, awakened_leather{Cuir de l'Éveillé} warden_mail{Maille du Veilleur} dawn_plate{Plates de l'Aube} obsidian_knight{Chevalier d'Obsidienne} silver_knight{Chevalier d'Argent} golden_king{Armure du Roi doré} wanderer_coat{Tenue de l'Errant} noble_gown{Atours de la Noble} hunter_leather{Cuir du Traqueur} scale_warden{Écailles du Gardien} north_lamellar{Lamelles du Nord} sylvan_ranger{Rôdeur sylvestre} oath_knight{Chevalier du Serment} lotus_samurai{Armure du Lotus} city_guard{Garde de la Cité} pale_coat{Manteau pâle} sword_warden{Épée longue du Gardien} axe_war{Hache de guerre} mace_spiked{Masse à pointes} dagger_desert{Dague des sables} scimitar_jade{Cimeterre de jade} staff_dusk{Bâton du Crépuscule} sword_frost{Épée de Givre} halberd_silver{Hallebarde d'argent} hammer_runic{Marteau runique} sword_dawn{Épée d'apparat de l'Aube} sword_ember{Lame de Braise} staff_ember{Bâton de Braise} guardian_jacket{Cuir du Gardien du Rocher} stag_cape{Armure du Cerf d'Argent} wind_hood{Tenue de la Danseuse des Vents} colossus_leggings{Armure du Colosse de Basalte} comet_cape{Armure de la Comète Écarlate} tempest_hood{Manteau du Seigneur des Tempêtes} other{?}}",
   "@itemName": {
     "placeholders": {
       "id": {
@@ -1771,7 +1643,6 @@
       }
     }
   },
-  "trialContinue": "Continuer",
   "className": "{heroClass, select, berserker{Berserker} ranger{Ranger} assassin{Assassin} tank{Tank} necromancer{Nécromancien} other{?}}",
   "@className": {
     "placeholders": {
@@ -1799,7 +1670,6 @@
     }
   },
   "classNone": "Aucune classe choisie.",
-  "classLocked": "Les classes se débloquent au rang C.",
   "classChoose": "Choisir une classe",
   "classSelect": "Devenir {name}",
   "@classSelect": {
@@ -2004,10 +1874,10 @@
   },
   "creditsTitle": "Crédits",
   "creditsTile": "Crédits",
-  "creditsTileHint": "Auteurs des modèles 3D, des polices et des outils libres",
-  "creditsIntro": "Hero Protocol est une création originale. Les personnages s'appuient sur des ressources libres, partagées par leurs auteurs : merci à eux.",
-  "creditsCcBySection": "Ressources sous licence CC BY",
-  "creditsOtherSection": "Autres ressources libres",
+  "creditsTileHint": "Origine des illustrations et des polices",
+  "creditsIntro": "Hero Protocol est une création originale. Ses illustrations ont été générées pour le projet ; ses polices sont des ressources libres, partagées par leurs auteurs : merci à eux.",
+  "creditsCcBySection": "Illustrations",
+  "creditsOtherSection": "Polices",
   "creditsEntry": "{work} — {author}",
   "@creditsEntry": {
     "placeholders": {
@@ -2019,7 +1889,7 @@
       }
     }
   },
-  "creditsLicense": "{license, select, ccBy{Licence Creative Commons Attribution (CC BY)} cc0{Domaine public (CC0)} publicDomain{Domaine public (Unlicense)} mit{Licence MIT} ofl{SIL Open Font License} other{?}} · {source}",
+  "creditsLicense": "{license, select, generated{Créé pour Hero Protocol} ccBy{Licence Creative Commons Attribution (CC BY)} cc0{Domaine public (CC0)} publicDomain{Domaine public (Unlicense)} mit{Licence MIT} ofl{SIL Open Font License} other{?}} · {source}",
   "@creditsLicense": {
     "placeholders": {
       "license": {
@@ -2057,7 +1927,6 @@
     }
   },
   "achievementsTitle": "Hauts faits",
-  "achievementsHomeHint": "Tes exploits, tes titres et ton armée d’Ombres",
   "achievementsCount": "{done} / {total} hauts faits",
   "@achievementsCount": {
     "placeholders": {
@@ -2197,34 +2066,65 @@
     }
   },
   "titlesSeeAll": "Titres et auras",
-  "dockSystem": "Système",
   "dockQuests": "Quêtes",
   "dockTrain": "Lancer la quête du jour",
   "dockHero": "Héros",
-  "dockStats": "Stats",
   "accountCreateTitle": "Créer mon compte",
   "accountCreateIntro": "Ton compte reste sur ce téléphone : rien n'est envoyé sur internet. Plusieurs joueurs peuvent avoir chacun le leur.",
   "accountNameLabel": "Pseudo",
   "accountNameIssue": "{issue, select, empty{Choisis un pseudo.} tooLong{Pseudo trop long ({max} caractères au plus).} taken{Ce pseudo est déjà pris sur ce téléphone.} tooMany{Nombre maximal de comptes atteint.} other{Pseudo refusé.}}",
-  "@accountNameIssue": {"placeholders": {"issue": {"type": "String"}, "max": {"type": "int"}}},
+  "@accountNameIssue": {
+    "placeholders": {
+      "issue": {
+        "type": "String"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "accountPinToggle": "Protéger par un code PIN",
   "accountPinToggleHint": "Demandé à l'ouverture du compte.",
   "accountPinLabel": "Code PIN ({digits} chiffres)",
-  "@accountPinLabel": {"placeholders": {"digits": {"type": "int"}}},
+  "@accountPinLabel": {
+    "placeholders": {
+      "digits": {
+        "type": "int"
+      }
+    }
+  },
   "accountPinConfirmLabel": "Confirme le code PIN",
   "accountPinInvalid": "Le code PIN doit faire {digits} chiffres.",
-  "@accountPinInvalid": {"placeholders": {"digits": {"type": "int"}}},
+  "@accountPinInvalid": {
+    "placeholders": {
+      "digits": {
+        "type": "int"
+      }
+    }
+  },
   "accountPinMismatch": "Les deux codes ne sont pas identiques.",
   "accountCreateButton": "Créer mon compte",
   "accountPickerTitle": "Choisir un compte",
   "accountNewButton": "Nouveau compte",
   "accountSwitchButton": "Changer de compte",
   "accountCurrent": "Compte : {name}",
-  "@accountCurrent": {"placeholders": {"name": {"type": "String"}}},
+  "@accountCurrent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "accountUnnamed": "Chasseur sans nom",
   "accountLockedSemantics": "Protégé par un code PIN",
   "accountPinPromptTitle": "Code PIN de {name}",
-  "@accountPinPromptTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@accountPinPromptTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "accountPinWrong": "Code PIN incorrect.",
   "accountPinValidate": "Valider",
   "accountSettingsTile": "Mon compte",
@@ -2239,21 +2139,57 @@
   "accountPinRemoved": "Code PIN retiré.",
   "accountDeleteButton": "Supprimer ce compte",
   "accountDeleteTitle": "Supprimer le compte {name} ?",
-  "@accountDeleteTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@accountDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "accountDeleteBody": "Toute la progression de ce compte sera effacée de ce téléphone. Pense à exporter une sauvegarde avant. Cette action est définitive.",
   "accountDeleteConfirm": "Supprimer",
   "accountCancel": "Annuler",
   "statsTitle": "Statistiques",
   "statsFreePoints": "{count, plural, =0{Aucun point à placer} =1{1 point à placer} other{{count} points à placer}}",
-  "@statsFreePoints": {"placeholders": {"count": {"type": "int"}}},
+  "@statsFreePoints": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "statsFreeHint": "Chaque niveau gagné donne {points} points : place-les dans les stats que tu veux faire grimper.",
-  "@statsFreeHint": {"placeholders": {"points": {"type": "int"}}},
+  "@statsFreeHint": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
   "statsNoFreeHint": "Monte de niveau pour gagner de nouveaux points. Tes stats grimpent aussi toutes seules avec l'entraînement.",
   "statsHowTo": "{stat, select, strength{Pompes, squats, tractions, dips et exercices avec charge.} endurance{Marche, course, vélo, corde à sauter, HIIT et burpees.} agility{Étirements, mobilité, équilibre et coordination.} vitality{Gainage, isométrie et récupération active.} willpower{Uniquement la régularité : séries de jours, quêtes et objectifs tenus.} other{}}",
   "statsBreakdown": "Placés : {allocated} · Gagnés : {earned}",
-  "@statsBreakdown": {"placeholders": {"allocated": {"type": "int"}, "earned": {"type": "int"}}},
+  "@statsBreakdown": {
+    "placeholders": {
+      "allocated": {
+        "type": "int"
+      },
+      "earned": {
+        "type": "int"
+      }
+    }
+  },
   "statsNextPoint": "Prochain point gagné : {xp} / {needed} XP",
-  "@statsNextPoint": {"placeholders": {"xp": {"type": "int"}, "needed": {"type": "int"}}},
+  "@statsNextPoint": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      },
+      "needed": {
+        "type": "int"
+      }
+    }
+  },
   "statsWillpowerNext": "Gagnée par la régularité, jamais par un exercice.",
   "statsHeroClass": "Classe du chasseur",
   "hunterExploits": "Exploits",
@@ -2267,30 +2203,124 @@
   "healthToday": "Aujourd'hui",
   "healthSteps": "Pas",
   "healthStepsValue": "{steps}",
-  "@healthStepsValue": {"placeholders": {"steps": {"type": "int"}}},
+  "@healthStepsValue": {
+    "placeholders": {
+      "steps": {
+        "type": "int"
+      }
+    }
+  },
   "healthActivity": "Activité hors appli",
   "healthMinutes": "{minutes} min",
-  "@healthMinutes": {"placeholders": {"minutes": {"type": "int"}}},
+  "@healthMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "healthSleep": "Sommeil de la nuit",
   "healthSleepValue": "{hours} h {minutes} min",
-  "@healthSleepValue": {"placeholders": {"hours": {"type": "int"}, "minutes": {"type": "int"}}},
+  "@healthSleepValue": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "healthNoXpYet": "Pas encore d'XP santé aujourd'hui.",
   "healthXpToday": "Gagné aujourd'hui : +{endurance} XP d'Endurance, +{vitality} XP de Vitalité",
-  "@healthXpToday": {"placeholders": {"endurance": {"type": "int"}, "vitality": {"type": "int"}}},
+  "@healthXpToday": {
+    "placeholders": {
+      "endurance": {
+        "type": "int"
+      },
+      "vitality": {
+        "type": "int"
+      }
+    }
+  },
   "healthRules": "+{xp} XP d'Endurance tous les {steps} pas et pour chaque activité ; +{sleepXp} XP de Vitalité après {hours} h de sommeil. Plafonnés chaque jour, jamais de pénalité.",
-  "@healthRules": {"placeholders": {"xp": {"type": "int"}, "steps": {"type": "int"}, "hours": {"type": "int"}, "sleepXp": {"type": "int"}}},
+  "@healthRules": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      },
+      "steps": {
+        "type": "int"
+      },
+      "hours": {
+        "type": "int"
+      },
+      "sleepXp": {
+        "type": "int"
+      }
+    }
+  },
   "healthWater": "Hydratation",
   "healthAddGlass": "Ajouter un verre d'eau",
   "healthRemoveGlass": "Retirer un verre d'eau",
   "healthGlasses": "{count, plural, =0{Aucun verre} =1{1 verre} other{{count} verres}} sur {goal} ({ml} ml)",
-  "@healthGlasses": {"placeholders": {"count": {"type": "int"}, "goal": {"type": "int"}, "ml": {"type": "int"}}},
+  "@healthGlasses": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      },
+      "ml": {
+        "type": "int"
+      }
+    }
+  },
   "healthWaterHint": "Objectif : {goal} verres, +{xp} XP de Vitalité une fois atteint.",
-  "@healthWaterHint": {"placeholders": {"goal": {"type": "int"}, "xp": {"type": "int"}}},
+  "@healthWaterHint": {
+    "placeholders": {
+      "goal": {
+        "type": "int"
+      },
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
   "healthHistory": "Derniers jours",
   "healthHistoryEmpty": "Aucune donnée pour l'instant.",
   "healthHistoryLine": "{date} : {steps} pas, {sleepHours} h de sommeil, {glasses} verres",
-  "@healthHistoryLine": {"placeholders": {"date": {"type": "DateTime", "format": "MMMEd"}, "steps": {"type": "int"}, "sleepHours": {"type": "int"}, "glasses": {"type": "int"}}},
+  "@healthHistoryLine": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "MMMEd"
+      },
+      "steps": {
+        "type": "int"
+      },
+      "sleepHours": {
+        "type": "int"
+      },
+      "glasses": {
+        "type": "int"
+      }
+    }
+  },
   "healthStatusFailed": "Lecture impossible pour le moment. Réessaie plus tard.",
   "dockShop": "Boutique",
-  "dockInventory": "Inventaire"
+  "dockInventory": "Inventaire",
+  "characterSwatchValue": "{label} : {value}",
+  "@characterSwatchValue": {
+    "description": "Titre d'une palette avec la couleur choisie.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  }
 }

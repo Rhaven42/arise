@@ -19,7 +19,7 @@ from PIL import Image
 
 sys.path.insert(0, os.path.dirname(__file__))
 from layers import (CANVAS_H, CANVAS_W, SKIN_ALPHA, best_skin,  # noqa: E402
-                    key_layer, load, neck_row, outfit_layer, save)
+                    key_layer, load, neck_row, outfit_layer, recolor, save)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(HERE, "raw")
@@ -149,6 +149,23 @@ def main() -> None:
         Image.fromarray(a, "RGBA").save(os.path.join(OUT, "weapons", f"{wid}.png"), optimize=True)
         kind = wid.split("_")[0]
         meta["weapons"][wid] = {"size": [im.width, im.height], "grip": GRIP[kind]}
+
+    # Vignettes de la boutique : tenue sur le gabarit moyen, arme, coiffure.
+    icons = os.path.join(OUT, "icons")
+    os.makedirs(icons, exist_ok=True)
+
+    def crop_save(img: Image.Image, name: str) -> None:
+        box = img.getchannel("A").getbbox()
+        img.crop(box).save(os.path.join(icons, name + ".png"), optimize=True)
+
+    for oid in outfits["outfits"]:
+        crop_save(Image.open(os.path.join(OUT, "outfits", f"{oid}_mm.png")).convert("RGBA"), oid)
+    for wid in meta["weapons"]:
+        crop_save(Image.open(os.path.join(OUT, "weapons", f"{wid}.png")).convert("RGBA"), wid)
+    for i in range(1, 11):
+        lay = load(os.path.join(OUT, "hair", f"f{i:02d}.png"))
+        crop_save(Image.fromarray(recolor(lay, (106, 64, 38)).clip(0, 255).astype(np.uint8), "RGBA"),
+                  f"hairstyle_{i:02d}")
 
     json.dump(meta, open(os.path.join(OUT, "sprites.json"), "w"), indent=1)
     print("ok", len(meta["bodies"]), "corps,", len(outfits["outfits"]), "tenues,", len(meta["weapons"]), "armes")

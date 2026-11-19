@@ -13,7 +13,7 @@ import '../../../helpers/test_app.dart';
 final CharacterSheet _hero = defaultSheet(
   sex: CharacterSex.male,
   race: CharacterRace.elf,
-).copyWith(name: 'Thalion', hairStyle: 3, corpulence: 0.25);
+).copyWith(name: 'Thalion', hairStyle: 3);
 
 void main() {
   test('le format v5 conserve le personnage', () {

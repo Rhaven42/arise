@@ -8,10 +8,8 @@ import 'package:arise/core/theme/arise_spacing.dart';
 import 'package:arise/features/avatar/domain/character_appearance.dart';
 import 'package:arise/features/avatar/domain/character_scene.dart';
 import 'package:arise/features/avatar/presentation/character_renderer.dart';
-import 'package:arise/features/character_creation/domain/body_presets.dart';
 import 'package:arise/features/character_creation/domain/character_palette.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
-import 'package:arise/features/character_creation/domain/hair_styles.dart';
 import 'package:arise/features/character_creation/presentation/character_labels.dart';
 import 'package:arise/features/character_creation/presentation/character_providers.dart';
 import 'package:arise/features/inventory/domain/inventory.dart';
@@ -23,10 +21,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 /// Onglets du créateur.
-enum CreatorTab { body, face, hair, sheet }
+enum CreatorTab { body, hair, sheet }
 
-/// Créateur de personnage : rendu 3D en direct, réglages répartis en
-/// onglets (corps, visage, coiffure, nom et fiche) et scène réglable.
+/// Créateur de personnage : rendu en direct, réglages répartis en onglets
+/// (race et peau, coiffure et barbe, nom et fiche) et scène réglable.
 class CharacterCreatorPage extends ConsumerStatefulWidget {
   const CharacterCreatorPage({super.key});
 
@@ -98,24 +96,6 @@ class _CharacterCreatorPageState extends ConsumerState<CharacterCreatorPage>
         .sharePng(png, fileName: l10n.characterSnapshotFileName);
   }
 
-  void _toggleFavorite(int style) {
-    final l10n = AppLocalizations.of(context);
-    final result = ref
-        .read(characterCreatorControllerProvider.notifier)
-        .toggleFavorite(style);
-    if (result == FavoriteToggle.full) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            l10n.characterFavoritesFull(
-              gameConfig.character.favoriteHairstylesMax,
-            ),
-          ),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -159,7 +139,7 @@ class _CharacterCreatorPageState extends ConsumerState<CharacterCreatorPage>
                   state: value,
                   scene: CharacterScene(
                     lighting: _lighting,
-                    focus: _tabs.index == CreatorTab.face.index
+                    focus: _tabs.index == CreatorTab.hair.index
                         ? SceneFocus.face
                         : SceneFocus.body,
                   ),
@@ -175,7 +155,6 @@ class _CharacterCreatorPageState extends ConsumerState<CharacterCreatorPage>
                   tabAlignment: TabAlignment.start,
                   tabs: [
                     Tab(text: l10n.characterTabBody),
-                    Tab(text: l10n.characterTabFace),
                     Tab(text: l10n.characterTabHair),
                     Tab(text: l10n.characterTabSheet),
                   ],
@@ -185,11 +164,9 @@ class _CharacterCreatorPageState extends ConsumerState<CharacterCreatorPage>
                     controller: _tabs,
                     children: [
                       _BodyTab(sheet: value.sheet),
-                      _FaceTab(sheet: value.sheet),
                       _HairTab(
                         sheet: value.sheet,
                         worn: value.saved?.hairStyle,
-                        onToggleFavorite: _toggleFavorite,
                       ),
                       _SheetTab(state: value, nameController: _name),
                     ],
@@ -212,7 +189,7 @@ class _CharacterCreatorPageState extends ConsumerState<CharacterCreatorPage>
   }
 }
 
-/// Rendu 3D avec les réglages de scène (éclairage, avant / après).
+/// Rendu du personnage avec les réglages de scène (éclairage, avant / après).
 class _Preview extends ConsumerWidget {
   const _Preview({
     required this.state,
@@ -309,82 +286,34 @@ class _BodyTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final controller = ref.read(characterCreatorControllerProvider.notifier);
-    final config = gameConfig.character;
-    final selectedPreset = presetOf(sheet);
     return ListView(
       key: CharacterCreatorPage.tabKey(CreatorTab.body),
       padding: const EdgeInsets.all(AriseSpacing.md),
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: DropdownButtonFormField<CharacterSex>(
-                key: ValueKey('sex-${sheet.sex}'),
-                initialValue: sheet.sex,
-                isExpanded: true,
-                decoration: InputDecoration(labelText: l10n.characterSex),
-                items: [
-                  for (final sex in CharacterSex.values)
-                    DropdownMenuItem(
-                      value: sex,
-                      child: Text(l10n.characterSexName(sex.name)),
-                    ),
-                ],
-                onChanged: (v) => v == null ? null : controller.setSex(v),
-              ),
-            ),
-            const SizedBox(width: AriseSpacing.md),
-            Expanded(
-              child: DropdownButtonFormField<CharacterRace>(
-                key: ValueKey('race-${sheet.race}-${sheet.sex}'),
-                initialValue: sheet.race,
-                isExpanded: true,
-                decoration: InputDecoration(labelText: l10n.characterRace),
-                items: [
-                  for (final race in CharacterRace.values)
-                    DropdownMenuItem(
-                      value: race,
-                      child: Text(raceLabel(l10n, race, sheet.sex)),
-                    ),
-                ],
-                onChanged: (v) => v == null ? null : controller.setRace(v),
-              ),
-            ),
-          ],
+        _ChoiceDropdown<CharacterSex>(
+          label: l10n.characterSex,
+          values: CharacterSex.values,
+          value: sheet.sex,
+          nameOf: (sex) => l10n.characterSexName(sex.name),
+          onChanged: controller.setSex,
         ),
         const SizedBox(height: AriseSpacing.md),
-        Text(
-          l10n.characterPresets,
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
-        Text(
-          l10n.characterPresetsHint,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        Text(l10n.characterRace, style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: AriseSpacing.xs),
         Wrap(
           spacing: AriseSpacing.xs,
           runSpacing: AriseSpacing.xs,
           children: [
-            for (final preset in presetsFor(sheet.sex))
+            for (final race in CharacterRace.values)
               ChoiceChip(
-                label: Text(presetLabel(l10n, sheet.sex, preset.id)),
-                selected: preset == selectedPreset,
-                onSelected: (_) => controller.applyBodyPreset(preset),
+                label: Text(raceLabel(l10n, race, sheet.sex)),
+                selected: race == sheet.race,
+                onSelected: (_) => controller.setRace(race),
               ),
           ],
         ),
         const SizedBox(height: AriseSpacing.md),
-        _SheetSlider(
-          label: l10n.characterHeight(sheet.heightCm),
-          value: sheet.heightCm.toDouble(),
-          min: config.heightMinCm.toDouble(),
-          max: config.heightMaxCm.toDouble(),
-          divisions: config.heightMaxCm - config.heightMinCm,
-          change: (s, v) => s.copyWith(heightCm: v.round()),
-        ),
-        const SizedBox(height: AriseSpacing.sm),
-        _SwatchDropdown(
+        _SwatchChips(
           label: l10n.characterSkin,
           swatches: skinsFor(sheet.race),
           value: sheet.skinColor,
@@ -396,156 +325,22 @@ class _BodyTab extends ConsumerWidget {
   }
 }
 
-class _FaceTab extends ConsumerWidget {
-  const _FaceTab({required this.sheet});
+class _HairTab extends ConsumerWidget {
+  const _HairTab({required this.sheet, this.worn});
 
   final CharacterSheet sheet;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final controller = ref.read(characterCreatorControllerProvider.notifier);
-    String label(String name, double v) =>
-        l10n.characterSliderValue(name, faceStepLabel(l10n, v));
-    final isMale = sheet.sex == CharacterSex.male;
-    return ListView(
-      key: CharacterCreatorPage.tabKey(CreatorTab.face),
-      padding: const EdgeInsets.all(AriseSpacing.md),
-      children: [
-        _SheetSlider(
-          label: label(l10n.characterFaceJaw, sheet.faceJaw),
-          value: sheet.faceJaw,
-          change: (s, v) => s.copyWith(faceJaw: v),
-        ),
-        _SheetSlider(
-          label: label(l10n.characterFaceNose, sheet.faceNose),
-          value: sheet.faceNose,
-          change: (s, v) => s.copyWith(faceNose: v),
-        ),
-        _SheetSlider(
-          label: label(l10n.characterFaceMouth, sheet.faceMouth),
-          value: sheet.faceMouth,
-          change: (s, v) => s.copyWith(faceMouth: v),
-        ),
-        _SheetSlider(
-          label: label(l10n.characterFaceCheeks, sheet.faceCheeks),
-          value: sheet.faceCheeks,
-          change: (s, v) => s.copyWith(faceCheeks: v),
-        ),
-        _SheetSlider(
-          label: label(l10n.characterFaceEars, sheet.faceEars),
-          value: sheet.faceEars,
-          change: (s, v) => s.copyWith(faceEars: v),
-        ),
-        const SizedBox(height: AriseSpacing.sm),
-        _SwatchDropdown(
-          label: l10n.characterEyeColor,
-          swatches: eyeColors,
-          value: sheet.eyeColor,
-          nameOf: (s) => l10n.characterEyeColorName(s.id),
-          onChanged: (c) => controller.edit((s) => s.copyWith(eyeColor: c)),
-        ),
-        const SizedBox(height: AriseSpacing.md),
-        _ChoiceDropdown<int>(
-          label: l10n.characterEyebrows,
-          values: [for (var i = 1; i <= eyebrowStyleCount; i++) i],
-          value: sheet.eyebrowStyle,
-          nameOf: (i) => eyebrowLabel(l10n, i),
-          onChanged: (i) => controller.edit((s) => s.copyWith(eyebrowStyle: i)),
-        ),
-        if (isMale) ...[
-          const SizedBox(height: AriseSpacing.md),
-          _ChoiceDropdown<int>(
-            label: l10n.characterBeard,
-            values: [for (var i = 0; i <= beardStyleCount; i++) i],
-            value: sheet.beardStyle,
-            nameOf: (i) => beardLabel(l10n, i),
-            onChanged: (i) => controller.edit((s) => s.copyWith(beardStyle: i)),
-          ),
-          if (sheet.beardStyle > 0) ...[
-            const SizedBox(height: AriseSpacing.md),
-            _SwatchDropdown(
-              label: l10n.characterBeardColor,
-              swatches: [
-                Swatch('same', sheet.hairColor),
-                for (final s in hairColors)
-                  if (s.color != sheet.hairColor) s,
-              ],
-              value: sheet.beardColor ?? sheet.hairColor,
-              nameOf: (s) => s.id == 'same'
-                  ? l10n.characterBeardColorSame
-                  : l10n.characterHairColorName(s.id),
-              onChanged: (c) => controller.edit(
-                (s) => s.copyWith(beardColor: c == s.hairColor ? null : c),
-              ),
-            ),
-          ],
-        ],
-        const SizedBox(height: AriseSpacing.md),
-        _ChoiceDropdown<int>(
-          label: l10n.characterMakeup,
-          values: [for (var i = 0; i <= makeupStyleCount; i++) i],
-          value: sheet.makeupStyle,
-          nameOf: (i) => makeupLabel(l10n, i),
-          onChanged: (i) => controller.edit((s) => s.copyWith(makeupStyle: i)),
-        ),
-      ],
-    );
-  }
-}
-
-/// Filtre de la liste des coiffures.
-enum _HairFilter { favorites, short, tied, long }
-
-class _HairTab extends ConsumerStatefulWidget {
-  const _HairTab({
-    required this.sheet,
-    required this.onToggleFavorite,
-    this.worn,
-  });
-
-  final CharacterSheet sheet;
-  final ValueChanged<int> onToggleFavorite;
 
   /// Coiffure du personnage enregistré (toujours utilisable).
   final int? worn;
 
   @override
-  ConsumerState<_HairTab> createState() => _HairTabState();
-}
-
-class _HairTabState extends ConsumerState<_HairTab> {
-  _HairFilter? _filter;
-
-  /// Filtre par défaut : la famille de la coiffure portée.
-  _HairFilter get _current =>
-      _filter ??
-      switch (hairStyleCategory[widget.sheet.hairStyle]) {
-        HairCategory.tied => _HairFilter.tied,
-        HairCategory.long => _HairFilter.long,
-        _ => _HairFilter.short,
-      };
-
-  List<int> _styles(_HairFilter filter) => switch (filter) {
-    _HairFilter.favorites => widget.sheet.favoriteHairStyles,
-    _HairFilter.short => hairStylesIn(HairCategory.short),
-    _HairFilter.tied => hairStylesIn(HairCategory.tied),
-    _HairFilter.long => hairStylesIn(HairCategory.long),
-  };
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final controller = ref.read(characterCreatorControllerProvider.notifier);
-    final sheet = widget.sheet;
-    final filter = _current;
-    final styles = _styles(filter);
     final inventory = ref.watch(inventoryProvider).value ?? const Inventory();
-    bool locked(int style) => !hairStyleAvailable(
-      inventory,
-      style,
-      worn: widget.worn ?? sheet.hairStyle,
-    );
+    bool locked(int style) =>
+        style > 0 &&
+        !hairStyleAvailable(inventory, style, worn: worn ?? sheet.hairStyle);
     void showLocked() {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -558,12 +353,13 @@ class _HairTabState extends ConsumerState<_HairTab> {
       );
     }
 
+    final male = sheet.sex == CharacterSex.male;
     return ListView(
       key: CharacterCreatorPage.tabKey(CreatorTab.hair),
       padding: const EdgeInsets.all(AriseSpacing.md),
       children: [
         Text(
-          l10n.characterHairCategory,
+          l10n.characterHairStyle,
           style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: AriseSpacing.xs),
@@ -571,59 +367,59 @@ class _HairTabState extends ConsumerState<_HairTab> {
           spacing: AriseSpacing.xs,
           runSpacing: AriseSpacing.xs,
           children: [
-            for (final f in _HairFilter.values)
+            for (var style = 0; style <= hairStyleCount; style++)
               ChoiceChip(
-                avatar: f == _HairFilter.favorites
-                    ? const Icon(Icons.star, size: 18)
+                avatar: locked(style)
+                    ? const Icon(Icons.lock_outline, size: 18)
                     : null,
-                label: Text(l10n.characterHairCategoryName(f.name)),
-                selected: f == filter,
-                onSelected: (_) => setState(() => _filter = f),
+                label: Text(hairStyleLabel(l10n, sheet.sex, style)),
+                selected: style == sheet.hairStyle,
+                onSelected: (_) => locked(style)
+                    ? showLocked()
+                    : controller.edit((s) => s.copyWith(hairStyle: style)),
               ),
           ],
         ),
-        const SizedBox(height: AriseSpacing.sm),
-        if (styles.isEmpty)
-          Padding(
-            padding: const EdgeInsets.all(AriseSpacing.md),
-            child: Text(l10n.characterHairFavoritesEmpty),
-          ),
-        for (final style in styles)
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            selected: style == sheet.hairStyle,
-            leading: Icon(
-              locked(style)
-                  ? Icons.lock_outline
-                  : style == sheet.hairStyle
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_unchecked,
-            ),
-            title: Text(hairStyleLabel(l10n, style)),
-            subtitle: locked(style) ? Text(l10n.characterHairLocked) : null,
-            onTap: locked(style)
-                ? showLocked
-                : () => controller.edit((s) => s.copyWith(hairStyle: style)),
-            trailing: IconButton(
-              tooltip: sheet.favoriteHairStyles.contains(style)
-                  ? l10n.characterFavoriteRemove
-                  : l10n.characterFavoriteAdd,
-              icon: Icon(
-                sheet.favoriteHairStyles.contains(style)
-                    ? Icons.star
-                    : Icons.star_border,
-              ),
-              onPressed: () => widget.onToggleFavorite(style),
-            ),
-          ),
         const SizedBox(height: AriseSpacing.md),
-        _SwatchDropdown(
+        _SwatchChips(
           label: l10n.characterHairColor,
           swatches: hairColors,
           value: sheet.hairColor,
           nameOf: (s) => l10n.characterHairColorName(s.id),
           onChanged: (c) => controller.edit((s) => s.copyWith(hairColor: c)),
         ),
+        if (male) ...[
+          const SizedBox(height: AriseSpacing.md),
+          Text(
+            l10n.characterBeard,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          const SizedBox(height: AriseSpacing.xs),
+          Wrap(
+            spacing: AriseSpacing.xs,
+            runSpacing: AriseSpacing.xs,
+            children: [
+              for (var style = 0; style <= beardStyleCount; style++)
+                ChoiceChip(
+                  label: Text(beardLabel(l10n, style)),
+                  selected: style == sheet.beardStyle,
+                  onSelected: (_) =>
+                      controller.edit((s) => s.copyWith(beardStyle: style)),
+                ),
+            ],
+          ),
+          if (sheet.beardStyle > 0) ...[
+            const SizedBox(height: AriseSpacing.md),
+            _SwatchChips(
+              label: l10n.characterBeardColor,
+              swatches: hairColors,
+              value: sheet.beardColor ?? sheet.hairColor,
+              nameOf: (s) => l10n.characterHairColorName(s.id),
+              onChanged: (c) =>
+                  controller.edit((s) => s.copyWith(beardColor: c)),
+            ),
+          ],
+        ],
       ],
     );
   }
@@ -697,47 +493,6 @@ class _SheetTab extends ConsumerWidget {
   }
 }
 
-/// Curseur relié à la fiche : un glissement complet = une seule action
-/// annulable.
-class _SheetSlider extends ConsumerWidget {
-  const _SheetSlider({
-    required this.label,
-    required this.value,
-    required this.change,
-    this.min = 0,
-    this.max = 1,
-    this.divisions = 20,
-  });
-
-  final String label;
-  final double value;
-  final double min;
-  final double max;
-  final int divisions;
-  final CharacterSheet Function(CharacterSheet sheet, double value) change;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(characterCreatorControllerProvider.notifier);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: Theme.of(context).textTheme.titleSmall),
-        Slider(
-          value: value.clamp(min, max),
-          min: min,
-          max: max,
-          divisions: divisions,
-          semanticFormatterCallback: (_) => label,
-          onChangeStart: (_) => controller.beginGesture(),
-          onChanged: (v) => controller.preview((s) => change(s, v)),
-          onChangeEnd: (_) => controller.endGesture(),
-        ),
-      ],
-    );
-  }
-}
-
 /// Menu déroulant d'une liste de choix.
 class _ChoiceDropdown<T> extends StatelessWidget {
   const _ChoiceDropdown({
@@ -772,8 +527,10 @@ class _ChoiceDropdown<T> extends StatelessWidget {
   }
 }
 
-class _SwatchDropdown extends StatelessWidget {
-  const _SwatchDropdown({
+/// Pastilles de couleur (nom lu par le lecteur d'écran, coche sur la
+/// couleur choisie : la couleur n'est pas le seul repère).
+class _SwatchChips extends StatelessWidget {
+  const _SwatchChips({
     required this.label,
     required this.swatches,
     required this.value,
@@ -789,36 +546,60 @@ class _SwatchDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selected = swatchOf(swatches, value) ?? swatches.first;
-    return DropdownButtonFormField<int>(
-      key: ValueKey('$label-${selected.color}'),
-      initialValue: selected.color,
-      isExpanded: true,
-      decoration: InputDecoration(labelText: label),
-      items: [
-        for (final swatch in swatches)
-          DropdownMenuItem(
-            value: swatch.color,
-            child: Row(
-              children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: Color(swatch.color),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AriseColors.parchmentMuted),
+    final l10n = AppLocalizations.of(context);
+    final selected = swatchOf(swatches, value);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          selected == null
+              ? label
+              : l10n.characterSwatchValue(label, nameOf(selected)),
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const SizedBox(height: AriseSpacing.xs),
+        Wrap(
+          spacing: AriseSpacing.xs,
+          runSpacing: AriseSpacing.xs,
+          children: [
+            for (final swatch in swatches)
+              Semantics(
+                button: true,
+                selected: swatch == selected,
+                child: Tooltip(
+                  message: nameOf(swatch),
+                  child: InkWell(
+                    onTap: () => onChanged(swatch.color),
+                    customBorder: const CircleBorder(),
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Color(swatch.color),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: swatch == selected
+                              ? AriseColors.goldBright
+                              : AriseColors.parchmentMuted,
+                          width: swatch == selected ? 3 : 1,
+                        ),
+                      ),
+                      child: swatch == selected
+                          ? Icon(
+                              Icons.check,
+                              color:
+                                  Color(swatch.color).computeLuminance() > 0.5
+                                  ? Colors.black
+                                  : Colors.white,
+                            )
+                          : null,
+                    ),
                   ),
                 ),
-                const SizedBox(width: AriseSpacing.sm),
-                Expanded(child: Text(nameOf(swatch))),
-              ],
-            ),
-          ),
+              ),
+          ],
+        ),
       ],
-      onChanged: (v) {
-        if (v != null) onChanged(v);
-      },
     );
   }
 }

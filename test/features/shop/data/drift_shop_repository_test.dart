@@ -17,7 +17,7 @@ void main() {
     final progression = DriftProgressionRepository(database, clock);
     final inventory = DriftInventoryRepository(database, clock);
     final shop = DriftShopRepository(database, clock);
-    final cape = ItemArticle(itemById('cape_wanderer')!);
+    final cape = ItemArticle(itemById('wanderer_coat')!);
     final price = priceOf(cape).bronzeTotal;
 
     await progression.save(
@@ -26,7 +26,7 @@ void main() {
     );
     expect(await shop.buy(cape), isNull);
     expect((await progression.read())?.coins, 70);
-    expect((await inventory.read()).owned, ['cape_wanderer']);
+    expect((await inventory.read()).owned, ['wanderer_coat']);
 
     expect(await shop.buy(cape), PurchaseIssue.alreadyOwned);
     expect(
@@ -35,9 +35,9 @@ void main() {
     );
     expect((await progression.read())?.coins, 70);
 
-    expect(await shop.dye('cape_wanderer', 0xFF27406E), isNull);
+    expect(await shop.dye('wanderer_coat', 0xFF27406E), isNull);
     expect((await progression.read())?.coins, 20);
-    expect((await inventory.read()).dyes, {'cape_wanderer': 0xFF27406E});
+    expect((await inventory.read()).dyes, {'wanderer_coat': 0xFF27406E});
   });
 
   test('sans progression, rien ne peut être acheté', () async {
@@ -45,7 +45,7 @@ void main() {
     addTearDown(database.close);
     final shop = DriftShopRepository(database, () => testNow);
     expect(
-      await shop.buy(ItemArticle(itemById('leather_belt')!)),
+      await shop.buy(ItemArticle(itemById('sword_warden')!)),
       PurchaseIssue.notEnoughCoins,
     );
   });
