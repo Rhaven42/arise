@@ -418,9 +418,7 @@ class SpriteComposer {
         (r, g, b) => tintPixel(r, g, b, ref, a.hairColor),
         // Visage dégagé : pas de mèche sur la peau entre sourcils et menton.
         skip: (x, y) =>
-            y >= brow + 1 &&
-            y <= neck &&
-            src.alphaAt(x, y) == meta.skinAlpha,
+            y >= brow + 1 && y <= neck && src.alphaAt(x, y) == meta.skinAlpha,
       );
     }
     // Cornes devant la coiffure.
