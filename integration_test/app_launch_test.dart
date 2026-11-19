@@ -247,7 +247,7 @@ void main() {
     await _expectVisible(tester, '1 séance sur cette période.');
     await _expectVisible(tester, 'Conseils du Système');
 
-    // Boutique : essayage d'une cape sur le vrai rendu 3D, puis inventaire.
+    // Boutique : essayage d'une tenue sur le héros, puis inventaire.
     debugPrint('Parcours : boutique');
     await _pumpFor(tester, 1500);
     // Retour à la Fenêtre du Système, puis onglet Boutique de la barre.
@@ -261,20 +261,24 @@ void main() {
     }
     await _tapWithoutSettle(tester, find.byKey(HomeDock.shopKey));
     await _pumpFor(tester, 4000);
-    await _waitFor(tester, find.text('Dos'));
+    final outfits = find.descendant(
+      of: find.byKey(ShopPage.filtersKey),
+      matching: find.text('Tenue'),
+    );
+    await _waitFor(tester, outfits);
     await tester.dragUntilVisible(
-      find.text('Dos'),
+      outfits,
       find.byKey(ShopPage.filtersKey),
       const Offset(-150, 0),
     );
     await _pumpFor(tester, 300);
-    await tester.tap(find.text('Dos'));
+    await tester.tap(outfits);
     await _pumpFor(tester, 500);
     await tester.tap(find.text('Voir sur mon personnage').first);
     await _pumpFor(tester, 4000);
     expect(
       find.text(
-        "Le rendu 3D n'a pas pu s'afficher sur cet appareil. Tes choix "
+        "Le héros n'a pas pu s'afficher sur cet appareil. Tes choix "
         'restent enregistrés.',
       ),
       findsNothing,

@@ -1232,7 +1232,7 @@
   "characterSheetJson": "Fiche du personnage (JSON)",
   "characterConfirm": "Valider le personnage",
   "characterSaved": "Personnage enregistré.",
-  "characterPreviewSemantics": "Aperçu 3D du personnage : {description}. Fais glisser pour le tourner, pince pour zoomer.",
+  "characterPreviewSemantics": "Aperçu du personnage : {description}.",
   "@characterPreviewSemantics": {
     "placeholders": {
       "description": {
@@ -1241,7 +1241,7 @@
     }
   },
   "characterPreviewLoading": "Le Système façonne ton héros…",
-  "characterPreviewError": "Le rendu 3D n'a pas pu s'afficher sur cet appareil. Tes choix restent enregistrés.",
+  "characterPreviewError": "Le héros n'a pas pu s'afficher sur cet appareil. Tes choix restent enregistrés.",
   "characterTabBody": "Corps",
   "characterTabHair": "Coiffure",
   "characterTabSheet": "Nom & fiche",
