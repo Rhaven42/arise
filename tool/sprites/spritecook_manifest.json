@@ -689,5 +689,230 @@
   "asset_id": "9b2abd1f-963f-45a2-b735-3769c20205c6",
   "sha12": "430379d97ffb",
   "label": "cimeterre de jade"
+ },
+ "armor_crimson_vanguard_mm": {
+  "asset_id": "f7b5336d-4e2d-4fa7-9521-20c2e76d8f4f",
+  "sha12": "5092f7feb3a2",
+  "label": "crimson_vanguard mm"
+ },
+ "armor_crimson_vanguard_mf": {
+  "asset_id": "8471d914-7f58-4ede-9248-55ac8d569b54",
+  "sha12": "ac82d61874a7",
+  "label": "crimson_vanguard mf"
+ },
+ "armor_crimson_vanguard_large": {
+  "asset_id": "4d2db2e3-83b7-49eb-81ed-e46408c58a23",
+  "sha12": "f337a5d93457",
+  "label": "crimson_vanguard large"
+ },
+ "armor_crimson_vanguard_stocky": {
+  "asset_id": "871b58d4-490f-4fe1-8f67-0ed4d71179e7",
+  "sha12": "e66d97e60cde",
+  "label": "crimson_vanguard stocky"
+ },
+ "armor_crimson_vanguard_small": {
+  "asset_id": "dc8e750d-47a5-4b5d-9bcd-d042e9837e36",
+  "sha12": "eb4e8f7279d0",
+  "label": "crimson_vanguard small"
+ },
+ "armor_frost_warden_mm": {
+  "asset_id": "d6e1bc90-b349-412d-848c-6931a3760c02",
+  "sha12": "b4a517e0736d",
+  "label": "frost_warden mm"
+ },
+ "armor_frost_warden_mf": {
+  "asset_id": "1e96477e-a457-4e38-95ed-44a151177417",
+  "sha12": "bc30c76e865b",
+  "label": "frost_warden mf"
+ },
+ "armor_frost_warden_large": {
+  "asset_id": "4851a96a-2d3f-4419-9a34-9d121a8a3608",
+  "sha12": "d4833cfe33b7",
+  "label": "frost_warden large"
+ },
+ "armor_frost_warden_stocky": {
+  "asset_id": "340177d2-6d60-4161-a223-a9468a48e0ae",
+  "sha12": "528d778db5e6",
+  "label": "frost_warden stocky"
+ },
+ "armor_frost_warden_small": {
+  "asset_id": "aaa04e7a-9f87-4895-9c06-a5861d8c8e60",
+  "sha12": "504f96bf4a64",
+  "label": "frost_warden small"
+ },
+ "armor_ember_berserker_mm": {
+  "asset_id": "bb6a4e64-412e-4664-90ad-ed3b6bca21f2",
+  "sha12": "c30e100a656e",
+  "label": "ember_berserker mm"
+ },
+ "armor_ember_berserker_mf": {
+  "asset_id": "b355cb59-ed34-404b-80a5-3b793c22ff2c",
+  "sha12": "692a84d73d31",
+  "label": "ember_berserker mf"
+ },
+ "armor_ember_berserker_large": {
+  "asset_id": "ca9d7be9-6b8f-4118-8ea2-17cc5a27dce3",
+  "sha12": "c9a06df4f181",
+  "label": "ember_berserker large"
+ },
+ "armor_ember_berserker_stocky": {
+  "asset_id": "b793b34d-c1af-4f92-8fb9-e03c14bb35ed",
+  "sha12": "e0e769d6dd6e",
+  "label": "ember_berserker stocky"
+ },
+ "armor_ember_berserker_small": {
+  "asset_id": "99d03302-f759-457e-be7c-2c9069345df1",
+  "sha12": "efa96f996bb6",
+  "label": "ember_berserker small"
+ },
+ "armor_verdant_guardian_mm": {
+  "asset_id": "9ee17774-30ae-4fbb-b271-f5fc833dc30a",
+  "sha12": "b3556a857115",
+  "label": "verdant_guardian mm"
+ },
+ "armor_verdant_guardian_mf": {
+  "asset_id": "81889b91-e7ff-4b05-a5dc-d131de2dd343",
+  "sha12": "400d0d12c745",
+  "label": "verdant_guardian mf"
+ },
+ "armor_verdant_guardian_large": {
+  "asset_id": "c482b848-d373-405f-841b-c3d8ae475a86",
+  "sha12": "bfc2dc45fac9",
+  "label": "verdant_guardian large"
+ },
+ "armor_verdant_guardian_stocky": {
+  "asset_id": "82324e82-013d-46c6-b2ba-1604aeeee099",
+  "sha12": "a92f49b09c56",
+  "label": "verdant_guardian stocky"
+ },
+ "armor_verdant_guardian_small": {
+  "asset_id": "a471df88-d0f1-4f38-be4c-e05f51af76bc",
+  "sha12": "fa3c54ba5fe0",
+  "label": "verdant_guardian small"
+ },
+ "armor_storm_templar_mm": {
+  "asset_id": "eb97ac23-b9ba-4f79-a781-676463b7a513",
+  "sha12": "6202315b434f",
+  "label": "storm_templar mm"
+ },
+ "armor_storm_templar_mf": {
+  "asset_id": "d7e0d445-c8fb-4c0e-a24b-3f41fec7096c",
+  "sha12": "3e10393851fd",
+  "label": "storm_templar mf"
+ },
+ "armor_storm_templar_large": {
+  "asset_id": "cd493121-792b-4862-971f-e05b3cd2ea8c",
+  "sha12": "eaf2fab02d07",
+  "label": "storm_templar large"
+ },
+ "armor_storm_templar_stocky": {
+  "asset_id": "19ad42f2-7735-4d81-b67d-aaee197452d4",
+  "sha12": "149e30398b43",
+  "label": "storm_templar stocky"
+ },
+ "armor_storm_templar_small": {
+  "asset_id": "3a164cac-4f29-4322-b85d-fa39d379e6be",
+  "sha12": "a3b36cdac533",
+  "label": "storm_templar small"
+ },
+ "armor_bone_reaver_mm": {
+  "asset_id": "84821b77-0fa2-4918-83ba-ff3293c2526a",
+  "sha12": "eec8be7ed47f",
+  "label": "bone_reaver mm"
+ },
+ "armor_bone_reaver_mf": {
+  "asset_id": "c98fbb30-244b-43bb-aef0-8754b4c82626",
+  "sha12": "99688488aada",
+  "label": "bone_reaver mf"
+ },
+ "armor_bone_reaver_large": {
+  "asset_id": "b4f99258-e923-4cf5-a1dd-cedbb74ff011",
+  "sha12": "74d87055c0c2",
+  "label": "bone_reaver large"
+ },
+ "armor_bone_reaver_stocky": {
+  "asset_id": "705bb452-b4f0-43c0-a6e3-7c7c0417ae5e",
+  "sha12": "a13df4ef495c",
+  "label": "bone_reaver stocky"
+ },
+ "armor_bone_reaver_small": {
+  "asset_id": "04e810f5-c465-4a6f-a52e-8d66bdd3daca",
+  "sha12": "4da96008422b",
+  "label": "bone_reaver small"
+ },
+ "armor_desert_sentinel_mm": {
+  "asset_id": "903ec547-2b18-40f1-b53e-511749be2401",
+  "sha12": "98a5f505b807",
+  "label": "desert_sentinel mm"
+ },
+ "armor_desert_sentinel_mf": {
+  "asset_id": "c6450e55-dd60-4bcf-8419-78f54562ee02",
+  "sha12": "8fae95251c24",
+  "label": "desert_sentinel mf"
+ },
+ "armor_desert_sentinel_large": {
+  "asset_id": "2c39c6e6-91c6-40d9-9916-e3f7b3fd3a91",
+  "sha12": "f387910ee3f3",
+  "label": "desert_sentinel large"
+ },
+ "armor_desert_sentinel_stocky": {
+  "asset_id": "1f72d14d-4e82-4c8e-84f9-5eb2306d434a",
+  "sha12": "1ff0b929fcb8",
+  "label": "desert_sentinel stocky"
+ },
+ "armor_desert_sentinel_small": {
+  "asset_id": "f7bac7d3-b80f-4157-9916-9de1fa57ea17",
+  "sha12": "35b93c392739",
+  "label": "desert_sentinel small"
+ },
+ "armor_arcane_battlemage_mm": {
+  "asset_id": "4b57779f-a069-4450-94f2-b7bb448d4edf",
+  "sha12": "4af5f7475fd4",
+  "label": "arcane_battlemage mm"
+ },
+ "armor_arcane_battlemage_mf": {
+  "asset_id": "afa4965b-169b-49b3-a86c-c0b17a6d2318",
+  "sha12": "ec7a314ea1f0",
+  "label": "arcane_battlemage mf"
+ },
+ "armor_arcane_battlemage_large": {
+  "asset_id": "7e9c46a5-26d7-4811-bf33-27b7bba2b3be",
+  "sha12": "b77100bcea08",
+  "label": "arcane_battlemage large"
+ },
+ "armor_arcane_battlemage_stocky": {
+  "asset_id": "ece18ca9-86cd-4db2-ac4b-6a4ec5a0ee8f",
+  "sha12": "5651885046f3",
+  "label": "arcane_battlemage stocky"
+ },
+ "armor_arcane_battlemage_small": {
+  "asset_id": "0dfdb96f-acf3-4322-a63e-0ba37146bd33",
+  "sha12": "6a16978633df",
+  "label": "arcane_battlemage small"
+ },
+ "armor_abyss_knight_mm": {
+  "asset_id": "19eeeb67-6e08-4fb6-be2b-88edc16e9970",
+  "sha12": "c0cf70354236",
+  "label": "abyss_knight mm"
+ },
+ "armor_abyss_knight_mf": {
+  "asset_id": "753a3912-a14a-4479-ae62-7a649209a83b",
+  "sha12": "8b195d9ce8bb",
+  "label": "abyss_knight mf"
+ },
+ "armor_abyss_knight_large": {
+  "asset_id": "eca3b97c-f39e-456b-bafa-a1ca4d92891c",
+  "sha12": "1a7d4e65a8cc",
+  "label": "abyss_knight large"
+ },
+ "armor_abyss_knight_stocky": {
+  "asset_id": "9c615ef0-f154-4cbf-adf4-333df7be14b3",
+  "sha12": "0f5f85988b56",
+  "label": "abyss_knight stocky"
+ },
+ "armor_abyss_knight_small": {
+  "asset_id": "ac374d7a-8ca8-4d23-87b4-7d0fde832282",
+  "sha12": "b4b43401578e",
+  "label": "abyss_knight small"
  }
 }
