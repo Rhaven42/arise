@@ -155,11 +155,13 @@ _QUAD_LEG = [dict(th_n=-5, sh_n=-170, ft_n=-80), dict(th_n=-12, sh_n=-172, ft_n=
 QUAD_ARM = [arm_on({**DEFAULT, **leg}, "ankle_f", (0, 0), "ankle_n", -1) for leg in _QUAD_LEG]
 
 def _cobra():
+    # Mains posées un peu en arrière des épaules : les coudes pointent vers
+    # l'arrière et le haut, jamais vers la tête.
     low = {**DEFAULT, "t": 96}
     j = joints(low, "side")
-    hand = (j["shoulder_n"][0] + 0.02, 0.0)
-    return [ik(j["shoulder_n"], hand, L["upper_arm"], L["forearm"], 1),
-            ik(joints({**DEFAULT, "t": 130}, "side")["shoulder_n"], hand, L["upper_arm"], L["forearm"], 1)]
+    hand = (j["shoulder_n"][0] - 0.12, 0.0)
+    return [ik(j["shoulder_n"], hand, L["upper_arm"], L["forearm"], -1),
+            ik(joints({**DEFAULT, "t": 130}, "side")["shoulder_n"], hand, L["upper_arm"], L["forearm"], -1)]
 COBRA_ARM = _cobra()
 BURPEE_FLOOR = _burpee_floor()
 
@@ -190,7 +192,7 @@ MOTIONS = {
         kf(dict(ua_n=-95, fa_n=0, ua_f=-95, fa_f=0, t=172, th_n=-5, sh_n=-75, th_f=-5, sh_f=-75), "hand_n")]),
     "pull_up": dict(view="side", keys=[
         kf(dict(ua_n=180, fa_n=180, ua_f=180, fa_f=180, th_n=8, sh_n=-25, th_f=8, sh_f=-25), "hand_n"),
-        kf(dict(ua_n=15, fa_n=175, ua_f=15, fa_f=175, th_n=15, sh_n=-30, th_f=15, sh_f=-30), "hand_n")]),
+        kf(dict(ua_n=15, fa_n=165, ua_f=15, fa_f=165, th_n=15, sh_n=-30, th_f=15, sh_f=-30), "hand_n")]),
     "row": dict(view="side", keys=[
         kf(dict(t=118, th_n=18, sh_n=-12, th_f=18, sh_f=-12, ua_n=0, fa_n=0, ua_f=0, fa_f=0)),
         kf(dict(t=118, th_n=18, sh_n=-12, th_f=18, sh_f=-12, ua_n=-70, fa_n=-5, ua_f=-70, fa_f=-5))]),
@@ -202,7 +204,7 @@ MOTIONS = {
         kf(dict(ua_n=88, fa_n=92, ua_f=88, fa_f=92), "root")]),
     "biceps_curl": dict(view="side", keys=[
         kf(dict(ua_n=2, fa_n=5, ua_f=2, fa_f=5)),
-        kf(dict(ua_n=-5, fa_n=160, ua_f=-5, fa_f=160))]),
+        kf(dict(ua_n=-5, fa_n=140, ua_f=-5, fa_f=140))]),
     "romanian_deadlift": dict(view="side", keys=[
         kf(S), kf(dict(t=100, th_n=8, sh_n=-4, th_f=8, sh_f=-4, ua_n=0, fa_n=0, ua_f=0, fa_f=0))]),
     "glute_bridge": dict(view="side", keys=[
@@ -284,7 +286,7 @@ MOTIONS = {
         kf(dict(t=130, ua_n=COBRA_ARM[1][0], fa_n=COBRA_ARM[1][1], ua_f=COBRA_ARM[1][0], fa_f=COBRA_ARM[1][1], th_n=-92, sh_n=-90, th_f=-92, sh_f=-90, ft_n=-90, ft_f=-90, hd=15), "root", hold=1.6)]),
     "lunge_twist_stretch": dict(view="side", keys=[
         kf(dict(ua_n=0, fa_n=5, ua_f=10, fa_f=10, th_n=88, sh_n=-2, th_f=-15, sh_f=-92, ft_f=-170), hold=1.5),
-        kf(dict(ua_n=175, fa_n=178, ua_f=60, fa_f=40, th_n=88, sh_n=-2, th_f=-15, sh_f=-92, ft_f=-170, hd=10), hold=1.5)]),
+        kf(dict(ua_n=175, fa_n=178, ua_f=60, fa_f=75, th_n=88, sh_n=-2, th_f=-15, sh_f=-92, ft_f=-170, hd=10), hold=1.5)]),
     # Lot 3 : mobilité et échauffement.
     "butterfly_stretch": dict(view="front", keys=[
         kf(dict(ua_n=12, fa_n=-20, ua_f=12, fa_f=-20, th_n=95, sh_n=-95, th_f=95, sh_f=-95), "root", hold=1),
@@ -374,7 +376,7 @@ MOTIONS = {
         kf(dict(ua_n=4, fa_n=4, ua_f=4, fa_f=4, sl=0.07), "root")]),
     "triceps_extension": dict(view="side", keys=[
         kf(dict(ua_n=172, fa_n=178, ua_f=172, fa_f=178)),
-        kf(dict(ua_n=168, fa_n=15, ua_f=168, fa_f=15, hd=-5))]),
+        kf(dict(ua_n=165, fa_n=315, ua_f=165, fa_f=315, hd=-5))]),
     "band_pull_apart": dict(view="front", keys=[
         kf(dict(ua_n=70, fa_n=-80, ua_f=70, fa_f=-80), "root"),
         kf(dict(ua_n=90, fa_n=90, ua_f=90, fa_f=90, hd=0), "root")]),
@@ -441,23 +443,23 @@ def _dedicated():
     s0 = _shoulder(hang, "ankle_n", (0, 0))
     grip = (round(s0[0], 3), round(s0[1] - 0.57, 3))
     e_up = solve(lambda e: -_shoulder({**base, **body_line(e)}, "ankle_n", (0, 0))[1], 22, 80, -grip[1] - 0.14)
-    keys = _cycle(lambda e: {**base, **body_line(e)}, [22 + (e_up - 22) * i / 3 for i in range(4)], "ankle_n", (0, 0), grip, 1)
-    m["inverted_row"] = dict(view="side", keys=keys, props=[bar(*grip)])
+    keys = _cycle(lambda e: {**base, **body_line(e)}, [22 + (e_up - 22) * i / 3 for i in range(4)], "ankle_n", (0, 0), grip, -1)
+    m["inverted_row"] = dict(view="side", keys=keys, props=[bar(*grip)], unwrap=True)
     # Dips sur banc : mains sur le banc derrière, talons au sol devant.
     hand, heel = (-0.2, -0.45), (0.52, 0)
     m["bench_dips"] = dict(view="side", props=[box(-0.8, -0.45, -0.15, 0)], keys=[
-        placed(dict(t=178, ft_n=170, ft_f=170), (-0.12, -0.52), arm_n=(hand, 1), leg_n=(heel, 1)),
-        placed(dict(t=175, ft_n=170, ft_f=170), (-0.1, -0.24), arm_n=(hand, 1), leg_n=(heel, 1))])
+        placed(dict(t=178, ft_n=170, ft_f=170), (-0.12, -0.52), arm_n=(hand, -1), leg_n=(heel, 1)),
+        placed(dict(t=175, ft_n=170, ft_f=170), (-0.1, -0.24), arm_n=(hand, -1), leg_n=(heel, 1))])
     # Montées sur banc.
     step = (0.42, -0.4)
     m["step_up"] = dict(view="side", props=[box(0.15, -0.4, 0.8, 0)], keys=[
-        placed(dict(t=176, ua_n=-15, fa_n=-10, ua_f=15, fa_f=20), (0.0, -0.87), leg_n=(step, -1), leg_f=((0.0, 0), -1)),
-        placed(dict(t=178, ua_n=15, fa_n=20, ua_f=-15, fa_f=-10, th_f=70, sh_f=-10), (0.4, -1.27), leg_n=(step, -1), leg_f=False)])
+        placed(dict(t=176, ua_n=-15, fa_n=-10, ua_f=15, fa_f=20), (0.0, -0.87), leg_n=(step, 1), leg_f=((0.0, 0), 1)),
+        placed(dict(t=178, ua_n=15, fa_n=20, ua_f=-15, fa_f=-10, th_f=70, sh_f=-10), (0.4, -1.27), leg_n=(step, 1), leg_f=False)])
     # Squat bulgare : pied arrière posé sur un banc.
     front, rear = (0.22, 0), (-0.55, -0.49)
     m["bulgarian_split_squat"] = dict(view="side", props=[box(-1.05, -0.45, -0.5, 0)], keys=[
-        placed(dict(t=176, ft_f=-95), (-0.12, -0.85), leg_n=(front, -1), leg_f=(rear, 1)),
-        placed(dict(t=174, ft_f=-95), (-0.2, -0.47), leg_n=(front, -1), leg_f=(rear, 1))])
+        placed(dict(t=176, ft_f=-95), (-0.12, -0.85), leg_n=(front, 1), leg_f=(rear, 1)),
+        placed(dict(t=174, ft_f=-95), (-0.2, -0.47), leg_n=(front, 1), leg_f=(rear, 1))])
     # Hip thrust : haut du dos sur un banc, hanches qui montent.
     feet = (0.45, 0)
     m["hip_thrust"] = dict(view="side", props=[box(-1.0, -0.42, -0.35, 0)], keys=[
@@ -486,8 +488,45 @@ def _dedicated():
         kf(dict(th_n=70, sh_n=-16.5, th_f=70, sh_f=-16.5, ua_n=-6, fa_n=-24, ua_f=-6, fa_f=-24), "ankle_n")])
     # Squat gobelet : charge tenue contre la poitrine.
     m["goblet_squat"] = dict(view="side", keys=[
-        kf(dict(ua_n=12, fa_n=168, ua_f=12, fa_f=168)),
+        kf(dict(ua_n=12, fa_n=164, ua_f=12, fa_f=164)),
         kf({**SQUAT_LOW, "ua_n": 38, "fa_n": 172, "ua_f": 38, "fa_f": 172})])
+    # Fente : genou arrière juste au-dessus du sol, orteils arrière posés,
+    # talon levé (le pied ne traverse jamais le sol).
+    up = dict(th_n=22, sh_n=0, th_f=-20, sh_f=-25)
+    down = {**DEFAULT, "th_n": 88, "sh_n": -2}
+    root = root_from("ankle_n", (0, 0), down)
+    hip = joints(down, "side", root)["hip_f"]
+    toe_angle = 35
+    ankle_y = -L["foot"] * math.cos(math.radians(toe_angle))
+
+    def knee_height(x):
+        th, sh = ik(hip, (x, ankle_y), L["thigh"], L["shin"], 1)
+        return joints({**down, "th_f": th, "sh_f": sh}, "side", root)["knee_f"][1]
+
+    rear_x = solve(knee_height, hip[0] - 0.3, hip[0] - 0.85, -0.07)
+    th_f, sh_f = ik(hip, (rear_x, ankle_y), L["thigh"], L["shin"], 1)
+    m["lunge"] = dict(view="side", keys=[
+        kf(up),
+        kf({**down, "th_f": th_f, "sh_f": sh_f, "ft_f": toe_angle})])
+    # Ponts fessiers : épaules au sol, pieds à plat à une jambe des hanches.
+    def bridge(far=None):
+        keys = []
+        for t, hd, arm in ((-90, 0, 90), (-68, -22, 96)):
+            pose = {**DEFAULT, "t": t, "hd": hd, "ua_n": arm, "fa_n": arm,
+                    "ua_f": arm, "fa_f": arm, **(far or {})}
+            root = root_from("neck", (-0.05, 0), pose)
+            feet = (0.92, -0.002)
+            k = placed(pose, root, leg_n=(feet, 1),
+                       leg_f=False if far else None)
+            keys.append(k)
+        return keys
+
+    m["glute_bridge"] = dict(view="side", keys=bridge())
+    m["single_leg_glute_bridge"] = dict(view="side", keys=bridge(
+        dict(th_f=112, sh_f=112, ft_f=200)))
+    # Vélo d'appartement : selle sous le bassin, pédalier devant.
+    m["cycling"] = {**MOTIONS["cycling"], "props": [
+        box(-0.16, 0.03, 0.12, 0.09), box(-0.04, 0.09, 0.0, 0.86)]}
     return m
 
 MOTIONS.update(_dedicated())
@@ -506,6 +545,9 @@ MOTIONS["wall_sit"]["props"] = [_wall(MOTIONS["wall_sit"], "root", -1, 0.1)]
 MOTIONS["calf_stretch"]["props"] = [_wall(MOTIONS["calf_stretch"], "hand_n", 1, 0.0)]
 MOTIONS["chest_stretch"]["props"] = [_wall(MOTIONS["chest_stretch"], "hand_n", -1, 0.0)]
 
+# Angles en degrés (les autres réglages sont des longueurs).
+ANGLE_KEYS = [a for a in DEFAULT if a not in ("sl", "tz", "shz_n", "shz_f")]
+
 def export():
     out = {}
     for mid, m in MOTIONS.items():
@@ -518,6 +560,15 @@ def export():
             keys.append({"root": list(root), "hold": k["hold"], "anchor": anchor,
                          "target": [float(target[0]), float(target[1])],
                          "angles": {a: pose[a] for a in DEFAULT}})
+        # Angles déroulés (mouvements générés par cinématique inverse) : d'une
+        # pose à la suivante, chaque membre tourne par le plus court chemin,
+        # jamais un tour complet à travers le corps.
+        for prev, cur in zip(keys, keys[1:]) if m.get("unwrap") else []:
+            for a in ANGLE_KEYS:
+                while cur["angles"][a] - prev["angles"][a] > 180:
+                    cur["angles"][a] -= 360
+                while cur["angles"][a] - prev["angles"][a] < -180:
+                    cur["angles"][a] += 360
         out[mid] = {"view": m["view"], "keys": keys}
         if m.get("props"):
             out[mid]["props"] = m["props"]
