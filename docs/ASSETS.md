@@ -9,6 +9,7 @@ Démonstration par un **mannequin 2D animé** (12/11/2026, à la demande de la p
 
 - 75 mouvements dans `assets/animations/motions.json`, générés par `tool/motions.py` : chaque exercice du catalogue a le sien ou partage celui d'une variante identique vue de profil (pompes larges ou diamant, chin-up, curl marteau, fente arrière).
 - Appuis vérifiés image par image (planche de contrôle et test : mains et pieds ne traversent pas le sol, prises fixes par cinématique inverse).
+- Contrôle de tout le cycle (19/11/2026) : `python3 tool/check_motions.py assets/animations/motions.json` et le test `motion_quality_test.dart` vérifient sur 480 images par mouvement que rien ne passe sous le sol dessiné, que genoux et coudes ne plient jamais à l'envers (coude ≤ 155°), qu'il n'y a pas d'à-coup et que les appuis restent fixes.
 - Les photos, les vidéos de capture de mouvement et les vidéos 3D du prof médiéval ont été retirées (19/11/2026).
 
 ### Livrable attendu (version 3D)
