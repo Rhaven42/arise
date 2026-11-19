@@ -5,9 +5,11 @@
 > Depuis le 04/11/2026, ARISE est une application **100 % hors ligne** : ni compte, ni serveur, ni Firebase (SPEC.md §21).
 >
 > Depuis le 12/11/2026, le nom affiché aux utilisateurs est **Hero Protocol** (SPEC.md §35) ; « ARISE » / `arise` reste le nom de code interne.
+>
+> Depuis le 19/11/2026, le héros est en **pixel art** (SPEC.md §41) : plus de modèles 3D.
 
 ## 1. Le projet en une phrase
-ARISE est une application mobile de sport gamifiée (Android + iOS), dans l'esprit « chasseur qui s'éveille et monte en rang » : l'utilisateur fait du sport réel, gagne de l'expérience, monte de niveau, débloque des rangs et fait évoluer un avatar 3D personnalisable dans le royaume original d'**Arisia**.
+ARISE est une application mobile de sport gamifiée (Android + iOS), dans l'esprit « chasseur qui s'éveille et monte en rang » : l'utilisateur fait du sport réel, gagne de l'expérience, monte de niveau, débloque des rangs et fait évoluer un héros en pixel art personnalisable dans le royaume original d'**Arisia**.
 
 - Ambiance : MMORPG fantasy héroïque — cadres de pierre et de bois, éclairage chaud, polices médiévales, fenêtres de « Système » qui annoncent quêtes et récompenses.
 - **Aucun** nom, logo, personnage, modèle 3D ni asset protégé de Solo Leveling, de World of Warcraft (y compris `wow-model-viewer`, Wowhead ou des exports wow.export) ou de toute autre œuvre. Univers, noms et visuels 100 % originaux.
@@ -32,8 +34,8 @@ ARISE est une application mobile de sport gamifiée (Android + iOS), dans l'espr
 | Notifications | Notifications locales (ajoutées en phase 2) |
 | Lecteur de séance | `audioplayers` (bips embarqués), `flutter_tts` (voix hors ligne), `wakelock_plus` (écran allumé) |
 | Santé | package `health` (Health Connect Android, HealthKit iOS) — **lecture seule** |
-| Avatar 3D | interface abstraite `CharacterRenderer` ; MVP = modèles `.glb` originaux ; Unity plus tard |
-| Animations d'exercices | interface `ExerciseAnimationPlayer` (Rive ou `.glb` animés) |
+| Avatar | interface abstraite `CharacterRenderer` ; héros en pixel art : calques générés avec SpriteCook (`tool/sprites/`), assemblés dans l'appli |
+| Animations d'exercices | interface `ExerciseAnimationPlayer` ; mannequin 2D articulé |
 | Heatmap musculaire | 2 silhouettes SVG (face / dos), une zone par muscle, identifiée par l'ID de `docs/ANATOMY.md` |
 
 Retirés du projet : Firebase (Auth, Firestore, Functions, Storage, Messaging), connexion Google, coach caméra.
@@ -57,7 +59,7 @@ lib/
       domain/        # entités, value objects, interfaces de repository, use cases, RÈGLES DU JEU — aucune dépendance Flutter
       data/          # DTO, sources Drift, implémentations des repositories
       presentation/  # écrans, widgets, contrôleurs (Riverpod)
-assets/              # svg/, animations/, models/, fonts/, sounds/
+assets/              # svg/, animations/, sprites/, fonts/, sounds/
 test/                # reflète exactement la structure de lib/
 integration_test/    # parcours complets lancés sur émulateur Android en CI
 docs/                # SPEC, ANATOMY, ROADMAP, ASSETS
@@ -81,7 +83,7 @@ docs/                # SPEC, ANATOMY, ROADMAP, ASSETS
 6. **Processus par phase** : avant → plan court + attente de validation ; après → liste de ce qui est fait, comment le tester, limites, puis cocher `docs/ROADMAP.md`.
 7. **Accessibilité** : tailles de police dynamiques (`textScaler` respecté), contrastes WCAG AA minimum, heatmap lisible par les daltoniens (motif + libellé en plus de la couleur), `Semantics` sur les éléments interactifs.
 8. **Santé** : aucune mécanique ne pousse au surentraînement. Le repos est respecté et valorisé. Avertissement affiché en cas de douleur ou de fatigue extrême ; plafond de 120 min d'effort actif par jour (XP divisée par deux au-delà + message de prudence).
-9. **Assets 3D de substitution** : deux mannequins **distincts** homme / femme (topologies différentes), jamais de cubes ni d'un modèle unique redimensionné, jamais d'assets tiers protégés. Tout ce que l'artiste 3D devra fournir est documenté dans `docs/ASSETS.md`.
+9. **Illustrations du héros** : un corps **distinct** par race et par sexe, jamais un modèle unique redimensionné, jamais d'assets tiers protégés. Leur origine et la façon d'en ajouter sont documentées dans `docs/ASSETS.md`.
 10. **Données de l'utilisateur** : elles ne quittent jamais le téléphone, sauf par un export qu'il déclenche lui-même. Toute évolution du schéma Drift s'accompagne d'une migration testée et d'une compatibilité ascendante du format de sauvegarde.
 
 ## 6. Conventions de code

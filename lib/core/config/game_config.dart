@@ -172,7 +172,7 @@ class ShopConfig {
   /// Coiffure à débloquer.
   final int hairStylePriceSilver;
 
-  /// Coiffures vendues en boutique (numéros de 1 à 10).
+  /// Coiffures vendues en boutique (numéros de 1 à 10, pour chaque sexe).
   final List<int> lockedHairStyles;
 
   /// Teinture d'un objet, en pièces de bronze.
@@ -449,25 +449,16 @@ class CharacterConfig {
     required this.usernameMinLength,
     required this.usernameMaxLength,
     required this.undoHistorySize,
-    required this.favoriteHairstylesMax,
-    required this.heightMinCm,
-    required this.heightMaxCm,
   });
 
   final int usernameMinLength;
   final int usernameMaxLength;
   final int undoHistorySize;
-  final int favoriteHairstylesMax;
-  final int heightMinCm;
-  final int heightMaxCm;
 
   Map<String, Object> toJson() => {
     'usernameMinLength': usernameMinLength,
     'usernameMaxLength': usernameMaxLength,
     'undoHistorySize': undoHistorySize,
-    'favoriteHairstylesMax': favoriteHairstylesMax,
-    'heightMinCm': heightMinCm,
-    'heightMaxCm': heightMaxCm,
   };
 }
 
@@ -1494,9 +1485,6 @@ const gameConfig = GameConfig(
     usernameMinLength: 3,
     usernameMaxLength: 16,
     undoHistorySize: 20,
-    favoriteHairstylesMax: 5,
-    heightMinCm: 150,
-    heightMaxCm: 205,
   ),
   volume: VolumeConfig(
     strengthPrimaryPoints: 1,
@@ -1561,7 +1549,7 @@ const gameConfig = GameConfig(
     commonPriceSilverBySlot: {
       'head': 2,
       'shoulders': 2,
-      'chest': 3,
+      'chest': 8,
       'hands': 1,
       'belt': 1,
       'legs': 2,

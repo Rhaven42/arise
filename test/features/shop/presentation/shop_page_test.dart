@@ -41,26 +41,30 @@ void main() {
     expect(find.text('Boutique du Protocole'), findsOneWidget);
     expect(find.textContaining('Ta bourse'), findsOneWidget);
 
-    // Filtre « Dos » puis essayage de la cape.
+    // Filtre « Tenue » puis essayage du cuir de l'Éveillé.
+    final outfits = find.descendant(
+      of: find.byKey(ShopPage.filtersKey),
+      matching: find.text('Tenue'),
+    );
     await tester.dragUntilVisible(
-      find.text('Dos'),
+      outfits,
       find.byKey(ShopPage.filtersKey),
       const Offset(-150, 0),
     );
-    await tester.tap(find.text('Dos'));
+    await tester.tap(outfits);
     await tester.pump();
-    expect(find.text('Cape du Vagabond'), findsOneWidget);
-    expect(find.text("Veste de cuir de l'Éveillé"), findsNothing);
+    expect(find.text("Cuir de l'Éveillé"), findsOneWidget);
+    expect(find.text('Épée longue du Gardien'), findsNothing);
     await tester.ensureVisible(find.text('Voir sur mon personnage').first);
     await tester.pump();
     await tester.tap(find.text('Voir sur mon personnage').first);
     await tester.pumpAndSettle();
     expect(find.text('Aperçu sur Création du personnage'), findsOneWidget);
-    expect(renderer.last?.itemNodes, ['item_cape_wanderer']);
+    expect(renderer.last?.outfitId, 'awakened_leather');
     await tester.tap(find.byTooltip('Fermer'));
     await tester.pumpAndSettle();
 
-    // Achat confirmé : 10 pièces d'argent.
+    // Achat confirmé : 8 pièces d'argent.
     await tester.ensureVisible(find.text('Acheter').first);
     await tester.pump();
     await tester.tap(find.text('Acheter').first);
@@ -69,15 +73,15 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Acheter').last);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.text('Achat réussi : Cape du Vagabond.'), findsOneWidget);
+    expect(find.text("Achat réussi : Cuir de l'Éveillé."), findsOneWidget);
     final bag = await container.read(inventoryRepositoryProvider).read();
-    expect(bag.owned, ['cape_wanderer']);
+    expect(bag.owned, ['awakened_leather']);
     expect(
       (await container.read(progressionRepositoryProvider).read())?.coins,
-      250,
+      450,
     );
 
-    // Trop cher : la cape de l'Aube (la cape achetée affiche « Possédé »).
+    // Trop cher : la tenue suivante (la tenue achetée affiche « Possédé »).
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('Possédé'), findsOneWidget);
     await tester.ensureVisible(find.text('Acheter').first);
@@ -103,10 +107,10 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(
       (await container.read(inventoryRepositoryProvider).read()).equipped,
-      {EquipmentSlot.back: 'cape_wanderer'},
+      {EquipmentSlot.chest: 'awakened_leather'},
     );
     await tester.pump(const Duration(milliseconds: 100));
-    expect(renderer.last?.itemNodes, ['item_cape_wanderer']);
+    expect(renderer.last?.outfitId, 'awakened_leather');
 
     await tester.tap(find.text('Teindre'));
     await tester.pumpAndSettle();
@@ -115,11 +119,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('Teinture appliquée.'), findsOneWidget);
     expect((await container.read(inventoryRepositoryProvider).read()).dyes, {
-      'cape_wanderer': 0xFF3E6B34,
+      'awakened_leather': 0xFF3E6B34,
     });
     expect(
       (await container.read(progressionRepositoryProvider).read())?.coins,
-      200,
+      400,
     );
     await tester.unmountApp();
   });

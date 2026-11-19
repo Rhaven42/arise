@@ -129,15 +129,17 @@ void main() {
     await _tapText(tester, 'Continuer');
     await _tapText(tester, "J'ai lu et compris ce rappel");
     await _tapText(tester, 'Activer le Hero Protocol');
-    // Création du personnage, juste après le questionnaire : rendu 3D réel
-    // (vue web), silhouette, nom, validation.
+    // Création du personnage, juste après le questionnaire : sprites en
+    // pixel art, race, coiffure, nom, validation.
     debugPrint('Parcours : création du personnage');
-    await _pumpFor(tester, 4000);
-    debugPrint('Parcours : silhouette, visage, onglet fiche');
-    await tester.tap(find.text('Puissante'));
+    await _pumpFor(tester, 3000);
+    debugPrint('Parcours : race, coiffure, onglet fiche');
+    await tester.tap(find.text('Démone'));
     await _pumpFor(tester, 800);
-    await tester.tap(find.text('Visage'));
+    await tester.tap(find.text('Coiffure'));
     await _pumpFor(tester, 1500);
+    await tester.tap(find.text('2 · Queue haute'));
+    await _pumpFor(tester, 1000);
     await tester.tap(find.text('Nom & fiche'));
     await _pumpFor(tester, 1000);
     final name = find.byType(TextField);
@@ -245,7 +247,7 @@ void main() {
     await _expectVisible(tester, '1 séance sur cette période.');
     await _expectVisible(tester, 'Conseils du Système');
 
-    // Boutique : essayage d'une cape sur le vrai rendu 3D, puis inventaire.
+    // Boutique : essayage d'une tenue sur le héros, puis inventaire.
     debugPrint('Parcours : boutique');
     await _pumpFor(tester, 1500);
     // Retour à la Fenêtre du Système, puis onglet Boutique de la barre.
@@ -259,20 +261,24 @@ void main() {
     }
     await _tapWithoutSettle(tester, find.byKey(HomeDock.shopKey));
     await _pumpFor(tester, 4000);
-    await _waitFor(tester, find.text('Dos'));
+    final outfits = find.descendant(
+      of: find.byKey(ShopPage.filtersKey),
+      matching: find.text('Tenue'),
+    );
+    await _waitFor(tester, outfits);
     await tester.dragUntilVisible(
-      find.text('Dos'),
+      outfits,
       find.byKey(ShopPage.filtersKey),
       const Offset(-150, 0),
     );
     await _pumpFor(tester, 300);
-    await tester.tap(find.text('Dos'));
+    await tester.tap(outfits);
     await _pumpFor(tester, 500);
     await tester.tap(find.text('Voir sur mon personnage').first);
     await _pumpFor(tester, 4000);
     expect(
       find.text(
-        "Le rendu 3D n'a pas pu s'afficher sur cet appareil. Tes choix "
+        "Le héros n'a pas pu s'afficher sur cet appareil. Tes choix "
         'restent enregistrés.',
       ),
       findsNothing,

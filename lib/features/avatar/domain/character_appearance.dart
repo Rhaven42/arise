@@ -1,118 +1,71 @@
-import 'package:arise/features/character_creation/domain/character_rules.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/inventory/domain/inventory_rules.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 /// Apparence à afficher, indépendante du moteur de rendu.
 ///
-/// Les noms (modèle, formes, pièces, poses) sont des identifiants stables
-/// que chaque moteur relie à ses propres ressources.
+/// Les noms (corps, coiffure, barbe, tenue, arme) sont des identifiants
+/// stables que chaque moteur relie à ses propres ressources.
 @immutable
 class CharacterAppearance {
   const CharacterAppearance({
-    required this.modelId,
-    required this.morphs,
-    required this.scale,
+    required this.bodyId,
     required this.skinColor,
     required this.hairColor,
-    required this.hairStyleId,
-    this.eyeColor = 0xFF5A3A22,
-    this.beardColor = 0xFF3B2416,
-    this.eyebrowId = 'brow_01',
+    this.hairId,
     this.beardId,
-    this.makeupId,
-    this.itemNodes = const [],
-    this.packs = const [],
-    this.hiddenOutfit = const [],
-    this.dyes = const {},
+    this.beardColor,
+    this.outfitId,
+    this.outfitTint,
+    this.weaponId,
     this.auraColor,
     this.shadows = const [],
   });
 
-  /// Construit l'apparence d'une fiche : chaque curseur pilote deux formes
-  /// (vers le bas et vers le haut), la taille donne l'échelle du modèle.
-  /// L'équipement porté ([loadout]) s'affiche par-dessus le corps et masque
-  /// les pièces de la tenue de départ qu'il remplace.
+  /// Apparence d'une fiche, avec l'équipement porté ([loadout]).
   factory CharacterAppearance.of(
     CharacterSheet sheet, {
     Loadout loadout = Loadout.none,
   }) {
-    double low(double v) => v < 0.5 ? (0.5 - v) * 2 : 0;
-    double high(double v) => v > 0.5 ? (v - 0.5) * 2 : 0;
     String two(int n) => n.toString().padLeft(2, '0');
-    final sliders = {
-      'corp': sheet.corpulence,
-      'musc': sheet.musculature,
-      'face_jaw': sheet.faceJaw,
-      'face_nose': sheet.faceNose,
-      'face_mouth': sheet.faceMouth,
-      'face_cheeks': sheet.faceCheeks,
-      'face_ears': sheet.faceEars,
-    };
-    final beard = sheet.sex == CharacterSex.male ? sheet.beardStyle : 0;
-    final hairId = loadout.hidesHair ? '' : 'hair_${two(sheet.hairStyle)}';
-    final beardId = beard > 0 ? 'beard_${two(beard)}' : null;
+    final male = sheet.sex == CharacterSex.male;
     return CharacterAppearance(
-      modelId: '${sheet.race.id}_${sheet.sex.name}',
-      morphs: {
-        for (final e in sliders.entries) ...{
-          '${e.key}_low': low(e.value),
-          '${e.key}_high': high(e.value),
-        },
-      },
-      scale: sheet.heightCm / modelHeightCm[sheet.race]![sheet.sex]!,
+      bodyId: '${sheet.race.id}_${sheet.sex.name}',
       skinColor: sheet.skinColor,
       hairColor: sheet.hairColor,
-      hairStyleId: hairId,
-      eyeColor: sheet.eyeColor,
-      beardColor: sheet.beardColor ?? sheet.hairColor,
-      eyebrowId: 'brow_${two(sheet.eyebrowStyle)}',
-      beardId: beardId,
-      makeupId: sheet.makeupStyle > 0
-          ? 'makeup_${two(sheet.makeupStyle)}'
+      hairId: sheet.hairStyle > 0
+          ? '${male ? 'm' : 'f'}${two(sheet.hairStyle)}'
           : null,
-      itemNodes: loadout.itemNodes,
-      // Coiffures et barbes récentes : un fichier chacune, comme les tenues.
-      packs: [
-        ...loadout.packs,
-        if (hairId.isNotEmpty && sheet.hairStyle >= firstPackedHairStyle)
-          hairId,
-        if (beardId != null && beard >= firstPackedBeardStyle) beardId,
-      ],
-      hiddenOutfit: loadout.hiddenOutfit,
-      dyes: loadout.dyes,
+      beardId: male && sheet.beardStyle > 0
+          ? 'b${two(sheet.beardStyle)}'
+          : null,
+      beardColor: sheet.beardColor ?? sheet.hairColor,
+      outfitId: loadout.outfitId,
+      outfitTint: loadout.outfitTint,
+      weaponId: loadout.weaponId,
     );
   }
 
-  final String modelId;
-  final Map<String, double> morphs;
-  final double scale;
+  /// Corps : race et sexe (`human_female`, `high_elf_male`…).
+  final String bodyId;
+
+  /// Couleurs au format ARGB.
   final int skinColor;
   final int hairColor;
 
-  /// Coiffure visible (vide si un casque ou une capuche la cache).
-  final String hairStyleId;
-  final int eyeColor;
-  final int beardColor;
-  final String eyebrowId;
+  /// Coiffure (`m01`…`m10`, `f01`…`f10`), ou `null` pour un crâne rasé.
+  final String? hairId;
 
-  /// Barbe visible, ou `null`.
+  /// Barbe (`b01`…), ou `null`.
   final String? beardId;
+  final int? beardColor;
 
-  /// Maquillage visible, ou `null`.
-  final String? makeupId;
+  /// Tenue portée (sinon, vêtements de base), sa teinte éventuelle.
+  final String? outfitId;
+  final int? outfitTint;
 
-  /// Pièces d'équipement visibles.
-  final List<String> itemNodes;
-
-  /// Tenues à charger en plus du modèle (fichiers séparés).
-  final List<String> packs;
-
-  /// Pièces de la tenue de départ masquées.
-  final List<String> hiddenOutfit;
-
-  /// Couleur par matériau teint.
-  final Map<String, int> dyes;
+  /// Arme tenue, ou `null`.
+  final String? weaponId;
 
   /// Couleur ARGB de l'aura portée, ou `null`.
   final int? auraColor;
@@ -124,21 +77,15 @@ class CharacterAppearance {
   /// Même apparence, avec une aura et des Ombres.
   CharacterAppearance adorned({int? auraColor, List<int> shadows = const []}) =>
       CharacterAppearance(
-        modelId: modelId,
-        morphs: morphs,
-        scale: scale,
+        bodyId: bodyId,
         skinColor: skinColor,
         hairColor: hairColor,
-        hairStyleId: hairStyleId,
-        eyeColor: eyeColor,
-        beardColor: beardColor,
-        eyebrowId: eyebrowId,
+        hairId: hairId,
         beardId: beardId,
-        makeupId: makeupId,
-        itemNodes: itemNodes,
-        packs: packs,
-        hiddenOutfit: hiddenOutfit,
-        dyes: dyes,
+        beardColor: beardColor,
+        outfitId: outfitId,
+        outfitTint: outfitTint,
+        weaponId: weaponId,
         auraColor: auraColor,
         shadows: shadows,
       );
@@ -146,47 +93,31 @@ class CharacterAppearance {
   @override
   bool operator ==(Object other) =>
       other is CharacterAppearance &&
-      other.modelId == modelId &&
-      other.scale == scale &&
+      other.bodyId == bodyId &&
       other.skinColor == skinColor &&
       other.hairColor == hairColor &&
-      other.hairStyleId == hairStyleId &&
-      other.eyeColor == eyeColor &&
-      other.beardColor == beardColor &&
-      other.eyebrowId == eyebrowId &&
+      other.hairId == hairId &&
       other.beardId == beardId &&
-      other.makeupId == makeupId &&
+      other.beardColor == beardColor &&
+      other.outfitId == outfitId &&
+      other.outfitTint == outfitTint &&
+      other.weaponId == weaponId &&
       other.auraColor == auraColor &&
-      _sameList(other.shadows, shadows) &&
-      _sameList(other.itemNodes, itemNodes) &&
-      _sameList(other.hiddenOutfit, hiddenOutfit) &&
-      other.dyes.length == dyes.length &&
-      dyes.entries.every((e) => other.dyes[e.key] == e.value) &&
-      other.morphs.length == morphs.length &&
-      morphs.entries.every((e) => other.morphs[e.key] == e.value);
+      _sameList(other.shadows, shadows);
 
   @override
   int get hashCode => Object.hash(
-    modelId,
-    scale,
+    bodyId,
     skinColor,
     hairColor,
-    hairStyleId,
-    eyeColor,
-    beardColor,
-    eyebrowId,
+    hairId,
     beardId,
-    makeupId,
+    beardColor,
+    outfitId,
+    outfitTint,
+    weaponId,
     auraColor,
     Object.hashAll(shadows),
-    Object.hashAll(itemNodes),
-    Object.hashAll(hiddenOutfit),
-    Object.hashAllUnordered(
-      dyes.entries.map((e) => Object.hash(e.key, e.value)),
-    ),
-    Object.hashAllUnordered(
-      morphs.entries.map((e) => Object.hash(e.key, e.value)),
-    ),
   );
 }
 

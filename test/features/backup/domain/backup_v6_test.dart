@@ -9,10 +9,10 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../../helpers/test_app.dart';
 
 const Inventory _bag = Inventory(
-  owned: ['leather_chest', 'cape_dawn'],
+  owned: ['awakened_leather', 'golden_king'],
   hairStyles: [8],
-  equipped: {EquipmentSlot.back: 'cape_dawn'},
-  dyes: {'cape_dawn': 0xFF27406E},
+  equipped: {EquipmentSlot.chest: 'golden_king'},
+  dyes: {'golden_king': 0xFF27406E},
 );
 
 void main() {

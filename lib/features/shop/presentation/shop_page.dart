@@ -81,8 +81,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
     CharacterSheet sheet,
     Inventory inventory,
   ) {
-    // Page plein écran (et non une fenêtre superposée) : la vue 3D est une
-    // vue native, qui s'affiche mal dans une route transparente.
+    // Page plein écran : le héros en grand, avec l'article porté.
     return Navigator.of(context).push<void>(
       MaterialPageRoute(
         fullscreenDialog: true,
@@ -141,7 +140,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                     _hairFilter = false;
                   }),
                 ),
-                for (final slot in EquipmentSlot.values)
+                for (final slot in usedSlots)
                   _FilterChip(
                     label: slotLabel(l10n, slot),
                     selected: _slot == slot,
@@ -223,7 +222,7 @@ class _FilterChip extends StatelessWidget {
   }
 }
 
-/// Grande vue 3D : le personnage enregistré porte l'article, par-dessus sa
+/// Grande vue : le personnage enregistré porte l'article, par-dessus sa
 /// tenue (sans achat).
 class _TryOnView extends ConsumerWidget {
   const _TryOnView({
@@ -271,11 +270,9 @@ class _TryOnView extends ConsumerWidget {
             ),
           ),
           Expanded(
-            child: _AfterRouteTransition(
-              child: ref
-                  .watch(characterRendererProvider)
-                  .build(appearance: appearance),
-            ),
+            child: ref
+                .watch(characterRendererProvider)
+                .build(appearance: appearance),
           ),
           Padding(
             padding: const EdgeInsets.all(AriseSpacing.md),
@@ -291,58 +288,7 @@ class _TryOnView extends ConsumerWidget {
   }
 }
 
-/// Affiche [child] une fois la page arrivée à l'écran.
-///
-/// La vue 3D est une vue web native : créée pendant que la page glisse
-/// depuis le bas (hors de l'écran), elle peut rester en sommeil et ne
-/// jamais dessiner. On attend donc la fin de la transition.
-class _AfterRouteTransition extends StatefulWidget {
-  const _AfterRouteTransition({required this.child});
-
-  final Widget child;
-
-  @override
-  State<_AfterRouteTransition> createState() => _AfterRouteTransitionState();
-}
-
-class _AfterRouteTransitionState extends State<_AfterRouteTransition> {
-  Animation<double>? _animation;
-  bool _arrived = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final animation = ModalRoute.of(context)?.animation;
-    if (animation == _animation) return;
-    _animation?.removeStatusListener(_onStatus);
-    _animation = animation;
-    if (animation == null || animation.isCompleted) {
-      _arrived = true;
-    } else {
-      animation.addStatusListener(_onStatus);
-    }
-  }
-
-  void _onStatus(AnimationStatus status) {
-    if (status.isCompleted && mounted) setState(() => _arrived = true);
-  }
-
-  @override
-  void dispose() {
-    _animation?.removeStatusListener(_onStatus);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_arrived) return widget.child;
-    return Center(
-      child: Text(AppLocalizations.of(context).characterPreviewLoading),
-    );
-  }
-}
-
-/// Vignette de l'objet seul (rendue hors application, `assets/items/`).
+/// Vignette de l'objet seul (sprite en pixel art, `assets/sprites/icons/`).
 class _ArticleImage extends StatelessWidget {
   const _ArticleImage({required this.article, required this.rarity});
 
@@ -350,9 +296,9 @@ class _ArticleImage extends StatelessWidget {
   final Rarity rarity;
 
   static String assetOf(ShopArticle article) => switch (article) {
-    ItemArticle(:final item) => 'assets/items/${item.modelId}.png',
+    ItemArticle(:final item) => 'assets/sprites/icons/${item.spriteId}.png',
     HairStyleArticle(:final style) =>
-      'assets/items/hairstyle_${style.toString().padLeft(2, '0')}.png',
+      'assets/sprites/icons/hairstyle_${style.toString().padLeft(2, '0')}.png',
   };
 
   @override
@@ -373,6 +319,7 @@ class _ArticleImage extends StatelessWidget {
         child: Image.asset(
           assetOf(article),
           fit: BoxFit.contain,
+          filterQuality: FilterQuality.none,
           errorBuilder: (_, _, _) => const Icon(Icons.image_not_supported),
         ),
       ),
@@ -402,10 +349,7 @@ class _ArticleTile extends StatelessWidget {
       ItemArticle(:final item) => (
         item.rarity,
         slotIcon(item.slot),
-        [
-          slotLabel(l10n, item.slot),
-          if (item.setId != null) l10n.equipmentSetName(item.setId!),
-        ].join(' · '),
+        slotLabel(l10n, item.slot),
       ),
       HairStyleArticle() => (
         Rarity.rare,

@@ -9,11 +9,11 @@ ItemArticle _article(String id) => ItemArticle(itemById(id)!);
 
 void main() {
   test('prix : communs selon l’emplacement, puis par rareté', () {
-    expect(priceOf(_article('leather_hands')), Coins.of(silver: 1));
-    expect(priceOf(_article('leather_chest')), Coins.of(silver: 3));
-    expect(priceOf(_article('mail_chest')), Coins.of(silver: 10));
-    expect(priceOf(_article('plate_chest')), Coins.of(silver: 40));
-    expect(priceOf(_article('cape_dawn')), Coins.of(gold: 1, silver: 50));
+    expect(priceOf(_article('sword_warden')), Coins.of(silver: 3));
+    expect(priceOf(_article('awakened_leather')), Coins.of(silver: 8));
+    expect(priceOf(_article('warden_mail')), Coins.of(silver: 10));
+    expect(priceOf(_article('dawn_plate')), Coins.of(silver: 40));
+    expect(priceOf(_article('golden_king')), Coins.of(gold: 1, silver: 50));
     expect(priceOf(_article('staff_ember')), Coins.of(gold: 5));
     expect(
       priceOf(const HairStyleArticle(8)),
@@ -34,20 +34,20 @@ void main() {
   });
 
   test('achat : débit, livraison et refus', () {
-    final price = priceOf(_article('mail_chest')).bronzeTotal;
+    final price = priceOf(_article('warden_mail')).bronzeTotal;
     final ok = purchase(
       balance: price + 5,
       inventory: const Inventory(),
-      article: _article('mail_chest'),
+      article: _article('warden_mail'),
     );
     expect(ok.issue, isNull);
     expect(ok.balance, 5);
-    expect(ok.inventory.owned, ['mail_chest']);
+    expect(ok.inventory.owned, ['warden_mail']);
 
     final again = purchase(
       balance: ok.balance + price,
       inventory: ok.inventory,
-      article: _article('mail_chest'),
+      article: _article('warden_mail'),
     );
     expect(again.issue, PurchaseIssue.alreadyOwned);
     expect(again.balance, ok.balance + price);
@@ -55,7 +55,7 @@ void main() {
     final poor = purchase(
       balance: price - 1,
       inventory: const Inventory(),
-      article: _article('mail_chest'),
+      article: _article('warden_mail'),
     );
     expect(poor.issue, PurchaseIssue.notEnoughCoins);
     expect(poor.inventory.owned, isEmpty);
@@ -78,21 +78,21 @@ void main() {
 
   test('teinture : objet teignable possédé, coût en bronze', () {
     final cost = gameConfig.shop.dyeCostBronze;
-    const bag = Inventory(owned: ['cape_wanderer', 'mail_chest']);
+    const bag = Inventory(owned: ['wanderer_coat', 'sword_warden']);
     final ok = dyeItem(
       balance: cost,
       inventory: bag,
-      itemId: 'cape_wanderer',
+      itemId: 'wanderer_coat',
       color: 0xFF7A1E1E,
     );
     expect(ok.issue, isNull);
     expect(ok.balance, 0);
-    expect(ok.inventory.dyes, {'cape_wanderer': 0xFF7A1E1E});
+    expect(ok.inventory.dyes, {'wanderer_coat': 0xFF7A1E1E});
     expect(
       dyeItem(
         balance: cost,
         inventory: bag,
-        itemId: 'mail_chest',
+        itemId: 'sword_warden',
         color: 1,
       ).issue,
       PurchaseIssue.notForSale,
@@ -101,7 +101,7 @@ void main() {
       dyeItem(
         balance: cost,
         inventory: bag,
-        itemId: 'cape_dawn',
+        itemId: 'golden_king',
         color: 1,
       ).issue,
       PurchaseIssue.notOwned,
@@ -110,7 +110,7 @@ void main() {
       dyeItem(
         balance: cost - 1,
         inventory: bag,
-        itemId: 'cape_wanderer',
+        itemId: 'wanderer_coat',
         color: 1,
       ).issue,
       PurchaseIssue.notEnoughCoins,

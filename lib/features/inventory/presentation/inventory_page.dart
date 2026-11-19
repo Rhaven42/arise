@@ -158,7 +158,7 @@ class InventoryPage extends ConsumerWidget {
                     key: listKey,
                     padding: const EdgeInsets.all(AriseSpacing.sm),
                     children: [
-                      for (final slot in EquipmentSlot.values)
+                      for (final slot in usedSlots)
                         if (owned.any((i) => i.slot == slot)) ...[
                           Padding(
                             padding: const EdgeInsets.fromLTRB(

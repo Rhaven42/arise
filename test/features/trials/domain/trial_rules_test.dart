@@ -80,7 +80,7 @@ void main() {
       expect(rewards.map((i) => i.id).toSet().length, rewards.length);
       for (final item in rewards) {
         expect(item.isExclusive, isTrue);
-        expect(itemById(item.modelId), isNotNull);
+        expect(itemById(item.spriteId), isNotNull);
         expect(equipmentCatalog.map((e) => e.id), isNot(contains(item.id)));
       }
     });
