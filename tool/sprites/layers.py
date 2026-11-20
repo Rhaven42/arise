@@ -154,13 +154,14 @@ def key_layer(base: np.ndarray, edit: np.ndarray, hue: float | None = None,
     h, s, v = _hue_sat_val(edit)
     opaque = edit[..., 3] > 0
     if hue is None:
-        # Teinte dominante des pixels saturés qui ont changé.
-        changed = opaque & (color_dist(edit, base) > 80) & (s > 0.45)
-        if seed_rows is not None:
-            band = np.zeros_like(changed)
-            band[top + int((neck - top) * seed_rows[0]): top + int((neck - top) * seed_rows[1])] = True
-            changed &= band
-        ang = h[changed] * 2 * np.pi
+        # Teinte clé : pic des teintes saturées de la famille magenta-rose
+        # (0,8 à 1), où la peau n'apparaît jamais, affiné par la moyenne
+        # autour du pic.
+        sat = opaque & (s > 0.4) & (v > 0.3)
+        he, _ = np.histogram(h[sat], bins=40, range=(0, 1))
+        peak = (32 + int(np.argmax(he[32:])) + 0.5) / 40
+        near = sat & (np.abs(((h - peak + 0.5) % 1) - 0.5) < 0.04)
+        ang = h[near] * 2 * np.pi
         hue = (np.arctan2(np.sin(ang).mean(), np.cos(ang).mean()) / (2 * np.pi)) % 1
     dh = np.abs(((h - hue + 0.5) % 1) - 0.5)
     key = opaque & (dh < tol) & (s > min_sat) & (v > 0.18)
@@ -168,6 +169,18 @@ def key_layer(base: np.ndarray, edit: np.ndarray, hue: float | None = None,
     if n:
         sizes = ndimage.sum(key, labels, range(1, n + 1))
         key = np.isin(labels, [i + 1 for i, s_ in enumerate(sizes) if s_ >= 6])
+    if seed_rows is not None:
+        # Coiffure : morceaux d'au moins 15 pixels qui commencent au-dessus
+        # du cou (mèches, tresse derrière l'oreille), et ceux qui les
+        # touchent à 2 pixels près ; les lèvres et les reflets rouges de la
+        # chemise sont écartés.
+        parts, n = ndimage.label(key, np.ones((3, 3)))
+        seeds = [i for i, sl in enumerate(ndimage.find_objects(parts), 1)
+                 if sl[0].start < neck + 2 and (parts[sl] == i).sum() >= 15]
+        grown, _ = ndimage.label(ndimage.binary_dilation(key, np.ones((5, 5))))
+        keep = set(np.unique(grown[np.isin(parts, seeds)]))
+        keep.discard(0)
+        key &= np.isin(grown, list(keep))
     # Trous internes (reflets désaturés) et contour sombre d'un pixel.
     key = ndimage.binary_fill_holes(key) & opaque
     ring = ndimage.binary_dilation(key, np.ones((3, 3))) & ~key & opaque
@@ -252,34 +265,148 @@ def skin_mask(img: np.ndarray, palette: np.ndarray, tol: int = 36) -> np.ndarray
     return out
 
 
-def body_skin(base: np.ndarray, sample: tuple[int, int], tol: int = 34) -> np.ndarray:
-    """Peau d'un corps de base : pixels de la couleur du visage reliés au
-    visage ou aux mains (le pantalon brun, de teinte voisine, est écarté)."""
-    cand = skin_mask(base, face_palette(base, sample), tol)
-    # Ombres de peau, mais pas le tissu brun foncé : au moins 55 % de la
-    # luminosité du visage.
-    _, _, v = _hue_sat_val(base)
-    x, y = sample
-    cand &= v > 0.55 * float(np.median(v[y - 1: y + 2, x - 1: x + 2]))
-    labels, _ = ndimage.label(cand)
-    keep = {labels[sample[1], sample[0]]}
+def cloth_palette(base: np.ndarray, neck: int, hands: int, bottom: int,
+                  face: np.ndarray, legs: bool = True) -> np.ndarray:
+    """Couleurs des habits de base, ombres comprises : chemise (torse entre
+    le cou et les mains) et pantalon (bande des jambes sous les mains)."""
+    al = base[..., 3] > 0
+    xs = np.where(al.any(axis=0))[0]
+    cx = (xs[0] + xs[-1]) / 2
+    h = bottom - neck
+    a0, a1 = neck + int(0.12 * (hands - neck)), neck + int(0.7 * (hands - neck))
+    b0, b1 = hands + int(0.1 * (bottom - hands)), hands + int(0.6 * (bottom - hands))
+    box = np.zeros(al.shape, bool)
+    # Chemise : deux bandes de part et d'autre de l'encolure (épaules
+    # comprises), sans la peau du col en V.
+    box[a0:a1, int(cx - 0.11 * h): int(cx - 0.04 * h)] = True
+    box[a0:a1, int(cx + 0.04 * h): int(cx + 0.11 * h)] = True
+    if legs:
+        box[b0:b1] = True
+    px = base[box & al][:, :3]
+    # Peau verte ou rouge du col ouvert (large chez l'orque) écartée ; les
+    # peaux de teinte voisine des habits (beige, brun) ne sont pas touchées.
+    hue, _, _ = _hue_sat_val(px[None].astype(float))
+    colored = np.abs(((hue[0] - 0.08 + 0.5) % 1) - 0.5) > 0.05
+    px = px[~(colored & (np.abs(px[:, None, :] - face[None]).sum(-1).min(1) < 30))]
+    return np.unique(px // 6 * 6, axis=0)
+
+
+def body_skin(base: np.ndarray, sample: tuple[int, int], neck: int, skull_top: float,
+              arms: list | None = None, tol: int = 34) -> np.ndarray:
+    """Peau d'un corps de base : pixels plus proches des couleurs du visage
+    que de celles des habits de base (chemise, pantalon), reliés au visage ou
+    aux mains, même à travers un contour d'un pixel. Les peaux saturées
+    (vert, rouge) gardent leurs ombres de même teinte."""
+    sx, sy = sample
     alpha = base[..., 3] > 0
     ys = np.where(alpha.any(axis=1))[0]
-    top, bottom = ys[0], ys[-1]
+    # Hauteur du corps depuis le sommet du crâne (cornes non comprises).
+    top, bottom = int(skull_top), int(ys[-1])
+    pal = face_palette(base, sample)
+    h = bottom - top
+    # Bout des doigts vers 80 % de la hauteur.
+    chest, hands = top + int(0.40 * h), top + int(0.80 * h)
+    cloth = cloth_palette(base, neck, hands, bottom, pal)
+    hh, ss, v = _hue_sat_val(base)
+    h0 = float(np.median(hh[sy - 1: sy + 2, sx - 1: sx + 2]))
+    s0 = float(np.median(ss[sy - 1: sy + 2, sx - 1: sx + 2]))
+    v0 = float(np.median(v[sy - 1: sy + 2, sx - 1: sx + 2]))
+    py, px = np.nonzero(alpha)
+    rgb = base[py, px, None, :3]
+    d_face = np.full(alpha.shape, 9999.0)
+    d_cloth = np.full(alpha.shape, 9999.0)
+    d_face[py, px] = np.abs(rgb - pal[None]).sum(-1).min(1)
+    d_cloth[py, px] = np.abs(rgb - cloth[None]).sum(-1).min(1)
+    cand = alpha & (d_face < tol) & (v > 0.55 * v0)
+    if s0 > 0.45:
+        dh = np.abs(((hh - h0 + 0.5) % 1) - 0.5)
+        cand |= alpha & (dh < 0.06) & (ss > 0.45) & (v > 0.2)
+    # Sous le cou, un pixel plus proche des couleurs des habits que de
+    # celles du visage n'est pas de la peau.
+    cand[neck:] &= (d_face < d_cloth)[neck:]
+    # Sous la poitrine, la peau n'est que sur les bras et les mains, au bord
+    # de la silhouette ; plus bas que les mains, aucune peau (pantalon,
+    # bottes). Les liserés de moins de 3 pixels d'épaisseur sont écartés.
+    # Entre le cou et la poitrine, manches et épaules sont de la chemise :
+    # la peau n'est que dans l'encolure.
+    xs_all = np.where(alpha.any(axis=0))[0]
+    cx = (xs_all[0] + xs_all[-1]) / 2
+    upper = np.zeros(alpha.shape, bool)
+    upper[neck + 3: chest, : max(0, int(cx - 0.07 * h))] = True
+    upper[neck + 3: chest, int(cx + 0.07 * h):] = True
+    cand &= ~upper
+    # Mains : leur propre couleur, prise au pixel le plus proche de la peau
+    # du visage dans la zone de chaque bras (ombres et fourrure comprises).
+    reach = int(0.085 * h)
+    hand_skin = np.zeros(alpha.shape, bool)
+    for side in (0, 1):
+        zone = np.zeros(alpha.shape, bool)
+        for y in range(chest, hands):
+            xs = np.where(alpha[y])[0]
+            if len(xs):
+                if side == 0:
+                    zone[y, xs[0]: xs[0] + reach + 1] = True
+                else:
+                    zone[y, max(0, xs[-1] - reach): xs[-1] + 1] = True
+        zone &= alpha & (d_face < d_cloth)
+        if not zone.any():
+            continue
+        zy, zx = np.nonzero(zone)
+        k = int(np.argmin(d_face[zy, zx]))
+        hand = face_palette(base, (int(zx[k]), int(zy[k])), 3)
+        if len(hand):
+            d_hand = np.full(alpha.shape, 9999.0)
+            d_hand[py, px] = np.abs(rgb - hand[None]).sum(-1).min(1)
+            # Seule la tache reliée au point choisi (sans franchir les
+            # contours) : la fourrure du minotaure et son pantalon brun ont
+            # la même couleur.
+            parts, _ = ndimage.label(zone & (d_hand < 40))
+            seed = parts[int(zy[k]), int(zx[k])]
+            if seed:
+                hand_skin |= parts == seed
+    cand[hands:] = False
+    for y in range(chest, hands):
+        xs = np.where(alpha[y])[0]
+        if len(xs):
+            row = np.zeros(alpha.shape[1], bool)
+            row[xs[0]: xs[0] + reach + 1] = True
+            row[max(0, xs[-1] - reach): xs[-1] + 1] = True
+            cand[y] &= row
+    cand[chest:] = ndimage.binary_opening(cand[chest:], np.ones((3, 3)))
+    seeds = [(sx, sy)]
     # Mains : pixels opaques les plus à gauche et à droite au niveau des hanches.
     for y in range(top + int(0.48 * (bottom - top)), top + int(0.66 * (bottom - top))):
         xs = np.where(alpha[y])[0]
-        for x in (xs[0] + 1, xs[-1] - 1):
-            if cand[y, x]:
-                keep.add(labels[y, x])
+        seeds += [(int(xs[0]) + 1, y), (int(xs[-1]) - 1, y)]
+    labels, _ = ndimage.label(ndimage.binary_dilation(cand, np.ones((3, 3))))
+    keep = {labels[y, x] for x, y in seeds if cand[y, x]}
     keep.discard(0)
-    return np.isin(labels, list(keep))
+    hand_skin[hands:] = False
+    hand_skin = ndimage.binary_opening(hand_skin, np.ones((3, 3)))
+    skin = (cand & np.isin(labels, list(keep))) | hand_skin
+    if arms:
+        # Avant-bras relevés à la main : tout ce qui n'est pas la chemise.
+        shirt = cloth_palette(base, neck, hands, bottom, pal, legs=False)
+        # Beige de la chemise seulement (la fourrure brune du poitrail du
+        # minotaure, visible dans le col, n'en fait pas partie).
+        _, s_sh, v_sh = _hue_sat_val(shirt[None].astype(float))
+        shirt = shirt[(s_sh[0] < 0.4) & (v_sh[0] > 0.5)]
+        d_shirt = np.full(alpha.shape, 9999.0)
+        d_shirt[py, px] = np.abs(rgb - shirt[None]).sum(-1).min(1)
+        box = np.zeros(alpha.shape, bool)
+        for x0, y0, x1, y1 in arms:
+            box[y0:y1, x0:x1] = True
+        skin[chest:] &= ~box[chest:]
+        skin |= ndimage.binary_opening(box & alpha & ((d_shirt > 30) | (d_face < d_shirt)),
+                                       np.ones((3, 3)))
+    return skin
 
 
 def outfit_layer(base: np.ndarray, edit: np.ndarray, neck: int,
-                 skin_sample: tuple[int, int]) -> np.ndarray:
+                 skin_sample: tuple[int, int], skull_top: float,
+                 arms: list | None = None) -> np.ndarray:
     """Tenue : tout le corps de l'édition sous le cou. La peau restée nue
-    (mains, avant-bras) est transparente."""
+    (cou, mains, avant-bras) est marquée par l'alpha de peau."""
     edit = align(prealign(edit, base), base, slice(0, neck - 2),
                  scales=(0.96, 0.98, 1.0, 1.02, 1.04))
     out = np.zeros_like(edit)
@@ -287,13 +414,17 @@ def outfit_layer(base: np.ndarray, edit: np.ndarray, neck: int,
     rows[neck:] = True
     body = (edit[..., 3] > 0) & rows
     out[body] = edit[body]
-    near = ndimage.binary_dilation(body_skin(base, skin_sample), np.ones((3, 3)), iterations=2)
+    base_skin = body_skin(base, skin_sample, neck, skull_top, arms)
+    near = ndimage.binary_dilation(base_skin, np.ones((3, 3)), iterations=2)
     _, _, v = _hue_sat_val(edit)
     x, y = skin_sample
     bright = v > 0.55 * float(np.median(_hue_sat_val(base)[2][y - 1: y + 2, x - 1: x + 2]))
     skin = skin_mask(edit, face_palette(base, skin_sample), 24) & bright & near & body
-    # La peau nue est percée : celle du personnage, dessinée dessous, apparaît.
-    out[skin] = 0
+    # Peau du corps de base restée telle quelle (cou vert de l'orque compris).
+    skin |= base_skin & body & (color_dist(edit, base) < 40)
+    # Peau nue (cou, mains, avant-bras) : marquée par l'alpha de peau,
+    # recolorée à la teinte du personnage dans l'appli.
+    out[skin, 3] = SKIN_ALPHA
     return out
 
 
@@ -304,7 +435,8 @@ SHADOW_ALPHA = 251
 BLUSH_ALPHA = 250
 
 
-def best_skin(base: np.ndarray, skull: tuple[float, float, float]) -> tuple[np.ndarray, tuple[int, int]]:
+def best_skin(base: np.ndarray, skull: tuple[float, float, float],
+              neck: int, arms: list | None = None) -> tuple[np.ndarray, tuple[int, int]]:
     """Peau du corps, avec l'échantillon du visage qui en couvre le plus."""
     x0, t, x1 = skull
     w = x1 - x0
@@ -314,7 +446,7 @@ def best_skin(base: np.ndarray, skull: tuple[float, float, float]) -> tuple[np.n
         p = (int(cx + fx * w), int(t + fy * w))
         if base[p[1], p[0], 3] == 0:
             continue
-        m = body_skin(base, p)
+        m = body_skin(base, p, neck, t, arms)
         if best is None or m.sum() > best[0].sum():
             best = (m, p)
     return best

@@ -132,6 +132,12 @@ const List<EquipmentItem> outfitCatalog = [
     dyeable: true,
   ),
   EquipmentItem(
+    id: 'desert_sentinel',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
     id: 'warden_mail',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
@@ -174,6 +180,30 @@ const List<EquipmentItem> outfitCatalog = [
     dyeable: true,
   ),
   EquipmentItem(
+    id: 'verdant_guardian',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'frost_warden',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'crimson_vanguard',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'ember_berserker',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
     id: 'dawn_plate',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
@@ -204,7 +234,31 @@ const List<EquipmentItem> outfitCatalog = [
     dyeable: true,
   ),
   EquipmentItem(
+    id: 'storm_templar',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'bone_reaver',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'arcane_battlemage',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    dyeable: true,
+  ),
+  EquipmentItem(
     id: 'golden_king',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.legendary,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'abyss_knight',
     slot: EquipmentSlot.chest,
     rarity: Rarity.legendary,
     dyeable: true,

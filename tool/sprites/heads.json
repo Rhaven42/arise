@@ -1,13 +1,304 @@
 {
-  "_comment": "Crâne de chaque corps de base sur la toile 144x256 : [gauche, sommet du crâne, droite]. Mesuré sur les images (hors oreilles et cornes).",
-  "human_male": [59, 6, 84.5], "human_female": [59, 12, 84.5],
-  "elf_male": [57, 7, 83], "elf_female": [59.5, 8, 84.5],
-  "highelf_male": [58, 7, 79.5], "highelf_female": [59.5, 12, 83],
-  "orc_male": [53, 8, 84.5], "orc_female": [59.5, 8, 84.5],
-  "dwarf_male": [52, 79, 83], "dwarf_female": [56, 70, 84.5],
-  "gnome_male": [49.5, 124, 93], "gnome_female": [51, 103, 92],
-  "goblin_male": [57, 82, 87], "goblin_female": [56, 67, 87],
-  "demon_male": [63, 15, 84.5], "demon_female": [62, 17.5, 84.5],
-  "minotaur_male": [57, 17, 92], "minotaur_female": [57, 14, 87],
-  "undead_male": [53, 6, 79.5], "undead_female": [56, 7, 82]
+ "_comment": "Cr\u00e2ne de chaque corps de base sur la toile 144x256 : [gauche, sommet du cr\u00e2ne, droite]. Bords mesur\u00e9s sur le front (4 lignes au-dessus des sourcils), sommet relev\u00e9 sur l'image ; minotaures relev\u00e9s \u00e0 la main (cornes et oreilles).",
+ "human_male": [
+  58.0,
+  6,
+  83.0
+ ],
+ "human_female": [
+  60.0,
+  12,
+  84.0
+ ],
+ "elf_male": [
+  57.0,
+  7,
+  81.0
+ ],
+ "elf_female": [
+  58.0,
+  8,
+  85.0
+ ],
+ "highelf_male": [
+  58.0,
+  7,
+  81.0
+ ],
+ "highelf_female": [
+  58.0,
+  12,
+  83.0
+ ],
+ "orc_male": [
+  54.0,
+  8,
+  81.0
+ ],
+ "orc_female": [
+  58.0,
+  8,
+  84.0
+ ],
+ "dwarf_male": [
+  56.0,
+  79,
+  84.0
+ ],
+ "dwarf_female": [
+  56.0,
+  70,
+  89.0
+ ],
+ "gnome_male": [
+  53.0,
+  124,
+  93.0
+ ],
+ "gnome_female": [
+  50.0,
+  103,
+  93.0
+ ],
+ "goblin_male": [
+  57.0,
+  82,
+  88.0
+ ],
+ "goblin_female": [
+  54.0,
+  67,
+  88.0
+ ],
+ "demon_male": [
+  58.0,
+  15,
+  82.0
+ ],
+ "demon_female": [
+  57.0,
+  17.5,
+  85.0
+ ],
+ "minotaur_male": [
+  57,
+  17,
+  92
+ ],
+ "minotaur_female": [
+  57,
+  14,
+  87
+ ],
+ "undead_male": [
+  53.0,
+  6,
+  77.0
+ ],
+ "undead_female": [
+  59.0,
+  7,
+  81.0
+ ],
+ "_brow_comment": "Ligne des sourcils de chaque corps (haut du sourcil) : la frange s'arr\u00eate au-dessus.",
+ "brows": {
+  "human_male": 22,
+  "human_female": 26,
+  "elf_male": 23,
+  "elf_female": 24,
+  "highelf_male": 23,
+  "highelf_female": 27,
+  "orc_male": 22,
+  "orc_female": 22,
+  "dwarf_male": 92,
+  "dwarf_female": 85,
+  "gnome_male": 142,
+  "gnome_female": 124,
+  "goblin_male": 102,
+  "goblin_female": 87,
+  "demon_male": 27,
+  "demon_female": 32,
+  "minotaur_male": 32,
+  "minotaur_female": 29,
+  "undead_male": 21,
+  "undead_female": 21
+ },
+ "_neck_comment": "Menton (ligne du cou) impos\u00e9 quand la ligne la plus \u00e9troite sous le visage tombe sur la bouche.",
+ "necks": {
+  "orc_male": 42,
+  "dwarf_male": 107,
+  "minotaur_male": 52,
+  "minotaur_female": 52
+ },
+ "_arms_comment": "Avant-bras et mains [x0, y0, x1, y1] relev\u00e9s \u00e0 la main quand la couleur ne suffit pas (pantalon plus large que les mains, fourrure couleur pantalon, peau verte nuanc\u00e9e) : dans ces cadres, tout ce qui n'est pas la chemise est de la peau.",
+ "arms": {
+  "orc_male": [
+   [
+    6,
+    98,
+    30,
+    162
+   ],
+   [
+    100,
+    98,
+    126,
+    162
+   ]
+  ],
+  "orc_female": [
+   [
+    24,
+    100,
+    40,
+    158
+   ],
+   [
+    101,
+    100,
+    116,
+    158
+   ]
+  ],
+  "dwarf_female": [
+   [
+    22,
+    148,
+    38,
+    186
+   ],
+   [
+    100,
+    148,
+    116,
+    186
+   ]
+  ],
+  "gnome_male": [
+   [
+    43,
+    192,
+    54,
+    214
+   ],
+   [
+    86,
+    192,
+    98,
+    214
+   ]
+  ],
+  "gnome_female": [
+   [
+    44,
+    180,
+    54,
+    202
+   ],
+   [
+    84,
+    180,
+    94,
+    202
+   ]
+  ],
+  "goblin_male": [
+   [
+    36,
+    172,
+    53,
+    202
+   ],
+   [
+    93,
+    172,
+    110,
+    202
+   ]
+  ],
+  "goblin_female": [
+   [
+    38,
+    152,
+    52,
+    180
+   ],
+   [
+    86,
+    152,
+    102,
+    180
+   ]
+  ],
+  "demon_male": [
+   [
+    28,
+    106,
+    42,
+    152
+   ],
+   [
+    96,
+    106,
+    110,
+    152
+   ]
+  ],
+  "demon_female": [
+   [
+    30,
+    112,
+    44,
+    160
+   ],
+   [
+    94,
+    112,
+    106,
+    160
+   ]
+  ],
+  "minotaur_male": [
+   [
+    14,
+    113,
+    38,
+    180
+   ],
+   [
+    100,
+    113,
+    126,
+    180
+   ]
+  ],
+  "minotaur_female": [
+   [
+    24,
+    118,
+    39,
+    154
+   ],
+   [
+    101,
+    118,
+    116,
+    154
+   ]
+  ],
+  "undead_male": [
+   [
+    22,
+    108,
+    39,
+    160
+   ],
+   [
+    98,
+    108,
+    113,
+    160
+   ]
+  ]
+ }
 }

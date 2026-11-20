@@ -1,29 +1,58 @@
 {
-  "_comment": "Tenues du shop, décrites pour SpriteCook (édition du corps de base). Chaque tenue est générée sur les 5 gabarits.",
-  "templates": {
-    "mm": {"base": "human_male", "asset": "f83de9d0-d5e1-48a8-9027-a21d59e17fe8", "lead": "Exact same character, exact same pose, same position, same framing and same proportions."},
-    "mf": {"base": "human_female", "asset": "46fda3ea-64fb-4447-92ce-40847e304669", "lead": "Exact same woman, exact same pose, same position, same framing, same female body shape and same face."},
-    "large": {"base": "orc_male", "asset": "261730bb-a129-4fc0-a548-5095a826ef80", "lead": "Exact same orc, exact same pose, same position, same framing, same big muscular proportions and same face."},
-    "stocky": {"base": "dwarf_male", "asset": "8c9a6811-cf52-46d8-bdf8-6d244fe42957", "lead": "Exact same dwarf, exact same pose, same position, same framing, same short stocky proportions and same face."},
-    "small": {"base": "gnome_male", "asset": "b0f79a6e-8528-4335-97b5-411930f8f8d1", "lead": "Exact same gnome, exact same pose, same position, same framing, same tiny proportions and same face."}
+ "_comment": "Tenues du shop, décrites pour SpriteCook (édition du corps de base). Chaque tenue est générée sur les 5 gabarits.",
+ "templates": {
+  "mm": {
+   "base": "human_male",
+   "asset": "f83de9d0-d5e1-48a8-9027-a21d59e17fe8",
+   "lead": "Exact same character, exact same pose, same position, same framing and same proportions."
   },
-  "tail": "Bare head and face unchanged, no helmet, no hood, no weapon, no shield, empty hands.",
-  "outfits": {
-    "awakened_leather": "Now wearing simple brown leather armor: fitted dark brown leather vest with stitched panels over a cream linen shirt with rolled sleeves, leather bracers, wide leather belt with two pouches, brown leather trousers and boots.",
-    "warden_mail": "Now wearing a steel chainmail hauberk to mid-thigh under a forest green surcoat with a white tree emblem, chainmail sleeves, leather gloves, brown belt, grey trousers and leather boots.",
-    "dawn_plate": "Now wearing polished steel full plate armor with gold trim, round pauldrons, white and gold tabard with a rising sun emblem, steel gauntlets and armored greaves.",
-    "obsidian_knight": "Now wearing black obsidian full plate armor with sharp angular edges and thin glowing violet rune lines, dark gauntlets and black armored boots.",
-    "silver_knight": "Now wearing shining silver full plate armor with engraved filigree, royal blue cloth sash at the waist, silver gauntlets and silver greaves.",
-    "golden_king": "Now wearing ornate golden royal plate armor with jewels, a crimson velvet half cape on the shoulders, gold gauntlets and golden greaves.",
-    "wanderer_coat": "Now wearing a long weathered brown traveling coat reaching the knees, a green scarf around the neck, leather gloves, belt with pouches, dark trousers and worn travel boots.",
-    "noble_gown": "Now wearing an elegant long royal blue noble robe embroidered with gold patterns down to the ankles, golden sash belt, wide sleeves, fine shoes.",
-    "hunter_leather": "Now wearing dark green and black hunter leather armor with a fur collar, leather shoulder guard on one side, quiver strap across the chest, bracers, dark trousers and tall boots.",
-    "scale_warden": "Now wearing bronze scale armor shirt over teal cloth, bronze shoulder guards, leather gloves, teal trousers and bronze reinforced boots.",
-    "north_lamellar": "Now wearing northern lamellar armor of grey iron plates laced with red cord, a thick grey fur mantle on the shoulders, leather bracers, wool trousers and fur boots.",
-    "sylvan_ranger": "Now wearing elegant elven ranger leather in green and tan with leaf-shaped plates on the shoulders and chest, green cloth sash, fitted bracers, tan trousers and soft green boots.",
-    "oath_knight": "Now wearing white enameled paladin plate armor with gold edges, a sky blue sash across the chest, white gauntlets and white armored boots.",
-    "lotus_samurai": "Now wearing lacquered crimson red lamellar armor with gold lotus flower motifs, layered shoulder plates, black cloth sleeves, wide armored skirt panels, black trousers and straw sandals with leg wraps.",
-    "city_guard": "Now wearing a city guard red and yellow quartered brigandine with steel studs, steel gorget, padded sleeves, leather gloves, red trousers and black boots.",
-    "pale_coat": "Now wearing a long pale grey mystic coat with silver buttons and silver embroidered cuffs, high collar, grey trousers and soft grey boots."
+  "mf": {
+   "base": "human_female",
+   "asset": "46fda3ea-64fb-4447-92ce-40847e304669",
+   "lead": "Exact same woman, exact same pose, same position, same framing, same female body shape and same face."
+  },
+  "large": {
+   "base": "orc_male",
+   "asset": "261730bb-a129-4fc0-a548-5095a826ef80",
+   "lead": "Exact same orc, exact same pose, same position, same framing, same big muscular proportions and same face."
+  },
+  "stocky": {
+   "base": "dwarf_male",
+   "asset": "8c9a6811-cf52-46d8-bdf8-6d244fe42957",
+   "lead": "Exact same dwarf, exact same pose, same position, same framing, same short stocky proportions and same face."
+  },
+  "small": {
+   "base": "gnome_male",
+   "asset": "b0f79a6e-8528-4335-97b5-411930f8f8d1",
+   "lead": "Exact same gnome, exact same pose, same position, same framing, same tiny proportions and same face."
   }
+ },
+ "tail": "Bare head and face unchanged, no helmet, no hood, no weapon, no shield, empty hands.",
+ "outfits": {
+  "awakened_leather": "Now wearing simple brown leather armor: fitted dark brown leather vest with stitched panels over a cream linen shirt with rolled sleeves, leather bracers, wide leather belt with two pouches, brown leather trousers and boots.",
+  "warden_mail": "Now wearing a steel chainmail hauberk to mid-thigh under a forest green surcoat with a white tree emblem, chainmail sleeves, leather gloves, brown belt, grey trousers and leather boots.",
+  "dawn_plate": "Now wearing polished steel full plate armor with gold trim, round pauldrons, white and gold tabard with a rising sun emblem, steel gauntlets and armored greaves.",
+  "obsidian_knight": "Now wearing black obsidian full plate armor with sharp angular edges and thin glowing violet rune lines, dark gauntlets and black armored boots.",
+  "silver_knight": "Now wearing shining silver full plate armor with engraved filigree, royal blue cloth sash at the waist, silver gauntlets and silver greaves.",
+  "golden_king": "Now wearing ornate golden royal plate armor with jewels, a crimson velvet half cape on the shoulders, gold gauntlets and golden greaves.",
+  "wanderer_coat": "Now wearing a long weathered brown traveling coat reaching the knees, a green scarf around the neck, leather gloves, belt with pouches, dark trousers and worn travel boots.",
+  "noble_gown": "Now wearing an elegant long royal blue noble robe embroidered with gold patterns down to the ankles, golden sash belt, wide sleeves, fine shoes.",
+  "hunter_leather": "Now wearing dark green and black hunter leather armor with a fur collar, leather shoulder guard on one side, quiver strap across the chest, bracers, dark trousers and tall boots.",
+  "scale_warden": "Now wearing bronze scale armor shirt over teal cloth, bronze shoulder guards, leather gloves, teal trousers and bronze reinforced boots.",
+  "north_lamellar": "Now wearing northern lamellar armor of grey iron plates laced with red cord, a thick grey fur mantle on the shoulders, leather bracers, wool trousers and fur boots.",
+  "sylvan_ranger": "Now wearing elegant elven ranger leather in green and tan with leaf-shaped plates on the shoulders and chest, green cloth sash, fitted bracers, tan trousers and soft green boots.",
+  "oath_knight": "Now wearing white enameled paladin plate armor with gold edges, a sky blue sash across the chest, white gauntlets and white armored boots.",
+  "lotus_samurai": "Now wearing lacquered crimson red lamellar armor with gold lotus flower motifs, layered shoulder plates, black cloth sleeves, wide armored skirt panels, black trousers and straw sandals with leg wraps.",
+  "city_guard": "Now wearing a city guard red and yellow quartered brigandine with steel studs, steel gorget, padded sleeves, leather gloves, red trousers and black boots.",
+  "pale_coat": "Now wearing a long pale grey mystic coat with silver buttons and silver embroidered cuffs, high collar, grey trousers and soft grey boots.",
+  "crimson_vanguard": "Now wearing crimson enameled steel full plate armor with black trim, layered pointed pauldrons, a black leather belt with a silver buckle, crimson gauntlets and armored crimson boots.",
+  "frost_warden": "Now wearing pale icy blue and white steel plate armor with snowy white fur trim on the shoulders, frost crystal motifs on the breastplate, silver gauntlets and white armored boots.",
+  "ember_berserker": "Now wearing dark blackened iron half-plate armor with glowing orange ember rune lines, crossed leather straps, a thick fur mantle on the shoulders, iron bracers, dark leather trousers and heavy iron boots.",
+  "verdant_guardian": "Now wearing green-bronze plate armor shaped like overlapping leaves with vine engravings, a moss green cloth tabard, bronze gauntlets and bronze armored boots.",
+  "storm_templar": "Now wearing deep navy blue plate armor with silver lightning bolt engravings, a white tabard with a silver storm emblem, silver pauldrons, steel gauntlets and steel armored boots.",
+  "bone_reaver": "Now wearing dark grey iron armor decorated with pale bone plates and small skull ornaments on the pauldrons, black leather straps, a tattered dark red sash, iron gauntlets and dark armored boots.",
+  "desert_sentinel": "Now wearing light bronze scale armor over sand colored cloth wraps, a long sand colored sash around the waist, bronze bracers, loose sand trousers and wrapped leather boots.",
+  "arcane_battlemage": "Now wearing a long deep purple battle robe under a silver breastplate engraved with glowing cyan arcane glyphs, silver pauldrons, a purple sash, silver bracers and dark boots.",
+  "abyss_knight": "Now wearing black and dark violet spiked full plate armor with sharp horned pauldrons and faint crimson glowing seams, a black cloth tabard, clawed black gauntlets and black armored boots."
+ }
 }

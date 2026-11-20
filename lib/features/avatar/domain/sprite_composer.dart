@@ -33,6 +33,47 @@ class Skull {
   double get centre => (left + right) / 2;
 }
 
+/// Repères d'une tête : crâne, sourcils, menton et demi-largeur de la tête
+/// à chaque ligne, du sommet du crâne au menton (les coiffures et les barbes
+/// épousent la tête).
+class HeadFrame {
+  const HeadFrame({
+    required this.skull,
+    required this.brow,
+    required this.neck,
+    required this.profile,
+  });
+
+  factory HeadFrame.fromJson(Map<String, dynamic> json) => HeadFrame(
+    skull: Skull.fromJson(json['skull'] as List<dynamic>),
+    brow: (json['brow'] as num).toDouble(),
+    neck: (json['neck'] as num).toDouble(),
+    profile: [
+      for (final w in json['profile'] as List<dynamic>) (w as num).toDouble(),
+    ],
+  );
+
+  final Skull skull;
+
+  /// Ligne des sourcils : la frange s'arrête au-dessus.
+  final double brow;
+
+  /// Ligne du menton.
+  final double neck;
+
+  /// Demi-largeur de la tête, une valeur par ligne depuis le sommet du crâne.
+  final List<double> profile;
+
+  /// Demi-largeur mesurée à la ligne [y], ou `null` hors de la tête (moins
+  /// de la moitié du demi-crâne).
+  double? halfWidthAt(double y) {
+    final i = y.floor() - skull.top.truncate();
+    if (i < 0 || i >= profile.length) return null;
+    final w = profile[i];
+    return w >= 0.25 * skull.width ? w : null;
+  }
+}
+
 /// Repères d'un corps ou d'un gabarit de tenue.
 class BodyFrame {
   const BodyFrame({
@@ -65,7 +106,7 @@ class BodyMeta {
   const BodyMeta({
     required this.frame,
     required this.gabarit,
-    required this.skull,
+    required this.head,
     required this.handX,
     required this.handY,
     required this.skinRef,
@@ -77,7 +118,7 @@ class BodyMeta {
     return BodyMeta(
       frame: BodyFrame.fromJson(json),
       gabarit: json['gabarit'] as String,
-      skull: Skull.fromJson(json['skull'] as List<dynamic>),
+      head: HeadFrame.fromJson(json),
       handX: (hand[0] as num).toDouble(),
       handY: (hand[1] as num).toDouble(),
       skinRef: luminanceOf(
@@ -90,11 +131,45 @@ class BodyMeta {
 
   final BodyFrame frame;
   final String gabarit;
-  final Skull skull;
+  final HeadFrame head;
+  Skull get skull => head.skull;
   final double handX;
   final double handY;
 
   /// Luminance de la peau dessinée (référence de la recoloration).
+  final double skinRef;
+}
+
+/// Gabarit de tenue : repères, main (prise de l'arme) et peau dessinée.
+class OutfitTemplate {
+  const OutfitTemplate({
+    required this.frame,
+    required this.handX,
+    required this.handY,
+    required this.skinRef,
+  });
+
+  factory OutfitTemplate.fromJson(Map<String, dynamic> json) {
+    final hand = json['hand'] as List<dynamic>;
+    final ref = json['skinRef'] as List<dynamic>;
+    return OutfitTemplate(
+      frame: BodyFrame.fromJson(json),
+      handX: (hand[0] as num).toDouble(),
+      handY: (hand[1] as num).toDouble(),
+      skinRef: luminanceOf(
+        (ref[0] as num).toInt(),
+        (ref[1] as num).toInt(),
+        (ref[2] as num).toInt(),
+      ),
+    );
+  }
+
+  final BodyFrame frame;
+  final double handX;
+  final double handY;
+
+  /// Luminance de la peau nue du gabarit (cou, mains), recolorée à la
+  /// teinte du personnage.
   final double skinRef;
 }
 
@@ -123,6 +198,7 @@ class SpriteMeta {
     required this.width,
     required this.height,
     required this.skinAlpha,
+    required this.frontAlpha,
     required this.bodies,
     required this.templates,
     required this.hairSources,
@@ -139,17 +215,18 @@ class SpriteMeta {
       width: (canvas[0] as num).toInt(),
       height: (canvas[1] as num).toInt(),
       skinAlpha: (json['skinAlpha'] as num).toInt(),
+      frontAlpha: (json['frontAlpha'] as num).toInt(),
       bodies: map(
         'bodies',
         (v) => BodyMeta.fromJson(v as Map<String, dynamic>),
       ),
       templates: map(
         'templates',
-        (v) => BodyFrame.fromJson(v as Map<String, dynamic>),
+        (v) => OutfitTemplate.fromJson(v as Map<String, dynamic>),
       ),
       hairSources: map(
         'hairSources',
-        (v) => Skull.fromJson(v as List<dynamic>),
+        (v) => HeadFrame.fromJson(v as Map<String, dynamic>),
       ),
       weapons: map(
         'weapons',
@@ -161,12 +238,26 @@ class SpriteMeta {
   final int width;
   final int height;
 
-  /// Alpha qui marque la peau des corps.
+  /// Alpha qui marque la peau des corps et la peau nue des tenues.
   final int skinAlpha;
+
+  /// Alpha des pixels d'un corps dessinés devant la coiffure (cornes).
+  final int frontAlpha;
   final Map<String, BodyMeta> bodies;
-  final Map<String, BodyFrame> templates;
-  final Map<String, Skull> hairSources;
+  final Map<String, OutfitTemplate> templates;
+  final Map<String, HeadFrame> hairSources;
   final Map<String, WeaponMeta> weapons;
+}
+
+/// Déformation d'un calque de tête : ligne source et échelle horizontale de
+/// chaque ligne de la toile, centres du crâne cible et source.
+class HeadWarp {
+  const HeadWarp(this.rows, this.scales, this.targetCentre, this.sourceCentre);
+
+  final List<double> rows;
+  final List<double> scales;
+  final double targetCentre;
+  final double sourceCentre;
 }
 
 /// Calques chargés pour une apparence (chemins : [SpriteComposer.paths]).
@@ -249,28 +340,33 @@ class SpriteComposer {
     final out = RgbaImage(meta.width, meta.height);
     final src = layers.body;
     final neck = body.frame.neck.round();
-    // Corps : peau recolorée ; avec une tenue, seuls la tête et la peau nue
-    // restent (la tenue remplace les vêtements de base).
+    final outfit = layers.outfit;
+    // Corps : peau recolorée ; avec une tenue, seule la tête reste (la tenue
+    // remplace tout le corps sous le cou, peau nue comprise).
     for (var y = 0; y < src.height; y++) {
+      if (outfit != null && y > neck) break;
       for (var x = 0; x < src.width; x++) {
         final i = (y * src.width + x) * 4;
         final alpha = src.pixels[i + 3];
         if (alpha == 0) continue;
-        final skin = alpha == meta.skinAlpha;
-        if (layers.outfit != null && !skin && y > neck) continue;
         var r = src.pixels[i];
         var g = src.pixels[i + 1];
         var b = src.pixels[i + 2];
-        if (skin) (r, g, b) = tintPixel(r, g, b, body.skinRef, a.skinColor);
+        if (alpha == meta.skinAlpha) {
+          (r, g, b) = tintPixel(r, g, b, body.skinRef, a.skinColor);
+        }
         _put(out, x, y, r, g, b);
       }
     }
-    final outfit = layers.outfit;
+    var handX = body.handX;
+    var handY = body.handY;
     if (outfit != null) {
-      final t = meta.templates[body.gabarit]!;
+      final template = meta.templates[body.gabarit]!;
+      final t = template.frame;
       final f = body.frame;
       final sy = (f.feet - f.neck) / (t.feet - t.neck);
       final sx = f.torso / t.torso;
+      final originY = f.feet - t.feet * sy;
       final tint = a.outfitTint;
       final ref = tint == null ? 0.0 : _medianLuminance(outfit);
       _place(
@@ -279,41 +375,62 @@ class SpriteComposer {
         scaleX: sx,
         scaleY: sy,
         originX: f.centreX - t.centreX * sx,
-        originY: f.feet - t.feet * sy,
-        colour: tint == null
-            ? null
-            : (r, g, b) {
-                final (tr, tg, tb) = tintPixel(r, g, b, ref, tint);
-                int mix(int o, int d) =>
-                    (o + (d - o) * dyeStrength).round().clamp(0, 255);
-                return (mix(r, tr), mix(g, tg), mix(b, tb));
-              },
+        originY: originY,
+        colour: (r, g, b, alpha) {
+          // Peau nue de la tenue (cou, mains) : teinte du personnage.
+          if (alpha == meta.skinAlpha) {
+            return tintPixel(r, g, b, template.skinRef, a.skinColor);
+          }
+          if (tint == null) return (r, g, b);
+          final (tr, tg, tb) = tintPixel(r, g, b, ref, tint);
+          int mix(int o, int d) =>
+              (o + (d - o) * dyeStrength).round().clamp(0, 255);
+          return (mix(r, tr), mix(g, tg), mix(b, tb));
+        },
       );
+      // L'arme suit la main de la tenue.
+      handX = f.centreX + (template.handX - t.centreX) * sx;
+      handY = originY + template.handY * sy;
     }
-    void headLayer(RgbaImage? layer, Skull? source, int color) {
-      if (layer == null || source == null) return;
-      final s = body.skull.width / source.width;
-      final ref = _medianLuminance(layer);
-      _place(
+    final beard = layers.beard;
+    final beardSource = meta.hairSources['beard'];
+    if (beard != null && beardSource != null) {
+      final ref = _medianLuminance(beard);
+      final color = a.beardColor ?? a.hairColor;
+      _warp(
         out,
-        layer,
-        scaleX: s,
-        scaleY: s,
-        originX: body.skull.centre - source.centre * s,
-        originY: body.skull.top - source.top * s,
-        colour: (r, g, b) => tintPixel(r, g, b, ref, color),
+        beard,
+        headWarp(beardSource, body.head, meta.height, hugJaw: true),
+        (r, g, b) => tintPixel(r, g, b, ref, color),
       );
     }
-
-    headLayer(
-      layers.beard,
-      meta.hairSources['beard'],
-      a.beardColor ?? a.hairColor,
-    );
+    final hair = layers.hair;
     final hairSource = a.hairId == null
         ? null
         : meta.hairSources[a.hairId!.startsWith('m') ? 'male' : 'female'];
-    headLayer(layers.hair, hairSource, a.hairColor);
+    if (hair != null && hairSource != null) {
+      final ref = _medianLuminance(hair);
+      final brow = body.head.brow;
+      _warp(
+        out,
+        hair,
+        headWarp(hairSource, body.head, meta.height),
+        (r, g, b) => tintPixel(r, g, b, ref, a.hairColor),
+        // Visage dégagé : pas de mèche sur la peau entre sourcils et menton.
+        skip: (x, y) =>
+            y >= brow + 1 &&
+            y <= neck &&
+            src.alphaAt(x, y) == meta.skinAlpha,
+      );
+    }
+    // Cornes devant la coiffure.
+    for (var y = 0; y <= neck && y < src.height; y++) {
+      for (var x = 0; x < src.width; x++) {
+        final i = (y * src.width + x) * 4;
+        if (src.pixels[i + 3] != meta.frontAlpha) continue;
+        _put(out, x, y, src.pixels[i], src.pixels[i + 1], src.pixels[i + 2]);
+      }
+    }
     final weapon = layers.weapon;
     final w = a.weaponId == null ? null : meta.weapons[a.weaponId];
     if (weapon != null && w != null) {
@@ -326,11 +443,95 @@ class SpriteComposer {
         weapon,
         scaleX: s,
         scaleY: s,
-        originX: body.handX - w.width * s / 2,
-        originY: body.handY - w.grip * w.height * s,
+        originX: handX - w.width * s / 2,
+        originY: handY - w.grip * w.height * s,
       );
     }
     return out;
+  }
+
+  /// Pose d'un calque de tête dessiné sur [source] sur la tête [target] :
+  /// pour chaque ligne de la toile, ligne source et échelle horizontale.
+  /// Verticalement, sommet → sourcils → menton de la source sur ceux de la
+  /// cible ; horizontalement, la demi-largeur de la tête à chaque ligne (la
+  /// coiffure épouse le crâne au-dessus des sourcils, la barbe la mâchoire
+  /// avec [hugJaw]). Même calcul que `tool/sprites/preview.py`.
+  static HeadWarp headWarp(
+    HeadFrame source,
+    HeadFrame target,
+    int height, {
+    bool hugJaw = false,
+  }) {
+    final ss = source.skull;
+    final ds = target.skull;
+    final s = ds.width / ss.width;
+    final sb = source.brow;
+    final sn = source.neck;
+    final db = target.brow;
+    final dn = target.neck;
+    final sy1 = ((db - ds.top) / (sb - ss.top)).clamp(0.6 * s, 1.4 * s);
+    final sy2 = ((dn - db) / (sn - sb)).clamp(0.6 * s, 1.4 * s);
+    final chin = db + (sn - sb) * sy2;
+    final rows = List<double>.generate(height, (y) {
+      final yc = y + 0.5;
+      if (yc < db) return sb - (db - yc) / sy1;
+      if (yc < chin) return sb + (yc - db) / sy2;
+      return sn + (yc - chin) / s;
+    });
+    final scales = List<double?>.generate(height, (y) {
+      final yc = y + 0.5;
+      if (yc >= (hugJaw ? chin : db)) return s;
+      if (hugJaw && yc < db) return null;
+      final wd = target.halfWidthAt(y.toDouble());
+      final ws = source.halfWidthAt(rows[y]);
+      if (wd == null || ws == null) return null;
+      return (wd / ws).clamp(0.75 * s, 1.35 * s);
+    });
+    // Lignes sans mesure (au-dessus du crâne) : échelle de la ligne mesurée
+    // la plus proche.
+    final known = [
+      for (var y = 0; y < height; y++)
+        if (scales[y] != null && rows[y] >= 0) y,
+    ];
+    final filled = List<double>.generate(height, (y) {
+      final k = scales[y];
+      if (k != null) return k;
+      if (known.isEmpty) return s;
+      var best = known.first;
+      for (final i in known) {
+        if ((i - y).abs() < (best - y).abs()) best = i;
+      }
+      return scales[best]!;
+    });
+    return HeadWarp(rows, filled, ds.centre, ss.centre);
+  }
+
+  static void _warp(
+    RgbaImage out,
+    RgbaImage layer,
+    HeadWarp warp,
+    (int, int, int) Function(int r, int g, int b) colour, {
+    bool Function(int x, int y)? skip,
+  }) {
+    for (var y = 0; y < out.height; y++) {
+      final r = warp.rows[y].floor();
+      if (r < 0 || r >= layer.height) continue;
+      final k = warp.scales[y];
+      for (var x = 0; x < out.width; x++) {
+        final c = (warp.sourceCentre + (x + 0.5 - warp.targetCentre) / k)
+            .floor();
+        if (c < 0 || c >= layer.width) continue;
+        final i = (r * layer.width + c) * 4;
+        if (layer.pixels[i + 3] == 0) continue;
+        if (skip != null && skip(x, y)) continue;
+        final (cr, cg, cb) = colour(
+          layer.pixels[i],
+          layer.pixels[i + 1],
+          layer.pixels[i + 2],
+        );
+        _put(out, x, y, cr, cg, cb);
+      }
+    }
   }
 
   static void _put(RgbaImage img, int x, int y, int r, int g, int b) {
@@ -352,7 +553,7 @@ class SpriteComposer {
     required double scaleY,
     required double originX,
     required double originY,
-    (int, int, int) Function(int r, int g, int b)? colour,
+    (int, int, int) Function(int r, int g, int b, int alpha)? colour,
   }) {
     final nw = math.max(1, (layer.width * scaleX).round());
     final nh = math.max(1, (layer.height * scaleY).round());
@@ -367,11 +568,12 @@ class SpriteComposer {
         if (x < 0 || x >= out.width) continue;
         final sx = math.min(layer.width - 1, (i / scaleX).floor());
         final k = (sy * layer.width + sx) * 4;
-        if (layer.pixels[k + 3] == 0) continue;
+        final alpha = layer.pixels[k + 3];
+        if (alpha == 0) continue;
         var r = layer.pixels[k];
         var g = layer.pixels[k + 1];
         var b = layer.pixels[k + 2];
-        if (colour != null) (r, g, b) = colour(r, g, b);
+        if (colour != null) (r, g, b) = colour(r, g, b, alpha);
         _put(out, x, y, r, g, b);
       }
     }

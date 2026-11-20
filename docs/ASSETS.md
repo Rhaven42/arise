@@ -29,25 +29,27 @@ Une nouvelle implémentation de `ExerciseAnimationPlayer` lira le `.glb`, jouera
 Le héros est dessiné en **pixel art**, en pied, à partir d'images générées avec **SpriteCook** sur le compte de la propriétaire du projet (modèle `gpt-image-2`, qualité basse, 2 crédits l'image). Toutes les images brutes sont dans `tool/sprites/raw/` et leur identifiant SpriteCook dans `tool/sprites/spritecook_manifest.json`.
 
 - **Corps** : 20 (10 races × 2 sexes), même pose et même cadrage, tous dérivés d'un humain chauve. Races : humain, elfe, haut-elfe, orc, nain, gnome, gobelin, démon, minotaure, mort-vivant.
-- **Coiffures** : 10 par sexe ; **barbes** : 6. Elles sont générées en magenta vif sur l'humain, détourées par leur teinte, puis recolorées dans l'appli (la luminance garde le modelé) et posées sur le crâne de chaque race (repères mesurés dans `tool/sprites/heads.json`).
-- **Peau** : marquée dans chaque corps (alpha 254) et recolorée dans la teinte choisie (palettes par race).
-- **Tenues** : 16, générées sur 5 gabarits (homme moyen, femme moyenne, grand, trapu, petit). Chaque corps reçoit le gabarit qui le déforme le moins ; la tenue remplace les vêtements sous le cou et laisse voir la peau nue de la race.
+- **Coiffures** : 10 par sexe ; **barbes** : 6. Elles sont générées en magenta vif sur l'humain, détourées par leur teinte (pic de teinte magenta-rose, morceaux reliés au crâne), puis recolorées dans l'appli (la luminance garde le modelé).
+- **Placement sur la tête** (repères de `tool/sprites/heads.json`) : crâne (bords mesurés sur le front), ligne des sourcils, menton (`necks` quand la ligne la plus étroite tombe sur la bouche) et demi-largeur de la tête à chaque ligne (`profile` dans `sprites.json`). La coiffure va du sommet aux sourcils de la race (la frange s'arrête au-dessus des yeux) et épouse la largeur du crâne ligne par ligne ; la barbe va des sourcils au menton et épouse la mâchoire. Aucune mèche n'est dessinée sur la peau du visage entre sourcils et menton ; les cornes (démon, minotaure) passent devant la coiffure.
+- **Peau** : marquée dans chaque corps (alpha 254) et recolorée dans la teinte choisie (palettes par race). Détection : couleurs plus proches du visage que des habits de base, reliées au visage ; sous la poitrine, seulement les bras et les mains au bord de la silhouette. Quand la couleur ne suffit pas (pantalon plus large que les mains de l'orque, fourrure du minotaure couleur pantalon), les avant-bras sont relevés à la main (`arms` dans `heads.json`).
+- **Tenues** : 25, générées sur 5 gabarits (homme moyen, femme moyenne, grand, trapu, petit). Chaque corps reçoit le gabarit qui le déforme le moins ; la tenue remplace tout le corps sous le cou. Sa peau nue (cou, mains, avant-bras) est marquée par l'alpha 254 et prend la teinte du héros, si bien que le cou se raccorde à la tête et que l'arme suit la main de la tenue.
 - **Armes** : 12, dessinées à la verticale, tenues à la main (point de prise par famille d'armes).
 - **Construction** : `python3 tool/sprites/build.py` produit `assets/sprites/` (calques, vignettes de la boutique et repères `sprites.json`) ; `python3 tool/sprites/preview.py sortie.png` assemble des héros au hasard avec la même logique que l'appli (`SpriteComposer`).
 
 ### Ajouter un élément
 - **Coiffure ou barbe** : éditer l'humain chauve (`human_male` ou `human_female`, voir le manifeste) avec « Only add hair … dyed a vivid saturated magenta pink color », enregistrer l'image dans `raw/hair_mNN.png`, `raw/hair_fNN.png` ou `raw/beard_NN.png`, relancer `build.py`.
 - **Tenue** : ajouter sa description dans `tool/sprites/outfits.json`, l'éditer sur les 5 gabarits (`raw/armor_<id>_<gabarit>.png`), relancer `build.py`, puis l'ajouter au catalogue (`equipment.dart`) et aux textes.
-- **Race** : éditer l'humain chauve dans la même pose, mesurer son crâne dans `heads.json`.
+- **Race** : éditer l'humain chauve dans la même pose, puis relever dans `heads.json` son crâne (sommet), ses sourcils et, si besoin, son menton et ses avant-bras ; vérifier la peau en la teignant en bleu avec `preview.py`.
 
 ### Limites connues
 - Pas de couleur des yeux ni de maquillage : sur des yeux de 2 à 3 pixels, la recoloration n'est ni fiable sur toutes les races ni visible.
 - Une coiffure longue posée sur un petit corps (gnome, gobelin) descend plus bas, à l'échelle de sa tête.
+- Sur le minotaure, la coiffure se pose entre les cornes, sur un front plat : les coiffures volumineuses y paraissent plus massives.
 - Le style de chaque tenue varie légèrement d'un gabarit à l'autre (générée séparément sur chaque corps).
 
 ## 3. Équipement de la boutique
 
-16 tenues complètes et 12 armes (`outfitCatalog`, `weaponCatalog`), plus 6 récompenses de boss qui reprennent une tenue avec leur propre teinte. Les anciennes pièces 3D possédées sont converties à la relecture (`legacyItemIds`) : chaque pièce d'un ensemble devient la tenue complète, les armes retirées deviennent l'arme la plus proche.
+25 tenues complètes et 12 armes (`outfitCatalog`, `weaponCatalog`), plus 6 récompenses de boss qui reprennent une tenue avec leur propre teinte. Les anciennes pièces 3D possédées sont converties à la relecture (`legacyItemIds`) : chaque pièce d'un ensemble devient la tenue complète, les armes retirées deviennent l'arme la plus proche.
 
 ## 5. Musiques et jingles
 

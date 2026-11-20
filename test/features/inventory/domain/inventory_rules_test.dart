@@ -11,7 +11,7 @@ void main() {
   test('catalogue : identifiants uniques, tenues et armes dessinées', () {
     final ids = equipmentCatalog.map((i) => i.id).toList();
     expect(ids.toSet(), hasLength(ids.length));
-    expect(outfitCatalog, hasLength(16));
+    expect(outfitCatalog, hasLength(25));
     expect(weaponCatalog, hasLength(12));
     final meta = jsonDecode(
       File('assets/sprites/sprites.json').readAsStringSync(),

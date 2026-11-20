@@ -40,6 +40,48 @@ GRIP = {"sword": 0.86, "dagger": 0.8, "scimitar": 0.86, "axe": 0.72, "mace": 0.7
         "hammer": 0.74, "staff": 0.62, "halberd": 0.6}
 
 
+# Races à cornes : les cornes passent devant la coiffure.
+HORNED = {"demon", "minotaur"}
+# Alpha des pixels d'un corps dessinés devant la coiffure (cornes).
+FRONT_ALPHA = 253
+
+
+def horns(a: np.ndarray, skin: np.ndarray, skull: tuple, neck: int) -> np.ndarray:
+    """Cornes : pixels du corps au-dessus du cou, hors peau, qui dépassent
+    du crâne sur les côtés."""
+    x0, _, x1 = skull
+    yy, xx = np.mgrid[0: a.shape[0], 0: a.shape[1]]
+    out = (a[..., 3] > 0) & ~skin & (yy < neck)
+    return out & ((xx < x0 - 1) | (xx > x1 + 1))
+
+
+def neck_of(heads: dict, name: str, a: np.ndarray) -> int:
+    """Ligne du menton : imposée dans heads.json, sinon la plus étroite."""
+    return heads["necks"].get(name) or neck_row(a, tuple(heads[name]))
+
+
+def profile(a: np.ndarray, skull: tuple, neck: int, limit: float = 1.15) -> list[float]:
+    """Demi-largeur de la tête, de la ligne du sommet du crâne au menton :
+    segment opaque qui contient l'axe du visage, borné à [limit] demi-crâne
+    (oreilles et cornes écartées). Sert à épouser la tête (coiffures, barbes)."""
+    x0, t, x1 = skull
+    cx, half = (x0 + x1) / 2, (x1 - x0) / 2
+    al = a[..., 3] > 0
+    out = []
+    for y in range(int(t), neck + 1):
+        row, c = al[y], int(cx)
+        if not row[c]:
+            out.append(0.0)
+            continue
+        l = r = c
+        while l > 0 and row[l - 1]:
+            l -= 1
+        while r < len(row) - 1 and row[r + 1]:
+            r += 1
+        out.append(round(min(max(cx - l, r + 1 - cx), limit * half), 1))
+    return out
+
+
 def raw(name: str) -> str:
     return os.path.join(RAW, name + ".png")
 
@@ -80,6 +122,7 @@ def main() -> None:
     for sub in ("bodies", "hair", "beards", "outfits", "weapons"):
         os.makedirs(os.path.join(OUT, sub), exist_ok=True)
     meta: dict = {"canvas": [CANVAS_W, CANVAS_H], "skinAlpha": SKIN_ALPHA,
+                  "frontAlpha": FRONT_ALPHA,
                   "bodies": {}, "templates": {}, "hairSources": {}, "weapons": {}}
 
     # Corps.
@@ -88,25 +131,35 @@ def main() -> None:
             name = body_name(race, sex)
             a = load(raw(name))
             skull = tuple(heads[name])
-            skin, _ = best_skin(a, skull)
+            neck = neck_of(heads, name, a)
+            skin, _ = best_skin(a, skull, neck, heads["arms"].get(name))
             out = a.copy()
             out[skin, 3] = SKIN_ALPHA
+            if race in HORNED:
+                out[horns(a, skin, skull, neck), 3] = FRONT_ALPHA
             save(out, os.path.join(OUT, "bodies", f"{race}_{sex}.png"))
-            neck = neck_row(a, skull)
             sp = span(a, neck)
             meta["bodies"][f"{race}_{sex}"] = {
                 "gabarit": GABARIT[sex][race], "skull": list(skull),
-                "neck": neck, **sp, "hand": hand(a, skin, sp),
+                "brow": heads["brows"][name], "neck": neck,
+                "profile": profile(a, skull, neck, 1.0 if race in HORNED else 1.15), **sp, "hand": hand(a, skin, sp),
                 "skinRef": [int(c) for c in np.median(a[skin][:, :3], axis=0)],
             }
 
     # Coiffures et barbes : couleur clé, sur le crâne de leur corps source.
     hm, hf = load(raw("human_male")), load(raw("human_female"))
-    meta["hairSources"] = {"male": heads["human_male"], "female": heads["human_female"],
-                           "beard": heads["human_male"]}
+
+    def source(name: str) -> dict:
+        a = load(raw(name))
+        neck = neck_of(heads, name, a)
+        return {"skull": heads[name], "brow": heads["brows"][name], "neck": neck,
+                "profile": profile(a, tuple(heads[name]), neck)}
+
+    meta["hairSources"] = {"male": source("human_male"), "female": source("human_female"),
+                           "beard": source("human_male")}
     for i in range(1, 11):
-        save(key_layer(hm, load(raw(f"hair_m{i:02d}"))), os.path.join(OUT, "hair", f"m{i:02d}.png"))
-        save(key_layer(hf, load(raw(f"hair_f{i:02d}"))), os.path.join(OUT, "hair", f"f{i:02d}.png"))
+        save(key_layer(hm, load(raw(f"hair_m{i:02d}")), tol=0.09, min_sat=0.25), os.path.join(OUT, "hair", f"m{i:02d}.png"))
+        save(key_layer(hf, load(raw(f"hair_f{i:02d}")), tol=0.09, min_sat=0.25), os.path.join(OUT, "hair", f"f{i:02d}.png"))
     for i in range(1, 7):
         lay = key_layer(hm, load(raw(f"beard_{i:02d}")), hue=0.952, tol=0.065, min_sat=0.15)
         save(lay, os.path.join(OUT, "beards", f"b{i:02d}.png"))
@@ -115,7 +168,7 @@ def main() -> None:
     templates_raw = {}
     for g, tpl in outfits["templates"].items():
         b = load(raw(tpl["base"]))
-        n = neck_row(b, tuple(heads[tpl["base"]]))
+        n = neck_of(heads, tpl["base"], b)
         templates_raw[g] = {"neck": n, **span(b, n)}
     for body in meta["bodies"].values():
         def distortion(g):
@@ -127,11 +180,15 @@ def main() -> None:
     for g, tpl in outfits["templates"].items():
         b = load(raw(tpl["base"]))
         x0, t, x1 = heads[tpl["base"]]
-        neck = neck_row(b, tuple(heads[tpl["base"]]))
-        meta["templates"][g] = {"neck": neck, **span(b, neck)}
+        neck = neck_of(heads, tpl["base"], b)
         sample = (int((x0 + x1) / 2), int(t + 0.62 * (x1 - x0)))
+        tskin, _ = best_skin(b, tuple(heads[tpl["base"]]), neck, heads["arms"].get(tpl["base"]))
+        sp = span(b, neck)
+        meta["templates"][g] = {"neck": neck, **sp, "hand": hand(b, tskin, sp),
+                                "skinRef": [int(c) for c in np.median(b[tskin][:, :3], axis=0)]}
         for oid in outfits["outfits"]:
-            lay = outfit_layer(b, load(raw(f"armor_{oid}_{g}")), neck, sample)
+            lay = outfit_layer(b, load(raw(f"armor_{oid}_{g}")), neck, sample, t,
+                               heads["arms"].get(tpl["base"]))
             save(lay, os.path.join(OUT, "outfits", f"{oid}_{g}.png"))
 
     # Armes recadrées, prise de la main.

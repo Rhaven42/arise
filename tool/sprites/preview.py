@@ -58,47 +58,134 @@ def place(canvas: np.ndarray, layer: np.ndarray, scale: float, ox: float, oy: fl
                 canvas[y, x] = row[i]
 
 
+def head_warp(src: dict, b: dict, height: int, hug_jaw: bool = False):
+    """Calque de tête (coiffure, barbe) posé sur la tête du corps [b] :
+    pour chaque ligne de la toile, ligne source et échelle horizontale.
+    Verticalement, sommet → sourcils → menton du corps source sur ceux du
+    corps ; horizontalement, la demi-largeur de la tête à chaque ligne
+    (la coiffure épouse le crâne, la barbe la mâchoire). Même calcul que
+    SpriteComposer.headWarp dans l'appli."""
+    sx0, st, sx1 = src["skull"]
+    dx0, dt, dx1 = b["skull"]
+    s = (dx1 - dx0) / (sx1 - sx0)
+    sb, sn, db, dn = src["brow"], src["neck"], b["brow"], b["neck"]
+    sy1 = float(np.clip((db - dt) / (sb - st), 0.6 * s, 1.4 * s))
+    sy2 = float(np.clip((dn - db) / (sn - sb), 0.6 * s, 1.4 * s))
+    chin = db + (sn - sb) * sy2
+    rows, ks = [], []
+    for y in range(height):
+        yc = y + 0.5
+        if yc < db:
+            r = sb - (db - yc) / sy1
+        elif yc < chin:
+            r = sb + (yc - db) / sy2
+        else:
+            r = sn + (yc - chin) / s
+        rows.append(r)
+    half_s, half_d = (sx1 - sx0) / 2, (dx1 - dx0) / 2
+
+    def width(prof, top, y, half):
+        i = int(np.floor(y)) - int(top)
+        if 0 <= i < len(prof) and prof[i] >= 0.5 * half:
+            return prof[i]
+        return None
+    for y, r in enumerate(rows):
+        # Coiffure : le crâne seulement (au-dessus des sourcils) ; barbe : la
+        # mâchoire, des sourcils au menton.
+        yc = y + 0.5
+        if yc >= (chin if hug_jaw else db):
+            ks.append(s)
+            continue
+        if hug_jaw and yc < db:
+            ks.append(None)
+            continue
+        wd = width(b["profile"], dt, y, half_d)
+        ws = width(src["profile"], st, r, half_s)
+        ks.append(float(np.clip(wd / ws, 0.75 * s, 1.35 * s)) if wd and ws else None)
+    # Lignes sans mesure (au-dessus du crâne, sous le menton) : échelle de
+    # la ligne mesurée la plus proche.
+    known = [i for i, k in enumerate(ks) if k is not None and rows[i] >= 0]
+    for y in range(height):
+        if ks[y] is None:
+            ks[y] = ks[min(known, key=lambda i: abs(i - y))] if known else s
+    return rows, ks, (dx0 + dx1) / 2, (sx0 + sx1) / 2
+
+
+def place_warp(canvas, layer, warp, colour=None, skip=None):
+    """Pose un calque de tête déformé par [warp] (voir head_warp)."""
+    rows, ks, cd, cs = warp
+    h, w = layer.shape[:2]
+    H, W = canvas.shape[:2]
+    for y in range(H):
+        r = int(np.floor(rows[y]))
+        if not 0 <= r < h:
+            continue
+        for x in range(W):
+            c = int(np.floor(cs + (x + 0.5 - cd) / ks[y]))
+            if not 0 <= c < w:
+                continue
+            px = layer[r, c]
+            if px[3] == 0 or (skip is not None and skip(x, y)):
+                continue
+            canvas[y, x, :3] = colour(px) if colour else px[:3]
+            canvas[y, x, 3] = 255
+
+
 def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None,
             beard_color=None, outfit=None, weapon=None) -> np.ndarray:
     key = f"{race}_{sex}"
     b = META["bodies"][key]
     body = img(f"bodies/{key}.png")
+    skin = skin or tuple(b["skinRef"])
     skin_px = body[..., 3] == META["skinAlpha"]
-    if skin is not None:
-        body[skin_px, :3] = tint(body[skin_px, :3], lum(np.array(b["skinRef"], float)), skin)
+    front = body[..., 3] == META["frontAlpha"]
+    body[skin_px, :3] = tint(body[skin_px, :3], lum(np.array(b["skinRef"], float)), skin)
     canvas = np.zeros_like(body)
+    neck = round(b["neck"])
+    keep = body[..., 3] > 0
     if outfit:
-        # Tête et peau nue seulement ; la tenue remplace le reste du corps.
-        keep = skin_px.copy()
-        keep[: b["neck"] + 1] = body[: b["neck"] + 1, :, 3] > 0
-        canvas[keep] = body[keep]
+        # La tenue remplace tout le corps sous le cou.
+        keep[neck + 1:] = False
+    canvas[keep] = body[keep]
+    canvas[..., 3] = np.where(canvas[..., 3] > 0, 255, 0)
+    hx, hy = b["hand"]
+    if outfit:
         t = META["templates"][b["gabarit"]]
         lay = img(f"outfits/{outfit}_{b['gabarit']}.png")
         s = (b["feet"] - b["neck"]) / (t["feet"] - t["neck"])
         sx = b["torso"] / t["torso"]
-        place(canvas, lay, s, b["cx"] - t["cx"] * sx, b["feet"] - t["feet"] * s, sx)
-        canvas[skin_px & (canvas[..., 3] == 0)] = body[skin_px & (canvas[..., 3] == 0)]
-    else:
-        canvas[body[..., 3] > 0] = body[body[..., 3] > 0]
-    canvas[..., 3] = np.where(canvas[..., 3] > 0, 255, 0)
-    for layer_path, src_key, color in ((f"beards/{beard}.png" if beard else None, "beard", beard_color or hair_color),
-                                       (f"hair/{hair}.png" if hair else None,
-                                        "male" if hair and hair[0] == "m" else "female", hair_color)):
-        if not layer_path:
-            continue
-        lay = img(layer_path)
+        oy = b["feet"] - t["feet"] * s
+        tref = lum(np.array(t["skinRef"], float))
+        bare = lay[..., 3] == META["skinAlpha"]
+        lay[bare, :3] = tint(lay[bare, :3], tref, skin)
+        place(canvas, lay, s, b["cx"] - t["cx"] * sx, oy, sx)
+        hx = b["cx"] + (t["hand"][0] - t["cx"]) * sx
+        hy = oy + t["hand"][1] * s
+    if beard:
+        lay = img(f"beards/{beard}.png")
         m = lay[..., 3] > 0
-        lay[m, :3] = tint(lay[m, :3], float(np.median(lum(lay[m, :3]))), color)
-        sx0, st, sx1 = META["hairSources"][src_key]
-        dx0, dt, dx1 = b["skull"]
-        s = (dx1 - dx0) / (sx1 - sx0)
-        place(canvas, lay, s, (dx0 + dx1) / 2 - (sx0 + sx1) / 2 * s, dt - st * s)
+        ref = float(np.median(lum(lay[m, :3])))
+        place_warp(canvas, lay, head_warp(META["hairSources"]["beard"], b, canvas.shape[0], True),
+                   lambda px: tint(px[:3], ref, beard_color or hair_color))
+    if hair:
+        lay = img(f"hair/{hair}.png")
+        m = lay[..., 3] > 0
+        ref = float(np.median(lum(lay[m, :3])))
+        src = META["hairSources"]["male" if hair[0] == "m" else "female"]
+
+        def face(x, y):
+            # Visage dégagé : pas de mèche sur la peau entre sourcils et menton.
+            return b["brow"] + 1 <= y <= neck and skin_px[y, x]
+        place_warp(canvas, lay, head_warp(src, b, canvas.shape[0]),
+                   lambda px: tint(px[:3], ref, hair_color), face)
+    # Cornes devant la coiffure.
+    canvas[front] = body[front]
+    canvas[front, 3] = 255
     if weapon:
         w = META["weapons"][weapon]
         lay = img(f"weapons/{weapon}.png")
         length = WEAPON_LENGTH[weapon.split("_")[0]] * (b["feet"] - b["top"])
         s = length / w["size"][1]
-        hx, hy = b["hand"]
         place(canvas, lay, s, hx - w["size"][0] * s / 2, hy - w["grip"] * w["size"][1] * s)
     return canvas
 
