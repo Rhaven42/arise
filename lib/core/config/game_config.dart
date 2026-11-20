@@ -1556,6 +1556,7 @@ const gameConfig = GameConfig(
       'feet': 1,
       'back': 3,
       'weapon': 3,
+      'top': 3,
     },
     rarityPriceSilver: {
       'rare': 10,

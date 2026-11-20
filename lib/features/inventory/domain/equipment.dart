@@ -1,8 +1,8 @@
 /// Emplacements d'équipement du personnage.
 ///
-/// Depuis les sprites en pixel art (19/11/2026), seuls [chest] (tenue
-/// complète) et [weapon] sont utilisés ; les autres valeurs restent pour
-/// relire les anciennes sauvegardes.
+/// En pixel art : [chest] (tenue complète), [top] (haut), [legs] (bas),
+/// [feet] (chaussures), [hands] (gants) et [weapon]. [head], [shoulders],
+/// [belt] et [back] restent pour relire les anciennes sauvegardes.
 enum EquipmentSlot {
   head,
   shoulders,
@@ -13,19 +13,34 @@ enum EquipmentSlot {
   feet,
   back,
   weapon,
+  top,
 }
 
 /// Emplacements où se porte un objet du catalogue actuel.
 const List<EquipmentSlot> usedSlots = [
   EquipmentSlot.chest,
+  EquipmentSlot.top,
+  EquipmentSlot.legs,
+  EquipmentSlot.feet,
+  EquipmentSlot.hands,
   EquipmentSlot.weapon,
+];
+
+/// Pièces séparées, dans l'ordre où elles sont dessinées (le haut couvre la
+/// taille du pantalon, les gants les manches).
+const List<EquipmentSlot> pieceSlots = [
+  EquipmentSlot.legs,
+  EquipmentSlot.feet,
+  EquipmentSlot.top,
+  EquipmentSlot.hands,
 ];
 
 /// Rareté d'un objet (du plus courant au plus rare).
 enum Rarity { common, rare, epic, legendary, mythic }
 
-/// Objet cosmétique : une tenue complète ou une arme. Les objets
-/// n'apportent aucun avantage de jeu : ils changent seulement l'apparence.
+/// Objet cosmétique : une tenue complète, une pièce séparée ou une arme.
+/// Les objets n'apportent aucun avantage de jeu : ils changent seulement
+/// l'apparence.
 class EquipmentItem {
   const EquipmentItem({
     required this.id,
@@ -265,6 +280,132 @@ const List<EquipmentItem> outfitCatalog = [
   ),
 ];
 
+/// Pièces séparées vendues en boutique (haut, bas, chaussures, gants) : elles
+/// se portent sur les vêtements de base ; les chaussures et les gants aussi
+/// sur une tenue complète.
+const List<EquipmentItem> pieceCatalog = [
+  EquipmentItem(
+    id: 'forest_jerkin',
+    slot: EquipmentSlot.top,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'padded_gambeson',
+    slot: EquipmentSlot.top,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'chain_shirt',
+    slot: EquipmentSlot.top,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'noble_doublet',
+    slot: EquipmentSlot.top,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'fur_vest',
+    slot: EquipmentSlot.top,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'iron_greaves',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'black_breeches',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'chain_chausses',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'ranger_trousers',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'royal_breeches',
+    slot: EquipmentSlot.legs,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'steel_sabatons',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'fur_boots',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'elven_boots',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'riding_boots',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'golden_boots',
+    slot: EquipmentSlot.feet,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'steel_gauntlets',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'leather_gloves',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'fingerless_gloves',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'silk_gloves',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'fur_bracers',
+    slot: EquipmentSlot.hands,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+];
+
 /// Armes vendues en boutique.
 const List<EquipmentItem> weaponCatalog = [
   EquipmentItem(
@@ -332,6 +473,7 @@ const List<EquipmentItem> weaponCatalog = [
 /// Tout ce que vend la boutique, dans l'ordre d'affichage.
 const List<EquipmentItem> equipmentCatalog = [
   ...outfitCatalog,
+  ...pieceCatalog,
   ...weaponCatalog,
 ];
 

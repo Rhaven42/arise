@@ -268,10 +268,14 @@ class SpriteLayers {
     this.hair,
     this.beard,
     this.weapon,
+    this.pieces = const [],
   });
 
   final RgbaImage body;
   final RgbaImage? outfit;
+
+  /// Pièces séparées, dans l'ordre de [CharacterAppearance.pieces].
+  final List<RgbaImage> pieces;
   final RgbaImage? hair;
   final RgbaImage? beard;
   final RgbaImage? weapon;
@@ -319,10 +323,23 @@ class SpriteComposer {
   final SpriteMeta meta;
 
   /// Fichiers (sous `assets/sprites/`) nécessaires à une apparence.
-  ({String body, String? outfit, String? hair, String? beard, String? weapon})
+  ({
+    String body,
+    String? outfit,
+    String? hair,
+    String? beard,
+    String? weapon,
+    List<String> pieces,
+  })
   paths(CharacterAppearance a) {
     final body = meta.bodies[a.bodyId];
     return (
+      pieces: body == null
+          ? const <String>[]
+          : [
+              for (final p in a.pieces)
+                'pieces/${p.spriteId}_${body.gabarit}.png',
+            ],
       body: 'bodies/${a.bodyId}.png',
       outfit: a.outfitId == null || body == null
           ? null
@@ -391,6 +408,38 @@ class SpriteComposer {
       // L'arme suit la main de la tenue.
       handX = f.centreX + (template.handX - t.centreX) * sx;
       handY = originY + template.handY * sy;
+    }
+    // Pièces séparées : même cadrage que les tenues (gabarit du corps) ; leur
+    // peau nue prend la teinte du personnage.
+    if (layers.pieces.isNotEmpty) {
+      final template = meta.templates[body.gabarit]!;
+      final t = template.frame;
+      final f = body.frame;
+      final sy = (f.feet - f.neck) / (t.feet - t.neck);
+      final sx = f.torso / t.torso;
+      for (var k = 0; k < layers.pieces.length && k < a.pieces.length; k++) {
+        final layer = layers.pieces[k];
+        final tint = a.pieces[k].tint;
+        final ref = tint == null ? 0.0 : _medianLuminance(layer);
+        _place(
+          out,
+          layer,
+          scaleX: sx,
+          scaleY: sy,
+          originX: f.centreX - t.centreX * sx,
+          originY: f.feet - t.feet * sy,
+          colour: (r, g, b, alpha) {
+            if (alpha == meta.skinAlpha) {
+              return tintPixel(r, g, b, template.skinRef, a.skinColor);
+            }
+            if (tint == null) return (r, g, b);
+            final (tr, tg, tb) = tintPixel(r, g, b, ref, tint);
+            int mix(int o, int d) =>
+                (o + (d - o) * dyeStrength).round().clamp(0, 255);
+            return (mix(r, tr), mix(g, tg), mix(b, tb));
+          },
+        );
+      }
     }
     final beard = layers.beard;
     final beardSource = meta.hairSources['beard'];

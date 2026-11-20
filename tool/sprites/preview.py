@@ -131,8 +131,11 @@ def place_warp(canvas, layer, warp, colour=None, skip=None):
             canvas[y, x, 3] = 255
 
 
+PIECE_ORDER = ["legs", "feet", "top", "hands"]
+
+
 def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None,
-            beard_color=None, outfit=None, weapon=None) -> np.ndarray:
+            beard_color=None, outfit=None, weapon=None, pieces=()) -> np.ndarray:
     key = f"{race}_{sex}"
     b = META["bodies"][key]
     body = img(f"bodies/{key}.png")
@@ -161,6 +164,15 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         place(canvas, lay, s, b["cx"] - t["cx"] * sx, oy, sx)
         hx = b["cx"] + (t["hand"][0] - t["cx"]) * sx
         hy = oy + t["hand"][1] * s
+    # Pièces séparées : même cadrage que les tenues, dans l'ordre de dessin.
+    t = META["templates"][b["gabarit"]]
+    s_y = (b["feet"] - b["neck"]) / (t["feet"] - t["neck"])
+    s_x = b["torso"] / t["torso"]
+    for pid in sorted(pieces, key=lambda q: PIECE_ORDER.index(META["pieces"][q])):
+        lay = img(f"pieces/{pid}_{b['gabarit']}.png")
+        bare = lay[..., 3] == META["skinAlpha"]
+        lay[bare, :3] = tint(lay[bare, :3], lum(np.array(t["skinRef"], float)), skin)
+        place(canvas, lay, s_y, b["cx"] - t["cx"] * s_x, b["feet"] - t["feet"] * s_y, s_x)
     if beard:
         lay = img(f"beards/{beard}.png")
         m = lay[..., 3] > 0

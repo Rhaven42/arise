@@ -19,7 +19,7 @@ from PIL import Image
 
 sys.path.insert(0, os.path.dirname(__file__))
 from layers import (CANVAS_H, CANVAS_W, SKIN_ALPHA, best_skin,  # noqa: E402
-                    key_layer, load, neck_row, outfit_layer, recolor, save)
+                    key_layer, load, neck_row, outfit_layer, piece_layer, recolor, save)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(HERE, "raw")
@@ -191,6 +191,22 @@ def main() -> None:
                                heads["arms"].get(tpl["base"]))
             save(lay, os.path.join(OUT, "outfits", f"{oid}_{g}.png"))
 
+    # Pièces séparées (haut, bas, chaussures, gants) par gabarit.
+    pieces = json.load(open(os.path.join(HERE, "pieces.json")))
+    os.makedirs(os.path.join(OUT, "pieces"), exist_ok=True)
+    meta["pieces"] = {}
+    for g, tpl in outfits["templates"].items():
+        b = load(raw(tpl["base"]))
+        x0, t, x1 = heads[tpl["base"]]
+        neck = neck_of(heads, tpl["base"], b)
+        feet = int(np.where((b[..., 3] > 0).any(axis=1))[0][-1])
+        sample = (int((x0 + x1) / 2), int(t + 0.62 * (x1 - x0)))
+        for pid, (slot, _) in pieces["pieces"].items():
+            lay = piece_layer(b, load(raw(f"piece_{pid}_{g}")), slot, neck, feet, sample, t,
+                              heads["arms"].get(tpl["base"]))
+            save(lay, os.path.join(OUT, "pieces", f"{pid}_{g}.png"))
+            meta["pieces"][pid] = slot
+
     # Armes recadrées, prise de la main.
     for f in sorted(os.listdir(RAW)):
         if not f.startswith("weapon_"):
@@ -217,6 +233,8 @@ def main() -> None:
 
     for oid in outfits["outfits"]:
         crop_save(Image.open(os.path.join(OUT, "outfits", f"{oid}_mm.png")).convert("RGBA"), oid)
+    for pid in meta["pieces"]:
+        crop_save(Image.open(os.path.join(OUT, "pieces", f"{pid}_mm.png")).convert("RGBA"), pid)
     for wid in meta["weapons"]:
         crop_save(Image.open(os.path.join(OUT, "weapons", f"{wid}.png")).convert("RGBA"), wid)
     for i in range(1, 11):

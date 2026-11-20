@@ -914,5 +914,505 @@
   "asset_id": "ac374d7a-8ca8-4d23-87b4-7d0fde832282",
   "sha12": "b4b43401578e",
   "label": "abyss_knight small"
+ },
+ "piece_forest_jerkin_mm": {
+  "asset_id": "bed44e7d-fe59-44ab-8bef-3285aad27f4b",
+  "sha12": "1e68cbebce47",
+  "label": "forest_jerkin mm"
+ },
+ "piece_iron_greaves_mm": {
+  "asset_id": "2a18812d-c535-48b1-8df7-8fc12b828ce9",
+  "sha12": "4bd3bc34ef15",
+  "label": "iron_greaves mm"
+ },
+ "piece_forest_jerkin_mf": {
+  "asset_id": "348a0d72-e50c-4242-8ff3-23a108d51f77",
+  "sha12": "20dc956dc586",
+  "label": "forest_jerkin mf"
+ },
+ "piece_forest_jerkin_large": {
+  "asset_id": "32fd3243-807c-40cb-a6a2-5b7f394f5a18",
+  "sha12": "c39a8fbbbb2c",
+  "label": "forest_jerkin large"
+ },
+ "piece_forest_jerkin_stocky": {
+  "asset_id": "479e0472-6c2d-410a-929f-f8b1dc8693cf",
+  "sha12": "7bf2076a8390",
+  "label": "forest_jerkin stocky"
+ },
+ "piece_forest_jerkin_small": {
+  "asset_id": "176619d3-cb6b-46cd-868f-2ff34213282a",
+  "sha12": "591ae5bf1442",
+  "label": "forest_jerkin small"
+ },
+ "piece_iron_greaves_mf": {
+  "asset_id": "afc37b17-860d-4a76-b4f1-61d79572bf06",
+  "sha12": "2435228f3368",
+  "label": "iron_greaves mf"
+ },
+ "piece_iron_greaves_large": {
+  "asset_id": "9300c546-d37f-4875-ab1c-46fc099733c5",
+  "sha12": "50f34a7d9794",
+  "label": "iron_greaves large"
+ },
+ "piece_iron_greaves_stocky": {
+  "asset_id": "65c03698-6563-4ec5-b699-8fe92107a923",
+  "sha12": "dbbabbb563af",
+  "label": "iron_greaves stocky"
+ },
+ "piece_iron_greaves_small": {
+  "asset_id": "33789a83-4174-4b3f-81c8-355cac69d284",
+  "sha12": "0e209210c575",
+  "label": "iron_greaves small"
+ },
+ "piece_padded_gambeson_mm": {
+  "asset_id": "0987aad3-3d3f-41cb-8b31-290a51397083",
+  "sha12": "7c920ac8f8ce",
+  "label": "padded_gambeson mm"
+ },
+ "piece_padded_gambeson_mf": {
+  "asset_id": "f8c24f89-98c8-4d2c-8d88-488174ef17fc",
+  "sha12": "6f33f0b88af4",
+  "label": "padded_gambeson mf"
+ },
+ "piece_padded_gambeson_large": {
+  "asset_id": "c3477411-ffc3-4008-a3e3-122f83517ba7",
+  "sha12": "d4efcc7cb95a",
+  "label": "padded_gambeson large"
+ },
+ "piece_padded_gambeson_stocky": {
+  "asset_id": "d5977cc1-5db3-4abd-b68c-6b670a8a0fb6",
+  "sha12": "fbd69a175eb2",
+  "label": "padded_gambeson stocky"
+ },
+ "piece_padded_gambeson_small": {
+  "asset_id": "14793e86-0563-483e-a56e-c121fa530625",
+  "sha12": "a6085e79f213",
+  "label": "padded_gambeson small"
+ },
+ "piece_chain_shirt_mm": {
+  "asset_id": "25adb065-9a4f-4ef1-b42b-568a44aff408",
+  "sha12": "686f64077582",
+  "label": "chain_shirt mm"
+ },
+ "piece_chain_shirt_mf": {
+  "asset_id": "9373620a-2998-4815-86ba-9ae135bdcff4",
+  "sha12": "5d335d165145",
+  "label": "chain_shirt mf"
+ },
+ "piece_chain_shirt_large": {
+  "asset_id": "3795ccd3-522c-4ca7-a690-e21cf8a00b1d",
+  "sha12": "202f009f3086",
+  "label": "chain_shirt large"
+ },
+ "piece_chain_shirt_stocky": {
+  "asset_id": "7e1e5984-e0ab-49bb-b80f-86586c7195f6",
+  "sha12": "62ca1de520ed",
+  "label": "chain_shirt stocky"
+ },
+ "piece_chain_shirt_small": {
+  "asset_id": "ed7b0bd0-6877-4419-b218-604f27ec54f0",
+  "sha12": "130c0929ade6",
+  "label": "chain_shirt small"
+ },
+ "piece_noble_doublet_mm": {
+  "asset_id": "28c78b6a-d6f0-4bd4-88bd-d2ec62ff7d4b",
+  "sha12": "8cd17f947cc6",
+  "label": "noble_doublet mm"
+ },
+ "piece_noble_doublet_mf": {
+  "asset_id": "2cfe6b23-0dbe-452b-a4a8-8e5842e123c9",
+  "sha12": "e19aeaed61e8",
+  "label": "noble_doublet mf"
+ },
+ "piece_noble_doublet_large": {
+  "asset_id": "d83597af-4a70-40af-a47b-c98edc9c9b33",
+  "sha12": "2eadb78bdaa4",
+  "label": "noble_doublet large"
+ },
+ "piece_noble_doublet_stocky": {
+  "asset_id": "a5fd1989-1640-484c-bc50-58e5e98c9312",
+  "sha12": "99b13ef4e6f0",
+  "label": "noble_doublet stocky"
+ },
+ "piece_noble_doublet_small": {
+  "asset_id": "a75e0795-22f2-4e66-8792-604cbc093f54",
+  "sha12": "3cddf9736e2c",
+  "label": "noble_doublet small"
+ },
+ "piece_fur_vest_mm": {
+  "asset_id": "0bf6ae07-4d68-4be0-85ea-31800544f9e3",
+  "sha12": "a9ede145a9fb",
+  "label": "fur_vest mm"
+ },
+ "piece_fur_vest_mf": {
+  "asset_id": "480b56bf-e597-4d12-b23a-b0432c805e42",
+  "sha12": "aebaffb49ee2",
+  "label": "fur_vest mf"
+ },
+ "piece_fur_vest_large": {
+  "asset_id": "af437aff-0550-42dd-9132-ffd138a7df80",
+  "sha12": "9d68c292b9b6",
+  "label": "fur_vest large"
+ },
+ "piece_fur_vest_stocky": {
+  "asset_id": "4442e387-be8b-48df-bfbb-d3b3707e6105",
+  "sha12": "7301987cafef",
+  "label": "fur_vest stocky"
+ },
+ "piece_fur_vest_small": {
+  "asset_id": "cef1e1cb-dc4a-404f-a37e-6ebe07cd944f",
+  "sha12": "1ed3d86b4ce9",
+  "label": "fur_vest small"
+ },
+ "piece_black_breeches_mm": {
+  "asset_id": "233ecb07-8c6a-458c-8250-ebe5b768fc4a",
+  "sha12": "56930f3db0de",
+  "label": "black_breeches mm"
+ },
+ "piece_black_breeches_mf": {
+  "asset_id": "f243f794-7e13-4eb1-a661-560a1462559d",
+  "sha12": "d9002a26b9fd",
+  "label": "black_breeches mf"
+ },
+ "piece_black_breeches_large": {
+  "asset_id": "6062120b-3124-40a6-8bc1-9bcfbaffe508",
+  "sha12": "9c45700eb54b",
+  "label": "black_breeches large"
+ },
+ "piece_black_breeches_stocky": {
+  "asset_id": "80d82107-f5d2-47ac-8f90-a927867f6638",
+  "sha12": "847ec5384c77",
+  "label": "black_breeches stocky"
+ },
+ "piece_black_breeches_small": {
+  "asset_id": "f248090b-6760-4f7f-93a9-ab745f249b4f",
+  "sha12": "7ac970781f8b",
+  "label": "black_breeches small"
+ },
+ "piece_chain_chausses_mm": {
+  "asset_id": "3e575a5b-9cfc-4c26-98c0-bd319aa85423",
+  "sha12": "2fab312ac78d",
+  "label": "chain_chausses mm"
+ },
+ "piece_chain_chausses_mf": {
+  "asset_id": "ec95687d-b3bd-483f-97b5-397a3ac42dbb",
+  "sha12": "2509ecabec95",
+  "label": "chain_chausses mf"
+ },
+ "piece_chain_chausses_large": {
+  "asset_id": "898c941a-ef68-4815-a985-b772c7a5ccec",
+  "sha12": "a2ea3281912c",
+  "label": "chain_chausses large"
+ },
+ "piece_chain_chausses_stocky": {
+  "asset_id": "edff0e9a-c66d-4cc9-a8ce-2d278cebe216",
+  "sha12": "0a16f5615fc8",
+  "label": "chain_chausses stocky"
+ },
+ "piece_chain_chausses_small": {
+  "asset_id": "a7ea60d5-06df-461e-b7f2-5de2df96164c",
+  "sha12": "e624aef07acf",
+  "label": "chain_chausses small"
+ },
+ "piece_ranger_trousers_mm": {
+  "asset_id": "c2d2cdac-fd70-4ed6-aeae-b78ea7563a8d",
+  "sha12": "6dbef7577a0b",
+  "label": "ranger_trousers mm"
+ },
+ "piece_ranger_trousers_mf": {
+  "asset_id": "9cc00d44-a4df-47f6-b110-9a6b99732691",
+  "sha12": "67c924300127",
+  "label": "ranger_trousers mf"
+ },
+ "piece_ranger_trousers_large": {
+  "asset_id": "241e4535-df60-4dd1-95f5-94a216e4cb29",
+  "sha12": "f47966ab8ab2",
+  "label": "ranger_trousers large"
+ },
+ "piece_ranger_trousers_stocky": {
+  "asset_id": "a3d65a64-9841-4e85-80a9-4492dbab18d7",
+  "sha12": "b3c9ce501c58",
+  "label": "ranger_trousers stocky"
+ },
+ "piece_ranger_trousers_small": {
+  "asset_id": "35465d9e-0c5e-429d-bd7f-ac79ded16f33",
+  "sha12": "c93b256caf50",
+  "label": "ranger_trousers small"
+ },
+ "piece_royal_breeches_mm": {
+  "asset_id": "d4e859f5-e3a6-4eb5-8dad-7279fbf99cab",
+  "sha12": "85db3ee9bf15",
+  "label": "royal_breeches mm"
+ },
+ "piece_royal_breeches_mf": {
+  "asset_id": "f739c122-8314-4df8-86f8-700ba3029061",
+  "sha12": "aa3d4f6a4f4b",
+  "label": "royal_breeches mf"
+ },
+ "piece_royal_breeches_large": {
+  "asset_id": "d3a6ef16-f1b1-4ffe-8582-0c635c685248",
+  "sha12": "96d213be4842",
+  "label": "royal_breeches large"
+ },
+ "piece_royal_breeches_stocky": {
+  "asset_id": "18815d00-b49f-43a0-8592-b43a201772e9",
+  "sha12": "2bd2f139ad89",
+  "label": "royal_breeches stocky"
+ },
+ "piece_royal_breeches_small": {
+  "asset_id": "01125fa8-95cb-4166-b4ec-9ac1cd44db90",
+  "sha12": "a429d7de660b",
+  "label": "royal_breeches small"
+ },
+ "piece_steel_sabatons_mm": {
+  "asset_id": "32167159-7055-4fca-8e2c-6d6a281bcbff",
+  "sha12": "8542e0e6268b",
+  "label": "steel_sabatons mm"
+ },
+ "piece_steel_sabatons_mf": {
+  "asset_id": "15facf71-6b89-4a90-9451-9429150420ba",
+  "sha12": "ce9e6e556b77",
+  "label": "steel_sabatons mf"
+ },
+ "piece_steel_sabatons_large": {
+  "asset_id": "4e3b08f2-f5ca-4c8b-a306-7b5dadb85217",
+  "sha12": "20fe6679c40b",
+  "label": "steel_sabatons large"
+ },
+ "piece_steel_sabatons_stocky": {
+  "asset_id": "24a7291f-9a89-4ffb-b1b7-4ae165fe197e",
+  "sha12": "2f1bd54b54d9",
+  "label": "steel_sabatons stocky"
+ },
+ "piece_steel_sabatons_small": {
+  "asset_id": "700a828a-73b6-4e33-b54f-6940597cde1b",
+  "sha12": "cb4ff1364181",
+  "label": "steel_sabatons small"
+ },
+ "piece_fur_boots_mm": {
+  "asset_id": "aec9aca4-a6b7-4951-98b1-35b47abfc1c7",
+  "sha12": "61ae078562e4",
+  "label": "fur_boots mm"
+ },
+ "piece_fur_boots_mf": {
+  "asset_id": "5e60f3fe-78d5-4013-a484-2a55e9b99956",
+  "sha12": "012e7614f8d9",
+  "label": "fur_boots mf"
+ },
+ "piece_fur_boots_large": {
+  "asset_id": "d7aa354a-6162-42d5-bf6b-803bc8ee6d16",
+  "sha12": "60ced00cbe08",
+  "label": "fur_boots large"
+ },
+ "piece_fur_boots_stocky": {
+  "asset_id": "5fecbeac-67de-4b12-bf09-b8fbe9cb0c66",
+  "sha12": "f2f90c182870",
+  "label": "fur_boots stocky"
+ },
+ "piece_fur_boots_small": {
+  "asset_id": "334bebcf-f66c-4e6b-b29f-083f13f31c39",
+  "sha12": "e41040bfc273",
+  "label": "fur_boots small"
+ },
+ "piece_elven_boots_mm": {
+  "asset_id": "1137f83b-3492-4dd7-bcde-c4ea8e026696",
+  "sha12": "13bc70e35c0b",
+  "label": "elven_boots mm"
+ },
+ "piece_elven_boots_mf": {
+  "asset_id": "dff7242f-abae-4665-9008-d48515b3e4cb",
+  "sha12": "a9a923070312",
+  "label": "elven_boots mf"
+ },
+ "piece_elven_boots_large": {
+  "asset_id": "79979361-dc7d-4436-b7fd-ec33b9810ced",
+  "sha12": "99b316cec9c4",
+  "label": "elven_boots large"
+ },
+ "piece_elven_boots_stocky": {
+  "asset_id": "4b34a492-776c-467c-a20f-252fd2b90a86",
+  "sha12": "40076e919e1f",
+  "label": "elven_boots stocky"
+ },
+ "piece_elven_boots_small": {
+  "asset_id": "02e873ff-fb15-406d-a1c3-5afd196b10c8",
+  "sha12": "350d0359855d",
+  "label": "elven_boots small"
+ },
+ "piece_riding_boots_mm": {
+  "asset_id": "dd7493c2-a097-4d6f-af56-3b5fe9b1ebb6",
+  "sha12": "a9891320925d",
+  "label": "riding_boots mm"
+ },
+ "piece_riding_boots_mf": {
+  "asset_id": "2ee1e9a3-cd58-4557-b445-6b4486d63424",
+  "sha12": "f5303017e998",
+  "label": "riding_boots mf"
+ },
+ "piece_riding_boots_large": {
+  "asset_id": "5836d9bd-9004-4465-aef3-93cc78271e1a",
+  "sha12": "8eb8bae20a90",
+  "label": "riding_boots large"
+ },
+ "piece_riding_boots_stocky": {
+  "asset_id": "ea46f29b-715e-47f4-af32-6c94b6d09e90",
+  "sha12": "e3936fd76720",
+  "label": "riding_boots stocky"
+ },
+ "piece_riding_boots_small": {
+  "asset_id": "2d60abe5-a5a0-4b02-a327-1143f783dc3f",
+  "sha12": "d2d3c8eafb81",
+  "label": "riding_boots small"
+ },
+ "piece_golden_boots_mm": {
+  "asset_id": "da34592b-22e7-428a-8e53-29d40fbfdac1",
+  "sha12": "2e9f10d47094",
+  "label": "golden_boots mm"
+ },
+ "piece_golden_boots_mf": {
+  "asset_id": "fc675572-c195-4ecc-91ba-b83d39d78a15",
+  "sha12": "42ccb373965e",
+  "label": "golden_boots mf"
+ },
+ "piece_golden_boots_large": {
+  "asset_id": "5bdd5313-8853-4db8-9f22-ab31e2f65c72",
+  "sha12": "abb0505e0bf0",
+  "label": "golden_boots large"
+ },
+ "piece_golden_boots_stocky": {
+  "asset_id": "8b166077-9589-4eba-87cb-8a6aa9fad835",
+  "sha12": "baba3e0ba93d",
+  "label": "golden_boots stocky"
+ },
+ "piece_golden_boots_small": {
+  "asset_id": "d9de15b6-71f7-4a8f-b557-9bb5fd7ebacf",
+  "sha12": "a0bf50c5bb44",
+  "label": "golden_boots small"
+ },
+ "piece_steel_gauntlets_mm": {
+  "asset_id": "6ce430b0-b0ae-4796-9d31-2145cb876e85",
+  "sha12": "76a6c08a8240",
+  "label": "steel_gauntlets mm"
+ },
+ "piece_steel_gauntlets_mf": {
+  "asset_id": "7ac39ee3-b32c-4861-8e9d-c9cdd6e8bdbb",
+  "sha12": "1e86a102d27a",
+  "label": "steel_gauntlets mf"
+ },
+ "piece_steel_gauntlets_large": {
+  "asset_id": "f76ede96-6909-4613-a090-851bfb5953d3",
+  "sha12": "232f60b7e5fd",
+  "label": "steel_gauntlets large"
+ },
+ "piece_steel_gauntlets_stocky": {
+  "asset_id": "e3240eee-93e0-422d-bdb5-f85ff9119e14",
+  "sha12": "6564affef0e2",
+  "label": "steel_gauntlets stocky"
+ },
+ "piece_steel_gauntlets_small": {
+  "asset_id": "c58b1371-f56f-4308-83d8-395621966756",
+  "sha12": "95146d1f2dc3",
+  "label": "steel_gauntlets small"
+ },
+ "piece_leather_gloves_mm": {
+  "asset_id": "8f701018-0b56-4513-b392-c740b4c6dd81",
+  "sha12": "00dc62b80740",
+  "label": "leather_gloves mm"
+ },
+ "piece_leather_gloves_mf": {
+  "asset_id": "18da1e05-4766-4fd3-88ee-913602e6fd92",
+  "sha12": "78c8173840e6",
+  "label": "leather_gloves mf"
+ },
+ "piece_leather_gloves_large": {
+  "asset_id": "8c34a0f6-0de4-4532-9e7f-3d110e0b8850",
+  "sha12": "3056dcb3cf86",
+  "label": "leather_gloves large"
+ },
+ "piece_leather_gloves_stocky": {
+  "asset_id": "2370dcd0-1257-4096-8f36-a4bc8052e674",
+  "sha12": "338d8ad5cf58",
+  "label": "leather_gloves stocky"
+ },
+ "piece_leather_gloves_small": {
+  "asset_id": "f45dcb36-7bc1-4372-8878-34bd9669254e",
+  "sha12": "bea3b85496cc",
+  "label": "leather_gloves small"
+ },
+ "piece_fingerless_gloves_mm": {
+  "asset_id": "d87362a7-8260-4d82-bee7-7dea8618edcf",
+  "sha12": "7a595cba5db0",
+  "label": "fingerless_gloves mm"
+ },
+ "piece_fingerless_gloves_mf": {
+  "asset_id": "b51f511a-19f3-45b4-b35b-76b54a50fa16",
+  "sha12": "2699132d372f",
+  "label": "fingerless_gloves mf"
+ },
+ "piece_fingerless_gloves_large": {
+  "asset_id": "94513c99-f8c8-4c85-94b4-5e86f8e5724c",
+  "sha12": "1ff51f52ffbb",
+  "label": "fingerless_gloves large"
+ },
+ "piece_fingerless_gloves_stocky": {
+  "asset_id": "cf1a2285-0dcf-4eb8-bb4f-0be64f1086b9",
+  "sha12": "86a4287a0427",
+  "label": "fingerless_gloves stocky"
+ },
+ "piece_fingerless_gloves_small": {
+  "asset_id": "ec7ca5e7-09c2-4073-a1b0-3dac28548d48",
+  "sha12": "0bc21a8ebb2f",
+  "label": "fingerless_gloves small"
+ },
+ "piece_silk_gloves_mm": {
+  "asset_id": "d2a01241-76cf-4217-8ae0-09c09dab9658",
+  "sha12": "ddca0fb3bb4f",
+  "label": "silk_gloves mm"
+ },
+ "piece_silk_gloves_mf": {
+  "asset_id": "1d97e252-077a-41b6-9b9e-f04f9b742e4e",
+  "sha12": "a5aa5d7d5ba3",
+  "label": "silk_gloves mf"
+ },
+ "piece_silk_gloves_large": {
+  "asset_id": "a5c4d895-233b-4298-8cc0-5d46762992ae",
+  "sha12": "6a0af5e83e75",
+  "label": "silk_gloves large"
+ },
+ "piece_silk_gloves_stocky": {
+  "asset_id": "85a00dde-cd5c-4d44-83d4-c296670b657f",
+  "sha12": "36b5bff092bd",
+  "label": "silk_gloves stocky"
+ },
+ "piece_silk_gloves_small": {
+  "asset_id": "2b41aa65-a728-485a-9c73-4a22386800d8",
+  "sha12": "5064020df3e4",
+  "label": "silk_gloves small"
+ },
+ "piece_fur_bracers_mm": {
+  "asset_id": "3f001cf9-caca-43a9-9cc0-fbbf3ec2c9a3",
+  "sha12": "69e7e21bf3b2",
+  "label": "fur_bracers mm"
+ },
+ "piece_fur_bracers_mf": {
+  "asset_id": "7e6d6356-9ccd-4ddd-8f53-446807858c63",
+  "sha12": "a13e1ea52017",
+  "label": "fur_bracers mf"
+ },
+ "piece_fur_bracers_large": {
+  "asset_id": "f31934de-a754-4574-beab-af319884676c",
+  "sha12": "2a527b7c8a88",
+  "label": "fur_bracers large"
+ },
+ "piece_fur_bracers_stocky": {
+  "asset_id": "ff9e231a-9bf7-400e-a398-dbde06215cf1",
+  "sha12": "d73c0c32c678",
+  "label": "fur_bracers stocky"
+ },
+ "piece_fur_bracers_small": {
+  "asset_id": "824eb79e-1212-488c-a792-379716f55a37",
+  "sha12": "06fdd513a562",
+  "label": "fur_bracers small"
  }
 }

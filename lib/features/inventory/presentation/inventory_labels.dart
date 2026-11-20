@@ -40,4 +40,5 @@ IconData slotIcon(EquipmentSlot slot) => switch (slot) {
   EquipmentSlot.feet => Icons.hiking,
   EquipmentSlot.back => Icons.flag_outlined,
   EquipmentSlot.weapon => Icons.colorize,
+  EquipmentSlot.top => Icons.dry_cleaning_outlined,
 };

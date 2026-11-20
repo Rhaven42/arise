@@ -6,6 +6,7 @@ import 'package:arise/features/avatar/domain/character_appearance.dart';
 import 'package:arise/features/avatar/domain/sprite_composer.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/inventory/domain/equipment.dart';
+import 'package:arise/features/inventory/domain/inventory_rules.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const Map<String, Object> _head = {
@@ -203,6 +204,27 @@ void main() {
     expect(warp.scales[3], 2);
     // Sous les sourcils, l'échelle du crâne.
     expect(warp.scales[20], 2);
+  });
+
+  test('pièce séparée posée sur le corps, peau nue à la teinte', () {
+    // Gant : un pixel de cuir et un pixel de peau nue (alpha 254).
+    final glove = _fill(10, 20, (x, y) => y == 12 && x == 2, [40, 30, 20, 255]);
+    glove.pixels.setAll((13 * 10 + 2) * 4, [100, 100, 100, 254]);
+    const appearance = CharacterAppearance(
+      bodyId: 'human_male',
+      skinColor: 0xFF00FF00,
+      hairColor: 0,
+      pieces: [WornPiece('leather_gloves')],
+    );
+    expect(composer.paths(appearance).pieces, ['pieces/leather_gloves_mm.png']);
+    final out = composer.compose(
+      appearance,
+      SpriteLayers(body: body, pieces: [glove]),
+    );
+    expect(_px(out, 2, 12), [40, 30, 20, 255]);
+    expect(_px(out, 2, 13), [0, 255, 0, 255]);
+    // Sans tenue complète, les vêtements de base restent dessous.
+    expect(_px(out, 4, 10), [90, 60, 40, 255]);
   });
 
   test('les repères réels couvrent chaque race, tenue et arme', () {
