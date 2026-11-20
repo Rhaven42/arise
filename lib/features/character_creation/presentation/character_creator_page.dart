@@ -9,6 +9,7 @@ import 'package:arise/features/avatar/domain/character_appearance.dart';
 import 'package:arise/features/avatar/domain/character_scene.dart';
 import 'package:arise/features/avatar/presentation/character_renderer.dart';
 import 'package:arise/features/character_creation/domain/character_palette.dart';
+import 'package:arise/features/character_creation/domain/character_rules.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/character_creation/presentation/character_labels.dart';
 import 'package:arise/features/character_creation/presentation/character_providers.dart';
@@ -367,7 +368,7 @@ class _HairTab extends ConsumerWidget {
           spacing: AriseSpacing.xs,
           runSpacing: AriseSpacing.xs,
           children: [
-            for (var style = 0; style <= hairStyleCount; style++)
+            for (final style in hairStylesFor(sheet.race, sheet.sex))
               ChoiceChip(
                 avatar: locked(style)
                     ? const Icon(Icons.lock_outline, size: 18)

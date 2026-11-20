@@ -40,6 +40,9 @@ GRIP = {"sword": 0.86, "dagger": 0.8, "scimitar": 0.86, "axe": 0.72, "mace": 0.7
         "hammer": 0.74, "staff": 0.62, "halberd": 0.6}
 
 
+# Coiffures par sexe et barbes (raw/hair_mNN, raw/hair_fNN, raw/beard_NN).
+HAIR_COUNT = 14
+BEARD_COUNT = 10
 # Races à cornes : les cornes passent devant la coiffure.
 HORNED = {"demon", "minotaur"}
 # Alpha des pixels d'un corps dessinés devant la coiffure (cornes).
@@ -157,10 +160,10 @@ def main() -> None:
 
     meta["hairSources"] = {"male": source("human_male"), "female": source("human_female"),
                            "beard": source("human_male")}
-    for i in range(1, 11):
+    for i in range(1, HAIR_COUNT + 1):
         save(key_layer(hm, load(raw(f"hair_m{i:02d}")), tol=0.09, min_sat=0.25), os.path.join(OUT, "hair", f"m{i:02d}.png"))
         save(key_layer(hf, load(raw(f"hair_f{i:02d}")), tol=0.09, min_sat=0.25), os.path.join(OUT, "hair", f"f{i:02d}.png"))
-    for i in range(1, 7):
+    for i in range(1, BEARD_COUNT + 1):
         lay = key_layer(hm, load(raw(f"beard_{i:02d}")), hue=0.952, tol=0.065, min_sat=0.15)
         save(lay, os.path.join(OUT, "beards", f"b{i:02d}.png"))
 
@@ -237,7 +240,7 @@ def main() -> None:
         crop_save(Image.open(os.path.join(OUT, "pieces", f"{pid}_mm.png")).convert("RGBA"), pid)
     for wid in meta["weapons"]:
         crop_save(Image.open(os.path.join(OUT, "weapons", f"{wid}.png")).convert("RGBA"), wid)
-    for i in range(1, 11):
+    for i in range(1, HAIR_COUNT + 1):
         lay = load(os.path.join(OUT, "hair", f"f{i:02d}.png"))
         crop_save(Image.fromarray(recolor(lay, (106, 64, 38)).clip(0, 255).astype(np.uint8), "RGBA"),
                   f"hairstyle_{i:02d}")

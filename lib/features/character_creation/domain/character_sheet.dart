@@ -58,7 +58,7 @@ abstract class CharacterSheet with _$CharacterSheet {
 }
 
 /// Nombre de coiffures par sexe.
-const int hairStyleCount = 10;
+const int hairStyleCount = 14;
 
 /// Nombre de barbes (sans compter « aucune »).
-const int beardStyleCount = 6;
+const int beardStyleCount = 10;

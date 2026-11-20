@@ -106,9 +106,9 @@
   "label": "coiffure homme 01 longs raides (magenta)"
  },
  "hair_m02": {
-  "asset_id": "b430255a-aa96-4c21-8daf-830d08110468",
-  "sha12": "5e9cda2e16e2",
-  "label": "coiffure homme 02 court"
+  "asset_id": "40a41b0b-9698-480b-849a-b64d3559ba8e",
+  "sha12": "8cd6d65b7539",
+  "label": "coiffure m02 courte en bataille"
  },
  "hair_m03": {
   "asset_id": "80e0222a-9438-4e84-aef8-edb1e8006c44",
@@ -186,14 +186,14 @@
   "label": "coiffure femme 07 chignon haut"
  },
  "hair_f08": {
-  "asset_id": "1aaa2b9e-06f0-4ba3-bb76-6dccd3c93318",
-  "sha12": "689c1db76eaf",
-  "label": "coiffure femme 08 tresse sur l'épaule"
+  "asset_id": "70651427-3382-4846-bb66-b21d56c27c87",
+  "sha12": "8dd49940e5d3",
+  "label": "coiffure f08 couronne tressée"
  },
  "hair_f09": {
-  "asset_id": "68e3b605-0578-4351-8328-c5e5d3d9433e",
-  "sha12": "160d180ef834",
-  "label": "coiffure femme 09 côté rasé"
+  "asset_id": "3221dcf2-b7d4-427c-88ea-1878a40d0c34",
+  "sha12": "25333333fa58",
+  "label": "coiffure f09 pixie"
  },
  "hair_f10": {
   "asset_id": "b5b3143c-2d57-4674-940f-8b7218a40e1b",
@@ -1414,5 +1414,65 @@
   "asset_id": "824eb79e-1212-488c-a792-379716f55a37",
   "sha12": "06fdd513a562",
   "label": "fur_bracers small"
+ },
+ "hair_m11": {
+  "asset_id": "2ea030fe-a4df-4cd4-8fc3-f33337cdeccf",
+  "sha12": "ee7779076a5c",
+  "label": "coiffure m11 ondulée en arrière"
+ },
+ "hair_m12": {
+  "asset_id": "596bcb87-f012-49bc-9fe6-0a57b2c3d007",
+  "sha12": "9e11c1ab27fa",
+  "label": "coiffure m12 crinière"
+ },
+ "hair_m13": {
+  "asset_id": "3538e20b-bc97-4773-abe9-07ba2958fcf6",
+  "sha12": "88de5c098248",
+  "label": "coiffure m13 plaquée en arrière"
+ },
+ "hair_m14": {
+  "asset_id": "dc3d36a6-c24e-485e-8c60-e842ddd41b87",
+  "sha12": "debe5c34b6dc",
+  "label": "coiffure m14 bouclée courte"
+ },
+ "hair_f11": {
+  "asset_id": "dc22eef1-c774-44cd-9b18-1e94b2dd1c1e",
+  "sha12": "44be5f567bbf",
+  "label": "coiffure f11 longue frange droite"
+ },
+ "hair_f12": {
+  "asset_id": "aa109e65-0a93-4e5c-a745-50c41f4243c3",
+  "sha12": "acd53f15f4a2",
+  "label": "coiffure f12 bouclée mi-longue"
+ },
+ "hair_f13": {
+  "asset_id": "09940490-93a0-4da4-a3e3-2b003d0f0b53",
+  "sha12": "c1af380381f5",
+  "label": "coiffure f13 deux chignons"
+ },
+ "hair_f14": {
+  "asset_id": "bee70456-e04a-478b-84bc-c099106aaeeb",
+  "sha12": "392ea04fc426",
+  "label": "coiffure f14 chignon haut"
+ },
+ "beard_07": {
+  "asset_id": "61ca16d4-35de-43b7-9580-65363f2b3460",
+  "sha12": "753fcd62e28a",
+  "label": "barbe 07 bouc"
+ },
+ "beard_08": {
+  "asset_id": "1b4cbfd8-e552-4fb1-951f-03146e0c03f2",
+  "sha12": "b8cbd48f6001",
+  "label": "barbe 08 fourchue tressée"
+ },
+ "beard_09": {
+  "asset_id": "a55f7cfa-3153-4ec4-88ff-5b0a936539de",
+  "sha12": "ecd7b4f0301b",
+  "label": "barbe 09 favoris"
+ },
+ "beard_10": {
+  "asset_id": "f12a6cbd-c242-4132-953a-54bf3d37ee18",
+  "sha12": "5b4de3482ec3",
+  "label": "barbe 10 de mage"
  }
 }

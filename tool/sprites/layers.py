@@ -163,8 +163,10 @@ def key_layer(base: np.ndarray, edit: np.ndarray, hue: float | None = None,
         near = sat & (np.abs(((h - peak + 0.5) % 1) - 0.5) < 0.04)
         ang = h[near] * 2 * np.pi
         hue = (np.arctan2(np.sin(ang).mean(), np.cos(ang).mean()) / (2 * np.pi)) % 1
-    dh = np.abs(((h - hue + 0.5) % 1) - 0.5)
-    key = opaque & (dh < tol) & (s > min_sat) & (v > 0.18)
+    # Écart de teinte signé : côté rouge (au-delà du magenta, vers la peau)
+    # limité à 0,045 pour ne jamais prendre un visage voisin d'une frange.
+    dh = ((h - hue + 0.5) % 1) - 0.5
+    key = opaque & (dh > -tol) & (dh < min(tol, 0.045)) & (s > min_sat) & (v > 0.18)
     labels, n = ndimage.label(key, np.ones((3, 3)))
     if n:
         sizes = ndimage.sum(key, labels, range(1, n + 1))

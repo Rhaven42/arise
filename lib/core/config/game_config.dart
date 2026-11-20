@@ -1565,7 +1565,7 @@ const gameConfig = GameConfig(
       'mythic': 500,
     },
     hairStylePriceSilver: 10,
-    lockedHairStyles: [6, 8, 10],
+    lockedHairStyles: [6, 8, 10, 12, 14],
     dyeCostBronze: 50,
   ),
   provisionalKeys: [

@@ -17,6 +17,42 @@ const Map<CharacterRace, int> defaultSkinIndex = {
   CharacterRace.undead: 0,
 };
 
+/// Coiffures masquées pour une race et un sexe : elles se posent mal sur sa
+/// tête (cornes du minotaure et de la démone, grosses têtes des gnomes).
+const Map<CharacterRace, Map<CharacterSex, Set<int>>> hiddenHairStyles = {
+  CharacterRace.minotaur: {
+    CharacterSex.male: {1, 3, 5, 6, 9, 10, 11, 12},
+    CharacterSex.female: {4, 6, 7, 12},
+  },
+  CharacterRace.demon: {
+    CharacterSex.male: {5, 12},
+    CharacterSex.female: {4, 6},
+  },
+  CharacterRace.dwarf: {
+    CharacterSex.female: {7},
+  },
+  CharacterRace.gnome: {
+    CharacterSex.female: {6},
+  },
+};
+
+/// Coiffures retirées pour toutes les races (le dessin laisse le crâne nu).
+const Map<CharacterSex, Set<int>> retiredHairStyles = {
+  CharacterSex.female: {13},
+};
+
+/// La coiffure [style] se porte-t-elle sur cette race et ce sexe ?
+bool hairStyleFits(CharacterRace race, CharacterSex sex, int style) =>
+    style == 0 ||
+    !((retiredHairStyles[sex]?.contains(style) ?? false) ||
+        (hiddenHairStyles[race]?[sex]?.contains(style) ?? false));
+
+/// Coiffures proposées pour une race et un sexe (0 : crâne rasé).
+List<int> hairStylesFor(CharacterRace race, CharacterSex sex) => [
+  for (var style = 0; style <= hairStyleCount; style++)
+    if (hairStyleFits(race, sex, style)) style,
+];
+
 /// Teinte de peau de départ d'une race.
 int defaultSkin(CharacterRace race) =>
     skinsFor(race)[defaultSkinIndex[race]!].color;
@@ -33,13 +69,16 @@ CharacterSheet defaultSheet({
 );
 
 /// Change la race : la teinte de peau est ramenée dans celles de la
-/// nouvelle race si nécessaire.
+/// nouvelle race si nécessaire, une coiffure qui ne lui va pas est retirée.
 CharacterSheet changeRace(CharacterSheet sheet, CharacterRace race) {
   if (sheet.race == race) return sheet;
   final keepSkin = swatchOf(skinsFor(race), sheet.skinColor) != null;
   return sheet.copyWith(
     race: race,
     skinColor: keepSkin ? sheet.skinColor : defaultSkin(race),
+    hairStyle: hairStyleFits(race, sheet.sex, sheet.hairStyle)
+        ? sheet.hairStyle
+        : 0,
   );
 }
 
@@ -49,13 +88,17 @@ CharacterSheet changeSex(CharacterSheet sheet, CharacterSex sex) {
   return sheet.copyWith(
     sex: sex,
     beardStyle: sex == CharacterSex.female ? 0 : sheet.beardStyle,
+    hairStyle: hairStyleFits(sheet.race, sex, sheet.hairStyle)
+        ? sheet.hairStyle
+        : 0,
   );
 }
 
 /// Ramène chaque valeur dans ses bornes (fiche importée, ancienne version).
 ///
 /// Les anciennes fiches comptaient jusqu'à 35 coiffures : elles retombent
-/// dans les 10 coiffures actuelles, dans le même ordre circulaire.
+/// dans les coiffures actuelles, dans le même ordre circulaire ; une
+/// coiffure masquée pour la race devient un crâne rasé.
 CharacterSheet sanitizeSheet(CharacterSheet sheet) {
   final hair = sheet.hairStyle <= 0
       ? 0
@@ -64,7 +107,7 @@ CharacterSheet sanitizeSheet(CharacterSheet sheet) {
       ? 0
       : (sheet.beardStyle - 1) % beardStyleCount + 1;
   return sheet.copyWith(
-    hairStyle: hair,
+    hairStyle: hairStyleFits(sheet.race, sheet.sex, hair) ? hair : 0,
     beardStyle: sheet.sex == CharacterSex.female ? 0 : beard,
     skinColor: swatchOf(skinsFor(sheet.race), sheet.skinColor) == null
         ? defaultSkin(sheet.race)
@@ -83,15 +126,17 @@ CharacterSheet randomSheet(
   final race =
       CharacterRace.values[random.nextInt(CharacterRace.values.length)];
   final skins = skinsFor(race);
+  final styles = [
+    for (final style in hairStyles ?? hairStylesFor(race, sex).skip(1))
+      if (style > 0 && hairStyleFits(race, sex, style)) style,
+  ];
   return CharacterSheet(
     sex: sex,
     race: race,
     name: name,
     skinColor: skins[random.nextInt(skins.length)].color,
     hairColor: hairColors[random.nextInt(hairColors.length)].color,
-    hairStyle: hairStyles == null || hairStyles.isEmpty
-        ? random.nextInt(hairStyleCount) + 1
-        : hairStyles[random.nextInt(hairStyles.length)],
+    hairStyle: styles.isEmpty ? 0 : styles[random.nextInt(styles.length)],
     beardStyle: sex == CharacterSex.male
         ? random.nextInt(beardStyleCount + 1)
         : 0,
