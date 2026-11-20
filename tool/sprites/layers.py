@@ -163,8 +163,10 @@ def key_layer(base: np.ndarray, edit: np.ndarray, hue: float | None = None,
         near = sat & (np.abs(((h - peak + 0.5) % 1) - 0.5) < 0.04)
         ang = h[near] * 2 * np.pi
         hue = (np.arctan2(np.sin(ang).mean(), np.cos(ang).mean()) / (2 * np.pi)) % 1
-    dh = np.abs(((h - hue + 0.5) % 1) - 0.5)
-    key = opaque & (dh < tol) & (s > min_sat) & (v > 0.18)
+    # Écart de teinte signé : côté rouge (au-delà du magenta, vers la peau)
+    # limité à 0,045 pour ne jamais prendre un visage voisin d'une frange.
+    dh = ((h - hue + 0.5) % 1) - 0.5
+    key = opaque & (dh > -tol) & (dh < min(tol, 0.045)) & (s > min_sat) & (v > 0.18)
     labels, n = ndimage.label(key, np.ones((3, 3)))
     if n:
         sizes = ndimage.sum(key, labels, range(1, n + 1))
@@ -266,7 +268,8 @@ def skin_mask(img: np.ndarray, palette: np.ndarray, tol: int = 36) -> np.ndarray
 
 
 def cloth_palette(base: np.ndarray, neck: int, hands: int, bottom: int,
-                  face: np.ndarray, legs: bool = True) -> np.ndarray:
+                  face: np.ndarray, legs: bool = True,
+                  width: tuple[float, float] = (0.04, 0.11)) -> np.ndarray:
     """Couleurs des habits de base, ombres comprises : chemise (torse entre
     le cou et les mains) et pantalon (bande des jambes sous les mains)."""
     al = base[..., 3] > 0
@@ -278,8 +281,9 @@ def cloth_palette(base: np.ndarray, neck: int, hands: int, bottom: int,
     box = np.zeros(al.shape, bool)
     # Chemise : deux bandes de part et d'autre de l'encolure (épaules
     # comprises), sans la peau du col en V.
-    box[a0:a1, int(cx - 0.11 * h): int(cx - 0.04 * h)] = True
-    box[a0:a1, int(cx + 0.04 * h): int(cx + 0.11 * h)] = True
+    w0, w1 = width
+    box[a0:a1, int(cx - w1 * h): int(cx - w0 * h)] = True
+    box[a0:a1, int(cx + w0 * h): int(cx + w1 * h)] = True
     if legs:
         box[b0:b1] = True
     px = base[box & al][:, :3]
@@ -488,3 +492,154 @@ def neck_row(base: np.ndarray, skull: tuple[float, float, float]) -> int:
             r += 1
         widths.append(r - l)
     return lo + int(np.argmin(widths))
+
+
+# Bande de lignes de chaque pièce, en fraction de la hauteur cou → pieds.
+PIECE_BANDS = {"top": (0.0, 0.62), "legs": (0.40, 0.88), "feet": (0.76, 1.01), "hands": (0.2, 0.75)}
+
+
+def piece_layer(base: np.ndarray, edit: np.ndarray, slot: str, neck: int, feet: int,
+                skin_sample: tuple[int, int], skull_top: float,
+                arms: list | None = None) -> np.ndarray:
+    """Pièce séparée (haut, bas, chaussures, gants) : pixels de l'édition qui
+    diffèrent du corps de base dans la bande de la pièce, trous internes
+    bouchés et contour sombre compris. Le bas et les chaussures excluent les
+    mains ; les gants ne gardent que les mains et avant-bras. La peau dévoilée
+    (bras d'un haut sans manches) est marquée par l'alpha de peau."""
+    edit = align(prealign(edit, base), base, slice(0, neck - 2),
+                 scales=(0.96, 0.98, 1.0, 1.02, 1.04))
+    f0, f1 = PIECE_BANDS[slot]
+    rows = np.zeros(base.shape[:2], bool)
+    rows[max(neck, int(neck + f0 * (feet - neck))): int(neck + f1 * (feet - neck)) + 1] = True
+    base_skin = body_skin(base, skin_sample, neck, skull_top, arms)
+    hands = base_skin.copy()
+    hands[: int(neck + 0.15 * (feet - neck))] = False
+    near_hands = ndimage.binary_dilation(hands, np.ones((3, 3)), iterations=3)
+    if slot in ("legs", "feet"):
+        rows &= ~near_hands
+    elif slot == "hands":
+        rows &= ndimage.binary_dilation(hands, np.ones((3, 3)), iterations=4)
+    opaque = edit[..., 3] > 0
+    # Chaussures : teintes sombres voisines (vert foncé sur brun) : seuil bas.
+    limit = 32 if slot == "feet" else 60
+    changed = opaque & rows & ((color_dist(edit, base) > limit) | (base[..., 3] == 0))
+    # Petits écarts isolés (recalage, bruit) écartés.
+    changed = ndimage.binary_opening(changed, np.ones((2, 2)))
+    labels, n = ndimage.label(changed, np.ones((3, 3)))
+    if n:
+        sizes = ndimage.sum(changed, labels, range(1, n + 1))
+        changed = np.isin(labels, [i + 1 for i, s_ in enumerate(sizes) if s_ >= 12])
+    mask = ndimage.binary_fill_holes(changed) & rows
+    if slot == "legs":
+        # Tout le pantalon du corps de base, même là où l'édition a gardé la
+        # couleur d'origine ; sans les pans de chemise (couleurs de la
+        # chemise de base).
+        span = feet - neck
+        cx = int(np.mean(np.nonzero(base[..., 3] > 0)[1]))
+        pants = base[int(neck + 0.55 * span): int(neck + 0.75 * span), cx - 8: cx + 9]
+        pants = np.unique(pants[pants[..., 3] > 0][:, :3] // 6 * 6, axis=0)
+        shirt = base[int(neck + 0.15 * span): int(neck + 0.35 * span), cx - 12: cx + 13]
+        shirt = np.unique(shirt[shirt[..., 3] > 0][:, :3] // 6 * 6, axis=0)
+        # Beige de la chemise seulement (sans lacets ni ceinture, sombres).
+        _, s_sh, v_sh = _hue_sat_val(shirt[None].astype(float))
+        shirt = shirt[(v_sh[0] > 0.55) & (s_sh[0] < 0.4)]
+        ba = base[..., 3] > 0
+        py_, px_ = np.nonzero(ba & rows)
+        rgb_ = base[py_, px_, None, :3]
+        is_pants = np.zeros_like(mask)
+        is_pants[py_, px_] = (np.abs(rgb_ - pants[None]).sum(-1).min(1)
+                              < np.abs(rgb_ - shirt[None]).sum(-1).min(1))
+        is_pants &= ~base_skin
+        is_pants = ndimage.binary_opening(is_pants, np.ones((2, 2)))
+        mask |= ndimage.binary_dilation(is_pants, np.ones((3, 3))) & opaque & rows
+        ey, ex = np.nonzero(mask)
+        d_sh = np.abs(edit[ey, ex, None, :3] - shirt[None]).sum(-1).min(1)
+        mask[ey[d_sh < 14], ex[d_sh < 14]] = False
+    if slot == "feet":
+        # Seuls les morceaux qui touchent le sol (les chaussures) ; les
+        # revers de pantalon redessinés au-dessus sont écartés.
+        parts, n = ndimage.label(mask, np.ones((3, 3)))
+        ground = set(np.unique(parts[feet - int(0.05 * (feet - neck)): feet + 1]))
+        ground.discard(0)
+        mask = np.isin(parts, list(ground))
+        # Revers du pantalon de base collés au haut de la chaussure : retirés
+        # dans la moitié haute de la pièce.
+        span = feet - neck
+        cx = int(np.mean(np.nonzero(base[..., 3] > 0)[1]))
+        pants = base[int(neck + 0.55 * span): int(neck + 0.75 * span), cx - 14: cx + 15]
+        pants = np.unique(pants[pants[..., 3] > 0][:, :3] // 6 * 6, axis=0)
+        ys_ = np.nonzero(mask.any(axis=1))[0]
+        if len(ys_) and len(pants):
+            top_half = np.zeros_like(mask)
+            top_half[ys_[0]: (ys_[0] + ys_[-1]) // 2] = True
+            ey, ex = np.nonzero(mask & top_half)
+            d_p = np.abs(edit[ey, ex, None, :3] - pants[None]).sum(-1).min(1)
+            mask[ey[d_p < 16], ex[d_p < 16]] = False
+            mask = ndimage.binary_opening(mask, np.ones((2, 2)))
+    if slot == "top":
+        # Sous la taille, un pixel plus proche du pantalon de base que du
+        # vêtement n'en fait pas partie (pantalon retouché par l'édition).
+        span = feet - neck
+        # Pantalon du corps de base et de l'édition (retouché parfois d'un ton).
+        pants = np.concatenate([base[int(neck + 0.55 * span): int(neck + 0.75 * span)],
+                                edit[int(neck + 0.66 * span): int(neck + 0.80 * span)]])
+        pants = np.unique(pants[pants[..., 3] > 0][:, :3] // 6 * 6, axis=0)
+        cx = int(np.mean(np.nonzero(base[..., 3] > 0)[1]))
+        torso = edit[int(neck + 0.15 * span): int(neck + 0.35 * span), cx - 6: cx + 7]
+        garment = np.unique(torso[torso[..., 3] > 0][:, :3] // 6 * 6, axis=0)
+        low = np.zeros_like(mask)
+        low[int(neck + 0.45 * span):] = True
+        ys_, xs_ = np.nonzero(mask & low)
+        if len(ys_) and len(pants) and len(garment):
+            px_ = edit[ys_, xs_, None, :3]
+            d_p = np.abs(px_ - pants[None]).sum(-1).min(1)
+            d_g = np.abs(px_ - garment[None]).sum(-1).min(1)
+            # Pantalon reconnu, ou couleur loin de toutes celles du vêtement.
+            drop = (d_p < d_g) | (d_g > 45)
+            mask[ys_[drop], xs_[drop]] = False
+            mask = ndimage.binary_opening(mask, np.ones((2, 2))) | (mask & ~low)
+    mask |= ndimage.binary_dilation(mask, np.ones((3, 3))) & opaque & rows & (luminance(edit) < 0.25)
+    out = np.zeros_like(edit)
+    out[mask] = edit[mask]
+    _, _, v = _hue_sat_val(edit)
+    x, y = skin_sample
+    bright = v > 0.55 * float(np.median(_hue_sat_val(base)[2][y - 1: y + 2, x - 1: x + 2]))
+    # Peau dévoilée : seulement pour un haut ou des gants (bras nus) ; sur le
+    # bas et les chaussures, les reflets du métal ressemblent à de la peau.
+    if slot == "hands":
+        # Gants : seulement ce qui a changé (la peau intacte de l'avant-bras
+        # reste celle du corps, sous une éventuelle manche).
+        out[mask & (color_dist(edit, base) < 40)] = 0
+        out[skin_mask(edit, face_palette(base, skin_sample), 20) & mask] = 0
+        # Manches de la chemise de base (beige clair) écartées.
+        span = feet - neck
+        cx = int(np.mean(np.nonzero(base[..., 3] > 0)[1]))
+        shirt = base[int(neck + 0.15 * span): int(neck + 0.35 * span), cx - 12: cx + 13]
+        shirt = np.unique(shirt[shirt[..., 3] > 0][:, :3] // 6 * 6, axis=0)
+        _, s_sh, v_sh = _hue_sat_val(shirt[None].astype(float))
+        shirt = shirt[(v_sh[0] > 0.55) & (s_sh[0] < 0.4)]
+        ey, ex = np.nonzero(out[..., 3] > 0)
+        if len(ey) and len(shirt):
+            d_sh = np.abs(out[ey, ex, None, :3] - shirt[None]).sum(-1).min(1)
+            out[ey[d_sh < 24], ex[d_sh < 24]] = 0
+        keep = ndimage.binary_opening(out[..., 3] > 0, np.ones((2, 2)))
+        out[~keep] = 0
+        return out
+    skin = base_skin & mask & (color_dist(edit, base) < 40)
+    if slot == "top":
+        # Plus proche de la peau du visage que des couleurs du vêtement
+        # (prises sur le torse de l'édition) : le cuir vert d'un haut n'est
+        # pas la peau verte d'un orque.
+        pal = face_palette(base, skin_sample)
+        new_skin = skin_mask(edit, pal, 34) & bright & mask
+        hands_ = int(neck + 0.62 * (feet - neck))
+        garment = cloth_palette(edit, neck, hands_, feet, pal, legs=False, width=(0.03, 0.065))
+        if len(garment):
+            ys_, xs_ = np.nonzero(new_skin)
+            px_ = edit[ys_, xs_, None, :3]
+            d_face = np.abs(px_ - pal[None]).sum(-1).min(1)
+            d_garm = np.abs(px_ - garment[None]).sum(-1).min(1)
+            new_skin[ys_[d_garm <= d_face], xs_[d_garm <= d_face]] = False
+        skin |= new_skin
+    out[skin, 3] = SKIN_ALPHA
+    return out

@@ -1,0 +1,92 @@
+{
+ "_comment": "Pièces séparées du shop, décrites pour SpriteCook (édition du corps de base : seule la pièce change). Chaque pièce est générée sur les 5 gabarits de outfits.json.",
+ "slots": {
+  "top": "Only change the shirt: now wearing {d}. Keep exactly the same brown trousers, same brown belt and same brown boots.",
+  "legs": "Only change the trousers: now wearing {d}. Keep exactly the same beige shirt, same brown belt and same brown boots.",
+  "feet": "Only change the boots: now wearing {d}. Keep exactly the same beige shirt, same brown trousers and same brown belt.",
+  "hands": "Only add gloves: now wearing {d} on both hands. Keep exactly the same beige shirt with rolled sleeves, same brown trousers, same belt and same boots."
+ },
+ "tail": "Bare head and face unchanged, no helmet, no hood, no weapon, empty hands.",
+ "pieces": {
+  "forest_jerkin": [
+   "top",
+   "a short sleeved dark green leather jerkin with brass buckles over the torso, bare forearms"
+  ],
+  "padded_gambeson": [
+   "top",
+   "a quilted crimson padded gambeson with long sleeves and a high collar"
+  ],
+  "chain_shirt": [
+   "top",
+   "a long sleeved steel chainmail shirt reaching the hips"
+  ],
+  "noble_doublet": [
+   "top",
+   "an elegant royal blue doublet embroidered with gold patterns, long sleeves with white cuffs"
+  ],
+  "fur_vest": [
+   "top",
+   "a sleeveless brown fur vest with leather lacing, bare muscular arms"
+  ],
+  "iron_greaves": [
+   "legs",
+   "dark grey plated leg armor with steel knee guards"
+  ],
+  "black_breeches": [
+   "legs",
+   "black leather trousers with silver studs along the sides"
+  ],
+  "chain_chausses": [
+   "legs",
+   "steel chainmail leggings"
+  ],
+  "ranger_trousers": [
+   "legs",
+   "dark navy blue cloth trousers, entirely navy blue from the belt to the boots, with black leather knee pads"
+  ],
+  "royal_breeches": [
+   "legs",
+   "white breeches with a gold stripe down each leg"
+  ],
+  "steel_sabatons": [
+   "feet",
+   "polished steel armored sabatons"
+  ],
+  "fur_boots": [
+   "feet",
+   "tall grey fur-lined boots tied with leather cords"
+  ],
+  "elven_boots": [
+   "feet",
+   "tall pointed dark green elven boots with silver leaf buckles"
+  ],
+  "riding_boots": [
+   "feet",
+   "tall black leather riding boots with silver buckles"
+  ],
+  "golden_boots": [
+   "feet",
+   "gold trimmed white armored boots"
+  ],
+  "steel_gauntlets": [
+   "hands",
+   "polished steel plate gauntlets"
+  ],
+  "leather_gloves": [
+   "hands",
+   "dark brown leather gloves with short cuffs"
+  ],
+  "fingerless_gloves": [
+   "hands",
+   "black fingerless leather gloves with bare fingers"
+  ],
+  "silk_gloves": [
+   "hands",
+   "long elegant white silk gloves"
+  ],
+  "fur_bracers": [
+   "hands",
+   "brown leather gloves with grey fur bracers on the forearms"
+  ]
+ }
+}

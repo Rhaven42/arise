@@ -81,6 +81,7 @@ class SpriteAtlas {
       hair: await opt(p.hair),
       beard: await opt(p.beard),
       weapon: await opt(p.weapon),
+      pieces: [for (final path in p.pieces) await image(path)],
     );
     final out = composer.compose(appearance, layers);
     final completer = Completer<ui.Image>();

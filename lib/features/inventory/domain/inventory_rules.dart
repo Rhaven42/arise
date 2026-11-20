@@ -1,6 +1,7 @@
 import 'package:arise/core/config/game_config.dart';
 import 'package:arise/features/inventory/domain/equipment.dart';
 import 'package:arise/features/inventory/domain/inventory.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 /// Teinte de teinture (identifiant stable + couleur ARGB).
 class DyeColor {
@@ -27,7 +28,16 @@ const List<DyeColor> dyeColors = [
 /// Raisons d'un refus d'équipement.
 enum EquipIssue { notOwned, unknownItem }
 
-/// Porte un objet possédé, à la place de celui de son emplacement.
+/// Emplacements libérés quand on porte un objet de [slot] : une tenue
+/// complète remplace le haut et le bas, et inversement.
+Set<EquipmentSlot> _displaced(EquipmentSlot slot) => switch (slot) {
+  EquipmentSlot.chest => {EquipmentSlot.top, EquipmentSlot.legs},
+  EquipmentSlot.top || EquipmentSlot.legs => {EquipmentSlot.chest},
+  _ => const {},
+};
+
+/// Porte un objet possédé, à la place de celui de son emplacement (une tenue
+/// complète retire le haut et le bas, un haut ou un bas retire la tenue).
 ({Inventory inventory, EquipIssue? issue}) equip(
   Inventory inventory,
   String itemId,
@@ -41,7 +51,11 @@ enum EquipIssue { notOwned, unknownItem }
   }
   return (
     inventory: inventory.copyWith(
-      equipped: {...inventory.equipped, item.slot: itemId},
+      equipped: {
+        for (final e in inventory.equipped.entries)
+          if (!_displaced(item.slot).contains(e.key)) e.key: e.value,
+        item.slot: itemId,
+      },
     ),
     issue: null,
   );
@@ -106,9 +120,30 @@ Inventory sanitizeInventory(Inventory inventory) {
   );
 }
 
+/// Pièce séparée portée : sprite et teinte éventuelle.
+@immutable
+class WornPiece {
+  const WornPiece(this.spriteId, [this.tint]);
+
+  final String spriteId;
+  final int? tint;
+
+  @override
+  bool operator ==(Object other) =>
+      other is WornPiece && other.spriteId == spriteId && other.tint == tint;
+
+  @override
+  int get hashCode => Object.hash(spriteId, tint);
+}
+
 /// Ce que le rendu doit afficher pour l'équipement porté.
 class Loadout {
-  const Loadout({this.outfitId, this.outfitTint, this.weaponId});
+  const Loadout({
+    this.outfitId,
+    this.outfitTint,
+    this.weaponId,
+    this.pieces = const [],
+  });
 
   /// Rien de porté : vêtements de base du personnage.
   static const Loadout none = Loadout();
@@ -121,24 +156,38 @@ class Loadout {
 
   /// Sprite de l'arme tenue, ou `null`.
   final String? weaponId;
+
+  /// Pièces séparées portées, dans l'ordre où elles se dessinent.
+  final List<WornPiece> pieces;
 }
 
 /// Calcule l'apparence de l'équipement porté (un objet essayé en boutique
 /// peut remplacer celui de son emplacement).
 Loadout loadoutOf(Inventory inventory, {EquipmentItem? tryOn}) {
+  // L'essayage libère les emplacements qu'un achat libérerait.
+  final hidden = tryOn == null
+      ? const <EquipmentSlot>{}
+      : _displaced(tryOn.slot);
   EquipmentItem? worn(EquipmentSlot slot) {
     if (tryOn != null && tryOn.slot == slot) return tryOn;
+    if (hidden.contains(slot)) return null;
     final id = inventory.equipped[slot];
     return id == null ? null : itemById(id);
   }
+
+  int? tintOf(EquipmentItem item) =>
+      (item.dyeable ? inventory.dyes[item.id] : null) ?? item.tint;
 
   final outfit = worn(EquipmentSlot.chest);
   final weapon = worn(EquipmentSlot.weapon);
   return Loadout(
     outfitId: outfit?.spriteId,
-    outfitTint: outfit == null
-        ? null
-        : (outfit.dyeable ? inventory.dyes[outfit.id] : null) ?? outfit.tint,
+    outfitTint: outfit == null ? null : tintOf(outfit),
     weaponId: weapon?.spriteId,
+    pieces: [
+      for (final slot in pieceSlots)
+        if (worn(slot) case final piece?)
+          WornPiece(piece.spriteId, tintOf(piece)),
+    ],
   );
 }

@@ -1502,5 +1502,27 @@
    ],
    "grip": 0.86
   }
+ },
+ "pieces": {
+  "forest_jerkin": "top",
+  "padded_gambeson": "top",
+  "chain_shirt": "top",
+  "noble_doublet": "top",
+  "fur_vest": "top",
+  "iron_greaves": "legs",
+  "black_breeches": "legs",
+  "chain_chausses": "legs",
+  "ranger_trousers": "legs",
+  "royal_breeches": "legs",
+  "steel_sabatons": "feet",
+  "fur_boots": "feet",
+  "elven_boots": "feet",
+  "riding_boots": "feet",
+  "golden_boots": "feet",
+  "steel_gauntlets": "hands",
+  "leather_gloves": "hands",
+  "fingerless_gloves": "hands",
+  "silk_gloves": "hands",
+  "fur_bracers": "hands"
  }
 }

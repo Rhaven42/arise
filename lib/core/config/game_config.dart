@@ -1556,6 +1556,7 @@ const gameConfig = GameConfig(
       'feet': 1,
       'back': 3,
       'weapon': 3,
+      'top': 3,
     },
     rarityPriceSilver: {
       'rare': 10,
@@ -1564,7 +1565,7 @@ const gameConfig = GameConfig(
       'mythic': 500,
     },
     hairStylePriceSilver: 10,
-    lockedHairStyles: [6, 8, 10],
+    lockedHairStyles: [6, 8, 10, 12, 14],
     dyeCostBronze: 50,
   ),
   provisionalKeys: [

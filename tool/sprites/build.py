@@ -19,7 +19,7 @@ from PIL import Image
 
 sys.path.insert(0, os.path.dirname(__file__))
 from layers import (CANVAS_H, CANVAS_W, SKIN_ALPHA, best_skin,  # noqa: E402
-                    key_layer, load, neck_row, outfit_layer, recolor, save)
+                    key_layer, load, neck_row, outfit_layer, piece_layer, recolor, save)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(HERE, "raw")
@@ -40,6 +40,9 @@ GRIP = {"sword": 0.86, "dagger": 0.8, "scimitar": 0.86, "axe": 0.72, "mace": 0.7
         "hammer": 0.74, "staff": 0.62, "halberd": 0.6}
 
 
+# Coiffures par sexe et barbes (raw/hair_mNN, raw/hair_fNN, raw/beard_NN).
+HAIR_COUNT = 14
+BEARD_COUNT = 10
 # Races à cornes : les cornes passent devant la coiffure.
 HORNED = {"demon", "minotaur"}
 # Alpha des pixels d'un corps dessinés devant la coiffure (cornes).
@@ -157,10 +160,10 @@ def main() -> None:
 
     meta["hairSources"] = {"male": source("human_male"), "female": source("human_female"),
                            "beard": source("human_male")}
-    for i in range(1, 11):
+    for i in range(1, HAIR_COUNT + 1):
         save(key_layer(hm, load(raw(f"hair_m{i:02d}")), tol=0.09, min_sat=0.25), os.path.join(OUT, "hair", f"m{i:02d}.png"))
         save(key_layer(hf, load(raw(f"hair_f{i:02d}")), tol=0.09, min_sat=0.25), os.path.join(OUT, "hair", f"f{i:02d}.png"))
-    for i in range(1, 7):
+    for i in range(1, BEARD_COUNT + 1):
         lay = key_layer(hm, load(raw(f"beard_{i:02d}")), hue=0.952, tol=0.065, min_sat=0.15)
         save(lay, os.path.join(OUT, "beards", f"b{i:02d}.png"))
 
@@ -191,6 +194,22 @@ def main() -> None:
                                heads["arms"].get(tpl["base"]))
             save(lay, os.path.join(OUT, "outfits", f"{oid}_{g}.png"))
 
+    # Pièces séparées (haut, bas, chaussures, gants) par gabarit.
+    pieces = json.load(open(os.path.join(HERE, "pieces.json")))
+    os.makedirs(os.path.join(OUT, "pieces"), exist_ok=True)
+    meta["pieces"] = {}
+    for g, tpl in outfits["templates"].items():
+        b = load(raw(tpl["base"]))
+        x0, t, x1 = heads[tpl["base"]]
+        neck = neck_of(heads, tpl["base"], b)
+        feet = int(np.where((b[..., 3] > 0).any(axis=1))[0][-1])
+        sample = (int((x0 + x1) / 2), int(t + 0.62 * (x1 - x0)))
+        for pid, (slot, _) in pieces["pieces"].items():
+            lay = piece_layer(b, load(raw(f"piece_{pid}_{g}")), slot, neck, feet, sample, t,
+                              heads["arms"].get(tpl["base"]))
+            save(lay, os.path.join(OUT, "pieces", f"{pid}_{g}.png"))
+            meta["pieces"][pid] = slot
+
     # Armes recadrées, prise de la main.
     for f in sorted(os.listdir(RAW)):
         if not f.startswith("weapon_"):
@@ -217,9 +236,11 @@ def main() -> None:
 
     for oid in outfits["outfits"]:
         crop_save(Image.open(os.path.join(OUT, "outfits", f"{oid}_mm.png")).convert("RGBA"), oid)
+    for pid in meta["pieces"]:
+        crop_save(Image.open(os.path.join(OUT, "pieces", f"{pid}_mm.png")).convert("RGBA"), pid)
     for wid in meta["weapons"]:
         crop_save(Image.open(os.path.join(OUT, "weapons", f"{wid}.png")).convert("RGBA"), wid)
-    for i in range(1, 11):
+    for i in range(1, HAIR_COUNT + 1):
         lay = load(os.path.join(OUT, "hair", f"f{i:02d}.png"))
         crop_save(Image.fromarray(recolor(lay, (106, 64, 38)).clip(0, 255).astype(np.uint8), "RGBA"),
                   f"hairstyle_{i:02d}")

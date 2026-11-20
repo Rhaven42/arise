@@ -30,6 +30,36 @@ void main() {
     expect(swatchOf(demonSkins, demon.skinColor), isNotNull);
   });
 
+  test('coiffures masquées selon la race', () {
+    expect(hairStyleFits(CharacterRace.human, CharacterSex.male, 5), isTrue);
+    expect(
+      hairStyleFits(CharacterRace.minotaur, CharacterSex.male, 5),
+      isFalse,
+    );
+    expect(hairStyleFits(CharacterRace.minotaur, CharacterSex.male, 0), isTrue);
+    final styles = hairStylesFor(CharacterRace.minotaur, CharacterSex.male);
+    expect(styles.first, 0);
+    expect(styles, isNot(contains(5)));
+    expect(
+      hairStylesFor(CharacterRace.human, CharacterSex.female),
+      hasLength(14),
+    );
+    // Changer de race retire une coiffure qui ne lui va pas.
+    final human = defaultSheet(sex: CharacterSex.male).copyWith(hairStyle: 5);
+    expect(changeRace(human, CharacterRace.minotaur).hairStyle, 0);
+    expect(changeRace(human, CharacterRace.orc).hairStyle, 5);
+    expect(
+      sanitizeSheet(human.copyWith(race: CharacterRace.minotaur)).hairStyle,
+      0,
+    );
+    // Le tirage au hasard ne propose que des coiffures qui vont.
+    final random = Random(1);
+    for (var i = 0; i < 200; i++) {
+      final sheet = randomSheet(random);
+      expect(hairStyleFits(sheet.race, sheet.sex, sheet.hairStyle), isTrue);
+    }
+  });
+
   test('passer en femme retire la barbe', () {
     final man = defaultSheet(sex: CharacterSex.male).copyWith(beardStyle: 3);
     expect(changeSex(man, CharacterSex.female).beardStyle, 0);
@@ -40,7 +70,7 @@ void main() {
       defaultSheet(
         sex: CharacterSex.male,
         race: CharacterRace.goblin,
-      ).copyWith(hairStyle: 23, beardStyle: 9, skinColor: 0xFF123456),
+      ).copyWith(hairStyle: 31, beardStyle: 13, skinColor: 0xFF123456),
     );
     expect(sheet.hairStyle, 3);
     expect(sheet.beardStyle, 3);

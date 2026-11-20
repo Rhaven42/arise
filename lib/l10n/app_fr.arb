@@ -1178,7 +1178,7 @@
     }
   },
   "characterHairStyle": "Coiffure",
-  "characterHairStyleName": "{id, select, none{Rasée} m1{1 · Longs raides} m2{2 · Courte} m3{3 · Queue de guerrier} m4{4 · Crête} m5{5 · Afro} m6{6 · Ébouriffée} m7{7 · Tresse nordique} m8{8 · Chignon haut} m9{9 · Ondulée} m10{10 · Très longue} f1{1 · Longue à frange} f2{2 · Queue haute} f3{3 · Deux tresses} f4{4 · Carré} f5{5 · Courte} f6{6 · Bouclée} f7{7 · Chignon} f8{8 · Tresse sur l'épaule} f9{9 · Côté rasé} f10{10 · Mi-longue ondulée} other{?}}",
+  "characterHairStyleName": "{id, select, none{Rasée} m1{1 · Longs raides} m2{2 · Courte en bataille} m3{3 · Queue de guerrier} m4{4 · Crête} m5{5 · Afro} m6{6 · Ébouriffée} m7{7 · Tresse nordique} m8{8 · Chignon haut} m9{9 · Ondulée} m10{10 · Très longue} m11{11 · Ondulée en arrière} m12{12 · Crinière} m13{13 · Plaquée} m14{14 · Bouclée courte} f1{1 · Longue à frange} f2{2 · Queue haute} f3{3 · Deux tresses} f4{4 · Carré} f5{5 · Courte} f6{6 · Bouclée} f7{7 · Chignon} f8{8 · Couronne tressée} f9{9 · Garçonne} f10{10 · Mi-longue ondulée} f11{11 · Longue à frange droite} f12{12 · Bouclée mi-longue} f13{13 · Deux chignons} f14{14 · Chignon haut} h1{n° 1} h2{n° 2} h3{n° 3} h4{n° 4} h5{n° 5} h6{n° 6} h7{n° 7} h8{n° 8} h9{n° 9} h10{n° 10} h11{n° 11} h12{n° 12} h13{n° 13} h14{n° 14} other{?}}",
   "@characterHairStyleName": {
     "placeholders": {
       "id": {
@@ -1246,7 +1246,7 @@
   "characterTabHair": "Coiffure",
   "characterTabSheet": "Nom & fiche",
   "characterBeard": "Barbe",
-  "characterBeardName": "{id, select, b0{Aucune} b1{Courte} b2{Longue} b3{Bouc} b4{Tressée} b5{Moustache en guidon} b6{Naissante} other{?}}",
+  "characterBeardName": "{id, select, b0{Aucune} b1{Courte} b2{Longue} b3{Bouc} b4{Tressée} b5{Moustache en guidon} b6{Naissante} b7{Barbiche} b8{Fourchue tressée} b9{Favoris} b10{Barbe de mage} other{?}}",
   "@characterBeardName": {
     "placeholders": {
       "id": {
@@ -1336,7 +1336,7 @@
       }
     }
   },
-  "equipmentSlotName": "{id, select, head{Tête} shoulders{Épaules} chest{Tenue} hands{Mains} belt{Ceinture} legs{Jambes} feet{Pieds} back{Dos} weapon{Arme} other{?}}",
+  "equipmentSlotName": "{id, select, head{Tête} shoulders{Épaules} chest{Tenue} top{Haut} hands{Gants} belt{Ceinture} legs{Bas} feet{Chaussures} back{Dos} weapon{Arme} other{?}}",
   "@equipmentSlotName": {
     "placeholders": {
       "id": {
@@ -1352,7 +1352,7 @@
       }
     }
   },
-  "itemName": "{id, select, awakened_leather{Cuir de l'Éveillé} warden_mail{Maille du Veilleur} dawn_plate{Plates de l'Aube} obsidian_knight{Chevalier d'Obsidienne} silver_knight{Chevalier d'Argent} golden_king{Armure du Roi doré} wanderer_coat{Tenue de l'Errant} noble_gown{Atours de la Noble} hunter_leather{Cuir du Traqueur} scale_warden{Écailles du Gardien} north_lamellar{Lamelles du Nord} sylvan_ranger{Rôdeur sylvestre} oath_knight{Chevalier du Serment} lotus_samurai{Armure du Lotus} city_guard{Garde de la Cité} pale_coat{Manteau pâle} desert_sentinel{Sentinelle des Sables} verdant_guardian{Gardien des Feuilles} frost_warden{Gardien du Givre} crimson_vanguard{Avant-garde Pourpre} ember_berserker{Berserker des Braises} storm_templar{Templier de l'Orage} bone_reaver{Faucheur d'Os} arcane_battlemage{Mage de bataille arcanique} abyss_knight{Chevalier des Abysses} sword_warden{Épée longue du Gardien} axe_war{Hache de guerre} mace_spiked{Masse à pointes} dagger_desert{Dague des sables} scimitar_jade{Cimeterre de jade} staff_dusk{Bâton du Crépuscule} sword_frost{Épée de Givre} halberd_silver{Hallebarde d'argent} hammer_runic{Marteau runique} sword_dawn{Épée d'apparat de l'Aube} sword_ember{Lame de Braise} staff_ember{Bâton de Braise} guardian_jacket{Cuir du Gardien du Rocher} stag_cape{Armure du Cerf d'Argent} wind_hood{Tenue de la Danseuse des Vents} colossus_leggings{Armure du Colosse de Basalte} comet_cape{Armure de la Comète Écarlate} tempest_hood{Manteau du Seigneur des Tempêtes} other{?}}",
+  "itemName": "{id, select, awakened_leather{Cuir de l'Éveillé} warden_mail{Maille du Veilleur} dawn_plate{Plates de l'Aube} obsidian_knight{Chevalier d'Obsidienne} silver_knight{Chevalier d'Argent} golden_king{Armure du Roi doré} wanderer_coat{Tenue de l'Errant} noble_gown{Atours de la Noble} hunter_leather{Cuir du Traqueur} scale_warden{Écailles du Gardien} north_lamellar{Lamelles du Nord} sylvan_ranger{Rôdeur sylvestre} oath_knight{Chevalier du Serment} lotus_samurai{Armure du Lotus} city_guard{Garde de la Cité} pale_coat{Manteau pâle} desert_sentinel{Sentinelle des Sables} verdant_guardian{Gardien des Feuilles} frost_warden{Gardien du Givre} crimson_vanguard{Avant-garde Pourpre} ember_berserker{Berserker des Braises} storm_templar{Templier de l'Orage} bone_reaver{Faucheur d'Os} arcane_battlemage{Mage de bataille arcanique} abyss_knight{Chevalier des Abysses} forest_jerkin{Pourpoint forestier} padded_gambeson{Gambison matelassé} chain_shirt{Chemise de mailles} noble_doublet{Pourpoint noble} fur_vest{Gilet de fourrure} iron_greaves{Jambières de fer} black_breeches{Braies de cuir noir} chain_chausses{Chausses de mailles} ranger_trousers{Pantalon du rôdeur} royal_breeches{Culotte royale} steel_sabatons{Solerets d'acier} fur_boots{Bottes fourrées} elven_boots{Bottes elfiques} riding_boots{Bottes de cavalier} golden_boots{Bottes dorées} steel_gauntlets{Gantelets d'acier} leather_gloves{Gants de cuir} fingerless_gloves{Mitaines de cuir} silk_gloves{Gants de soie} fur_bracers{Brassards fourrés} dragon_scale{Écailles du Dragon} sun_paladin{Paladin Solaire} shadow_assassin{Assassin des Ombres} pirate_captain{Capitaine des Mers} viking_raider{Pillard du Nord} royal_mage{Robe du Mage Royal} jade_monk{Moine de Jade} infernal_warlord{Seigneur Infernal} sword_warden{Épée longue du Gardien} axe_war{Hache de guerre} mace_spiked{Masse à pointes} dagger_desert{Dague des sables} scimitar_jade{Cimeterre de jade} staff_dusk{Bâton du Crépuscule} sword_frost{Épée de Givre} halberd_silver{Hallebarde d'argent} hammer_runic{Marteau runique} sword_dawn{Épée d'apparat de l'Aube} sword_ember{Lame de Braise} staff_ember{Bâton de Braise} guardian_jacket{Cuir du Gardien du Rocher} stag_cape{Armure du Cerf d'Argent} wind_hood{Tenue de la Danseuse des Vents} colossus_leggings{Armure du Colosse de Basalte} comet_cape{Armure de la Comète Écarlate} tempest_hood{Manteau du Seigneur des Tempêtes} other{?}}",
   "@itemName": {
     "placeholders": {
       "id": {

@@ -18,6 +18,7 @@ class CharacterAppearance {
     this.outfitId,
     this.outfitTint,
     this.weaponId,
+    this.pieces = const [],
     this.auraColor,
     this.shadows = const [],
   });
@@ -43,6 +44,7 @@ class CharacterAppearance {
       outfitId: loadout.outfitId,
       outfitTint: loadout.outfitTint,
       weaponId: loadout.weaponId,
+      pieces: loadout.pieces,
     );
   }
 
@@ -67,6 +69,9 @@ class CharacterAppearance {
   /// Arme tenue, ou `null`.
   final String? weaponId;
 
+  /// Pièces séparées (bas, chaussures, haut, gants), dans l'ordre de dessin.
+  final List<WornPiece> pieces;
+
   /// Couleur ARGB de l'aura portée, ou `null`.
   final int? auraColor;
 
@@ -86,6 +91,7 @@ class CharacterAppearance {
         outfitId: outfitId,
         outfitTint: outfitTint,
         weaponId: weaponId,
+        pieces: pieces,
         auraColor: auraColor,
         shadows: shadows,
       );
@@ -102,6 +108,7 @@ class CharacterAppearance {
       other.outfitId == outfitId &&
       other.outfitTint == outfitTint &&
       other.weaponId == weaponId &&
+      _sameList(other.pieces, pieces) &&
       other.auraColor == auraColor &&
       _sameList(other.shadows, shadows);
 
@@ -116,6 +123,7 @@ class CharacterAppearance {
     outfitId,
     outfitTint,
     weaponId,
+    Object.hashAll(pieces),
     auraColor,
     Object.hashAll(shadows),
   );

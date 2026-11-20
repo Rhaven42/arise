@@ -136,7 +136,9 @@
 ## Héros en pixel art (19/11/2026)
 - [x] 10 races × 2 sexes générées avec SpriteCook, calques assemblés dans l'appli
 - [x] Création : peau, 10 coiffures par sexe, 6 barbes, couleurs
-- [x] Boutique : 25 tenues sur 5 gabarits et 12 armes ; anciennes pièces converties
+- [x] Boutique : 33 tenues sur 5 gabarits et 12 armes ; anciennes pièces converties
+- [x] Pièces séparées (20) : haut, bas, chaussures, gants, combinables et teignables
+- [x] 14 coiffures par sexe, 10 barbes ; coiffures masquées selon la race
 - [x] Retrait de la 3D (modèles, tenues, visualiseur, vidéos)
 - [x] Mannequins des exercices vérifiés sur tout le cycle (outil et test automatique)
 
