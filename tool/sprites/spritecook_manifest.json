@@ -1474,5 +1474,205 @@
   "asset_id": "f12a6cbd-c242-4132-953a-54bf3d37ee18",
   "sha12": "5b4de3482ec3",
   "label": "barbe 10 de mage"
+ },
+ "armor_dragon_scale_mm": {
+  "asset_id": "ade99d67-d94a-4e79-8e80-357be24543ac",
+  "sha12": "499c173e953c",
+  "label": "dragon_scale mm"
+ },
+ "armor_dragon_scale_mf": {
+  "asset_id": "c37269ca-c1d3-4b55-8030-bacda8158abf",
+  "sha12": "ec994b9c4de5",
+  "label": "dragon_scale mf"
+ },
+ "armor_dragon_scale_large": {
+  "asset_id": "c72a3d0c-29c8-4a8e-a2b0-36ff8e461ec9",
+  "sha12": "96c5ef5da4d4",
+  "label": "dragon_scale large"
+ },
+ "armor_dragon_scale_stocky": {
+  "asset_id": "4dd766a2-12ee-45a3-8809-9c4dded0b34c",
+  "sha12": "84a26806c77a",
+  "label": "dragon_scale stocky"
+ },
+ "armor_dragon_scale_small": {
+  "asset_id": "c6906474-4708-4bd7-a9a3-3f5040296585",
+  "sha12": "fdd6e4490452",
+  "label": "dragon_scale small"
+ },
+ "armor_sun_paladin_mm": {
+  "asset_id": "20c7228b-62eb-4ad1-88f8-f015c560d1c4",
+  "sha12": "1f71f0a90964",
+  "label": "sun_paladin mm"
+ },
+ "armor_sun_paladin_mf": {
+  "asset_id": "c2dc99e4-d59e-48ee-9d05-705b77a00659",
+  "sha12": "00f3c91a665a",
+  "label": "sun_paladin mf"
+ },
+ "armor_sun_paladin_large": {
+  "asset_id": "3faa65a5-6d4e-47b6-ba7d-cd16a73b52ac",
+  "sha12": "68f232f8c1f7",
+  "label": "sun_paladin large"
+ },
+ "armor_sun_paladin_stocky": {
+  "asset_id": "8c8b8c8f-b753-447c-8f7f-f975d0cdd668",
+  "sha12": "797c27f13418",
+  "label": "sun_paladin stocky"
+ },
+ "armor_sun_paladin_small": {
+  "asset_id": "391b9683-44df-4896-9cae-bf17d6ca1c26",
+  "sha12": "148eba13faae",
+  "label": "sun_paladin small"
+ },
+ "armor_shadow_assassin_mm": {
+  "asset_id": "d63d9c71-568f-48e8-aa2d-6a3d136c2062",
+  "sha12": "038bbbede588",
+  "label": "shadow_assassin mm"
+ },
+ "armor_shadow_assassin_mf": {
+  "asset_id": "1eac9664-febd-4329-a159-50dceb7f99af",
+  "sha12": "77ec1b9cf789",
+  "label": "shadow_assassin mf"
+ },
+ "armor_shadow_assassin_large": {
+  "asset_id": "84aa80f8-1947-4489-aa49-e7383b2665a7",
+  "sha12": "5c67ef98a05d",
+  "label": "shadow_assassin large"
+ },
+ "armor_shadow_assassin_stocky": {
+  "asset_id": "ff65ca97-7972-49c7-adef-46ac060aa132",
+  "sha12": "eb36edfff321",
+  "label": "shadow_assassin stocky"
+ },
+ "armor_shadow_assassin_small": {
+  "asset_id": "c56a3209-edc5-40ab-9e33-e70af8bd132a",
+  "sha12": "8a6c6464b27b",
+  "label": "shadow_assassin small"
+ },
+ "armor_pirate_captain_mm": {
+  "asset_id": "bd3ce6c8-780a-439e-a703-3285f8013bde",
+  "sha12": "55a8c03e8382",
+  "label": "pirate_captain mm"
+ },
+ "armor_pirate_captain_mf": {
+  "asset_id": "937e95e8-b9ed-43f9-a0c2-253cb4f5b2e7",
+  "sha12": "9cba78edbdb0",
+  "label": "pirate_captain mf"
+ },
+ "armor_pirate_captain_large": {
+  "asset_id": "b4df92c0-3e3a-4bdd-bdc7-a1ef7c500e1f",
+  "sha12": "f24afe57a6a8",
+  "label": "pirate_captain large"
+ },
+ "armor_pirate_captain_stocky": {
+  "asset_id": "c03f7773-120a-40a8-bc06-fed231d29341",
+  "sha12": "068d3f2c1abd",
+  "label": "pirate_captain stocky"
+ },
+ "armor_pirate_captain_small": {
+  "asset_id": "0957e402-d743-4ff2-8f8e-3a2a819b320f",
+  "sha12": "306cea5bd10d",
+  "label": "pirate_captain small"
+ },
+ "armor_viking_raider_mm": {
+  "asset_id": "6607826c-8b66-4ab1-8d9e-c9d0037c7089",
+  "sha12": "7021defb5f0c",
+  "label": "viking_raider mm"
+ },
+ "armor_viking_raider_mf": {
+  "asset_id": "1195b45f-3bd1-438b-b1b1-69aa05f5a4dd",
+  "sha12": "4ca91af0b5bc",
+  "label": "viking_raider mf"
+ },
+ "armor_viking_raider_large": {
+  "asset_id": "880a5019-47d1-4bca-b78d-673892a781da",
+  "sha12": "119a1a70280c",
+  "label": "viking_raider large"
+ },
+ "armor_viking_raider_stocky": {
+  "asset_id": "1bd8a5d5-b147-4501-b493-7f79d774097b",
+  "sha12": "47d937112ae5",
+  "label": "viking_raider stocky"
+ },
+ "armor_viking_raider_small": {
+  "asset_id": "b30229f9-bce9-404e-9c65-08b72531514a",
+  "sha12": "2b1c94fbf59a",
+  "label": "viking_raider small"
+ },
+ "armor_royal_mage_mm": {
+  "asset_id": "048be057-5c4f-4fb0-91df-e89752807fe1",
+  "sha12": "68ea4ee154f6",
+  "label": "royal_mage mm"
+ },
+ "armor_royal_mage_mf": {
+  "asset_id": "8c69fd47-a62e-47e8-bc6f-f4dc327a2395",
+  "sha12": "51247471479b",
+  "label": "royal_mage mf"
+ },
+ "armor_royal_mage_large": {
+  "asset_id": "c888421b-6d88-45f2-9e88-d2947c5246d7",
+  "sha12": "c6671f0923b2",
+  "label": "royal_mage large"
+ },
+ "armor_royal_mage_stocky": {
+  "asset_id": "050c79f3-320f-4824-ac81-63ee48005616",
+  "sha12": "d9535305d172",
+  "label": "royal_mage stocky"
+ },
+ "armor_royal_mage_small": {
+  "asset_id": "385119eb-c21a-485a-b2bd-a1cafac85462",
+  "sha12": "ecc319912cdb",
+  "label": "royal_mage small"
+ },
+ "armor_jade_monk_mm": {
+  "asset_id": "19220e56-75e3-44e0-85f0-83e920475751",
+  "sha12": "082adef68ac7",
+  "label": "jade_monk mm"
+ },
+ "armor_jade_monk_mf": {
+  "asset_id": "75e4228a-c531-412d-bd86-2c3b07f208c0",
+  "sha12": "9c9ec0fd8670",
+  "label": "jade_monk mf"
+ },
+ "armor_jade_monk_large": {
+  "asset_id": "ac5568a2-3482-4ae1-a1da-964236224abe",
+  "sha12": "bf1ef21ec0dc",
+  "label": "jade_monk large"
+ },
+ "armor_jade_monk_stocky": {
+  "asset_id": "b3dc0490-e330-4125-95af-e3043465c6a1",
+  "sha12": "132458f97438",
+  "label": "jade_monk stocky"
+ },
+ "armor_jade_monk_small": {
+  "asset_id": "7351486a-13bf-4b08-9525-8329707c9104",
+  "sha12": "22030ce8ee6d",
+  "label": "jade_monk small"
+ },
+ "armor_infernal_warlord_mm": {
+  "asset_id": "6cfd8f87-7fb1-4a3c-a4f4-5b921f66821a",
+  "sha12": "82555213b2f2",
+  "label": "infernal_warlord mm"
+ },
+ "armor_infernal_warlord_mf": {
+  "asset_id": "1a4f654d-a748-49d6-8f7d-34cbe2eb4c1d",
+  "sha12": "ac62e43284f1",
+  "label": "infernal_warlord mf"
+ },
+ "armor_infernal_warlord_large": {
+  "asset_id": "c8d9403c-3e28-40c2-a0a7-8f5901d1ac29",
+  "sha12": "9234e09424e3",
+  "label": "infernal_warlord large"
+ },
+ "armor_infernal_warlord_stocky": {
+  "asset_id": "ce52c730-98f4-4712-ac38-b777d31d8b0d",
+  "sha12": "c9d9e956443b",
+  "label": "infernal_warlord stocky"
+ },
+ "armor_infernal_warlord_small": {
+  "asset_id": "cd910b60-0b8a-4532-b57b-cf95776f89ce",
+  "sha12": "24adda0d7a69",
+  "label": "infernal_warlord small"
  }
 }

@@ -153,6 +153,12 @@ const List<EquipmentItem> outfitCatalog = [
     dyeable: true,
   ),
   EquipmentItem(
+    id: 'jade_monk',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.common,
+    dyeable: true,
+  ),
+  EquipmentItem(
     id: 'warden_mail',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
@@ -219,6 +225,24 @@ const List<EquipmentItem> outfitCatalog = [
     dyeable: true,
   ),
   EquipmentItem(
+    id: 'shadow_assassin',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'pirate_captain',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'viking_raider',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
     id: 'dawn_plate',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
@@ -267,6 +291,18 @@ const List<EquipmentItem> outfitCatalog = [
     dyeable: true,
   ),
   EquipmentItem(
+    id: 'royal_mage',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'dragon_scale',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    dyeable: true,
+  ),
+  EquipmentItem(
     id: 'golden_king',
     slot: EquipmentSlot.chest,
     rarity: Rarity.legendary,
@@ -274,6 +310,18 @@ const List<EquipmentItem> outfitCatalog = [
   ),
   EquipmentItem(
     id: 'abyss_knight',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.legendary,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'sun_paladin',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.legendary,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'infernal_warlord',
     slot: EquipmentSlot.chest,
     rarity: Rarity.legendary,
     dyeable: true,
