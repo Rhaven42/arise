@@ -170,7 +170,8 @@ def main() -> None:
         save(key_layer(hm, load(raw(f"hair_m{i:02d}")), tol=0.09, min_sat=0.25), os.path.join(OUT, "hair", f"m{i:02d}.png"))
         save(key_layer(hf, load(raw(f"hair_f{i:02d}")), tol=0.09, min_sat=0.25), os.path.join(OUT, "hair", f"f{i:02d}.png"))
     for i in range(1, BEARD_COUNT + 1):
-        lay = key_layer(hm, load(raw(f"beard_{i:02d}")), hue=0.952, tol=0.065, min_sat=0.15)
+        lay = key_layer(hm, load(raw(f"beard_{i:02d}")), hue=0.952, tol=0.065, min_sat=0.15,
+                        open_mouth=True)
         save(lay, os.path.join(OUT, "beards", f"b{i:02d}.png"))
 
     # Tenues par gabarit.

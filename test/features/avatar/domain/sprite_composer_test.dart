@@ -83,6 +83,18 @@ void main() {
     }
   }
 
+  test('cheveux et barbe : reflets et ombres resserrés', () {
+    // Reflet très clair : éclairci de 35 % de l'écart restant à 0,6 près,
+    // jamais blanc.
+    expect(tintHairPixel(255, 255, 255, 100, 0xFF5A371E), (
+      (90 + 165 * 0.6 * 0.35).round(),
+      (55 + 200 * 0.6 * 0.35).round(),
+      (30 + 225 * 0.6 * 0.35).round(),
+    ));
+    // Ombre profonde : 30 % de la couleur au moins.
+    expect(tintHairPixel(0, 0, 0, 100, 0xFF5A371E), (27, 17, 9));
+  });
+
   test('la peau prend la teinte choisie, avec le même modelé', () {
     expect(tintPixel(200, 150, 100, luminanceOf(200, 150, 100), 0xFFC8963C), (
       200,

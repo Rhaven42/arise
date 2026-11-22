@@ -320,6 +320,29 @@ double luminanceOf(int r, int g, int b) => 0.299 * r + 0.587 * g + 0.114 * b;
   );
 }
 
+/// Teinte douce des cheveux et barbes : reflets et ombres resserrés, pour
+/// que les reflets clairs du modèle magenta ne virent pas au blanc. Même
+/// formule que `tint_hair` dans `tool/sprites/preview.py`.
+(int, int, int) tintHairPixel(
+  int r,
+  int g,
+  int b,
+  double reference,
+  int color,
+) {
+  final k = (luminanceOf(r, g, b) / math.max(reference, 1)).clamp(0.3, 1.6);
+  int channel(int c) {
+    final v = k <= 1 ? c * k : c + (255 - c) * (k - 1) * 0.35;
+    return v.round().clamp(0, 255);
+  }
+
+  return (
+    channel((color >> 16) & 0xFF),
+    channel((color >> 8) & 0xFF),
+    channel(color & 0xFF),
+  );
+}
+
 /// Assemble le personnage en pixel art : corps (peau recolorée), tenue
 /// adaptée au gabarit, barbe, coiffure posée sur le crâne, arme en main.
 class SpriteComposer {
@@ -455,7 +478,7 @@ class SpriteComposer {
         out,
         beard,
         headWarp(beardSource, body.head, meta.height, hugJaw: true),
-        (r, g, b) => tintPixel(r, g, b, ref, color),
+        (r, g, b) => tintHairPixel(r, g, b, ref, color),
       );
     }
     final hair = layers.hair;
@@ -469,7 +492,7 @@ class SpriteComposer {
         out,
         hair,
         headWarp(hairSource, body.head, meta.height),
-        (r, g, b) => tintPixel(r, g, b, ref, a.hairColor),
+        (r, g, b) => tintHairPixel(r, g, b, ref, a.hairColor),
         // Visage dégagé : pas de mèche sur la peau entre sourcils et menton.
         skip: (x, y) =>
             y >= brow + 1 && y <= neck && src.alphaAt(x, y) == meta.skinAlpha,

@@ -36,6 +36,15 @@ def tint(px: np.ndarray, ref: float, color: tuple[int, int, int]) -> np.ndarray:
     return np.where(k <= 1, c * k, c + (255 - c) * (k - 1) * 0.55)
 
 
+def tint_hair(px: np.ndarray, ref: float, color: tuple[int, int, int]) -> np.ndarray:
+    """Teinte douce des cheveux et barbes : reflets et ombres resserrés, pour
+    que les reflets clairs du modèle magenta ne virent pas au blanc (formule
+    partagée avec l'appli)."""
+    k = np.clip(lum(px) / max(ref, 1), 0.3, 1.6)[..., None]
+    c = np.array(color, float)
+    return np.where(k <= 1, c * k, c + (255 - c) * (k - 1) * 0.35)
+
+
 def place(canvas: np.ndarray, layer: np.ndarray, scale: float, ox: float, oy: float,
           scale_x: float | None = None) -> None:
     """Pose [layer] mis à l'échelle (plus proche voisin) avec son origine en (ox, oy)."""
@@ -188,7 +197,7 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         m = lay[..., 3] > 0
         ref = float(np.median(lum(lay[m, :3])))
         place_warp(canvas, lay, head_warp(META["hairSources"]["beard"], b, canvas.shape[0], True),
-                   lambda px: tint(px[:3], ref, beard_color or hair_color))
+                   lambda px: tint_hair(px[:3], ref, beard_color or hair_color))
     if hair:
         lay = img(f"hair/{hair}.png")
         m = lay[..., 3] > 0
@@ -199,7 +208,7 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
             # Visage dégagé : pas de mèche sur la peau entre sourcils et menton.
             return b["brow"] + 1 <= y <= neck and skin_px[y, x]
         place_warp(canvas, lay, head_warp(src, b, canvas.shape[0]),
-                   lambda px: tint(px[:3], ref, hair_color), face)
+                   lambda px: tint_hair(px[:3], ref, hair_color), face)
     # Cornes devant la coiffure.
     canvas[front] = body[front]
     canvas[front, 3] = 255

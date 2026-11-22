@@ -146,7 +146,8 @@ KEY_HUE = 0.87
 
 def key_layer(base: np.ndarray, edit: np.ndarray, hue: float | None = None,
               tol: float = 0.05, min_sat: float = 0.35,
-              seed_rows: tuple[float, float] | None = (0.0, 0.3)) -> np.ndarray:
+              seed_rows: tuple[float, float] | None = (0.0, 0.3),
+              open_mouth: bool = False) -> np.ndarray:
     """Calque des pixels de la teinte clé (coiffure, barbe), avec leur
     contour sombre. Les couleurs sont ensuite recolorées dans l'appli."""
     x0, top, x1, neck = head_box(base)
@@ -184,7 +185,12 @@ def key_layer(base: np.ndarray, edit: np.ndarray, hue: float | None = None,
         keep.discard(0)
         key &= np.isin(grown, list(keep))
     # Trous internes (reflets désaturés) et contour sombre d'un pixel.
-    key = ndimage.binary_fill_holes(key) & opaque
+    filled = ndimage.binary_fill_holes(key) & opaque
+    if open_mouth:
+        # Barbe : les trous qui ne sont pas de la teinte clé (bouche, lèvres)
+        # restent transparents, la bouche du visage apparaît.
+        filled &= key | (np.abs(dh) < 0.1) | (v < 0.2)
+    key = filled
     ring = ndimage.binary_dilation(key, np.ones((3, 3))) & ~key & opaque
     outline = ring & (v < 0.35) & (color_dist(edit, base) > 40)
     mask = key | outline
