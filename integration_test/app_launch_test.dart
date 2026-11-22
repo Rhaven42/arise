@@ -165,9 +165,10 @@ void main() {
     // attendu avant le retour complet sur la Fenêtre du Système.
     await _waitFor(tester, find.text('Personnage enregistré.'));
 
-    // Accueil épuré : la série du jour et les raccourcis.
-    await _waitFor(tester, find.text('Aucun jour en cours'));
-    expect(find.text('Aucun jour en cours'), findsOneWidget);
+    // Accueil épuré : la fiche du héros, puis la série et les raccourcis.
+    await _waitFor(tester, find.text('Niveau 0'));
+    expect(find.text('Niveau 0'), findsOneWidget);
+    await _expectVisible(tester, 'Aucun jour en cours');
     await _expectVisible(tester, 'Planning');
 
     // Catalogue : recherche et fiche animée.

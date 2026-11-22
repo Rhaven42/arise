@@ -125,7 +125,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(renderer.last?.outfitId, 'awakened_leather');
 
-    await tester.tap(find.text("Cuir de l'Éveillé"));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text("Cuir de l'Éveillé").first);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Teindre'));
     await tester.pumpAndSettle();
