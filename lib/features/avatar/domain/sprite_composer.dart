@@ -203,6 +203,7 @@ class SpriteMeta {
     required this.templates,
     required this.hairSources,
     required this.weapons,
+    this.raceBeards = const {},
   });
 
   factory SpriteMeta.fromJson(Map<String, dynamic> json) {
@@ -232,6 +233,10 @@ class SpriteMeta {
         'weapons',
         (v) => WeaponMeta.fromJson(v as Map<String, dynamic>),
       ),
+      raceBeards: {
+        for (final r in json['raceBeards'] as List<dynamic>? ?? const [])
+          r as String,
+      },
     );
   }
 
@@ -247,6 +252,17 @@ class SpriteMeta {
   final Map<String, OutfitTemplate> templates;
   final Map<String, HeadFrame> hairSources;
   final Map<String, WeaponMeta> weapons;
+
+  /// Races dont les barbes sont dessinées sur leur propre visage
+  /// (`beards/<race>/bNN.png`, corps masculin) : posées telles quelles.
+  final Set<String> raceBeards;
+
+  /// Barbe dessinée sur ce corps même, plutôt qu'adaptée depuis l'humain ?
+  bool ownBeard(String bodyId) {
+    final i = bodyId.lastIndexOf('_');
+    if (i < 0 || bodyId.substring(i + 1) != 'male') return false;
+    return raceBeards.contains(bodyId.substring(0, i));
+  }
 }
 
 /// Déformation d'un calque de tête : ligne source et échelle horizontale de
@@ -373,7 +389,12 @@ class SpriteComposer {
           ? null
           : 'outfits/${a.outfitId}_${body.gabarit}.png',
       hair: a.hairId == null ? null : 'hair/${a.hairId}.png',
-      beard: a.beardId == null ? null : 'beards/${a.beardId}.png',
+      beard: switch (a.beardId) {
+        null => null,
+        final id when meta.ownBeard(a.bodyId) =>
+          'beards/${a.bodyId.substring(0, a.bodyId.lastIndexOf('_'))}/$id.png',
+        final id => 'beards/$id.png',
+      },
       weapon: a.weaponId == null || !meta.weapons.containsKey(a.weaponId)
           ? null
           : 'weapons/${a.weaponId}.png',
@@ -470,7 +491,10 @@ class SpriteComposer {
       }
     }
     final beard = layers.beard;
-    final beardSource = meta.hairSources['beard'];
+    // Barbe dessinée sur ce visage : posée telle quelle (pose identité).
+    final beardSource = meta.ownBeard(a.bodyId)
+        ? body.head
+        : meta.hairSources['beard'];
     if (beard != null && beardSource != null) {
       final ref = _medianLuminance(beard);
       final color = a.beardColor ?? a.hairColor;

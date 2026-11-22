@@ -143,7 +143,7 @@
 - [x] Mannequins des exercices vérifiés sur tout le cycle (outil et test automatique)
 - [x] Tenues sombres (5) et nouvelles armes (arcs, mousquet, lance, baguette, faux, lame et dague sombres)
 - [x] Tenues pirate, viking et mage royal débloquées par les hauts faits de zone (Nord, Mers, Arcanes)
-- [x] Pièces séparées sans peau ajoutée ; barbes posées sur la mâchoire sans déformation
+- [x] Pièces séparées sans peau ajoutée ; barbes dessinées sur le visage de chaque race (nain, gnome, gobelin, minotaure, orc)
 
 ## Phase 12 — Finitions et publication
 - [x] Sons et ambiance (musiques et jingle fournis par la propriétaire du projet, 11/11/2026)

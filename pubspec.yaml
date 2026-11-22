@@ -59,6 +59,12 @@ flutter:
     - assets/sprites/bodies/
     - assets/sprites/hair/
     - assets/sprites/beards/
+    - assets/sprites/beards/dwarf/
+    - assets/sprites/beards/gnome/
+    - assets/sprites/beards/goblin/
+    - assets/sprites/beards/minotaur/
+    - assets/sprites/beards/orc/
+    - assets/sprites/pieces/
     - assets/sprites/outfits/
     - assets/sprites/weapons/
     - assets/sprites/icons/

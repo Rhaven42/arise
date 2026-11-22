@@ -193,10 +193,13 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         lay[bare, :3] = tint(lay[bare, :3], lum(np.array(t["skinRef"], float)), skin)
         place(canvas, lay, s_y, b["cx"] - t["cx"] * s_x, b["feet"] - t["feet"] * s_y, s_x)
     if beard:
-        lay = img(f"beards/{beard}.png")
+        # Barbe dessinée sur le visage de la race (homme) : posée telle quelle.
+        own = sex == "male" and race in META.get("raceBeards", [])
+        lay = img(f"beards/{race}/{beard}.png" if own else f"beards/{beard}.png")
         m = lay[..., 3] > 0
         ref = float(np.median(lum(lay[m, :3])))
-        place_warp(canvas, lay, head_warp(META["hairSources"]["beard"], b, canvas.shape[0], True),
+        src = b if own else META["hairSources"]["beard"]
+        place_warp(canvas, lay, head_warp(src, b, canvas.shape[0], True),
                    lambda px: tint_hair(px[:3], ref, beard_color or hair_color))
     if hair:
         lay = img(f"hair/{hair}.png")

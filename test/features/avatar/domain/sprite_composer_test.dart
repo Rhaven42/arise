@@ -278,9 +278,40 @@ void main() {
         }
       }
     }
+    // Barbes dessinées sur le visage de la race, pour les hommes seulement.
+    expect(meta.ownBeard('goblin_male'), isTrue);
+    expect(meta.ownBeard('goblin_female'), isFalse);
+    expect(meta.ownBeard('human_male'), isFalse);
+    String? beardOf(String body) => real
+        .paths(
+          CharacterAppearance(
+            bodyId: body,
+            skinColor: 0,
+            hairColor: 0,
+            beardId: 'b02',
+          ),
+        )
+        .beard;
+    expect(beardOf('goblin_male'), 'beards/goblin/b02.png');
+    expect(beardOf('high_elf_male'), 'beards/b02.png');
     for (final w in weaponCatalog) {
       expect(meta.weapons, contains(w.id));
       expect(weaponLength, contains(w.id.split('_').first));
+    }
+  });
+
+  test('chaque dossier de sprites est déclaré dans pubspec.yaml', () {
+    // Flutter n'embarque pas les sous-dossiers : un dossier oublié = calques
+    // introuvables dans l'appli.
+    final pubspec = File('pubspec.yaml').readAsStringSync();
+    final dirs = {
+      for (final f in Directory('assets/sprites').listSync(recursive: true))
+        if (f is File && f.path.endsWith('.png'))
+          '${f.parent.path.replaceAll(r'\\', '/')}/',
+    };
+    expect(dirs, isNotEmpty);
+    for (final dir in dirs) {
+      expect(pubspec, contains('- $dir\n'), reason: dir);
     }
   });
 }
