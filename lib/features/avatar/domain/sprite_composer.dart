@@ -291,6 +291,11 @@ const Map<String, double> weaponLength = {
   'hammer': 0.48,
   'staff': 0.8,
   'halberd': 0.9,
+  'bow': 0.62,
+  'rifle': 0.6,
+  'spear': 0.9,
+  'wand': 0.24,
+  'scythe': 0.88,
 };
 
 /// Part de la teinture dans la couleur d'une tenue teinte.

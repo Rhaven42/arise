@@ -17,7 +17,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, "..", "..", "assets", "sprites")
 META = json.load(open(os.path.join(ASSETS, "sprites.json")))
 WEAPON_LENGTH = {"sword": 0.5, "dagger": 0.28, "scimitar": 0.46, "axe": 0.5, "mace": 0.42,
-                 "hammer": 0.48, "staff": 0.8, "halberd": 0.9}
+                 "hammer": 0.48, "staff": 0.8, "halberd": 0.9, "bow": 0.62,
+                 "rifle": 0.6, "spear": 0.9, "wand": 0.24, "scythe": 0.88}
 
 
 def img(path: str) -> np.ndarray:

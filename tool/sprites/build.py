@@ -37,7 +37,8 @@ GABARIT = {
 }
 # Point de prise des armes (fraction de la hauteur depuis le haut).
 GRIP = {"sword": 0.86, "dagger": 0.8, "scimitar": 0.86, "axe": 0.72, "mace": 0.74,
-        "hammer": 0.74, "staff": 0.62, "halberd": 0.6}
+        "hammer": 0.74, "staff": 0.62, "halberd": 0.6, "bow": 0.5, "rifle": 0.62,
+        "spear": 0.6, "wand": 0.78, "scythe": 0.6}
 
 
 # Coiffures par sexe et barbes (raw/hair_mNN, raw/hair_fNN, raw/beard_NN).

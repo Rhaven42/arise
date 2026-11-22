@@ -333,6 +333,36 @@ const List<EquipmentItem> outfitCatalog = [
     rarity: Rarity.legendary,
     dyeable: true,
   ),
+  EquipmentItem(
+    id: 'plague_coat',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'blood_hunter',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'necromancer_robe',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'void_cultist',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'death_knight',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.legendary,
+    dyeable: true,
+  ),
 ];
 
 /// Pièces séparées vendues en boutique (haut, bas, chaussures, gants) : elles
@@ -522,6 +552,46 @@ const List<EquipmentItem> weaponCatalog = [
     id: 'staff_ember',
     slot: EquipmentSlot.weapon,
     rarity: Rarity.mythic,
+  ),
+  EquipmentItem(
+    id: 'bow_hunter',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.common,
+  ),
+  EquipmentItem(
+    id: 'spear_hunter',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.common,
+  ),
+  EquipmentItem(
+    id: 'bow_elven',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'rifle_flintlock',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'wand_bone',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'dagger_venom',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'sword_shadow',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.epic,
+  ),
+  EquipmentItem(
+    id: 'scythe_reaper',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.legendary,
   ),
 ];
 

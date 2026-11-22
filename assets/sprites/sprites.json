@@ -1425,9 +1425,30 @@
    ],
    "grip": 0.72
   },
+  "bow_elven": {
+   "size": [
+    9,
+    96
+   ],
+   "grip": 0.5
+  },
+  "bow_hunter": {
+   "size": [
+    12,
+    96
+   ],
+   "grip": 0.5
+  },
   "dagger_desert": {
    "size": [
     25,
+    96
+   ],
+   "grip": 0.8
+  },
+  "dagger_venom": {
+   "size": [
+    30,
     96
    ],
    "grip": 0.8
@@ -1453,12 +1474,33 @@
    ],
    "grip": 0.74
   },
+  "rifle_flintlock": {
+   "size": [
+    15,
+    96
+   ],
+   "grip": 0.62
+  },
   "scimitar_jade": {
    "size": [
     28,
     96
    ],
    "grip": 0.86
+  },
+  "scythe_reaper": {
+   "size": [
+    33,
+    96
+   ],
+   "grip": 0.6
+  },
+  "spear_hunter": {
+   "size": [
+    10,
+    96
+   ],
+   "grip": 0.6
   },
   "staff_dusk": {
    "size": [
@@ -1495,12 +1537,26 @@
    ],
    "grip": 0.86
   },
+  "sword_shadow": {
+   "size": [
+    27,
+    96
+   ],
+   "grip": 0.86
+  },
   "sword_warden": {
    "size": [
     26,
     96
    ],
    "grip": 0.86
+  },
+  "wand_bone": {
+   "size": [
+    19,
+    96
+   ],
+   "grip": 0.78
   }
  },
  "pieces": {

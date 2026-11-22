@@ -114,7 +114,9 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('barre d’action, barre des stats en haut et fiche détaillée', (tester) async {
+  testWidgets('barre d’action, barre des stats en haut et fiche détaillée', (
+    tester,
+  ) async {
     final container = createTestContainer();
     await tester.openWithProfile(container, AppRoutes.systemHome);
     await tester.pump(const Duration(milliseconds: 300));
