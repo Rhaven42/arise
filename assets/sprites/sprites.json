@@ -1559,6 +1559,13 @@
    "grip": 0.78
   }
  },
+ "raceBeards": [
+  "dwarf",
+  "gnome",
+  "goblin",
+  "minotaur",
+  "orc"
+ ],
  "pieces": {
   "forest_jerkin": "top",
   "padded_gambeson": "top",

@@ -1839,5 +1839,255 @@
   "asset_id": "4d3c963d-ec61-430e-9c6c-a535b6d0bd43",
   "sha12": "7c81b4e302c6",
   "label": "Cultiste du néant"
+ },
+ "beard_goblin_01": {
+  "asset_id": "a2ff9604-c3c4-4ada-8e1e-151849b85439",
+  "sha12": "0a53063e8305",
+  "label": "barbe 01 gobelin"
+ },
+ "beard_goblin_02": {
+  "asset_id": "5806ae88-9c3c-474b-ab05-52e44954402c",
+  "sha12": "b9b2d855970b",
+  "label": "barbe 02 goblin"
+ },
+ "beard_goblin_03": {
+  "asset_id": "aa2c89a3-d224-4a19-b2f4-08be7e772460",
+  "sha12": "437f47141e2f",
+  "label": "barbe 03 goblin"
+ },
+ "beard_goblin_04": {
+  "asset_id": "9642a652-5f02-457e-8765-50b5de5bcc0c",
+  "sha12": "e2e2a760f43d",
+  "label": "barbe 04 goblin"
+ },
+ "beard_goblin_05": {
+  "asset_id": "22d96f6e-a507-44f2-baf5-3ff5299e8975",
+  "sha12": "6df704c0848e",
+  "label": "barbe 05 goblin"
+ },
+ "beard_goblin_06": {
+  "asset_id": "32918740-413c-4ce9-b533-e98e62ce0c2c",
+  "sha12": "0d01a6a1b010",
+  "label": "barbe 06 goblin"
+ },
+ "beard_goblin_07": {
+  "asset_id": "d09a9a92-4439-4a1e-9299-0936351f9862",
+  "sha12": "e7683e0c27a5",
+  "label": "barbe 07 goblin"
+ },
+ "beard_goblin_08": {
+  "asset_id": "bc559ad2-c026-461c-8e07-e3b20fe6d114",
+  "sha12": "5cedb714da0b",
+  "label": "barbe 08 goblin"
+ },
+ "beard_goblin_09": {
+  "asset_id": "8487e327-c718-4218-99b4-2ba8d2f6f939",
+  "sha12": "032fbc19669c",
+  "label": "barbe 09 goblin"
+ },
+ "beard_goblin_10": {
+  "asset_id": "c9333ddf-e097-43cc-8d2f-3c20e404616a",
+  "sha12": "0cfd9b2a7cc6",
+  "label": "barbe 10 goblin"
+ },
+ "beard_orc_01": {
+  "asset_id": "5cf4053b-2d44-4af9-badc-e32f30836529",
+  "sha12": "53d4a6356940",
+  "label": "barbe 01 orc"
+ },
+ "beard_orc_02": {
+  "asset_id": "d9191db4-59da-4223-bdf1-480cce681fc7",
+  "sha12": "b6c4e0c8b250",
+  "label": "barbe 02 orc"
+ },
+ "beard_orc_03": {
+  "asset_id": "8e320976-a566-4b20-a2f5-d42e82cc35a9",
+  "sha12": "d67563ab61ac",
+  "label": "barbe 03 orc"
+ },
+ "beard_orc_04": {
+  "asset_id": "787dfa48-8e12-4ab2-8e98-4bdd4ddbc5bd",
+  "sha12": "1dd8bce89869",
+  "label": "barbe 04 orc"
+ },
+ "beard_orc_05": {
+  "asset_id": "dfb10c09-35c5-4ae7-a850-d75b41270fce",
+  "sha12": "c9d37549f876",
+  "label": "barbe 05 orc"
+ },
+ "beard_orc_06": {
+  "asset_id": "e243e668-5b7c-4cc8-b2c1-2278708cd8a1",
+  "sha12": "d83f7c979b54",
+  "label": "barbe 06 orc"
+ },
+ "beard_orc_07": {
+  "asset_id": "650b2936-21c2-4795-8d10-94f011c041cf",
+  "sha12": "b6abdd738fcf",
+  "label": "barbe 07 orc"
+ },
+ "beard_orc_08": {
+  "asset_id": "0b251b2c-1e50-4d38-878c-fdcb67cfdee4",
+  "sha12": "e46e1eaf783d",
+  "label": "barbe 08 orc"
+ },
+ "beard_orc_09": {
+  "asset_id": "8ab1a640-3255-4534-9845-9a062b887764",
+  "sha12": "e279f45c67a5",
+  "label": "barbe 09 orc"
+ },
+ "beard_orc_10": {
+  "asset_id": "1b622913-e767-48c6-955e-e11f7045f7f5",
+  "sha12": "fc3ab1cc3aad",
+  "label": "barbe 10 orc"
+ },
+ "beard_dwarf_01": {
+  "asset_id": "12ebe508-d27c-4b1d-b867-43abe9199139",
+  "sha12": "06e73cec671b",
+  "label": "barbe 01 dwarf"
+ },
+ "beard_dwarf_02": {
+  "asset_id": "b0a266a7-5545-4f3d-9c48-9cba387589ee",
+  "sha12": "901b86a6d99e",
+  "label": "barbe 02 dwarf"
+ },
+ "beard_dwarf_03": {
+  "asset_id": "7b5476be-ed02-4af9-9cea-e6113a26dc26",
+  "sha12": "7e0eb2bd631f",
+  "label": "barbe 03 dwarf"
+ },
+ "beard_dwarf_04": {
+  "asset_id": "44c3a50e-58c0-4095-8023-1a6202a8f9ee",
+  "sha12": "d0e305221782",
+  "label": "barbe 04 dwarf"
+ },
+ "beard_dwarf_05": {
+  "asset_id": "8a2aaa3d-6e1b-409b-bfd4-61e8d237a7bf",
+  "sha12": "0eb3f928ead2",
+  "label": "barbe 05 dwarf"
+ },
+ "beard_dwarf_06": {
+  "asset_id": "d895d693-f601-423a-8921-ddb1b268a918",
+  "sha12": "c2b8020c909d",
+  "label": "barbe 06 dwarf"
+ },
+ "beard_dwarf_07": {
+  "asset_id": "d70399a8-d0ff-4f51-9af3-758b35e10f86",
+  "sha12": "109a2a03d432",
+  "label": "barbe 07 dwarf"
+ },
+ "beard_dwarf_08": {
+  "asset_id": "98e9664c-cfb3-4dd0-860b-d13d679b814c",
+  "sha12": "64023098bd03",
+  "label": "barbe 08 dwarf"
+ },
+ "beard_dwarf_09": {
+  "asset_id": "751c40a8-b05d-4635-b2f1-354fb87fc155",
+  "sha12": "c2ad0b32b59e",
+  "label": "barbe 09 dwarf"
+ },
+ "beard_dwarf_10": {
+  "asset_id": "26f345e6-0aee-4178-bcd4-68ca03f7f4e0",
+  "sha12": "2a044c4196b7",
+  "label": "barbe 10 dwarf"
+ },
+ "beard_gnome_01": {
+  "asset_id": "2a181fde-0403-40eb-b968-122bc885e4ea",
+  "sha12": "b57206f97964",
+  "label": "barbe 01 gnome"
+ },
+ "beard_gnome_02": {
+  "asset_id": "a3e534bd-128f-4725-88f7-1970b5bc2e87",
+  "sha12": "4beffe6d2f58",
+  "label": "barbe 02 gnome"
+ },
+ "beard_gnome_03": {
+  "asset_id": "a3274b2e-b140-4b08-98bd-cf42b0a88397",
+  "sha12": "bfef5180438b",
+  "label": "barbe 03 gnome"
+ },
+ "beard_gnome_04": {
+  "asset_id": "92fb1628-b2e3-4d89-8f33-5cbf95a49adc",
+  "sha12": "fd8c69bcbc8d",
+  "label": "barbe 04 gnome"
+ },
+ "beard_gnome_05": {
+  "asset_id": "ae4f1021-3606-45e5-a00a-5231f302ef71",
+  "sha12": "1ab148f9b2bb",
+  "label": "barbe 05 gnome"
+ },
+ "beard_gnome_06": {
+  "asset_id": "26d787cc-0bc0-478d-b73a-f3f12f756d4a",
+  "sha12": "f62cc1f7a9b6",
+  "label": "barbe 06 gnome"
+ },
+ "beard_gnome_07": {
+  "asset_id": "24257ead-39f4-4cbc-8572-8f063904dd26",
+  "sha12": "420b24c64bab",
+  "label": "barbe 07 gnome"
+ },
+ "beard_gnome_08": {
+  "asset_id": "74e29706-ada0-42c9-be6b-3827d4751c55",
+  "sha12": "f2cf9d57bf62",
+  "label": "barbe 08 gnome"
+ },
+ "beard_gnome_09": {
+  "asset_id": "8a282bf6-6cab-4ad2-9e52-ea4c72ea9ff7",
+  "sha12": "250485d4022b",
+  "label": "barbe 09 gnome"
+ },
+ "beard_gnome_10": {
+  "asset_id": "260fea4e-37a4-4527-9762-6702e07a6383",
+  "sha12": "8de6657f0ae5",
+  "label": "barbe 10 gnome"
+ },
+ "beard_minotaur_01": {
+  "asset_id": "1466aff6-338d-46ab-aab5-bf6dc4069274",
+  "sha12": "73d933d2982a",
+  "label": "barbe 01 minotaur"
+ },
+ "beard_minotaur_02": {
+  "asset_id": "1fe1c8ed-be33-4c4e-8cb0-81c7eda84820",
+  "sha12": "9f575683cd36",
+  "label": "barbe 02 minotaur"
+ },
+ "beard_minotaur_03": {
+  "asset_id": "ef3ce3e9-e295-4075-ad0a-de743dba7428",
+  "sha12": "0324dd95cb9b",
+  "label": "barbe 03 minotaur"
+ },
+ "beard_minotaur_04": {
+  "asset_id": "b44e1f9b-0767-40b0-b9cd-01b6ebd8270a",
+  "sha12": "815b2644c33a",
+  "label": "barbe 04 minotaur"
+ },
+ "beard_minotaur_05": {
+  "asset_id": "3fc4a34d-45ff-4686-bb0c-8e9c64dc3cb8",
+  "sha12": "3bd281577876",
+  "label": "barbe 05 minotaur"
+ },
+ "beard_minotaur_06": {
+  "asset_id": "dac35ce2-29c6-4de7-ac53-62ad798c634b",
+  "sha12": "a5f7e68d0c10",
+  "label": "barbe 06 minotaur"
+ },
+ "beard_minotaur_07": {
+  "asset_id": "27188500-abd0-455d-ae71-ab8fc9e6a89f",
+  "sha12": "478b945e665f",
+  "label": "barbe 07 minotaur"
+ },
+ "beard_minotaur_08": {
+  "asset_id": "dfff9f5d-4394-4ea3-b9d7-a0fcab8b2069",
+  "sha12": "44f5353552f9",
+  "label": "barbe 08 minotaur"
+ },
+ "beard_minotaur_09": {
+  "asset_id": "d438f017-29d4-4989-b532-24e73bb9a534",
+  "sha12": "cabab97e55ab",
+  "label": "barbe 09 minotaur"
+ },
+ "beard_minotaur_10": {
+  "asset_id": "430bc238-8aa3-4de5-a094-56b236b10cd1",
+  "sha12": "9c3040bd5bd0",
+  "label": "barbe 10 minotaur"
  }
 }

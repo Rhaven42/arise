@@ -91,6 +91,18 @@ def prealign(edit: np.ndarray, base: np.ndarray) -> np.ndarray:
     bt, bb, bc = span(base)
     scale = (bb - bt) / max(eb - et, 1)
     h, w = edit.shape[:2]
+    if eb >= h - 2:
+        # Image coupée en bas (pieds absents) : échelle par la largeur du
+        # corps (épaules et bras), recalage sur le sommet de la tête.
+        def width(a):
+            xs = np.where((a[..., 3] > 0).any(axis=0))[0]
+            return xs[-1] - xs[0]
+        scale = width(base) / max(width(edit), 1)
+        im = Image.fromarray(edit.clip(0, 255).astype(np.uint8), "RGBA")
+        im = im.resize((max(1, round(w * scale)), max(1, round(h * scale))), Image.NEAREST)
+        out = Image.new("RGBA", (w, h))
+        out.paste(im, (round(bc - ec * scale), round(bt - et * scale)), im)
+        return np.asarray(out).astype(np.int16).copy()
     im = Image.fromarray(edit.clip(0, 255).astype(np.uint8), "RGBA")
     im = im.resize((max(1, round(w * scale)), max(1, round(h * scale))), Image.NEAREST)
     out = Image.new("RGBA", (w, h))
@@ -197,6 +209,23 @@ def key_layer(base: np.ndarray, edit: np.ndarray, hue: float | None = None,
     out = np.zeros_like(edit)
     out[mask] = edit[mask]
     return out
+
+
+def race_beard_layer(base: np.ndarray, edit: np.ndarray) -> np.ndarray:
+    """Barbe dessinée sur le corps d'une race : recalage grossier puis fin,
+    tout le magenta (sans graine au-dessus du cou), bouche transparente ; les
+    miettes détachées de la barbe (perles, reflets isolés) sont écartées."""
+    lay = key_layer(base, prealign(edit, base), hue=0.952, tol=0.065, min_sat=0.15,
+                    seed_rows=None, open_mouth=True)
+    m = lay[..., 3] > 0
+    parts, n = ndimage.label(m, np.ones((3, 3)))
+    if n > 1:
+        sizes = ndimage.sum(m, parts, range(1, n + 1))
+        main = parts == int(np.argmax(sizes)) + 1
+        near = ndimage.binary_dilation(main, np.ones((3, 3)), iterations=3)
+        keep = set(np.unique(parts[near])) - {0}
+        lay[~np.isin(parts, list(keep))] = 0
+    return lay
 
 
 def luminance(a: np.ndarray) -> np.ndarray:
