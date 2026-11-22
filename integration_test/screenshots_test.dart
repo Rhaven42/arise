@@ -311,10 +311,17 @@ void main() {
       await pumpFor(300);
       await tester.tap(find.text(filter));
       await pumpFor(600);
-      final button = find.text('Voir sur mon personnage').at(index);
-      await tester.ensureVisible(button);
+      final tile = find
+          .descendant(
+            of: find.byKey(ShopPage.listKey),
+            matching: find.byType(InkWell),
+          )
+          .at(index);
+      await tester.ensureVisible(tile);
       await pumpFor(300);
-      await tester.tap(button);
+      await tester.tap(tile);
+      await pumpFor(800);
+      await tester.tap(find.text('Voir sur mon personnage'));
       // On attend que le personnage soit assemblé et dessiné.
       for (var t = 0; t < 20000; t += 500) {
         if (find.text('Le Système façonne ton héros…').evaluate().isEmpty) {
@@ -325,6 +332,8 @@ void main() {
       await pumpFor(1500);
       await binding.takeScreenshot(shot);
       await tester.tap(find.byTooltip('Fermer'));
+      await pumpFor(800);
+      await tester.binding.handlePopRoute();
       await pumpFor(800);
     }
 

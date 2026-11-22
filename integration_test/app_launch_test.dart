@@ -274,7 +274,17 @@ void main() {
     await _pumpFor(tester, 300);
     await tester.tap(outfits);
     await _pumpFor(tester, 500);
-    await tester.tap(find.text('Voir sur mon personnage').first);
+    // Grille de la boutique : la fiche du premier article, puis l'essayage.
+    await tester.tap(
+      find
+          .descendant(
+            of: find.byKey(ShopPage.listKey),
+            matching: find.byType(InkWell),
+          )
+          .first,
+    );
+    await _pumpFor(tester, 800);
+    await tester.tap(find.text('Voir sur mon personnage'));
     await _pumpFor(tester, 4000);
     expect(
       find.text(
@@ -284,6 +294,9 @@ void main() {
       findsNothing,
     );
     await tester.tap(find.byTooltip('Fermer'));
+    await _pumpFor(tester, 800);
+    // Fermeture de la fiche de l'article.
+    await tester.binding.handlePopRoute();
     await _pumpFor(tester, 800);
     debugPrint('Parcours : inventaire');
     await tester.tap(find.byType(BackButton).first);
