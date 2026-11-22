@@ -117,7 +117,7 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.systemHome,
         builder: (_, _) => const SystemHomePage(
-          panels: [HunterPanel(), QuestPanel(), TrialPanel()],
+          panels: [QuestPanel(), TrialPanel(), HunterPanel()],
           bottomBar: HomeDock(),
         ),
         routes: [

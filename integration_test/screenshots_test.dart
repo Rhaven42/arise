@@ -206,7 +206,7 @@ void main() {
     await binding.takeScreenshot('20_fenetre_apres_seance');
 
     // Phase 5 : l'analyse musculaire.
-    final analysis = find.text('Analyse musculaire');
+    final analysis = find.text('Analyse');
     await tester.scrollUntilVisible(
       analysis,
       200,

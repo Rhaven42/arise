@@ -165,10 +165,10 @@ void main() {
     // attendu avant le retour complet sur la Fenêtre du Système.
     await _waitFor(tester, find.text('Personnage enregistré.'));
 
-    await _waitFor(tester, find.text('Bienvenue, chasseur'));
-
-    expect(find.text('Bienvenue, chasseur'), findsOneWidget);
-    await _expectVisible(tester, 'Jours de repos : Samedi');
+    // Accueil épuré : la série du jour et les raccourcis.
+    await _waitFor(tester, find.text('Aucun jour en cours'));
+    expect(find.text('Aucun jour en cours'), findsOneWidget);
+    await _expectVisible(tester, 'Planning');
 
     // Catalogue : recherche et fiche animée.
     await _tapText(tester, 'Exercices');
@@ -241,7 +241,7 @@ void main() {
     await tester.tap(find.byType(BackButton).first);
     await _pumpFor(tester, 1200);
     debugPrint('Parcours : ouverture de l’analyse musculaire');
-    await _tapWithoutSettle(tester, find.text('Analyse musculaire'));
+    await _tapWithoutSettle(tester, find.text('Analyse').last);
     await _pumpFor(tester, 1500);
     debugPrint('Parcours : analyse affichée');
     await _expectVisible(tester, '1 séance sur cette période.');

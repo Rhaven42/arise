@@ -25,7 +25,6 @@ import 'package:arise/features/progression/domain/progression_rules.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/progression/presentation/progression_labels.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
-import 'package:arise/features/progression/presentation/stats_page.dart';
 import 'package:arise/features/titles/presentation/titles_providers.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +42,9 @@ class SystemHomePage extends ConsumerWidget {
 
   /// Barre d'action (assemblée par le routeur).
   final Widget? bottomBar;
+
+  /// En-tête de la barre des statistiques (ouvre l'écran détaillé).
+  static const statsKey = Key('home-stats');
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -93,9 +95,6 @@ class _SystemHomeBody extends ConsumerWidget {
     final state = view.state;
     final now = ref.watch(clockProvider)();
     final controller = ref.read(progressionControllerProvider.notifier);
-    final restDays = (profile.restDays.toList()..sort())
-        .map((day) => l10n.weekdayLong(weekdayKey(day)))
-        .join(', ');
     final sessions = ref.watch(plannedSessionsProvider).value ?? const [];
     final programs = ref.watch(programsProvider).value ?? const [];
     final next = nextOccurrence(sessions, now);
@@ -108,21 +107,23 @@ class _SystemHomeBody extends ConsumerWidget {
       padding: const EdgeInsets.all(AriseSpacing.md),
       children: [
         _HeroHud(state: state),
-        // Barre des statistiques en haut de l'écran, juste sous le héros.
         const SizedBox(height: AriseSpacing.md),
+        // Barre des statistiques : le détail est sur l'écran des stats.
         _StatsPanel(
           state: state,
           onAllocate: (stat) => unawaited(controller.allocate(stat)),
+          onOpen: () => context.go(AppRoutes.stats),
         ),
-        const SizedBox(height: AriseSpacing.md),
         if (view.report case final report?) ...[
+          const SizedBox(height: AriseSpacing.md),
           _ReportWindow(
             report: report,
             onDismiss: () => unawaited(controller.dismissReport()),
           ),
-          const SizedBox(height: AriseSpacing.md),
         ],
-        if (sickUntil != null && state.isSickOn(CivilDate.ofLocal(now)))
+        // Message du Système seulement quand il y a quelque chose à dire.
+        if (sickUntil != null && state.isSickOn(CivilDate.ofLocal(now))) ...[
+          const SizedBox(height: AriseSpacing.md),
           SystemWindow(
             header: l10n.systemWindowHeader,
             title: l10n.homeSickTitle,
@@ -130,22 +131,15 @@ class _SystemHomeBody extends ConsumerWidget {
               l10n.homeSickBody(formatCivilDate(sickUntil)),
               style: textTheme.bodyLarge,
             ),
-          )
-        else if (state.isPenaltyActive(now))
+          ),
+        ] else if (state.isPenaltyActive(now)) ...[
+          const SizedBox(height: AriseSpacing.md),
           SystemWindow(
             header: l10n.systemWindowHeader,
             title: l10n.homePenaltyTitle,
             child: Text(l10n.homePenaltyBody, style: textTheme.bodyLarge),
-          )
-        else
-          SystemWindow(
-            header: l10n.systemWindowHeader,
-            title: l10n.systemWelcomeTitle,
-            child: Text(l10n.systemWelcomeBody, style: textTheme.bodyLarge),
           ),
-        // Fiche des statistiques, sous le personnage et le message du jour.
-        const SizedBox(height: AriseSpacing.md),
-        const StatsSheet(),
+        ],
         if (state.isRankLocked && state.xpInLevel >= state.xpForNextLevel)
           Padding(
             padding: const EdgeInsets.only(top: AriseSpacing.sm),
@@ -154,70 +148,35 @@ class _SystemHomeBody extends ConsumerWidget {
               style: textTheme.bodyMedium?.copyWith(color: AriseColors.mana),
             ),
           ),
-        if (state.rank.index >= gameConfig.classes.unlockRank.index) ...[
-          const SizedBox(height: AriseSpacing.lg),
-          _ClassPanel(state: state),
-        ],
-        const SizedBox(height: AriseSpacing.lg),
-        _StreakPanel(state: state),
         for (final panel in panels) ...[
-          const SizedBox(height: AriseSpacing.lg),
+          const SizedBox(height: AriseSpacing.md),
           panel,
         ],
-        const SizedBox(height: AriseSpacing.lg),
-        Text(
-          next == null || nextProgram == null
+        const SizedBox(height: AriseSpacing.md),
+        _TodayStrip(
+          state: state,
+          nextSession: next == null || nextProgram == null
               ? l10n.homeNoNextSession
               : l10n.homeNextSession(
                   nextProgram.name,
                   '${l10n.weekdayLong(weekdayKey(next.start.weekday))} '
                   '${DateFormat.Hm('fr').format(next.start)}',
                 ),
-          style: textTheme.bodyLarge,
         ),
-        const SizedBox(height: AriseSpacing.xs),
-        Text(
-          l10n.systemGoal(l10n.goalLabel(profile.goal.name)),
-          style: textTheme.bodyLarge,
-        ),
-        const SizedBox(height: AriseSpacing.xs),
-        Text(l10n.systemRestDays(restDays), style: textTheme.bodyLarge),
-        const SizedBox(height: AriseSpacing.lg),
-        _HomeLink(
-          icon: Icons.fitness_center,
-          title: l10n.exercisesTitle,
-          subtitle: l10n.homeExercisesHint,
-          onTap: () => context.go(AppRoutes.exercises),
-        ),
-        _HomeLink(
-          icon: Icons.list_alt,
-          title: l10n.programsTitle,
-          subtitle: l10n.homeProgramsHint,
-          onTap: () => context.go(AppRoutes.programs),
-        ),
-        _HomeLink(
-          icon: Icons.calendar_month,
-          title: l10n.planningTitle,
-          subtitle: l10n.homePlanningHint,
-          onTap: () => context.go(AppRoutes.planning),
-        ),
-        _HomeLink(
-          icon: Icons.person_outline,
-          title: l10n.characterTitle,
-          subtitle: l10n.characterHomeHint,
-          onTap: () => context.go(AppRoutes.character),
-        ),
-        _HomeLink(
-          icon: Icons.favorite_outline,
-          title: l10n.healthTitle,
-          subtitle: l10n.healthHomeHint,
-          onTap: () => context.go(AppRoutes.health),
-        ),
-        _HomeLink(
-          icon: Icons.accessibility_new,
-          title: l10n.analysisTitle,
-          subtitle: l10n.analysisHomeHint,
-          onTap: () => context.go(AppRoutes.analysis),
+        const SizedBox(height: AriseSpacing.md),
+        _Shortcuts(
+          items: [
+            (Icons.fitness_center, l10n.exercisesTitle, AppRoutes.exercises),
+            (Icons.list_alt, l10n.programsTitle, AppRoutes.programs),
+            (Icons.calendar_month, l10n.planningTitle, AppRoutes.planning),
+            (Icons.bar_chart, l10n.statsTitle, AppRoutes.stats),
+            (
+              Icons.accessibility_new,
+              l10n.homeShortcutAnalysis,
+              AppRoutes.analysis,
+            ),
+            (Icons.favorite_outline, l10n.healthTitle, AppRoutes.health),
+          ],
         ),
       ],
     );
@@ -396,10 +355,17 @@ class _Wallet extends StatelessWidget {
 }
 
 class _StatsPanel extends StatelessWidget {
-  const _StatsPanel({required this.state, required this.onAllocate});
+  const _StatsPanel({
+    required this.state,
+    required this.onAllocate,
+    required this.onOpen,
+  });
 
   final ProgressionState state;
   final ValueChanged<StatId> onAllocate;
+
+  /// Ouvre l'écran détaillé des statistiques.
+  final VoidCallback onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -410,14 +376,25 @@ class _StatsPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Semantics(
-            header: true,
-            child: Text(
-              l10n.homeStatsTitle,
-              style: textTheme.titleMedium?.copyWith(
-                color: AriseColors.gold,
-                letterSpacing: 1.5,
-              ),
+          InkWell(
+            key: SystemHomePage.statsKey,
+            onTap: onOpen,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      l10n.homeStatsTitle,
+                      style: textTheme.titleMedium?.copyWith(
+                        color: AriseColors.gold,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+                const Icon(Icons.chevron_right, color: AriseColors.gold),
+              ],
             ),
           ),
           if (canAllocate)
@@ -456,87 +433,6 @@ class _StatsPanel extends StatelessWidget {
                   ),
                 ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Classe du chasseur (à partir du rang C).
-class _ClassPanel extends StatelessWidget {
-  const _ClassPanel({required this.state});
-
-  static const openKey = Key('class-open');
-
-  final ProgressionState state;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
-    final heroClass = state.heroClass;
-    return StoneFrame(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            heroClass == null
-                ? l10n.classNone
-                : l10n.classCurrent(l10n.className(heroClass.name)),
-            style: textTheme.titleMedium?.copyWith(color: AriseColors.gold),
-          ),
-          if (heroClass != null)
-            Text(
-              l10n.classDescription(heroClass.name),
-              style: textTheme.bodyMedium,
-            ),
-          const SizedBox(height: AriseSpacing.sm),
-          AriseButton(
-            key: openKey,
-            label: l10n.classChoose,
-            icon: Icons.auto_awesome,
-            variant: heroClass == null
-                ? AriseButtonVariant.primary
-                : AriseButtonVariant.secondary,
-            onPressed: () => context.go(AppRoutes.heroClass),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StreakPanel extends StatelessWidget {
-  const _StreakPanel({required this.state});
-
-  final ProgressionState state;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
-    final percent = ((streakMultiplier(state.streakDays) - 1) * 100).round();
-    return StoneFrame(
-      material: FrameMaterial.wood,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(
-            header: true,
-            child: Text(l10n.homeStreakTitle, style: textTheme.titleLarge),
-          ),
-          const SizedBox(height: AriseSpacing.xs),
-          Text(l10n.homeStreak(state.streakDays), style: textTheme.titleMedium),
-          Text(
-            l10n.homeBestStreak(state.bestStreak),
-            style: textTheme.bodyMedium,
-          ),
-          if (percent > 0)
-            Text(l10n.homeStreakBonus(percent), style: textTheme.bodyMedium),
-          Text(
-            l10n.homeShields(state.shields, gameConfig.streaks.maxShields),
-            style: textTheme.bodyMedium,
           ),
         ],
       ),
@@ -596,37 +492,101 @@ class _ReportWindow extends StatelessWidget {
   }
 }
 
-/// Accès à une section du jeu depuis la Fenêtre du Système.
-class _HomeLink extends StatelessWidget {
-  const _HomeLink({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
+/// Série du jour et prochaine séance, sur une seule carte.
+class _TodayStrip extends StatelessWidget {
+  const _TodayStrip({required this.state, required this.nextSession});
 
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
+  final ProgressionState state;
+  final String nextSession;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AriseSpacing.sm),
-      child: StoneFrame(
-        padding: EdgeInsets.zero,
-        child: Material(
-          type: MaterialType.transparency,
-          child: ListTile(
-            leading: Icon(icon, color: AriseColors.gold),
-            title: Text(title),
-            subtitle: Text(subtitle),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: onTap,
-          ),
-        ),
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final percent = ((streakMultiplier(state.streakDays) - 1) * 100).round();
+    return StoneFrame(
+      material: FrameMaterial.wood,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AriseSpacing.md,
+        vertical: AriseSpacing.sm,
       ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.local_fire_department, color: AriseColors.ember),
+              const SizedBox(width: AriseSpacing.xs),
+              Expanded(
+                child: Text(
+                  percent > 0
+                      ? '${l10n.homeStreak(state.streakDays)} · '
+                            '${l10n.homeStreakBonus(percent)}'
+                      : l10n.homeStreak(state.streakDays),
+                  style: textTheme.titleMedium,
+                ),
+              ),
+              const Icon(Icons.shield_outlined, color: AriseColors.mana),
+              const SizedBox(width: AriseSpacing.xs),
+              Text(
+                l10n.homeShields(state.shields, gameConfig.streaks.maxShields),
+                style: textTheme.bodyMedium,
+              ),
+            ],
+          ),
+          const SizedBox(height: AriseSpacing.xs),
+          Text(nextSession, style: textTheme.bodyMedium),
+        ],
+      ),
+    );
+  }
+}
+
+/// Raccourcis vers les sections du jeu : une grille d'icônes.
+class _Shortcuts extends StatelessWidget {
+  const _Shortcuts({required this.items});
+
+  final List<(IconData, String, String)> items;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return GridView.count(
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      mainAxisSpacing: AriseSpacing.sm,
+      crossAxisSpacing: AriseSpacing.sm,
+      childAspectRatio: 1.1,
+      children: [
+        for (final (icon, label, route) in items)
+          StoneFrame(
+            padding: EdgeInsets.zero,
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: () => context.go(route),
+                child: Padding(
+                  padding: const EdgeInsets.all(AriseSpacing.xs),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(icon, color: AriseColors.gold, size: 28),
+                      const SizedBox(height: AriseSpacing.xs),
+                      Text(
+                        label,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: textTheme.labelLarge,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
