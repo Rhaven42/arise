@@ -49,6 +49,7 @@ class EquipmentItem {
     this.dyeable = false,
     this.baseId,
     this.tint,
+    this.unlockAchievement,
   });
 
   /// Identifiant stable ; le sprite s'appelle comme l'objet (ou [baseId]).
@@ -66,6 +67,9 @@ class EquipmentItem {
   /// Teinte par défaut d'un objet exclusif (ARGB), remplaçable par une
   /// teinture.
   final int? tint;
+
+  /// Haut fait à obtenir avant de pouvoir acheter l'objet, le cas échéant.
+  final String? unlockAchievement;
 
   bool get isExclusive => baseId != null;
 
@@ -235,12 +239,14 @@ const List<EquipmentItem> outfitCatalog = [
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    unlockAchievement: 'realm_sea',
   ),
   EquipmentItem(
     id: 'viking_raider',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    unlockAchievement: 'realm_north',
   ),
   EquipmentItem(
     id: 'dawn_plate',
@@ -295,6 +301,7 @@ const List<EquipmentItem> outfitCatalog = [
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
+    unlockAchievement: 'realm_arcane',
   ),
   EquipmentItem(
     id: 'dragon_scale',
@@ -322,6 +329,36 @@ const List<EquipmentItem> outfitCatalog = [
   ),
   EquipmentItem(
     id: 'infernal_warlord',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.legendary,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'plague_coat',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'blood_hunter',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.rare,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'necromancer_robe',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'void_cultist',
+    slot: EquipmentSlot.chest,
+    rarity: Rarity.epic,
+    dyeable: true,
+  ),
+  EquipmentItem(
+    id: 'death_knight',
     slot: EquipmentSlot.chest,
     rarity: Rarity.legendary,
     dyeable: true,
@@ -515,6 +552,46 @@ const List<EquipmentItem> weaponCatalog = [
     id: 'staff_ember',
     slot: EquipmentSlot.weapon,
     rarity: Rarity.mythic,
+  ),
+  EquipmentItem(
+    id: 'bow_hunter',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.common,
+  ),
+  EquipmentItem(
+    id: 'spear_hunter',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.common,
+  ),
+  EquipmentItem(
+    id: 'bow_elven',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'rifle_flintlock',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'wand_bone',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'dagger_venom',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.rare,
+  ),
+  EquipmentItem(
+    id: 'sword_shadow',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.epic,
+  ),
+  EquipmentItem(
+    id: 'scythe_reaper',
+    slot: EquipmentSlot.weapon,
+    rarity: Rarity.legendary,
   ),
 ];
 

@@ -1,5 +1,6 @@
 import 'package:arise/core/database/app_database.dart';
 import 'package:arise/core/utils/clock.dart';
+import 'package:arise/features/achievements/presentation/achievements_providers.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
 import 'package:arise/features/shop/data/drift_shop_repository.dart';
 import 'package:arise/features/shop/domain/shop_repository.dart';
@@ -22,7 +23,10 @@ class ShopController extends _$ShopController {
   void build() {}
 
   Future<PurchaseIssue?> buy(ShopArticle article) async {
-    final issue = await ref.read(shopRepositoryProvider).buy(article);
+    final achievements = await ref.read(achievementsStateProvider.future);
+    final issue = await ref
+        .read(shopRepositoryProvider)
+        .buy(article, achievements: achievements.unlocked.keys.toSet());
     if (issue == null) ref.invalidate(progressionControllerProvider);
     return issue;
   }

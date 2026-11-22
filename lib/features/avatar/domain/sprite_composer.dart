@@ -291,6 +291,11 @@ const Map<String, double> weaponLength = {
   'hammer': 0.48,
   'staff': 0.8,
   'halberd': 0.9,
+  'bow': 0.62,
+  'rifle': 0.6,
+  'spear': 0.9,
+  'wand': 0.24,
+  'scythe': 0.88,
 };
 
 /// Part de la teinture dans la couleur d'une tenue teinte.
@@ -305,6 +310,29 @@ double luminanceOf(int r, int g, int b) => 0.299 * r + 0.587 * g + 0.114 * b;
   final k = (luminanceOf(r, g, b) / math.max(reference, 1)).clamp(0.0, 2.2);
   int channel(int c) {
     final v = k <= 1 ? c * k : c + (255 - c) * (k - 1) * 0.55;
+    return v.round().clamp(0, 255);
+  }
+
+  return (
+    channel((color >> 16) & 0xFF),
+    channel((color >> 8) & 0xFF),
+    channel(color & 0xFF),
+  );
+}
+
+/// Teinte douce des cheveux et barbes : reflets et ombres resserrés, pour
+/// que les reflets clairs du modèle magenta ne virent pas au blanc. Même
+/// formule que `tint_hair` dans `tool/sprites/preview.py`.
+(int, int, int) tintHairPixel(
+  int r,
+  int g,
+  int b,
+  double reference,
+  int color,
+) {
+  final k = (luminanceOf(r, g, b) / math.max(reference, 1)).clamp(0.3, 1.6);
+  int channel(int c) {
+    final v = k <= 1 ? c * k : c + (255 - c) * (k - 1) * 0.35;
     return v.round().clamp(0, 255);
   }
 
@@ -450,7 +478,7 @@ class SpriteComposer {
         out,
         beard,
         headWarp(beardSource, body.head, meta.height, hugJaw: true),
-        (r, g, b) => tintPixel(r, g, b, ref, color),
+        (r, g, b) => tintHairPixel(r, g, b, ref, color),
       );
     }
     final hair = layers.hair;
@@ -464,7 +492,7 @@ class SpriteComposer {
         out,
         hair,
         headWarp(hairSource, body.head, meta.height),
-        (r, g, b) => tintPixel(r, g, b, ref, a.hairColor),
+        (r, g, b) => tintHairPixel(r, g, b, ref, a.hairColor),
         // Visage dégagé : pas de mèche sur la peau entre sourcils et menton.
         skip: (x, y) =>
             y >= brow + 1 && y <= neck && src.alphaAt(x, y) == meta.skinAlpha,
@@ -534,6 +562,22 @@ class SpriteComposer {
       if (wd == null || ws == null) return null;
       return (wd / ws).clamp(0.75 * s, 1.35 * s);
     });
+    if (hugJaw) {
+      // Barbe : une seule échelle (moyenne sur la mâchoire), pour garder sa
+      // forme sur une mâchoire très différente (menton pointu, bajoues).
+      final jaw = [
+        for (var y = 0; y < height; y++)
+          if (scales[y] case final k? when y + 0.5 >= db && y + 0.5 < chin) k,
+      ];
+      final k = jaw.isEmpty ? s : jaw.reduce((a, b) => a + b) / jaw.length;
+      // Même échelle à la verticale, calée sur le menton du corps : pas
+      // d'étirement.
+      final beardRows = List<double>.generate(
+        height,
+        (y) => sn + (y + 0.5 - dn) / k,
+      );
+      return HeadWarp(beardRows, List.filled(height, k), ds.centre, ss.centre);
+    }
     // Lignes sans mesure (au-dessus du crâne) : échelle de la ligne mesurée
     // la plus proche.
     final known = [

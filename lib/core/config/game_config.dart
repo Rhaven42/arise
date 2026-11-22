@@ -738,6 +738,11 @@ enum AchievementMetric {
   newYearSessions,
   restDaysRespected,
   painStops,
+
+  /// Zones conquises : chacune vaut 1 une fois sa conquête terminée.
+  northRealmConquered,
+  seaRealmConquered,
+  arcaneRealmConquered,
 }
 
 /// Haut fait : atteint quand [metric] vaut au moins [threshold].
@@ -1287,6 +1292,24 @@ const gameConfig = GameConfig(
         category: AchievementCategory.exploration,
         metric: AchievementMetric.dungeonsCleared,
         threshold: 5,
+      ),
+      AchievementDefinition(
+        id: 'realm_north',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.northRealmConquered,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'realm_sea',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.seaRealmConquered,
+        threshold: 1,
+      ),
+      AchievementDefinition(
+        id: 'realm_arcane',
+        category: AchievementCategory.exploration,
+        metric: AchievementMetric.arcaneRealmConquered,
+        threshold: 1,
       ),
       AchievementDefinition(
         id: 'first_item',

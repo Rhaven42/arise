@@ -17,7 +17,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, "..", "..", "assets", "sprites")
 META = json.load(open(os.path.join(ASSETS, "sprites.json")))
 WEAPON_LENGTH = {"sword": 0.5, "dagger": 0.28, "scimitar": 0.46, "axe": 0.5, "mace": 0.42,
-                 "hammer": 0.48, "staff": 0.8, "halberd": 0.9}
+                 "hammer": 0.48, "staff": 0.8, "halberd": 0.9, "bow": 0.62,
+                 "rifle": 0.6, "spear": 0.9, "wand": 0.24, "scythe": 0.88}
 
 
 def img(path: str) -> np.ndarray:
@@ -33,6 +34,15 @@ def tint(px: np.ndarray, ref: float, color: tuple[int, int, int]) -> np.ndarray:
     k = np.clip(lum(px) / max(ref, 1), 0, 2.2)[..., None]
     c = np.array(color, float)
     return np.where(k <= 1, c * k, c + (255 - c) * (k - 1) * 0.55)
+
+
+def tint_hair(px: np.ndarray, ref: float, color: tuple[int, int, int]) -> np.ndarray:
+    """Teinte douce des cheveux et barbes : reflets et ombres resserrés, pour
+    que les reflets clairs du modèle magenta ne virent pas au blanc (formule
+    partagée avec l'appli)."""
+    k = np.clip(lum(px) / max(ref, 1), 0.3, 1.6)[..., None]
+    c = np.array(color, float)
+    return np.where(k <= 1, c * k, c + (255 - c) * (k - 1) * 0.35)
 
 
 def place(canvas: np.ndarray, layer: np.ndarray, scale: float, ox: float, oy: float,
@@ -102,6 +112,15 @@ def head_warp(src: dict, b: dict, height: int, hug_jaw: bool = False):
         wd = width(b["profile"], dt, y, half_d)
         ws = width(src["profile"], st, r, half_s)
         ks.append(float(np.clip(wd / ws, 0.75 * s, 1.35 * s)) if wd and ws else None)
+    if hug_jaw:
+        # Barbe : une seule échelle (moyenne sur la mâchoire), pour garder sa
+        # forme sur une mâchoire très différente (menton pointu, bajoues).
+        jaw = [k for y, k in enumerate(ks) if k is not None and db <= y + 0.5 < chin]
+        k = sum(jaw) / len(jaw) if jaw else s
+        # Même échelle à la verticale, calée sur le menton du corps : pas
+        # d'étirement.
+        rows = [sn + (y + 0.5 - dn) / k for y in range(height)]
+        return rows, [k] * height, (dx0 + dx1) / 2, (sx0 + sx1) / 2
     # Lignes sans mesure (au-dessus du crâne, sous le menton) : échelle de
     # la ligne mesurée la plus proche.
     known = [i for i, k in enumerate(ks) if k is not None and rows[i] >= 0]
@@ -178,7 +197,7 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         m = lay[..., 3] > 0
         ref = float(np.median(lum(lay[m, :3])))
         place_warp(canvas, lay, head_warp(META["hairSources"]["beard"], b, canvas.shape[0], True),
-                   lambda px: tint(px[:3], ref, beard_color or hair_color))
+                   lambda px: tint_hair(px[:3], ref, beard_color or hair_color))
     if hair:
         lay = img(f"hair/{hair}.png")
         m = lay[..., 3] > 0
@@ -189,7 +208,7 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
             # Visage dégagé : pas de mèche sur la peau entre sourcils et menton.
             return b["brow"] + 1 <= y <= neck and skin_px[y, x]
         place_warp(canvas, lay, head_warp(src, b, canvas.shape[0]),
-                   lambda px: tint(px[:3], ref, hair_color), face)
+                   lambda px: tint_hair(px[:3], ref, hair_color), face)
     # Cornes devant la coiffure.
     canvas[front] = body[front]
     canvas[front, 3] = 255

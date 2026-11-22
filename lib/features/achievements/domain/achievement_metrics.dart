@@ -24,6 +24,7 @@ class AchievementInputs {
     this.customExercises = 0,
     this.programs = 0,
     this.eventsCompleted = 0,
+    this.realmsConquered = const {},
   });
 
   final List<CompletedSession> sessions;
@@ -40,6 +41,10 @@ class AchievementInputs {
   final int customExercises;
   final int programs;
   final int eventsCompleted;
+
+  /// Zones conquises (`north`, `sea`, `arcane`) ; vide tant qu'aucune zone
+  /// n'a été parcourue jusqu'au bout.
+  final Set<String> realmsConquered;
 }
 
 /// Valeur de chaque mesure suivie par les hauts faits.
@@ -171,6 +176,9 @@ Map<AchievementMetric, int> computeAchievementMetrics(
     }).length,
     AchievementMetric.restDaysRespected: _restDaysRespected(inputs),
     AchievementMetric.painStops: sessions.where((s) => s.stoppedForPain).length,
+    AchievementMetric.northRealmConquered: _conquered(inputs, 'north'),
+    AchievementMetric.seaRealmConquered: _conquered(inputs, 'sea'),
+    AchievementMetric.arcaneRealmConquered: _conquered(inputs, 'arcane'),
   };
 }
 
@@ -218,3 +226,6 @@ int _restDaysRespected(AchievementInputs inputs) {
   }
   return count;
 }
+
+int _conquered(AchievementInputs inputs, String realm) =>
+    inputs.realmsConquered.contains(realm) ? 1 : 0;

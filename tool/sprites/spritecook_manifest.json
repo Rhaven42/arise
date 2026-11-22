@@ -1674,5 +1674,170 @@
   "asset_id": "cd910b60-0b8a-4532-b57b-cf95776f89ce",
   "sha12": "24adda0d7a69",
   "label": "infernal_warlord small"
+ },
+ "weapon_bow_hunter": {
+  "asset_id": "9f782cff-cddb-4d18-9de4-177b67b0273c",
+  "sha12": "81dc61ba336e",
+  "label": "Arc de chasse"
+ },
+ "weapon_rifle_flintlock": {
+  "asset_id": "03a104a4-dde1-4894-bcd2-e481848ce837",
+  "sha12": "e4b6753537a2",
+  "label": "Mousquet à silex"
+ },
+ "weapon_bow_elven": {
+  "asset_id": "ea843101-082d-4fc7-b2b2-639086b272be",
+  "sha12": "e97771f42862",
+  "label": "Arc elfique"
+ },
+ "weapon_spear_hunter": {
+  "asset_id": "bcdb4c3e-bc49-4684-be25-d252879f5026",
+  "sha12": "9d62fd87e409",
+  "label": "Lance de chasse"
+ },
+ "weapon_wand_bone": {
+  "asset_id": "1b13e949-aa26-4dcb-8fee-92113a23d5b4",
+  "sha12": "d41c34713d9f",
+  "label": "Baguette d'os"
+ },
+ "weapon_scythe_reaper": {
+  "asset_id": "a1fa29ca-52de-43b1-b4af-7a64845502ef",
+  "sha12": "1a7ee0919fc2",
+  "label": "Faux du faucheur"
+ },
+ "weapon_sword_shadow": {
+  "asset_id": "71bbf4ce-ae6b-4829-9c2a-f58e135bda5d",
+  "sha12": "36ab1696c009",
+  "label": "Lame des ombres"
+ },
+ "weapon_dagger_venom": {
+  "asset_id": "4566d6a3-47c0-4924-9de0-20cd5b0bace8",
+  "sha12": "ad6ba05d94b2",
+  "label": "Dague venimeuse"
+ },
+ "armor_necromancer_robe_mm": {
+  "asset_id": "6382ee06-e106-4920-ae1a-263196332b7f",
+  "sha12": "93c4fb4ce7d0",
+  "label": "Robe de nécromancien"
+ },
+ "armor_necromancer_robe_mf": {
+  "asset_id": "ed13b372-7c8e-42b8-b15a-2480bff00b99",
+  "sha12": "76be50d30466",
+  "label": "Robe de nécromancien"
+ },
+ "armor_necromancer_robe_large": {
+  "asset_id": "80410af3-003d-43b2-8ef4-7a15bc7723c9",
+  "sha12": "c5fe886efaa9",
+  "label": "Robe de nécromancien"
+ },
+ "armor_necromancer_robe_stocky": {
+  "asset_id": "484d144b-4fa5-4fb7-a540-a4ec51d13e69",
+  "sha12": "4c5138709983",
+  "label": "Robe de nécromancien"
+ },
+ "armor_necromancer_robe_small": {
+  "asset_id": "718c79d0-7508-4d9a-a284-5887bbdc7d7e",
+  "sha12": "9f556e2bcb22",
+  "label": "Robe de nécromancien"
+ },
+ "armor_death_knight_mm": {
+  "asset_id": "e61fb5dd-beb8-4db5-ac48-3d3e2f307e5f",
+  "sha12": "0b25f01e903f",
+  "label": "Chevalier de la mort"
+ },
+ "armor_death_knight_mf": {
+  "asset_id": "1a1fc860-3bf4-450c-94b7-2f7c142c2b7b",
+  "sha12": "1c9c7292ce33",
+  "label": "Chevalier de la mort"
+ },
+ "armor_death_knight_large": {
+  "asset_id": "7eb05949-2d28-463b-aea7-bc1534b9dfc3",
+  "sha12": "e8bfa6c2d467",
+  "label": "Chevalier de la mort"
+ },
+ "armor_death_knight_stocky": {
+  "asset_id": "f904d929-3a52-405f-8e17-0aacb502adce",
+  "sha12": "b6b8942b4d30",
+  "label": "Chevalier de la mort"
+ },
+ "armor_death_knight_small": {
+  "asset_id": "899dbb63-0162-4a67-8546-8f29ab25ce86",
+  "sha12": "9213d053b1c6",
+  "label": "Chevalier de la mort"
+ },
+ "armor_plague_coat_mm": {
+  "asset_id": "376e54c0-ab4b-44af-893a-7cae3fba56ed",
+  "sha12": "95d6cb4a454d",
+  "label": "Manteau de la peste"
+ },
+ "armor_plague_coat_mf": {
+  "asset_id": "aa72a6cb-ffdb-4d02-b7a4-bcc95805c7d0",
+  "sha12": "01a3693e5c2f",
+  "label": "Manteau de la peste"
+ },
+ "armor_plague_coat_large": {
+  "asset_id": "20b1aa02-5628-4aff-a787-6d08b5a9db31",
+  "sha12": "334648b0433e",
+  "label": "Manteau de la peste"
+ },
+ "armor_plague_coat_stocky": {
+  "asset_id": "b8b0b1cc-c9d2-420b-bc7a-e1670450c121",
+  "sha12": "b0ab6d50ab39",
+  "label": "Manteau de la peste"
+ },
+ "armor_plague_coat_small": {
+  "asset_id": "1ea12b9e-7f84-498f-9f92-ae3a4ec5922c",
+  "sha12": "62e386750b06",
+  "label": "Manteau de la peste"
+ },
+ "armor_blood_hunter_mm": {
+  "asset_id": "09fa1783-78c8-4ec0-847a-6f3a4102d00b",
+  "sha12": "bd1ddf4bec36",
+  "label": "Chasseur de sang"
+ },
+ "armor_blood_hunter_mf": {
+  "asset_id": "c2019932-8650-4dfb-996c-adaa5f2985e4",
+  "sha12": "7c38519b44d1",
+  "label": "Chasseur de sang"
+ },
+ "armor_blood_hunter_large": {
+  "asset_id": "3b9066e6-4f86-4888-97a0-3a68f5dd9de5",
+  "sha12": "d7ef48de9e55",
+  "label": "Chasseur de sang"
+ },
+ "armor_blood_hunter_stocky": {
+  "asset_id": "46a41b82-d2ca-4ac7-815c-dafc04384b3d",
+  "sha12": "55f17b796ae8",
+  "label": "Chasseur de sang"
+ },
+ "armor_blood_hunter_small": {
+  "asset_id": "15d3e29a-f61d-4c4b-b1cc-f6c58f195c70",
+  "sha12": "784f806595c1",
+  "label": "Chasseur de sang"
+ },
+ "armor_void_cultist_mm": {
+  "asset_id": "6fef5732-0c46-4ff0-9940-fe763d99fe68",
+  "sha12": "5001eb4e02f4",
+  "label": "Cultiste du néant"
+ },
+ "armor_void_cultist_mf": {
+  "asset_id": "2b316232-e1bc-4adb-a457-77c3716ea8cf",
+  "sha12": "eea09af5bd51",
+  "label": "Cultiste du néant"
+ },
+ "armor_void_cultist_large": {
+  "asset_id": "99999b0c-7ab1-4a11-a5cd-d8b93b674671",
+  "sha12": "a8ea8cf5ac7c",
+  "label": "Cultiste du néant"
+ },
+ "armor_void_cultist_stocky": {
+  "asset_id": "044eb1f2-346d-4db0-9441-c6cfaa606b76",
+  "sha12": "1377e29f614a",
+  "label": "Cultiste du néant"
+ },
+ "armor_void_cultist_small": {
+  "asset_id": "4d3c963d-ec61-430e-9c6c-a535b6d0bd43",
+  "sha12": "7c81b4e302c6",
+  "label": "Cultiste du néant"
  }
 }

@@ -37,7 +37,8 @@ GABARIT = {
 }
 # Point de prise des armes (fraction de la hauteur depuis le haut).
 GRIP = {"sword": 0.86, "dagger": 0.8, "scimitar": 0.86, "axe": 0.72, "mace": 0.74,
-        "hammer": 0.74, "staff": 0.62, "halberd": 0.6}
+        "hammer": 0.74, "staff": 0.62, "halberd": 0.6, "bow": 0.5, "rifle": 0.62,
+        "spear": 0.6, "wand": 0.78, "scythe": 0.6}
 
 
 # Coiffures par sexe et barbes (raw/hair_mNN, raw/hair_fNN, raw/beard_NN).
@@ -61,6 +62,11 @@ def horns(a: np.ndarray, skin: np.ndarray, skull: tuple, neck: int) -> np.ndarra
 def neck_of(heads: dict, name: str, a: np.ndarray) -> int:
     """Ligne du menton : imposée dans heads.json, sinon la plus étroite."""
     return heads["necks"].get(name) or neck_row(a, tuple(heads[name]))
+
+
+# Demi-largeur maximale de la tête (en demi-crânes) pour les races aux
+# grandes oreilles : la barbe épouse la mâchoire, pas les oreilles.
+PROFILE_LIMIT = {"goblin": 0.85}
 
 
 def profile(a: np.ndarray, skull: tuple, neck: int, limit: float = 1.15) -> list[float]:
@@ -145,7 +151,7 @@ def main() -> None:
             meta["bodies"][f"{race}_{sex}"] = {
                 "gabarit": GABARIT[sex][race], "skull": list(skull),
                 "brow": heads["brows"][name], "neck": neck,
-                "profile": profile(a, skull, neck, 1.0 if race in HORNED else 1.15), **sp, "hand": hand(a, skin, sp),
+                "profile": profile(a, skull, neck, PROFILE_LIMIT.get(race, 1.0 if race in HORNED else 1.15)), **sp, "hand": hand(a, skin, sp),
                 "skinRef": [int(c) for c in np.median(a[skin][:, :3], axis=0)],
             }
 
@@ -164,7 +170,8 @@ def main() -> None:
         save(key_layer(hm, load(raw(f"hair_m{i:02d}")), tol=0.09, min_sat=0.25), os.path.join(OUT, "hair", f"m{i:02d}.png"))
         save(key_layer(hf, load(raw(f"hair_f{i:02d}")), tol=0.09, min_sat=0.25), os.path.join(OUT, "hair", f"f{i:02d}.png"))
     for i in range(1, BEARD_COUNT + 1):
-        lay = key_layer(hm, load(raw(f"beard_{i:02d}")), hue=0.952, tol=0.065, min_sat=0.15)
+        lay = key_layer(hm, load(raw(f"beard_{i:02d}")), hue=0.952, tol=0.065, min_sat=0.15,
+                        open_mouth=True)
         save(lay, os.path.join(OUT, "beards", f"b{i:02d}.png"))
 
     # Tenues par gabarit.

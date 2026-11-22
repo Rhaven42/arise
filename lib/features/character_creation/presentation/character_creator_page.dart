@@ -343,12 +343,20 @@ class _HairTab extends ConsumerWidget {
         style > 0 &&
         !hairStyleAvailable(inventory, style, worn: worn ?? sheet.hairStyle);
     void showLocked() {
-      ScaffoldMessenger.of(context).showSnackBar(
+      // Message bref, qui ne reste pas affiché sur les écrans suivants (une
+      // barre avec action resterait sinon ouverte jusqu'à son action).
+      final messenger = ScaffoldMessenger.of(context)..hideCurrentSnackBar();
+      messenger.showSnackBar(
         SnackBar(
           content: Text(l10n.characterHairLocked),
+          persist: false,
+          duration: const Duration(seconds: 3),
           action: SnackBarAction(
             label: l10n.characterGoToShop,
-            onPressed: () => context.go(AppRoutes.shop),
+            onPressed: () {
+              messenger.hideCurrentSnackBar();
+              context.go(AppRoutes.shop);
+            },
           ),
         ),
       );

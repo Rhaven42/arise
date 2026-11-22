@@ -83,6 +83,18 @@ void main() {
     }
   }
 
+  test('cheveux et barbe : reflets et ombres resserrés', () {
+    // Reflet très clair : éclairci de 35 % de l'écart restant à 0,6 près,
+    // jamais blanc.
+    expect(tintHairPixel(255, 255, 255, 100, 0xFF5A371E), (
+      (90 + 165 * 0.6 * 0.35).round(),
+      (55 + 200 * 0.6 * 0.35).round(),
+      (30 + 225 * 0.6 * 0.35).round(),
+    ));
+    // Ombre profonde : 30 % de la couleur au moins.
+    expect(tintHairPixel(0, 0, 0, 100, 0xFF5A371E), (27, 17, 9));
+  });
+
   test('la peau prend la teinte choisie, avec le même modelé', () {
     expect(tintPixel(200, 150, 100, luminanceOf(200, 150, 100), 0xFFC8963C), (
       200,
@@ -204,6 +216,13 @@ void main() {
     expect(warp.scales[3], 2);
     // Sous les sourcils, l'échelle du crâne.
     expect(warp.scales[20], 2);
+
+    // Barbe : une seule échelle (celle de la mâchoire), la même à la
+    // verticale, calée sur le menton du corps.
+    final beard = SpriteComposer.headWarp(source, target, 30, hugJaw: true);
+    expect(beard.scales.toSet(), {2});
+    expect(beard.rows[14], closeTo(8 + 0.5 / 2, 1e-9));
+    expect(beard.rows[20], closeTo(8 + 6.5 / 2, 1e-9));
   });
 
   test('pièce séparée posée sur le corps, peau nue à la teinte', () {
