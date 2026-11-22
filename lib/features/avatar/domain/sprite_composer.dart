@@ -82,10 +82,12 @@ class BodyFrame {
     required this.feet,
     required this.centreX,
     required this.torso,
-  });
+    double? chin,
+  }) : chin = chin ?? neck;
 
   factory BodyFrame.fromJson(Map<String, dynamic> json) => BodyFrame(
     neck: (json['neck'] as num).toDouble(),
+    chin: (json['chin'] as num?)?.toDouble(),
     top: (json['top'] as num).toDouble(),
     feet: (json['feet'] as num).toDouble(),
     centreX: (json['cx'] as num).toDouble(),
@@ -93,6 +95,10 @@ class BodyFrame {
   );
 
   final double neck;
+
+  /// Bas réel du menton (contour de la mâchoire) : sous cette ligne, une
+  /// tenue remplace le corps.
+  final double chin;
   final double top;
   final double feet;
   final double centreX;
@@ -314,6 +320,27 @@ const Map<String, double> weaponLength = {
   'scythe': 0.88,
 };
 
+/// Hauteur de la bande du cou gardée sous le menton avec une tenue, en
+/// fraction de la hauteur du menton aux pieds.
+const double neckBandRatio = 0.08;
+
+/// Armes courtes tenues au repos, lame (ou tête) vers le bas ; les armes
+/// d'hast, bâtons, arcs et mousquet restent debout.
+const Set<String> loweredWeapons = {
+  'sword',
+  'dagger',
+  'scimitar',
+  'axe',
+  'mace',
+  'hammer',
+  'wand',
+};
+
+/// Demi-axes de la main qui passe devant la poignée d'une arme, en fraction
+/// de la hauteur du corps.
+const double handRadiusX = 0.018;
+const double handRadiusY = 0.024;
+
 /// Part de la teinture dans la couleur d'une tenue teinte.
 const double dyeStrength = 0.6;
 
@@ -405,16 +432,28 @@ class SpriteComposer {
     final body = meta.bodies[a.bodyId]!;
     final out = RgbaImage(meta.width, meta.height);
     final src = layers.body;
-    final neck = body.frame.neck.round();
+    final neck = body.frame.chin.round();
     final outfit = layers.outfit;
-    // Corps : peau recolorée ; avec une tenue, seule la tête reste (la tenue
-    // remplace tout le corps sous le cou, peau nue comprise).
+    // Bande du cou sous le menton : avec une tenue, le vrai cou du personnage
+    // y reste (pas de marche entre son cou et celui du modèle de la tenue).
+    final neckBand =
+        neck + (neckBandRatio * (body.frame.feet - body.frame.neck)).round();
+    bool ownNeck(int x, int y) =>
+        y <= neckBand &&
+        x >= 0 &&
+        x < src.width &&
+        y >= 0 &&
+        y < src.height &&
+        src.pixels[(y * src.width + x) * 4 + 3] == meta.skinAlpha;
+    // Corps : peau recolorée ; avec une tenue, seules la tête et la peau du
+    // cou restent (la tenue remplace le reste du corps, peau nue comprise).
     for (var y = 0; y < src.height; y++) {
-      if (outfit != null && y > neck) break;
+      if (outfit != null && y > neckBand) break;
       for (var x = 0; x < src.width; x++) {
         final i = (y * src.width + x) * 4;
         final alpha = src.pixels[i + 3];
         if (alpha == 0) continue;
+        if (outfit != null && y > neck && alpha != meta.skinAlpha) continue;
         var r = src.pixels[i];
         var g = src.pixels[i + 1];
         var b = src.pixels[i + 2];
@@ -442,6 +481,8 @@ class SpriteComposer {
         scaleY: sy,
         originX: f.centreX - t.centreX * sx,
         originY: originY,
+        // Peau du cou de la tenue : celle du personnage la remplace.
+        skip: (x, y, alpha) => alpha == meta.skinAlpha && ownNeck(x, y),
         colour: (r, g, b, alpha) {
           // Peau nue de la tenue (cou, mains) : teinte du personnage.
           if (alpha == meta.skinAlpha) {
@@ -488,6 +529,24 @@ class SpriteComposer {
             return (mix(r, tr), mix(g, tg), mix(b, tb));
           },
         );
+      }
+    }
+    // Visage intact : le col d'une tenue ou d'un haut ne recouvre jamais la
+    // peau du visage au-dessus du menton.
+    if (outfit != null || layers.pieces.isNotEmpty) {
+      for (var y = 0; y <= neck && y < src.height; y++) {
+        for (var x = 0; x < src.width; x++) {
+          final i = (y * src.width + x) * 4;
+          if (src.pixels[i + 3] != meta.skinAlpha) continue;
+          final (r, g, b) = tintPixel(
+            src.pixels[i],
+            src.pixels[i + 1],
+            src.pixels[i + 2],
+            body.skinRef,
+            a.skinColor,
+          );
+          _put(out, x, y, r, g, b);
+        }
       }
     }
     final beard = layers.beard;
@@ -537,14 +596,43 @@ class SpriteComposer {
       final length =
           (weaponLength[kind] ?? 0.5) * (body.frame.feet - body.frame.top);
       final s = length / w.height;
+      // La main passe devant la poignée : l'arme est tenue, pas collée.
+      final size = body.frame.feet - body.frame.top;
+      final rx = handRadiusX * size;
+      final ry = handRadiusY * size;
+      final hand = <(int, int, int, int, int)>[
+        for (var y = (handY - ry).floor(); y <= (handY + ry).ceil(); y++)
+          for (var x = (handX - rx).floor(); x <= (handX + rx).ceil(); x++)
+            if (x >= 0 &&
+                y >= 0 &&
+                x < out.width &&
+                y < out.height &&
+                math.pow((x + 0.5 - handX) / rx, 2) +
+                        math.pow((y + 0.5 - handY) / ry, 2) <=
+                    1 &&
+                out.pixels[(y * out.width + x) * 4 + 3] != 0)
+              (
+                x,
+                y,
+                out.pixels[(y * out.width + x) * 4],
+                out.pixels[(y * out.width + x) * 4 + 1],
+                out.pixels[(y * out.width + x) * 4 + 2],
+              ),
+      ];
+      // Arme courte au repos : retournée, la poignée reste dans la main.
+      final lowered = loweredWeapons.contains(kind);
+      final grip = lowered ? 1 - w.grip : w.grip;
       _place(
         out,
-        weapon,
+        lowered ? _flipped(weapon) : weapon,
         scaleX: s,
         scaleY: s,
         originX: handX - w.width * s / 2,
-        originY: handY - w.grip * w.height * s,
+        originY: handY - grip * w.height * s,
       );
+      for (final (x, y, r, g, b) in hand) {
+        _put(out, x, y, r, g, b);
+      }
     }
     return out;
   }
@@ -669,6 +757,7 @@ class SpriteComposer {
     required double originX,
     required double originY,
     (int, int, int) Function(int r, int g, int b, int alpha)? colour,
+    bool Function(int x, int y, int alpha)? skip,
   }) {
     final nw = math.max(1, (layer.width * scaleX).round());
     final nh = math.max(1, (layer.height * scaleY).round());
@@ -685,6 +774,7 @@ class SpriteComposer {
         final k = (sy * layer.width + sx) * 4;
         final alpha = layer.pixels[k + 3];
         if (alpha == 0) continue;
+        if (skip != null && skip(x, y, alpha)) continue;
         var r = layer.pixels[k];
         var g = layer.pixels[k + 1];
         var b = layer.pixels[k + 2];
@@ -692,6 +782,21 @@ class SpriteComposer {
         _put(out, x, y, r, g, b);
       }
     }
+  }
+
+  /// [layer] retourné de haut en bas.
+  static RgbaImage _flipped(RgbaImage layer) {
+    final out = RgbaImage(layer.width, layer.height);
+    final row = layer.width * 4;
+    for (var y = 0; y < layer.height; y++) {
+      out.pixels.setRange(
+        y * row,
+        (y + 1) * row,
+        layer.pixels,
+        (layer.height - 1 - y) * row,
+      );
+    }
+    return out;
   }
 
   static double _medianLuminance(RgbaImage layer) {

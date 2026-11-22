@@ -16,6 +16,9 @@ from PIL import Image
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, "..", "..", "assets", "sprites")
 META = json.load(open(os.path.join(ASSETS, "sprites.json")))
+HAND_RX, HAND_RY = 0.018, 0.024  # main devant la poignée (comme l'appli)
+LOWERED = {"sword", "dagger", "scimitar", "axe", "mace", "hammer", "wand"}
+NECK_BAND = 0.08  # bande du cou gardée sous le menton (comme l'appli)
 WEAPON_LENGTH = {"sword": 0.5, "dagger": 0.28, "scimitar": 0.46, "axe": 0.5, "mace": 0.42,
                  "hammer": 0.48, "staff": 0.8, "halberd": 0.9, "bow": 0.62,
                  "rifle": 0.6, "spear": 0.9, "wand": 0.24, "scythe": 0.88}
@@ -46,7 +49,7 @@ def tint_hair(px: np.ndarray, ref: float, color: tuple[int, int, int]) -> np.nda
 
 
 def place(canvas: np.ndarray, layer: np.ndarray, scale: float, ox: float, oy: float,
-          scale_x: float | None = None) -> None:
+          scale_x: float | None = None, skip=None) -> None:
     """Pose [layer] mis à l'échelle (plus proche voisin) avec son origine en (ox, oy)."""
     sx = scale if scale_x is None else scale_x
     h, w = layer.shape[:2]
@@ -64,7 +67,7 @@ def place(canvas: np.ndarray, layer: np.ndarray, scale: float, ox: float, oy: fl
         m = row[:, 3] > 0
         for i in np.nonzero(m)[0]:
             x = x0 + i
-            if 0 <= x < W:
+            if 0 <= x < W and not (skip and skip(x, y, row[i])):
                 canvas[y, x] = row[i]
 
 
@@ -163,11 +166,16 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
     front = body[..., 3] == META["frontAlpha"]
     body[skin_px, :3] = tint(body[skin_px, :3], lum(np.array(b["skinRef"], float)), skin)
     canvas = np.zeros_like(body)
-    neck = round(b["neck"])
+    neck = round(b.get("chin", b["neck"]))
     keep = body[..., 3] > 0
+    # Bande du cou sous le menton : le vrai cou du personnage y reste.
+    band = neck + round(NECK_BAND * (b["feet"] - b["neck"]))
+    own_neck = skin_px.copy()
+    own_neck[band + 1:] = False
     if outfit:
-        # La tenue remplace tout le corps sous le cou.
+        # La tenue remplace le corps sous le cou, sauf la peau du cou.
         keep[neck + 1:] = False
+        keep |= own_neck
     canvas[keep] = body[keep]
     canvas[..., 3] = np.where(canvas[..., 3] > 0, 255, 0)
     hx, hy = b["hand"]
@@ -180,7 +188,8 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         tref = lum(np.array(t["skinRef"], float))
         bare = lay[..., 3] == META["skinAlpha"]
         lay[bare, :3] = tint(lay[bare, :3], tref, skin)
-        place(canvas, lay, s, b["cx"] - t["cx"] * sx, oy, sx)
+        place(canvas, lay, s, b["cx"] - t["cx"] * sx, oy, sx,
+              skip=lambda x, y, px: px[3] == META["skinAlpha"] and own_neck[y, x])
         hx = b["cx"] + (t["hand"][0] - t["cx"]) * sx
         hy = oy + t["hand"][1] * s
     # Pièces séparées : même cadrage que les tenues, dans l'ordre de dessin.
@@ -192,6 +201,13 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         bare = lay[..., 3] == META["skinAlpha"]
         lay[bare, :3] = tint(lay[bare, :3], lum(np.array(t["skinRef"], float)), skin)
         place(canvas, lay, s_y, b["cx"] - t["cx"] * s_x, b["feet"] - t["feet"] * s_y, s_x)
+    if outfit or pieces:
+        # Visage intact : le col d'une tenue ou d'un haut ne recouvre jamais
+        # la peau du visage au-dessus du menton.
+        face_skin = skin_px.copy()
+        face_skin[neck + 1:] = False
+        canvas[face_skin] = body[face_skin]
+        canvas[face_skin, 3] = 255
     if beard:
         # Barbe dessinée sur le visage de la race (homme) : posée telle quelle.
         own = sex == "male" and race in META.get("raceBeards", [])
@@ -220,7 +236,18 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         lay = img(f"weapons/{weapon}.png")
         length = WEAPON_LENGTH[weapon.split("_")[0]] * (b["feet"] - b["top"])
         s = length / w["size"][1]
-        place(canvas, lay, s, hx - w["size"][0] * s / 2, hy - w["grip"] * w["size"][1] * s)
+        # La main passe devant la poignée (comme l'appli).
+        size = b["feet"] - b["top"]
+        rx, ry = HAND_RX * size, HAND_RY * size
+        yy, xx = np.mgrid[0:canvas.shape[0], 0:canvas.shape[1]]
+        hand = (((xx + 0.5 - hx) / rx) ** 2 + ((yy + 0.5 - hy) / ry) ** 2 <= 1) & (canvas[..., 3] > 0)
+        saved = canvas[hand].copy()
+        # Arme courte au repos : retournée, la poignée reste dans la main.
+        grip = w["grip"]
+        if weapon.split("_")[0] in LOWERED:
+            lay, grip = lay[::-1].copy(), 1 - grip
+        place(canvas, lay, s, hx - w["size"][0] * s / 2, hy - grip * w["size"][1] * s)
+        canvas[hand] = saved
     return canvas
 
 

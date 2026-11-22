@@ -159,9 +159,38 @@ void main() {
     );
     // Cheveux recolorés (luminance de référence = la leur).
     expect(_px(out, 4, 0), [16, 32, 48, 255]);
-    // L'arme est tenue à la main (2, 12) et dépasse au-dessus.
+    // Épée au repos : tenue à la main (2, 12), lame vers le bas.
     expect(_px(out, 2, 12).take(3), [250, 250, 250]);
-    expect(_px(out, 2, 4)[3], 255);
+    expect(_px(out, 2, 18).take(3), [250, 250, 250]);
+    expect(_px(out, 2, 8).take(3), [90, 60, 40]);
+    expect(loweredWeapons, containsAll(['sword', 'dagger', 'axe']));
+    expect(loweredWeapons, isNot(contains('staff')));
+  });
+
+  test('avec une tenue, le vrai cou reste sous le menton', () {
+    final neckBody = RgbaImage(10, 20, Uint8List.fromList(body.pixels));
+    // Peau du cou du corps (plus sombre) juste sous le menton.
+    neckBody.pixels.setAll((6 * 10 + 4) * 4, [100, 75, 50, 254]);
+    final outfit = _fill(10, 20, (x, y) => y > 5 && x >= 3 && x <= 6, [
+      10,
+      20,
+      30,
+      255,
+    ]);
+    outfit.pixels.setAll((6 * 10 + 4) * 4, [100, 100, 100, 254]);
+    final out = composer.compose(
+      const CharacterAppearance(
+        bodyId: 'human_male',
+        skinColor: 0xFFC8966A,
+        hairColor: 0,
+        outfitId: 'awakened_leather',
+      ),
+      SpriteLayers(body: neckBody, outfit: outfit),
+    );
+    // La peau du cou du personnage l'emporte sur celle du modèle.
+    expect(_px(out, 4, 6), [100, 75, 53, 255]);
+    // Le tissu de la tenue reste dessiné.
+    expect(_px(out, 3, 6), [10, 20, 30, 255]);
   });
 
   test('la frange laisse le visage dégagé et les cornes passent devant', () {

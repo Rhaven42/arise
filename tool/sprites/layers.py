@@ -441,6 +441,19 @@ def body_skin(base: np.ndarray, sample: tuple[int, int], neck: int, skull_top: f
     return skin
 
 
+def _head_region(base: np.ndarray, neck: int) -> np.ndarray:
+    """Tête du corps de base : la composante opaque qui contient le sommet,
+    au-dessus du menton."""
+    al = base[..., 3] > 0
+    al[neck:] = False
+    parts, n = ndimage.label(al)
+    if not n:
+        return al
+    top = np.nonzero(al.any(axis=1))[0][0]
+    ids = set(np.unique(parts[top])) - {0}
+    return np.isin(parts, list(ids))
+
+
 def outfit_layer(base: np.ndarray, edit: np.ndarray, neck: int,
                  skin_sample: tuple[int, int], skull_top: float,
                  arms: list | None = None) -> np.ndarray:
@@ -452,8 +465,20 @@ def outfit_layer(base: np.ndarray, edit: np.ndarray, neck: int,
     rows = np.zeros(base.shape[:2], bool)
     rows[neck:] = True
     body = (edit[..., 3] > 0) & rows
-    out[body] = edit[body]
     base_skin = body_skin(base, skin_sample, neck, skull_top, arms)
+    # Col montant : au-dessus du menton, les pixels de la tenue posés à côté
+    # du visage (là où le corps de base est vide ou en chemise), sans toucher
+    # à la tête (l'appli redessine de toute façon la peau du visage).
+    feet = int(np.where((base[..., 3] > 0).any(axis=1))[0][-1])
+    collar = np.zeros_like(rows)
+    collar[max(0, neck - round(0.07 * (feet - neck))): neck] = True
+    face = ndimage.binary_dilation((base[..., 3] > 0) & ~rows & _head_region(base, neck),
+                                   np.ones((3, 3)))
+    pal = face_palette(base, skin_sample)
+    collar &= (edit[..., 3] > 0) & ~face & (color_dist(edit, base) > 40)
+    collar &= ~skin_mask(edit, pal, 30)
+    body |= collar
+    out[body] = edit[body]
     near = ndimage.binary_dilation(base_skin, np.ones((3, 3)), iterations=2)
     _, _, v = _hue_sat_val(edit)
     x, y = skin_sample
