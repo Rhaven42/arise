@@ -107,7 +107,14 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('Inventaire'), findsOneWidget);
-    await _scrollTo(tester, find.text('Équiper'), InventoryPage.listKey);
+    // Grille du sac : la fiche de l'objet pour le porter.
+    await _scrollTo(
+      tester,
+      find.text("Cuir de l'Éveillé"),
+      InventoryPage.listKey,
+    );
+    await tester.tap(find.text("Cuir de l'Éveillé"));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Équiper'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
@@ -118,6 +125,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(renderer.last?.outfitId, 'awakened_leather');
 
+    await tester.tap(find.text("Cuir de l'Éveillé"));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Teindre'));
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Forêt'));
