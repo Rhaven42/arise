@@ -353,15 +353,13 @@ void main() {
     debugPrint('Parcours : santé');
     await tester.tap(find.byType(BackButton).first);
     await _pumpFor(tester, 1200);
+    // Raccourci « Santé » de l'accueil.
     await tester.scrollUntilVisible(
-      find.text('Pas, sommeil et eau te font progresser'),
+      find.text('Santé'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    await _tapWithoutSettle(
-      tester,
-      find.text('Pas, sommeil et eau te font progresser'),
-    );
+    await _tapWithoutSettle(tester, find.text('Santé').last);
     await _pumpFor(tester, 1500);
     await _expectVisible(tester, 'Hydratation');
     await _tapWithoutSettle(tester, find.byTooltip("Ajouter un verre d'eau"));
