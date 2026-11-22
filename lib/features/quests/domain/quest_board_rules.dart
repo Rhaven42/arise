@@ -241,11 +241,13 @@ int? nextDungeonRoom(
 }
 
 /// Butin du donjon : un objet commun ou rare de la boutique pas encore
-/// possédé (tirage stable), ou `null` si tout est déjà possédé.
+/// possédé ni réservé à un haut fait (tirage stable), ou `null` si tout est
+/// déjà possédé.
 EquipmentItem? dungeonLoot(DungeonRun run, Inventory inventory) {
   final candidates = [
     for (final item in equipmentCatalog)
       if ((item.rarity == Rarity.common || item.rarity == Rarity.rare) &&
+          item.unlockAchievement == null &&
           !inventory.owned.contains(item.id))
         item,
   ];

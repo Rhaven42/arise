@@ -18,4 +18,5 @@ String purchaseIssueLabel(AppLocalizations l10n, PurchaseIssue issue) =>
       PurchaseIssue.notEnoughCoins => l10n.shopNotEnough,
       PurchaseIssue.notForSale => l10n.shopNotForSale,
       PurchaseIssue.notOwned => l10n.shopNotOwned,
+      PurchaseIssue.locked => l10n.shopLocked,
     };

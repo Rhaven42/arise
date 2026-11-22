@@ -122,6 +122,14 @@ void main() {
     test('butin : un objet commun ou rare non possédé, sinon des pièces', () {
       final loot = dungeonLoot(run, const Inventory())!;
       expect(loot.rarity, anyOf(Rarity.common, Rarity.rare));
+      // Les tenues réservées à un haut fait de zone ne tombent jamais.
+      final almostAll = Inventory(
+        owned: [
+          for (final item in equipmentCatalog)
+            if (item.id != 'viking_raider') item.id,
+        ],
+      );
+      expect(dungeonLoot(run, almostAll), isNull);
       final all = Inventory(
         owned: [for (final item in equipmentCatalog) item.id],
       );

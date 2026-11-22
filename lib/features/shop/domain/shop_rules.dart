@@ -49,7 +49,21 @@ enum PurchaseIssue {
 
   /// Teinture d'un objet qui n'a pas été acheté.
   notOwned,
+
+  /// Objet réservé à un haut fait pas encore obtenu.
+  locked,
 }
+
+/// Haut fait requis pour acheter l'article et pas encore obtenu, ou `null`
+/// si l'article est disponible.
+String? missingAchievement(ShopArticle article, Set<String> achievements) =>
+    switch (article) {
+      ItemArticle(:final item) => switch (item.unlockAchievement) {
+        final String id when !achievements.contains(id) => id,
+        _ => null,
+      },
+      HairStyleArticle() => null,
+    };
 
 /// Résultat d'un achat : nouveau solde (bronze) et inventaire, ou refus.
 typedef PurchaseResult = ({
@@ -59,11 +73,13 @@ typedef PurchaseResult = ({
 });
 
 /// Achète un article avec les pièces du joueur. Aucun argent réel : seules
-/// les pièces gagnées en jouant sont acceptées.
+/// les pièces gagnées en jouant sont acceptées. [achievements] liste les
+/// hauts faits obtenus, qui débloquent certains objets.
 PurchaseResult purchase({
   required int balance,
   required Inventory inventory,
   required ShopArticle article,
+  Set<String> achievements = const {},
   GameConfig? config,
 }) {
   final c = config ?? gameConfig;
@@ -74,6 +90,9 @@ PurchaseResult purchase({
     return refuse(PurchaseIssue.notForSale);
   }
   if (owns(inventory, article)) return refuse(PurchaseIssue.alreadyOwned);
+  if (missingAchievement(article, achievements) != null) {
+    return refuse(PurchaseIssue.locked);
+  }
   final price = priceOf(article, config: c).bronzeTotal;
   if (balance < price) return refuse(PurchaseIssue.notEnoughCoins);
   final next = switch (article) {

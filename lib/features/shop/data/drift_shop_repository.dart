@@ -15,9 +15,16 @@ class DriftShopRepository implements ShopRepository {
   final DateTime Function() _clock;
 
   @override
-  Future<PurchaseIssue?> buy(ShopArticle article) => _apply(
-    (balance, inventory) =>
-        purchase(balance: balance, inventory: inventory, article: article),
+  Future<PurchaseIssue?> buy(
+    ShopArticle article, {
+    Set<String> achievements = const {},
+  }) => _apply(
+    (balance, inventory) => purchase(
+      balance: balance,
+      inventory: inventory,
+      article: article,
+      achievements: achievements,
+    ),
   );
 
   @override

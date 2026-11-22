@@ -78,6 +78,22 @@ void main() {
       expect(metrics[AchievementMetric.activeMinutes], 40);
     });
 
+    test('zones conquises : 1 par zone terminée', () {
+      expect(_metrics(const [])[AchievementMetric.northRealmConquered], 0);
+      final metrics = computeAchievementMetrics(
+        AchievementInputs(
+          sessions: const [],
+          exercisesById: _exercises,
+          progression: ProgressionState.initial(const CivilDate(2026, 11, 1)),
+          now: DateTime(2026, 11, 30),
+          realmsConquered: const {'sea'},
+        ),
+      );
+      expect(metrics[AchievementMetric.seaRealmConquered], 1);
+      expect(metrics[AchievementMetric.northRealmConquered], 0);
+      expect(metrics[AchievementMetric.arcaneRealmConquered], 0);
+    });
+
     test('aube, soir et jour de l’an en heure locale', () {
       final metrics = _metrics([
         _session(DateTime(2026, 11, 2, 6)),

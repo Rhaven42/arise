@@ -76,6 +76,36 @@ void main() {
     expect(hair.inventory.hairStyles, [8]);
   });
 
+  test('tenues de zone : achat refusé tant que le haut fait manque', () {
+    final article = _article('viking_raider');
+    final balance = priceOf(article).bronzeTotal;
+    expect(missingAchievement(article, const {}), 'realm_north');
+    final refused = purchase(
+      balance: balance,
+      inventory: const Inventory(),
+      article: article,
+    );
+    expect(refused.issue, PurchaseIssue.locked);
+    expect(refused.balance, balance);
+    final ok = purchase(
+      balance: balance,
+      inventory: const Inventory(),
+      article: article,
+      achievements: const {'realm_north'},
+    );
+    expect(ok.issue, isNull);
+    expect(ok.inventory.owned, contains('viking_raider'));
+    expect(_article('pirate_captain').item.unlockAchievement, 'realm_sea');
+    expect(_article('royal_mage').item.unlockAchievement, 'realm_arcane');
+    expect(missingAchievement(const HairStyleArticle(8), const {}), isNull);
+    // Chaque haut fait requis existe.
+    final ids = {for (final d in gameConfig.achievements.definitions) d.id};
+    for (final item in equipmentCatalog) {
+      final required = item.unlockAchievement;
+      if (required != null) expect(ids, contains(required));
+    }
+  });
+
   test('teinture : objet teignable possédé, coût en bronze', () {
     final cost = gameConfig.shop.dyeCostBronze;
     const bag = Inventory(owned: ['wanderer_coat', 'sword_warden']);

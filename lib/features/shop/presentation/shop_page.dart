@@ -1,6 +1,7 @@
 import 'package:arise/core/design_system/widgets/labeled_tag.dart';
 import 'package:arise/core/theme/arise_colors.dart';
 import 'package:arise/core/theme/arise_spacing.dart';
+import 'package:arise/features/achievements/presentation/achievements_providers.dart';
 import 'package:arise/features/avatar/domain/character_appearance.dart';
 import 'package:arise/features/avatar/presentation/character_renderer.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
@@ -99,6 +100,9 @@ class _ShopPageState extends ConsumerState<ShopPage> {
         ref.watch(progressionControllerProvider).value?.state.wallet ??
         Coins.zero;
     final sheet = ref.watch(savedCharacterProvider).value;
+    final achievements = {
+      ...?ref.watch(achievementsStateProvider).value?.unlocked.keys,
+    };
     final articles = [
       for (final article in shopArticles())
         if (_matches(article)) article,
@@ -169,6 +173,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                   _ArticleTile(
                     article: article,
                     owned: owns(inventory, article),
+                    lockedBy: missingAchievement(article, achievements),
                     price: priceOf(article),
                     onTryOn: sheet == null
                         ? null
@@ -331,6 +336,7 @@ class _ArticleTile extends StatelessWidget {
   const _ArticleTile({
     required this.article,
     required this.owned,
+    required this.lockedBy,
     required this.price,
     required this.onTryOn,
     required this.onBuy,
@@ -338,6 +344,9 @@ class _ArticleTile extends StatelessWidget {
 
   final ShopArticle article;
   final bool owned;
+
+  /// Haut fait qui débloque l'article, tant qu'il n'est pas obtenu.
+  final String? lockedBy;
   final Coins price;
   final VoidCallback? onTryOn;
   final VoidCallback onBuy;
@@ -413,6 +422,14 @@ class _ArticleTile extends StatelessWidget {
                           icon: Icons.check,
                           label: l10n.shopOwned,
                           color: AriseColors.success,
+                        )
+                      else if (lockedBy case final achievement?)
+                        LabeledTag(
+                          icon: Icons.lock_outline,
+                          label: l10n.shopLockedBy(
+                            l10n.achievementName(achievement),
+                          ),
+                          color: AriseColors.parchmentMuted,
                         )
                       else
                         FilledButton(
