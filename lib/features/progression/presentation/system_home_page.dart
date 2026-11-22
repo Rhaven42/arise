@@ -108,6 +108,12 @@ class _SystemHomeBody extends ConsumerWidget {
       padding: const EdgeInsets.all(AriseSpacing.md),
       children: [
         _HeroHud(state: state),
+        // Barre des statistiques en haut de l'écran, juste sous le héros.
+        const SizedBox(height: AriseSpacing.md),
+        _StatsPanel(
+          state: state,
+          onAllocate: (stat) => unawaited(controller.allocate(stat)),
+        ),
         const SizedBox(height: AriseSpacing.md),
         if (view.report case final report?) ...[
           _ReportWindow(
@@ -148,11 +154,6 @@ class _SystemHomeBody extends ConsumerWidget {
               style: textTheme.bodyMedium?.copyWith(color: AriseColors.mana),
             ),
           ),
-        const SizedBox(height: AriseSpacing.lg),
-        _StatsPanel(
-          state: state,
-          onAllocate: (stat) => unawaited(controller.allocate(stat)),
-        ),
         if (state.rank.index >= gameConfig.classes.unlockRank.index) ...[
           const SizedBox(height: AriseSpacing.lg),
           _ClassPanel(state: state),

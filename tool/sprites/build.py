@@ -63,6 +63,11 @@ def neck_of(heads: dict, name: str, a: np.ndarray) -> int:
     return heads["necks"].get(name) or neck_row(a, tuple(heads[name]))
 
 
+# Demi-largeur maximale de la tête (en demi-crânes) pour les races aux
+# grandes oreilles : la barbe épouse la mâchoire, pas les oreilles.
+PROFILE_LIMIT = {"goblin": 0.85}
+
+
 def profile(a: np.ndarray, skull: tuple, neck: int, limit: float = 1.15) -> list[float]:
     """Demi-largeur de la tête, de la ligne du sommet du crâne au menton :
     segment opaque qui contient l'axe du visage, borné à [limit] demi-crâne
@@ -145,7 +150,7 @@ def main() -> None:
             meta["bodies"][f"{race}_{sex}"] = {
                 "gabarit": GABARIT[sex][race], "skull": list(skull),
                 "brow": heads["brows"][name], "neck": neck,
-                "profile": profile(a, skull, neck, 1.0 if race in HORNED else 1.15), **sp, "hand": hand(a, skin, sp),
+                "profile": profile(a, skull, neck, PROFILE_LIMIT.get(race, 1.0 if race in HORNED else 1.15)), **sp, "hand": hand(a, skin, sp),
                 "skinRef": [int(c) for c in np.median(a[skin][:, :3], axis=0)],
             }
 

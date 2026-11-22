@@ -505,7 +505,8 @@ def piece_layer(base: np.ndarray, edit: np.ndarray, slot: str, neck: int, feet: 
     diffèrent du corps de base dans la bande de la pièce, trous internes
     bouchés et contour sombre compris. Le bas et les chaussures excluent les
     mains ; les gants ne gardent que les mains et avant-bras. La peau dévoilée
-    (bras d'un haut sans manches) est marquée par l'alpha de peau."""
+    (bras d'un haut sans manches) reste transparente : le corps de base
+    apparaît dessous."""
     edit = align(prealign(edit, base), base, slice(0, neck - 2),
                  scales=(0.96, 0.98, 1.0, 1.02, 1.04))
     f0, f1 = PIECE_BANDS[slot]
@@ -595,7 +596,7 @@ def piece_layer(base: np.ndarray, edit: np.ndarray, slot: str, neck: int, feet: 
             d_p = np.abs(px_ - pants[None]).sum(-1).min(1)
             d_g = np.abs(px_ - garment[None]).sum(-1).min(1)
             # Pantalon reconnu, ou couleur loin de toutes celles du vêtement.
-            drop = (d_p < d_g) | (d_g > 45)
+            drop = (d_p < d_g) | (d_g > 30)
             mask[ys_[drop], xs_[drop]] = False
             mask = ndimage.binary_opening(mask, np.ones((2, 2))) | (mask & ~low)
     mask |= ndimage.binary_dilation(mask, np.ones((3, 3))) & opaque & rows & (luminance(edit) < 0.25)
@@ -641,5 +642,45 @@ def piece_layer(base: np.ndarray, edit: np.ndarray, slot: str, neck: int, feet: 
             d_garm = np.abs(px_ - garment[None]).sum(-1).min(1)
             new_skin[ys_[d_garm <= d_face], xs_[d_garm <= d_face]] = False
         skin |= new_skin
-    out[skin, 3] = SKIN_ALPHA
+    # Aucune peau dans une pièce : là où l'édition dévoile la peau (bras nus,
+    # col ouvert), la pièce est transparente et laisse voir le corps et la
+    # chemise de base. Les petits restes isolés sont écartés.
+    if slot == "top":
+        # Tons de peau clairs (bras nus, parfois mouchetés de poils) : le
+        # cuir brun, plus sombre, reste.
+        face_v = float(np.median(_hue_sat_val(pal[None].astype(float))[2]))
+        # Seulement sur les bras, hors du torse (broderies dorées, reflets
+        # du métal intacts).
+        span = feet - neck
+        cx = int(np.mean(np.nonzero(base[..., 3] > 0)[1]))
+        chest = np.nonzero(base[int(neck + 0.25 * span), :, 3] > 0)[0]
+        half = 0.55 * max(cx - chest[0], chest[-1] - cx) if len(chest) else 0
+        arms_zone = np.zeros_like(mask)
+        arms_zone[:, : max(0, int(cx - half))] = True
+        arms_zone[:, int(cx + half) + 1:] = True
+        ys_, xs_ = np.nonzero(mask & ~skin & arms_zone)
+        if len(ys_):
+            px_ = edit[ys_, xs_, None, :3].astype(int)
+            d_f = np.abs(px_ - pal[None].astype(int)).sum(-1).min(1)
+            v_ = _hue_sat_val(edit[ys_, xs_][None].astype(float))[2][0]
+            drop = (d_f < 45) & (v_ >= 0.8 * face_v)
+            skin[ys_[drop], xs_[drop]] = True
+        # Bras mouchetés (poils, ombres) : un pixel entouré surtout de peau en
+        # fait partie.
+        near = ndimage.uniform_filter(skin.astype(float), 7)
+        skin |= (near > 0.3) & mask & arms_zone
+    out[skin] = 0
+    keep = ndimage.binary_opening(out[..., 3] > 0, np.ones((2, 2)))
+    keep |= (out[..., 3] > 0) & (luminance(out) < 0.25) & ndimage.binary_dilation(keep, np.ones((3, 3)))
+    # Miettes isolées (moins de 25 pixels) écartées.
+    parts, n = ndimage.label(keep, np.ones((3, 3)))
+    if n:
+        sizes = ndimage.sum(keep, parts, range(1, n + 1))
+        keep = np.isin(parts, [i + 1 for i, s_ in enumerate(sizes) if s_ >= 25])
+    if slot == "top":
+        # Morceaux détachés sous la taille (bords du pantalon) écartés.
+        parts, _ = ndimage.label(keep, np.ones((3, 3)))
+        upper = set(np.unique(parts[: int(neck + 0.45 * (feet - neck))])) - {0}
+        keep = np.isin(parts, list(upper))
+    out[~keep] = 0
     return out

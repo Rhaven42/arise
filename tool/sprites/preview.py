@@ -102,6 +102,15 @@ def head_warp(src: dict, b: dict, height: int, hug_jaw: bool = False):
         wd = width(b["profile"], dt, y, half_d)
         ws = width(src["profile"], st, r, half_s)
         ks.append(float(np.clip(wd / ws, 0.75 * s, 1.35 * s)) if wd and ws else None)
+    if hug_jaw:
+        # Barbe : une seule échelle (moyenne sur la mâchoire), pour garder sa
+        # forme sur une mâchoire très différente (menton pointu, bajoues).
+        jaw = [k for y, k in enumerate(ks) if k is not None and db <= y + 0.5 < chin]
+        k = sum(jaw) / len(jaw) if jaw else s
+        # Même échelle à la verticale, calée sur le menton du corps : pas
+        # d'étirement.
+        rows = [sn + (y + 0.5 - dn) / k for y in range(height)]
+        return rows, [k] * height, (dx0 + dx1) / 2, (sx0 + sx1) / 2
     # Lignes sans mesure (au-dessus du crâne, sous le menton) : échelle de
     # la ligne mesurée la plus proche.
     known = [i for i, k in enumerate(ks) if k is not None and rows[i] >= 0]

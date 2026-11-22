@@ -534,6 +534,22 @@ class SpriteComposer {
       if (wd == null || ws == null) return null;
       return (wd / ws).clamp(0.75 * s, 1.35 * s);
     });
+    if (hugJaw) {
+      // Barbe : une seule échelle (moyenne sur la mâchoire), pour garder sa
+      // forme sur une mâchoire très différente (menton pointu, bajoues).
+      final jaw = [
+        for (var y = 0; y < height; y++)
+          if (scales[y] case final k? when y + 0.5 >= db && y + 0.5 < chin) k,
+      ];
+      final k = jaw.isEmpty ? s : jaw.reduce((a, b) => a + b) / jaw.length;
+      // Même échelle à la verticale, calée sur le menton du corps : pas
+      // d'étirement.
+      final beardRows = List<double>.generate(
+        height,
+        (y) => sn + (y + 0.5 - dn) / k,
+      );
+      return HeadWarp(beardRows, List.filled(height, k), ds.centre, ss.centre);
+    }
     // Lignes sans mesure (au-dessus du crâne) : échelle de la ligne mesurée
     // la plus proche.
     final known = [

@@ -204,6 +204,13 @@ void main() {
     expect(warp.scales[3], 2);
     // Sous les sourcils, l'échelle du crâne.
     expect(warp.scales[20], 2);
+
+    // Barbe : une seule échelle (celle de la mâchoire), la même à la
+    // verticale, calée sur le menton du corps.
+    final beard = SpriteComposer.headWarp(source, target, 30, hugJaw: true);
+    expect(beard.scales.toSet(), {2});
+    expect(beard.rows[14], closeTo(8 + 0.5 / 2, 1e-9));
+    expect(beard.rows[20], closeTo(8 + 6.5 / 2, 1e-9));
   });
 
   test('pièce séparée posée sur le corps, peau nue à la teinte', () {

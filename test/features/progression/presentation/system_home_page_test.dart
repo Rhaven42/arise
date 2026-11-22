@@ -57,11 +57,12 @@ void main() {
     await tester.openWithProfile(container, AppRoutes.systemHome);
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.text('2 points à placer'), findsOneWidget);
-    // Au-dessus de la barre d'action.
-    await tester.ensureVisible(find.byTooltip('Ajouter un point à Force'));
+    expect(find.text('2 points à placer'), findsWidgets);
+    // Barre des statistiques, en haut de l'écran sous le héros.
+    final add = find.byTooltip('Ajouter un point à Force').first;
+    await tester.ensureVisible(add);
     await tester.pump();
-    await tester.tap(find.byTooltip('Ajouter un point à Force'));
+    await tester.tap(add);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
@@ -70,7 +71,7 @@ void main() {
       find.descendant(of: find.byType(StatGem).first, matching: find.text('1')),
       findsOneWidget,
     );
-    expect(find.text('1 point à placer'), findsOneWidget);
+    expect(find.text('1 point à placer'), findsWidgets);
     final saved = await container.read(progressionRepositoryProvider).read();
     expect(saved?.stat(StatId.strength), 1);
     await tester.unmountApp();
@@ -113,7 +114,7 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('barre d’action et stats sous le personnage', (tester) async {
+  testWidgets('barre d’action, barre des stats en haut et fiche détaillée', (tester) async {
     final container = createTestContainer();
     await tester.openWithProfile(container, AppRoutes.systemHome);
     await tester.pump(const Duration(milliseconds: 300));
@@ -126,6 +127,12 @@ void main() {
     container.read(appRouterProvider).go(AppRoutes.systemHome);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byType(StatGem), findsWidgets);
+    await tester.scrollUntilVisible(
+      find.byType(StatsSheet),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.byType(StatsSheet), findsOneWidget);
     await tester.tap(find.byKey(HomeDock.inventoryKey));
     await tester.pump();
