@@ -18,6 +18,7 @@ ASSETS = os.path.join(HERE, "..", "..", "assets", "sprites")
 META = json.load(open(os.path.join(ASSETS, "sprites.json")))
 HAND_RX, HAND_RY = 0.018, 0.024  # main devant la poignée (comme l'appli)
 LOWERED = {"sword", "dagger", "scimitar", "axe", "mace", "hammer", "wand"}
+FACE_INNER = 0.6  # centre du visage sans mèche (comme l'appli)
 NECK_BAND = 0.08  # bande du cou gardée sous le menton (comme l'appli)
 WEAPON_LENGTH = {"sword": 0.5, "dagger": 0.28, "scimitar": 0.46, "axe": 0.5, "mace": 0.42,
                  "hammer": 0.48, "staff": 0.8, "halberd": 0.9, "bow": 0.62,
@@ -106,8 +107,12 @@ def head_warp(src: dict, b: dict, height: int, hug_jaw: bool = False):
         # Coiffure : le crâne seulement (au-dessus des sourcils) ; barbe : la
         # mâchoire, des sourcils au menton.
         yc = y + 0.5
-        if yc >= (chin if hug_jaw else db):
+        if hug_jaw and yc >= chin:
             ks.append(s)
+            continue
+        if not hug_jaw and yc >= db:
+            # Sous les sourcils : la largeur du front continue (comme l'appli).
+            ks.append(None)
             continue
         if hug_jaw and yc < db:
             ks.append(None)
@@ -224,8 +229,15 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         src = META["hairSources"]["male" if hair[0] == "m" else "female"]
 
         def face(x, y):
-            # Visage dégagé : pas de mèche sur la peau entre sourcils et menton.
-            return b["brow"] + 1 <= y <= neck and skin_px[y, x]
+            # Visage dégagé : pas de mèche sur le centre du visage (comme
+            # l'appli) ; les mèches sur les joues restent entières.
+            if not (b["brow"] + 1 <= y <= b["neck"] and skin_px[y, x]):
+                return False
+            i = y - int(b["skull"][1])
+            prof = b["profile"]
+            half = prof[i] if 0 <= i < len(prof) and prof[i] >= 0.25 * (b["skull"][2] - b["skull"][0]) else None
+            cx = (b["skull"][0] + b["skull"][2]) / 2
+            return half is not None and abs(x + 0.5 - cx) < FACE_INNER * half
         place_warp(canvas, lay, head_warp(src, b, canvas.shape[0]),
                    lambda px: tint_hair(px[:3], ref, hair_color), face)
     # Cornes devant la coiffure.

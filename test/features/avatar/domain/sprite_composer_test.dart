@@ -219,6 +219,8 @@ void main() {
     expect(_px(out, 4, 4), [0, 255, 0, 255]);
     // Hors de la peau (bord du visage) : la mèche reste.
     expect(_px(out, 2, 4), [16, 32, 48, 255]);
+    // Sur la joue, hors du centre du visage : la mèche reste aussi.
+    expect(_px(out, 6, 4), [16, 32, 48, 255]);
     // La corne est dessinée par-dessus la coiffure.
     expect(_px(out, 2, 1), [30, 20, 10, 255]);
   });

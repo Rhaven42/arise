@@ -68,7 +68,7 @@ def neck_of(heads: dict, name: str, a: np.ndarray) -> int:
 
 # Demi-largeur maximale de la tête (en demi-crânes) pour les races aux
 # grandes oreilles : la barbe épouse la mâchoire, pas les oreilles.
-PROFILE_LIMIT = {"goblin": 0.85}
+PROFILE_LIMIT = {"goblin": 0.85, "demon": 0.85}
 
 
 def profile(a: np.ndarray, skull: tuple, neck: int, limit: float = 1.15) -> list[float]:

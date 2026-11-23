@@ -341,6 +341,10 @@ const Set<String> loweredWeapons = {
 const double handRadiusX = 0.018;
 const double handRadiusY = 0.024;
 
+/// Part centrale du visage (en demi-largeur de tête) où aucune mèche n'est
+/// dessinée.
+const double faceInner = 0.6;
+
 /// Part de la teinture dans la couleur d'une tenue teinte.
 const double dyeStrength = 0.6;
 
@@ -576,9 +580,16 @@ class SpriteComposer {
         hair,
         headWarp(hairSource, body.head, meta.height),
         (r, g, b) => tintHairPixel(r, g, b, ref, a.hairColor),
-        // Visage dégagé : pas de mèche sur la peau entre sourcils et menton.
-        skip: (x, y) =>
-            y >= brow + 1 && y <= neck && src.alphaAt(x, y) == meta.skinAlpha,
+        // Visage dégagé : pas de mèche sur le centre du visage (yeux, nez,
+        // bouche) entre sourcils et menton ; les mèches qui tombent sur les
+        // joues restent entières.
+        skip: (x, y) {
+          if (y < brow + 1 || y > body.frame.neck) return false;
+          if (src.alphaAt(x, y) != meta.skinAlpha) return false;
+          final half = body.head.halfWidthAt(y.toDouble());
+          return half != null &&
+              (x + 0.5 - body.head.skull.centre).abs() < faceInner * half;
+        },
       );
     }
     // Cornes devant la coiffure.
@@ -667,7 +678,10 @@ class SpriteComposer {
     });
     final scales = List<double?>.generate(height, (y) {
       final yc = y + 0.5;
-      if (yc >= (hugJaw ? chin : db)) return s;
+      // Barbe : sous le menton, l'échelle du crâne. Coiffure : sous les
+      // sourcils, la largeur du front continue (pas de marche aux joues).
+      if (hugJaw && yc >= chin) return s;
+      if (!hugJaw && yc >= db) return null;
       if (hugJaw && yc < db) return null;
       final wd = target.halfWidthAt(y.toDouble());
       final ws = source.halfWidthAt(rows[y]);
