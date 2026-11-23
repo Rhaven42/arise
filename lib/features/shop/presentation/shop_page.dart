@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:arise/core/design_system/widgets/labeled_tag.dart';
 import 'package:arise/core/theme/arise_colors.dart';
 import 'package:arise/core/theme/arise_spacing.dart';
@@ -111,11 +113,6 @@ class _ShopPageState extends ConsumerState<ShopPage> {
       appBar: AppBar(title: Text(l10n.shopTitle)),
       body: Column(
         children: [
-          if (sheet == null)
-            Padding(
-              padding: const EdgeInsets.all(AriseSpacing.md),
-              child: Text(l10n.shopNoCharacter, textAlign: TextAlign.center),
-            ),
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AriseSpacing.md,
@@ -165,33 +162,87 @@ class _ShopPageState extends ConsumerState<ShopPage> {
             ),
           ),
           Expanded(
-            child: ListView(
+            child: CustomScrollView(
               key: ShopPage.listKey,
-              padding: const EdgeInsets.all(AriseSpacing.sm),
-              children: [
-                for (final article in articles)
-                  _ArticleTile(
-                    article: article,
-                    owned: owns(inventory, article),
-                    lockedBy: missingAchievement(article, achievements),
-                    price: priceOf(article),
-                    onTryOn: sheet == null
-                        ? null
-                        : () => _showOnCharacter(article, sheet, inventory),
-                    onBuy: () => _buy(article, priceOf(article)),
+              slivers: [
+                if (sheet == null)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AriseSpacing.sm),
+                      child: Text(
+                        l10n.shopNoCharacter,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
-                Padding(
-                  padding: const EdgeInsets.all(AriseSpacing.md),
-                  child: Text(
-                    l10n.shopNoRealMoney,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall,
+                SliverPadding(
+                  padding: const EdgeInsets.all(AriseSpacing.sm),
+                  sliver: SliverGrid.extent(
+                    maxCrossAxisExtent: 130,
+                    mainAxisSpacing: AriseSpacing.sm,
+                    crossAxisSpacing: AriseSpacing.sm,
+                    childAspectRatio: 0.72,
+                    children: [
+                      for (final article in articles)
+                        _ArticleTile(
+                          article: article,
+                          owned: owns(inventory, article),
+                          locked:
+                              missingAchievement(article, achievements) != null,
+                          price: priceOf(article),
+                          onTap: () => _openArticle(
+                            article,
+                            owned: owns(inventory, article),
+                            lockedBy: missingAchievement(article, achievements),
+                            sheet: sheet,
+                            inventory: inventory,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AriseSpacing.md),
+                    child: Text(
+                      l10n.shopNoRealMoney,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// Fiche d'un article : détails, essayage et achat.
+  Future<void> _openArticle(
+    ShopArticle article, {
+    required bool owned,
+    required String? lockedBy,
+    required CharacterSheet? sheet,
+    required Inventory inventory,
+  }) {
+    final price = priceOf(article);
+    return showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => _ArticleSheet(
+        article: article,
+        owned: owned,
+        lockedBy: lockedBy,
+        price: price,
+        onTryOn: sheet == null
+            ? null
+            : () => _showOnCharacter(article, sheet, inventory),
+        onBuy: () {
+          Navigator.of(sheetContext).pop();
+          unawaited(_buy(article, price));
+        },
       ),
     );
   }
@@ -313,8 +364,6 @@ class _ArticleImage extends StatelessWidget {
       image: true,
       label: l10n.shopItemImage(articleLabel(l10n, article)),
       child: Container(
-        width: 88,
-        height: 88,
         decoration: BoxDecoration(
           color: AriseColors.stoneDark,
           borderRadius: BorderRadius.circular(AriseSpacing.radius),
@@ -332,8 +381,113 @@ class _ArticleImage extends StatelessWidget {
   }
 }
 
+/// Vignette d'un article : image, nom et prix (ou état).
 class _ArticleTile extends StatelessWidget {
   const _ArticleTile({
+    required this.article,
+    required this.owned,
+    required this.locked,
+    required this.price,
+    required this.onTap,
+  });
+
+  final ShopArticle article;
+  final bool owned;
+  final bool locked;
+  final Coins price;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final rarity = _rarityOf(article);
+    return Material(
+      color: AriseColors.stone,
+      borderRadius: BorderRadius.circular(AriseSpacing.radius),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AriseSpacing.radius),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(AriseSpacing.xs),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _ArticleImage(article: article, rarity: rarity),
+              ),
+              const SizedBox(height: AriseSpacing.xs),
+              Text(
+                articleLabel(l10n, article),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: textTheme.labelMedium,
+              ),
+              const SizedBox(height: 2),
+              if (owned)
+                _Status(
+                  icon: Icons.check,
+                  label: l10n.shopOwned,
+                  color: AriseColors.success,
+                )
+              else if (locked)
+                const Icon(
+                  Icons.lock_outline,
+                  size: 16,
+                  color: AriseColors.parchmentMuted,
+                )
+              else
+                Text(
+                  formatCoins(l10n, price),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: textTheme.labelSmall?.copyWith(
+                    color: AriseColors.goldBright,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Status extends StatelessWidget {
+  const _Status({required this.icon, required this.label, required this.color});
+
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Icon(icon, size: 14, color: color),
+      const SizedBox(width: 2),
+      Flexible(
+        child: Text(
+          label,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color),
+        ),
+      ),
+    ],
+  );
+}
+
+Rarity _rarityOf(ShopArticle article) => switch (article) {
+  ItemArticle(:final item) => item.rarity,
+  HairStyleArticle() => Rarity.rare,
+};
+
+/// Fiche d'un article : grande image, rareté et emplacement, prix,
+/// essayage et achat.
+class _ArticleSheet extends StatelessWidget {
+  const _ArticleSheet({
     required this.article,
     required this.owned,
     required this.lockedBy,
@@ -344,8 +498,6 @@ class _ArticleTile extends StatelessWidget {
 
   final ShopArticle article;
   final bool owned;
-
-  /// Haut fait qui débloque l'article, tant qu'il n'est pas obtenu.
   final String? lockedBy;
   final Coins price;
   final VoidCallback? onTryOn;
@@ -354,92 +506,102 @@ class _ArticleTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final (rarity, icon, subtitle) = switch (article) {
+    final textTheme = Theme.of(context).textTheme;
+    final rarity = _rarityOf(article);
+    final (icon, slot) = switch (article) {
       ItemArticle(:final item) => (
-        item.rarity,
         slotIcon(item.slot),
         slotLabel(l10n, item.slot),
       ),
-      HairStyleArticle() => (
-        Rarity.rare,
-        Icons.content_cut,
-        l10n.shopHairStyles,
-      ),
+      HairStyleArticle() => (Icons.content_cut, l10n.shopHairStyles),
     };
-    return Card(
+    return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(AriseSpacing.sm),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.fromLTRB(
+          AriseSpacing.md,
+          0,
+          AriseSpacing.md,
+          AriseSpacing.md,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _ArticleImage(article: article, rarity: rarity),
-            const SizedBox(width: AriseSpacing.sm),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            Row(
+              children: [
+                SizedBox(
+                  width: 96,
+                  height: 96,
+                  child: _ArticleImage(article: article, rarity: rarity),
+                ),
+                const SizedBox(width: AriseSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(icon, size: 18, color: rarityColor(rarity)),
-                      const SizedBox(width: AriseSpacing.xs),
-                      Expanded(
-                        child: Text(
-                          articleLabel(l10n, article),
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
+                      Text(
+                        articleLabel(l10n, article),
+                        style: textTheme.titleMedium,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: AriseSpacing.xs),
-                  Wrap(
-                    spacing: AriseSpacing.md,
-                    runSpacing: AriseSpacing.xs,
-                    children: [
-                      LabeledTag(
-                        icon: rarityIcon(rarity),
-                        label: rarityLabel(l10n, rarity),
-                        color: rarityColor(rarity),
+                      const SizedBox(height: AriseSpacing.xs),
+                      Wrap(
+                        spacing: AriseSpacing.sm,
+                        runSpacing: AriseSpacing.xs,
+                        children: [
+                          LabeledTag(
+                            icon: rarityIcon(rarity),
+                            label: rarityLabel(l10n, rarity),
+                            color: rarityColor(rarity),
+                          ),
+                          LabeledTag(
+                            icon: icon,
+                            label: slot,
+                            color: AriseColors.parchmentMuted,
+                          ),
+                        ],
                       ),
-                      Text(subtitle),
+                      const SizedBox(height: AriseSpacing.xs),
                       Text(l10n.shopPrice(formatCoins(l10n, price))),
                     ],
                   ),
-                  const SizedBox(height: AriseSpacing.xs),
-                  Wrap(
-                    alignment: WrapAlignment.end,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: AriseSpacing.sm,
-                    runSpacing: AriseSpacing.xs,
-                    children: [
-                      if (onTryOn != null)
-                        TextButton.icon(
-                          onPressed: onTryOn,
-                          icon: const Icon(Icons.accessibility_new),
-                          label: Text(l10n.shopTryOn),
-                        ),
-                      if (owned)
-                        LabeledTag(
-                          icon: Icons.check,
-                          label: l10n.shopOwned,
-                          color: AriseColors.success,
-                        )
-                      else if (lockedBy case final achievement?)
-                        LabeledTag(
-                          icon: Icons.lock_outline,
-                          label: l10n.shopLockedBy(
-                            l10n.achievementName(achievement),
+                ),
+              ],
+            ),
+            if (lockedBy case final achievement? when !owned) ...[
+              const SizedBox(height: AriseSpacing.sm),
+              LabeledTag(
+                icon: Icons.lock_outline,
+                label: l10n.shopLockedBy(l10n.achievementName(achievement)),
+                color: AriseColors.parchmentMuted,
+              ),
+            ],
+            const SizedBox(height: AriseSpacing.md),
+            Row(
+              children: [
+                if (onTryOn != null)
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: onTryOn,
+                      icon: const Icon(Icons.accessibility_new),
+                      label: Text(l10n.shopTryOn),
+                    ),
+                  ),
+                if (onTryOn != null) const SizedBox(width: AriseSpacing.sm),
+                Expanded(
+                  child: owned
+                      ? Center(
+                          child: LabeledTag(
+                            icon: Icons.check,
+                            label: l10n.shopOwned,
+                            color: AriseColors.success,
                           ),
-                          color: AriseColors.parchmentMuted,
                         )
-                      else
-                        FilledButton(
-                          onPressed: onBuy,
+                      : FilledButton(
+                          onPressed: lockedBy == null ? onBuy : null,
                           child: Text(l10n.shopBuy),
                         ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),

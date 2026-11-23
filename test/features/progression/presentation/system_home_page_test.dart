@@ -7,6 +7,7 @@ import 'package:arise/features/progression/domain/civil_date.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
 import 'package:arise/features/progression/presentation/stats_page.dart';
+import 'package:arise/features/progression/presentation/system_home_page.dart';
 import 'package:arise/features/quests/presentation/quests_page.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -21,7 +22,8 @@ void main() {
     await tester.openWithProfile(container, AppRoutes.systemHome);
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.text('Bienvenue, chasseur'), findsOneWidget);
+    // Accueil épuré : pas de message d'accueil, des raccourcis.
+    expect(find.text('Bienvenue, chasseur'), findsNothing);
     expect(find.text('Niveau 0'), findsOneWidget);
     expect(find.text('Rang E'), findsOneWidget);
     // Fiche du héros : pas encore de personnage ni de titre.
@@ -114,32 +116,35 @@ void main() {
     await tester.unmountApp();
   });
 
-  testWidgets('barre d’action, barre des stats en haut et fiche détaillée', (
-    tester,
-  ) async {
-    final container = createTestContainer();
-    await tester.openWithProfile(container, AppRoutes.systemHome);
-    await tester.pump(const Duration(milliseconds: 300));
+  testWidgets(
+    'barre d’action, barre des stats en haut qui ouvre la fiche détaillée',
+    (tester) async {
+      final container = createTestContainer();
+      await tester.openWithProfile(container, AppRoutes.systemHome);
+      await tester.pump(const Duration(milliseconds: 300));
 
-    await tester.tap(find.byKey(HomeDock.questsKey));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byType(QuestsPage), findsOneWidget);
+      await tester.tap(find.byKey(HomeDock.questsKey));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byType(QuestsPage), findsOneWidget);
 
-    container.read(appRouterProvider).go(AppRoutes.systemHome);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byType(StatGem), findsWidgets);
-    await tester.scrollUntilVisible(
-      find.byType(StatsSheet),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    expect(find.byType(StatsSheet), findsOneWidget);
-    await tester.tap(find.byKey(HomeDock.inventoryKey));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byType(InventoryPage), findsOneWidget);
-    await tester.unmountApp();
-  });
+      container.read(appRouterProvider).go(AppRoutes.systemHome);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byType(StatGem), findsWidgets);
+      // La barre des stats ouvre l'écran détaillé.
+      await tester.tap(find.byKey(SystemHomePage.statsKey));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byType(StatsSheet), findsOneWidget);
+      container.read(appRouterProvider).go(AppRoutes.systemHome);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.byKey(HomeDock.inventoryKey));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byType(InventoryPage), findsOneWidget);
+      await tester.unmountApp();
+    },
+  );
 }

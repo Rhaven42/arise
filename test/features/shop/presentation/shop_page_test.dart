@@ -55,19 +55,18 @@ void main() {
     await tester.pump();
     expect(find.text("Cuir de l'Éveillé"), findsOneWidget);
     expect(find.text('Épée longue du Gardien'), findsNothing);
-    await tester.ensureVisible(find.text('Voir sur mon personnage').first);
-    await tester.pump();
-    await tester.tap(find.text('Voir sur mon personnage').first);
+    // Grille de vignettes : un toucher ouvre la fiche de l'article.
+    await tester.tap(find.text("Cuir de l'Éveillé"));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Voir sur mon personnage'));
     await tester.pumpAndSettle();
     expect(find.text('Aperçu sur Création du personnage'), findsOneWidget);
     expect(renderer.last?.outfitId, 'awakened_leather');
     await tester.tap(find.byTooltip('Fermer'));
     await tester.pumpAndSettle();
 
-    // Achat confirmé : 8 pièces d'argent.
-    await tester.ensureVisible(find.text('Acheter').first);
-    await tester.pump();
-    await tester.tap(find.text('Acheter').first);
+    // Achat confirmé depuis la fiche : 8 pièces d'argent.
+    await tester.tap(find.widgetWithText(FilledButton, 'Acheter'));
     await tester.pumpAndSettle();
     expect(find.text("Confirmer l'achat"), findsOneWidget);
     await tester.tap(find.widgetWithText(FilledButton, 'Acheter').last);
@@ -84,9 +83,16 @@ void main() {
     // Trop cher : la tenue suivante (la tenue achetée affiche « Possédé »).
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('Possédé'), findsOneWidget);
-    await tester.ensureVisible(find.text('Acheter').first);
-    await tester.pump();
-    await tester.tap(find.text('Acheter').first);
+    await tester.tap(
+      find
+          .descendant(
+            of: find.byKey(ShopPage.listKey),
+            matching: find.byType(InkWell),
+          )
+          .at(1),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Acheter'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, 'Acheter').last);
     await tester.pump();
@@ -101,7 +107,14 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('Inventaire'), findsOneWidget);
-    await _scrollTo(tester, find.text('Équiper'), InventoryPage.listKey);
+    // Grille du sac : la fiche de l'objet pour le porter.
+    await _scrollTo(
+      tester,
+      find.text("Cuir de l'Éveillé"),
+      InventoryPage.listKey,
+    );
+    await tester.tap(find.text("Cuir de l'Éveillé"));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Équiper'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
@@ -112,6 +125,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(renderer.last?.outfitId, 'awakened_leather');
 
+    await tester.pumpAndSettle();
+    await tester.tap(find.text("Cuir de l'Éveillé").first);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Teindre'));
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Forêt'));

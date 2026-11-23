@@ -1,10 +1,8 @@
 import 'package:arise/core/design_system/widgets/arise_button.dart';
 import 'package:arise/core/design_system/widgets/stone_frame.dart';
-import 'package:arise/core/design_system/widgets/system_window.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/core/theme/arise_colors.dart';
 import 'package:arise/core/theme/arise_spacing.dart';
-import 'package:arise/core/theme/arise_typography.dart';
 import 'package:arise/core/utils/clock.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
 import 'package:arise/features/progression/domain/coins.dart';
@@ -39,12 +37,52 @@ class QuestsPage extends ConsumerWidget {
               padding: const EdgeInsets.all(AriseSpacing.md),
               children: [
                 _WeeklySection(view: view, level: level),
-                const SizedBox(height: AriseSpacing.lg),
+                const SizedBox(height: AriseSpacing.md),
                 _DungeonSection(view: view),
-                const SizedBox(height: AriseSpacing.lg),
+                const SizedBox(height: AriseSpacing.md),
                 _EventSection(view: view),
               ],
             ),
+    );
+  }
+}
+
+/// En-tête d'une carte de quête : icône, titre et récompense en pastille.
+class _CardHeader extends StatelessWidget {
+  const _CardHeader({required this.icon, required this.title, this.reward});
+
+  final IconData icon;
+  final String title;
+  final String? reward;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final reward = this.reward;
+    return Row(
+      children: [
+        Icon(icon, color: AriseColors.gold),
+        const SizedBox(width: AriseSpacing.sm),
+        Expanded(
+          child: Semantics(
+            header: true,
+            child: Text(
+              title,
+              style: textTheme.titleMedium?.copyWith(color: AriseColors.gold),
+            ),
+          ),
+        ),
+        if (reward != null)
+          Flexible(
+            child: Text(
+              reward,
+              textAlign: TextAlign.end,
+              style: textTheme.labelMedium?.copyWith(
+                color: AriseColors.goldBright,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
@@ -106,15 +144,20 @@ class _WeeklySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
     final weekly = view.board.weekly!;
     final c = weeklyRewardPreview(level);
-    return SystemWindow(
-      header: l10n.systemWindowHeader,
-      title: l10n.weeklyTitle,
+    return StoneFrame(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          _CardHeader(
+            icon: Icons.flag_outlined,
+            title: l10n.weeklyTitle,
+            reward: weekly.claimed
+                ? l10n.weeklyClaimed
+                : l10n.weeklyReward(c.xp, formatCoins(l10n, c.coins)),
+          ),
+          const SizedBox(height: AriseSpacing.xs),
           for (var i = 0; i < weekly.objectives.length; i++)
             _Progress(
               label: l10n.weeklyObjective(
@@ -125,15 +168,6 @@ class _WeeklySection extends StatelessWidget {
               done: view.weeklyProgress[i],
               of: weekly.objectives[i].target,
             ),
-          const SizedBox(height: AriseSpacing.sm),
-          Text(
-            weekly.claimed
-                ? l10n.weeklyClaimed
-                : l10n.weeklyReward(c.xp, formatCoins(l10n, c.coins)),
-            style: textTheme.bodyMedium?.copyWith(
-              color: weekly.claimed ? AriseColors.goldBright : null,
-            ),
-          ),
         ],
       ),
     );
@@ -162,42 +196,46 @@ class _DungeonSection extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            l10n.dungeonTitle,
-            style: textTheme.titleMedium?.copyWith(color: AriseColors.gold),
-          ),
+          _CardHeader(icon: Icons.castle_outlined, title: l10n.dungeonTitle),
+          const SizedBox(height: AriseSpacing.xs),
           Text(l10n.dungeonThemeName(theme), style: textTheme.titleLarge),
-          const SizedBox(height: AriseSpacing.xs),
-          Text(
-            l10n.dungeonThemeLore(theme),
-            style: textTheme.bodyLarge?.copyWith(
-              fontFamily: AriseTypography.flavor,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-          const SizedBox(height: AriseSpacing.xs),
-          Text(l10n.dungeonRule, style: textTheme.bodyMedium),
           const SizedBox(height: AriseSpacing.sm),
-          for (var room = 0; room < dungeonRoomCount; room++)
-            if (room < view.clearedDays.length)
-              _Progress(label: l10n.dungeonRoomDone(room + 1), done: 1, of: 1)
-            else if (room == next)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: AriseSpacing.xs),
-                child: AriseButton(
-                  key: QuestsPage.enterRoomKey(room),
-                  label: l10n.dungeonEnter(room + 1),
-                  icon: Icons.door_front_door_outlined,
-                  onPressed: () =>
-                      context.go(AppRoutes.workout(dungeonRoomProgramId(room))),
+          // Salles : franchies, ouverte, fermées.
+          Row(
+            children: [
+              for (var room = 0; room < dungeonRoomCount; room++)
+                Expanded(
+                  child: Semantics(
+                    label: room < view.clearedDays.length
+                        ? l10n.dungeonRoomDone(room + 1)
+                        : l10n.dungeonRoomLocked(room + 1),
+                    excludeSemantics: true,
+                    child: Icon(
+                      room < view.clearedDays.length
+                          ? Icons.check_circle
+                          : room == next
+                          ? Icons.door_front_door_outlined
+                          : Icons.lock_outline,
+                      color: room < view.clearedDays.length
+                          ? AriseColors.goldBright
+                          : room == next
+                          ? AriseColors.gold
+                          : AriseColors.parchmentMuted,
+                    ),
+                  ),
                 ),
-              )
-            else
-              _Progress(
-                label: l10n.dungeonRoomLocked(room + 1),
-                done: 0,
-                of: 1,
-              ),
+            ],
+          ),
+          if (next != null) ...[
+            const SizedBox(height: AriseSpacing.sm),
+            AriseButton(
+              key: QuestsPage.enterRoomKey(next),
+              label: l10n.dungeonEnter(next + 1),
+              icon: Icons.door_front_door_outlined,
+              onPressed: () =>
+                  context.go(AppRoutes.workout(dungeonRoomProgramId(next))),
+            ),
+          ],
           if (view.resting && !dungeon.looted)
             Text(l10n.questRestDay, style: textTheme.bodyMedium)
           else if (waiting)
@@ -223,20 +261,20 @@ class _EventSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
     final edition = view.event;
-    if (edition == null) {
-      return StoneFrame(
-        child: Text(l10n.eventNone, style: textTheme.bodyLarge),
-      );
-    }
+    // Aucun événement : rien à afficher.
+    if (edition == null) return const SizedBox.shrink();
     final claimed = view.board.claimedEvents.contains(edition.key);
-    return SystemWindow(
-      header: l10n.eventTitle,
-      title: l10n.eventName(edition.event.id),
+    return StoneFrame(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          _CardHeader(
+            icon: Icons.celebration_outlined,
+            title: l10n.eventName(edition.event.id),
+            reward: claimed ? l10n.eventClaimed : null,
+          ),
+          const SizedBox(height: AriseSpacing.xs),
           _Progress(
             label: l10n.eventObjective(
               edition.event.metric.name,
@@ -247,13 +285,6 @@ class _EventSection extends StatelessWidget {
             done: view.eventProgress,
             of: edition.event.target,
           ),
-          if (claimed)
-            Text(
-              l10n.eventClaimed,
-              style: textTheme.bodyMedium?.copyWith(
-                color: AriseColors.goldBright,
-              ),
-            ),
         ],
       ),
     );

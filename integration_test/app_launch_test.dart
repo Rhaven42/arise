@@ -165,10 +165,11 @@ void main() {
     // attendu avant le retour complet sur la Fenêtre du Système.
     await _waitFor(tester, find.text('Personnage enregistré.'));
 
-    await _waitFor(tester, find.text('Bienvenue, chasseur'));
-
-    expect(find.text('Bienvenue, chasseur'), findsOneWidget);
-    await _expectVisible(tester, 'Jours de repos : Samedi');
+    // Accueil épuré : la fiche du héros, puis la série et les raccourcis.
+    await _waitFor(tester, find.text('Niveau 0'));
+    expect(find.text('Niveau 0'), findsOneWidget);
+    await _expectVisible(tester, 'Aucun jour en cours');
+    await _expectVisible(tester, 'Planning');
 
     // Catalogue : recherche et fiche animée.
     await _tapText(tester, 'Exercices');
@@ -241,7 +242,7 @@ void main() {
     await tester.tap(find.byType(BackButton).first);
     await _pumpFor(tester, 1200);
     debugPrint('Parcours : ouverture de l’analyse musculaire');
-    await _tapWithoutSettle(tester, find.text('Analyse musculaire'));
+    await _tapWithoutSettle(tester, find.text('Analyse').last);
     await _pumpFor(tester, 1500);
     debugPrint('Parcours : analyse affichée');
     await _expectVisible(tester, '1 séance sur cette période.');
@@ -274,7 +275,17 @@ void main() {
     await _pumpFor(tester, 300);
     await tester.tap(outfits);
     await _pumpFor(tester, 500);
-    await tester.tap(find.text('Voir sur mon personnage').first);
+    // Grille de la boutique : la fiche du premier article, puis l'essayage.
+    await tester.tap(
+      find
+          .descendant(
+            of: find.byKey(ShopPage.listKey),
+            matching: find.byType(InkWell),
+          )
+          .first,
+    );
+    await _pumpFor(tester, 800);
+    await tester.tap(find.text('Voir sur mon personnage'));
     await _pumpFor(tester, 4000);
     expect(
       find.text(
@@ -284,6 +295,9 @@ void main() {
       findsNothing,
     );
     await tester.tap(find.byTooltip('Fermer'));
+    await _pumpFor(tester, 800);
+    // Fermeture de la fiche de l'article.
+    await tester.binding.handlePopRoute();
     await _pumpFor(tester, 800);
     debugPrint('Parcours : inventaire');
     await tester.tap(find.byType(BackButton).first);
@@ -339,15 +353,13 @@ void main() {
     debugPrint('Parcours : santé');
     await tester.tap(find.byType(BackButton).first);
     await _pumpFor(tester, 1200);
+    // Raccourci « Santé » de l'accueil.
     await tester.scrollUntilVisible(
-      find.text('Pas, sommeil et eau te font progresser'),
+      find.text('Santé'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    await _tapWithoutSettle(
-      tester,
-      find.text('Pas, sommeil et eau te font progresser'),
-    );
+    await _tapWithoutSettle(tester, find.text('Santé').last);
     await _pumpFor(tester, 1500);
     await _expectVisible(tester, 'Hydratation');
     await _tapWithoutSettle(tester, find.byTooltip("Ajouter un verre d'eau"));

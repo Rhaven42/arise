@@ -93,6 +93,17 @@ def profile(a: np.ndarray, skull: tuple, neck: int, limit: float = 1.15) -> list
     return out
 
 
+def chin_row(skin: np.ndarray, neck: int, skull: tuple) -> int:
+    """Bas réel du menton : premier pixel hors peau (contour de la mâchoire)
+    sur l'axe du visage, à partir de la ligne du cou. Sous cette ligne, une
+    tenue remplace le corps."""
+    cx = int((skull[0] + skull[2]) / 2)
+    for y in range(neck, min(neck + 12, skin.shape[0])):
+        if not skin[y, cx]:
+            return y
+    return neck
+
+
 def raw(name: str) -> str:
     return os.path.join(RAW, name + ".png")
 
@@ -153,6 +164,7 @@ def main() -> None:
             meta["bodies"][f"{race}_{sex}"] = {
                 "gabarit": GABARIT[sex][race], "skull": list(skull),
                 "brow": heads["brows"][name], "neck": neck,
+                "chin": chin_row(skin, neck, skull),
                 "profile": profile(a, skull, neck, PROFILE_LIMIT.get(race, 1.0 if race in HORNED else 1.15)), **sp, "hand": hand(a, skin, sp),
                 "skinRef": [int(c) for c in np.median(a[skin][:, :3], axis=0)],
             }
@@ -208,7 +220,8 @@ def main() -> None:
         meta["templates"][g] = {"neck": neck, **sp, "hand": hand(b, tskin, sp),
                                 "skinRef": [int(c) for c in np.median(b[tskin][:, :3], axis=0)]}
         for oid in outfits["outfits"]:
-            lay = outfit_layer(b, load(raw(f"armor_{oid}_{g}")), neck, sample, t,
+            lay = outfit_layer(b, load(raw(f"armor_{oid}_{g}")),
+                               chin_row(tskin, neck, tuple(heads[tpl["base"]])), sample, t,
                                heads["arms"].get(tpl["base"]))
             save(lay, os.path.join(OUT, "outfits", f"{oid}_{g}.png"))
 

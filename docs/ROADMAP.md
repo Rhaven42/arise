@@ -140,6 +140,8 @@
 - [x] Pièces séparées (20) : haut, bas, chaussures, gants, combinables et teignables
 - [x] 14 coiffures par sexe, 10 barbes ; coiffures masquées selon la race
 - [x] Retrait de la 3D (modèles, tenues, visualiseur, vidéos)
+- [x] Interface allégée (22/11/2026) : accueil épuré (héros, barre de stats, quête du jour, série, raccourcis), boutique et sac en grilles de vignettes avec fiche au toucher, quêtes en cartes compactes
+- [x] Armes tenues en main (main devant la poignée, armes courtes lame vers le bas) ; menton intact sous les tenues
 - [x] Mannequins des exercices vérifiés sur tout le cycle (outil et test automatique)
 - [x] Tenues sombres (5) et nouvelles armes (arcs, mousquet, lance, baguette, faux, lame et dague sombres)
 - [x] Tenues pirate, viking et mage royal débloquées par les hauts faits de zone (Nord, Mers, Arcanes)

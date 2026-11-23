@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:arise/core/config/game_config.dart';
 import 'package:arise/core/design_system/widgets/labeled_tag.dart';
 import 'package:arise/core/router/app_routes.dart';
@@ -154,41 +156,66 @@ class InventoryPage extends ConsumerWidget {
                       ),
                     ),
                   )
-                : ListView(
+                : CustomScrollView(
                     key: listKey,
-                    padding: const EdgeInsets.all(AriseSpacing.sm),
-                    children: [
+                    slivers: [
                       for (final slot in usedSlots)
                         if (owned.any((i) => i.slot == slot)) ...[
-                          Padding(
+                          SliverPadding(
                             padding: const EdgeInsets.fromLTRB(
-                              AriseSpacing.sm,
                               AriseSpacing.md,
-                              AriseSpacing.sm,
+                              AriseSpacing.md,
+                              AriseSpacing.md,
                               AriseSpacing.xs,
                             ),
-                            child: Text(
-                              slotLabel(l10n, slot),
-                              style: Theme.of(context).textTheme.titleMedium,
+                            sliver: SliverToBoxAdapter(
+                              child: Text(
+                                slotLabel(l10n, slot),
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
                             ),
                           ),
-                          for (final item in owned.where((i) => i.slot == slot))
-                            _ItemTile(
-                              item: item,
-                              equipped: inventory.equipped[slot] == item.id,
-                              dye: inventory.dyes[item.id],
-                              onToggle: () async {
-                                if (inventory.equipped[slot] == item.id) {
-                                  await controller.unequipSlot(slot);
-                                } else {
-                                  await controller.equipItem(item.id);
-                                }
-                              },
-                              onDye: item.dyeable
-                                  ? () => _dye(context, ref, item)
-                                  : null,
+                          SliverPadding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AriseSpacing.sm,
                             ),
+                            sliver: SliverGrid.extent(
+                              maxCrossAxisExtent: 110,
+                              mainAxisSpacing: AriseSpacing.sm,
+                              crossAxisSpacing: AriseSpacing.sm,
+                              childAspectRatio: 0.78,
+                              children: [
+                                for (final item in owned.where(
+                                  (i) => i.slot == slot,
+                                ))
+                                  _ItemTile(
+                                    item: item,
+                                    equipped:
+                                        inventory.equipped[slot] == item.id,
+                                    dye: inventory.dyes[item.id],
+                                    onTap: () => _openItem(
+                                      context,
+                                      ref,
+                                      item,
+                                      equipped:
+                                          inventory.equipped[slot] == item.id,
+                                      onToggle: () async {
+                                        if (inventory.equipped[slot] ==
+                                            item.id) {
+                                          await controller.unequipSlot(slot);
+                                        } else {
+                                          await controller.equipItem(item.id);
+                                        }
+                                      },
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
                         ],
+                      const SliverToBoxAdapter(
+                        child: SizedBox(height: AriseSpacing.lg),
+                      ),
                     ],
                   ),
           ),
@@ -196,96 +223,205 @@ class InventoryPage extends ConsumerWidget {
       ),
     );
   }
+
+  /// Fiche d'un objet : porter ou retirer, teindre.
+  Future<void> _openItem(
+    BuildContext context,
+    WidgetRef ref,
+    EquipmentItem item, {
+    required bool equipped,
+    required Future<void> Function() onToggle,
+  }) {
+    final l10n = AppLocalizations.of(context);
+    return showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AriseSpacing.md,
+            0,
+            AriseSpacing.md,
+            AriseSpacing.md,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  SizedBox(
+                    width: 88,
+                    height: 88,
+                    child: _ItemImage(item: item),
+                  ),
+                  const SizedBox(width: AriseSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          itemLabel(l10n, item),
+                          style: Theme.of(sheetContext).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: AriseSpacing.xs),
+                        LabeledTag(
+                          icon: rarityIcon(item.rarity),
+                          label: rarityLabel(l10n, item.rarity),
+                          color: rarityColor(item.rarity),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AriseSpacing.md),
+              Row(
+                children: [
+                  if (item.dyeable) ...[
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          Navigator.of(sheetContext).pop();
+                          unawaited(_dye(context, ref, item));
+                        },
+                        icon: const Icon(Icons.format_color_fill),
+                        label: Text(l10n.inventoryDye),
+                      ),
+                    ),
+                    const SizedBox(width: AriseSpacing.sm),
+                  ],
+                  Expanded(
+                    child: equipped
+                        ? OutlinedButton(
+                            onPressed: () {
+                              Navigator.of(sheetContext).pop();
+                              unawaited(onToggle());
+                            },
+                            child: Text(l10n.inventoryUnequip),
+                          )
+                        : FilledButton(
+                            onPressed: () {
+                              Navigator.of(sheetContext).pop();
+                              unawaited(onToggle());
+                            },
+                            child: Text(l10n.inventoryEquip),
+                          ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
+/// Vignette d'un objet (sprite en pixel art, `assets/sprites/icons/`).
+class _ItemImage extends StatelessWidget {
+  const _ItemImage({required this.item});
+
+  final EquipmentItem item;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    decoration: BoxDecoration(
+      color: AriseColors.stoneDark,
+      borderRadius: BorderRadius.circular(AriseSpacing.radius),
+      border: Border.all(color: rarityColor(item.rarity), width: 2),
+    ),
+    padding: const EdgeInsets.all(AriseSpacing.xs),
+    child: Image.asset(
+      'assets/sprites/icons/${item.spriteId}.png',
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.none,
+      errorBuilder: (_, _, _) =>
+          Icon(slotIcon(item.slot), color: rarityColor(item.rarity)),
+    ),
+  );
+}
+
+/// Vignette d'un objet possédé : image, nom, porté ou non, teinte.
 class _ItemTile extends StatelessWidget {
   const _ItemTile({
     required this.item,
     required this.equipped,
     required this.dye,
-    required this.onToggle,
-    required this.onDye,
+    required this.onTap,
   });
 
   final EquipmentItem item;
   final bool equipped;
   final int? dye;
-  final VoidCallback onToggle;
-  final VoidCallback? onDye;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final color = dye;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AriseSpacing.sm),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    return Semantics(
+      selected: equipped,
+      child: Material(
+        color: AriseColors.stone,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AriseSpacing.radius),
+          side: equipped
+              ? const BorderSide(color: AriseColors.success, width: 2)
+              : BorderSide.none,
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(AriseSpacing.radius),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(AriseSpacing.xs),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(slotIcon(item.slot), color: rarityColor(item.rarity)),
-                const SizedBox(width: AriseSpacing.sm),
                 Expanded(
-                  child: Text(
-                    itemLabel(l10n, item),
-                    style: Theme.of(context).textTheme.titleSmall,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(child: _ItemImage(item: item)),
+                      if (equipped)
+                        const Positioned(
+                          right: 2,
+                          top: 2,
+                          child: Icon(
+                            Icons.check_circle,
+                            size: 16,
+                            color: AriseColors.success,
+                          ),
+                        ),
+                      if (color != null)
+                        Positioned(
+                          left: 4,
+                          top: 4,
+                          child: Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: Color(color),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AriseColors.parchmentMuted,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-                if (color != null)
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: Color(color),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AriseColors.parchmentMuted),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: AriseSpacing.xs),
-            Wrap(
-              spacing: AriseSpacing.md,
-              runSpacing: AriseSpacing.xs,
-              children: [
-                LabeledTag(
-                  icon: rarityIcon(item.rarity),
-                  label: rarityLabel(l10n, item.rarity),
-                  color: rarityColor(item.rarity),
+                const SizedBox(height: AriseSpacing.xs),
+                Text(
+                  itemLabel(l10n, item),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.labelMedium,
                 ),
-                if (equipped)
-                  LabeledTag(
-                    icon: Icons.check,
-                    label: l10n.inventoryEquipped,
-                    color: AriseColors.success,
-                  ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (onDye != null)
-                  TextButton.icon(
-                    onPressed: onDye,
-                    icon: const Icon(Icons.format_color_fill),
-                    label: Text(l10n.inventoryDye),
-                  ),
-                const SizedBox(width: AriseSpacing.sm),
-                if (equipped)
-                  OutlinedButton(
-                    onPressed: onToggle,
-                    child: Text(l10n.inventoryUnequip),
-                  )
-                else
-                  FilledButton(
-                    onPressed: onToggle,
-                    child: Text(l10n.inventoryEquip),
-                  ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );

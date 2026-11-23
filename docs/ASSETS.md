@@ -38,6 +38,8 @@ Le héros est dessiné en **pixel art**, en pied, à partir d'images générées
 - **Construction** : `python3 tool/sprites/build.py` produit `assets/sprites/` (calques, vignettes de la boutique et repères `sprites.json`) ; `python3 tool/sprites/preview.py sortie.png` assemble des héros au hasard avec la même logique que l'appli (`SpriteComposer`).
 
 ### Ajouter un élément
+- **Tenue et menton** : chaque corps a un repère `chin` (bas réel de la mâchoire). Une tenue remplace le corps sous ce menton ; la peau du cou du personnage reste sur une petite bande (`neckBandRatio`) et la peau du visage est redessinée par-dessus les cols.
+- **Armes** : la main est redessinée devant la poignée ; les armes courtes (épées, dagues, cimeterres, haches, masses, marteaux, baguettes : `loweredWeapons`) sont tenues au repos, lame vers le bas ; les armes d'hast, bâtons, arcs et le mousquet restent debout.
 - **Pièce séparée** : la peau que l'édition dévoile (bras nus, col ouvert) reste transparente : le corps de base et sa chemise apparaissent dessous.
 - **Barbe d'une race** : éditer le corps masculin de la race avec le même texte que la barbe humaine, enregistrer `raw/beard_<race>_NN.png`, ajouter la race à `RACE_BEARDS`, déclarer `assets/sprites/beards/<race>/` dans `pubspec.yaml` (un test le vérifie), relancer `build.py`.
 - **Coiffure ou barbe** : éditer l'humain chauve (`human_male` ou `human_female`, voir le manifeste) avec « Only add hair … dyed a vivid saturated magenta pink color », enregistrer l'image dans `raw/hair_mNN.png`, `raw/hair_fNN.png` ou `raw/beard_NN.png`, relancer `build.py`.

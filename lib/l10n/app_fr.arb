@@ -851,6 +851,7 @@
     }
   },
   "homeStatsTitle": "Statistiques",
+  "homeShortcutAnalysis": "Analyse",
   "homeFreePoints": "{count, plural, =1{1 point à placer} other{{count} points à placer}}",
   "@homeFreePoints": {
     "placeholders": {
