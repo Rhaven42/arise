@@ -111,9 +111,9 @@
   "label": "coiffure m02 courte en bataille"
  },
  "hair_m03": {
-  "asset_id": "80e0222a-9438-4e84-aef8-edb1e8006c44",
-  "sha12": "73aba79ef159",
-  "label": "coiffure homme 03 queue de cheval"
+  "asset_id": "90a78684-215c-4b6d-a55c-f5445a224599",
+  "sha12": "7bdec0a1cce5",
+  "label": "coiffure homme 03 queue de cheval (v2)"
  },
  "hair_m04": {
   "asset_id": "b56127cc-9d41-4170-b5c9-6903a7aa43f9",
@@ -156,14 +156,14 @@
   "label": "coiffure femme 01 longs frange"
  },
  "hair_f02": {
-  "asset_id": "5df202bf-ec47-4680-b3d9-f8a06744ebc2",
-  "sha12": "7ecfc3176aff",
-  "label": "coiffure femme 02 queue haute"
+  "asset_id": "3db05f1e-793f-462f-9ec3-d7338230a278",
+  "sha12": "80b2c2cfd537",
+  "label": "coiffure femme 02 queue haute (v2)"
  },
  "hair_f03": {
-  "asset_id": "de4bd588-f3fc-4803-8b97-2ec21178dc91",
-  "sha12": "2a505269bff3",
-  "label": "coiffure femme 03 deux tresses"
+  "asset_id": "41fdf065-0d57-4e49-be70-fdfedaaffc9d",
+  "sha12": "0614e8491cc2",
+  "label": "coiffure femme 03 deux tresses (v2)"
  },
  "hair_f04": {
   "asset_id": "8d4edf6b-1884-446e-b0f5-5cecd716811f",
@@ -176,9 +176,9 @@
   "label": "coiffure femme 05 courte"
  },
  "hair_f06": {
-  "asset_id": "2bf2d929-9975-48b3-a7e3-a83eaa589a4a",
-  "sha12": "13c28bb5c41a",
-  "label": "coiffure femme 06 bouclés"
+  "asset_id": "d4233be9-755b-4ce8-962e-d765cfd16b12",
+  "sha12": "2dc7cba105ca",
+  "label": "coiffure femme 06 bouclés (v2)"
  },
  "hair_f07": {
   "asset_id": "db6b07ad-9173-4727-890b-c902bac469d2",
@@ -1416,9 +1416,9 @@
   "label": "fur_bracers small"
  },
  "hair_m11": {
-  "asset_id": "2ea030fe-a4df-4cd4-8fc3-f33337cdeccf",
-  "sha12": "ee7779076a5c",
-  "label": "coiffure m11 ondulée en arrière"
+  "asset_id": "7dce9d75-893d-4355-bb2a-aeb9d5de9e12",
+  "sha12": "9a3c1596ddf3",
+  "label": "coiffure m11 ondulée en arrière (v2)"
  },
  "hair_m12": {
   "asset_id": "596bcb87-f012-49bc-9fe6-0a57b2c3d007",

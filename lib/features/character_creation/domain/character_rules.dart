@@ -21,7 +21,7 @@ const Map<CharacterRace, int> defaultSkinIndex = {
 /// tête (cornes du minotaure et de la démone, grosses têtes des gnomes).
 const Map<CharacterRace, Map<CharacterSex, Set<int>>> hiddenHairStyles = {
   CharacterRace.minotaur: {
-    CharacterSex.male: {1, 3, 5, 6, 9, 10, 11, 12},
+    CharacterSex.male: {1, 2, 3, 4, 5, 6, 9, 10, 11, 12},
     CharacterSex.female: {4, 6, 7, 12},
   },
   CharacterRace.demon: {
@@ -29,10 +29,15 @@ const Map<CharacterRace, Map<CharacterSex, Set<int>>> hiddenHairStyles = {
     CharacterSex.female: {4, 6},
   },
   CharacterRace.dwarf: {
+    CharacterSex.male: {5},
     CharacterSex.female: {7},
   },
   CharacterRace.gnome: {
-    CharacterSex.female: {6},
+    CharacterSex.male: {5, 11},
+    CharacterSex.female: {6, 12},
+  },
+  CharacterRace.highElf: {
+    CharacterSex.male: {5},
   },
 };
 
