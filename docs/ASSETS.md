@@ -55,7 +55,7 @@ Le héros est dessiné en **pixel art**, en pied, à partir d'images générées
 
 ## 3. Équipement de la boutique
 
-38 tenues complètes (dont 5 sombres), 20 pièces séparées (5 hauts, 5 bas, 5 paires de chaussures, 5 paires de gants : `pieceCatalog`) et 20 armes, dont arcs, mousquet, lance, baguette et faux (`outfitCatalog`, `weaponCatalog`), plus 6 récompenses de boss qui reprennent une tenue avec leur propre teinte. Les anciennes pièces 3D possédées sont converties à la relecture (`legacyItemIds`) : chaque pièce d'un ensemble devient la tenue complète, les armes retirées deviennent l'arme la plus proche.
+38 tenues complètes (dont 5 sombres) et 20 armes (les 20 pièces séparées, retirées le 25/11/2026, gardent leurs images générées dans `tool/sprites/raw/piece_*`), dont arcs, mousquet, lance, baguette et faux (`outfitCatalog`, `weaponCatalog`), plus 6 récompenses de boss qui reprennent une tenue avec leur propre teinte. Les anciennes pièces 3D possédées sont converties à la relecture (`legacyItemIds`) : chaque pièce d'un ensemble devient la tenue complète, les armes retirées deviennent l'arme la plus proche.
 
 ## 5. Musiques et jingles
 

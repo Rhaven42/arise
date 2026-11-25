@@ -22,6 +22,18 @@ enum World {
 /// sac.
 enum EquipmentMaterial { plate, mail, leather, cloth }
 
+/// Version de test (`--dart-define=ARISE_UNLOCK_WORLDS=true`) : tous les
+/// univers sont ouverts, sans leurs hauts faits.
+const bool unlockAllWorlds = bool.fromEnvironment('ARISE_UNLOCK_WORLDS');
+
+/// Hauts faits obtenus, plus ceux des univers dans la version de test.
+Set<String> withWorldTestUnlocks(
+  Set<String> unlocked, {
+  bool testUnlock = unlockAllWorlds,
+}) => testUnlock
+    ? {...unlocked, for (final w in World.values) ?w.unlockAchievement}
+    : unlocked;
+
 /// L'univers [world] est ouvert quand son haut fait est obtenu.
 bool isWorldUnlocked(World world, Set<String> unlockedAchievements) {
   final id = world.unlockAchievement;

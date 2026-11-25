@@ -18,13 +18,10 @@ enum EquipmentSlot {
   top,
 }
 
-/// Emplacements où se porte un objet du catalogue actuel.
+/// Emplacements où se porte un objet du catalogue actuel : tenue complète
+/// et arme (les pièces séparées sont retirées le 25/11/2026).
 const List<EquipmentSlot> usedSlots = [
   EquipmentSlot.chest,
-  EquipmentSlot.top,
-  EquipmentSlot.legs,
-  EquipmentSlot.feet,
-  EquipmentSlot.hands,
   EquipmentSlot.weapon,
 ];
 
@@ -427,158 +424,6 @@ const List<EquipmentItem> outfitCatalog = [
   ),
 ];
 
-/// Pièces séparées vendues en boutique (haut, bas, chaussures, gants) : elles
-/// se portent sur les vêtements de base ; les chaussures et les gants aussi
-/// sur une tenue complète.
-const List<EquipmentItem> pieceCatalog = [
-  EquipmentItem(
-    id: 'forest_jerkin',
-    slot: EquipmentSlot.top,
-    rarity: Rarity.common,
-    dyeable: true,
-    material: EquipmentMaterial.leather,
-  ),
-  EquipmentItem(
-    id: 'padded_gambeson',
-    slot: EquipmentSlot.top,
-    rarity: Rarity.common,
-    dyeable: true,
-    material: EquipmentMaterial.cloth,
-  ),
-  EquipmentItem(
-    id: 'chain_shirt',
-    slot: EquipmentSlot.top,
-    rarity: Rarity.rare,
-    dyeable: true,
-    material: EquipmentMaterial.mail,
-  ),
-  EquipmentItem(
-    id: 'noble_doublet',
-    slot: EquipmentSlot.top,
-    rarity: Rarity.rare,
-    dyeable: true,
-    material: EquipmentMaterial.cloth,
-  ),
-  EquipmentItem(
-    id: 'fur_vest',
-    slot: EquipmentSlot.top,
-    rarity: Rarity.common,
-    dyeable: true,
-    world: World.north,
-    material: EquipmentMaterial.leather,
-  ),
-  EquipmentItem(
-    id: 'iron_greaves',
-    slot: EquipmentSlot.legs,
-    rarity: Rarity.common,
-    dyeable: true,
-    material: EquipmentMaterial.plate,
-  ),
-  EquipmentItem(
-    id: 'black_breeches',
-    slot: EquipmentSlot.legs,
-    rarity: Rarity.common,
-    dyeable: true,
-    world: World.sea,
-    material: EquipmentMaterial.cloth,
-  ),
-  EquipmentItem(
-    id: 'chain_chausses',
-    slot: EquipmentSlot.legs,
-    rarity: Rarity.rare,
-    dyeable: true,
-    material: EquipmentMaterial.mail,
-  ),
-  EquipmentItem(
-    id: 'ranger_trousers',
-    slot: EquipmentSlot.legs,
-    rarity: Rarity.common,
-    dyeable: true,
-    material: EquipmentMaterial.leather,
-  ),
-  EquipmentItem(
-    id: 'royal_breeches',
-    slot: EquipmentSlot.legs,
-    rarity: Rarity.rare,
-    dyeable: true,
-    material: EquipmentMaterial.cloth,
-  ),
-  EquipmentItem(
-    id: 'steel_sabatons',
-    slot: EquipmentSlot.feet,
-    rarity: Rarity.rare,
-    dyeable: true,
-    material: EquipmentMaterial.plate,
-  ),
-  EquipmentItem(
-    id: 'fur_boots',
-    slot: EquipmentSlot.feet,
-    rarity: Rarity.common,
-    dyeable: true,
-    world: World.north,
-    material: EquipmentMaterial.leather,
-  ),
-  EquipmentItem(
-    id: 'elven_boots',
-    slot: EquipmentSlot.feet,
-    rarity: Rarity.common,
-    dyeable: true,
-    material: EquipmentMaterial.leather,
-  ),
-  EquipmentItem(
-    id: 'riding_boots',
-    slot: EquipmentSlot.feet,
-    rarity: Rarity.common,
-    dyeable: true,
-    material: EquipmentMaterial.leather,
-  ),
-  EquipmentItem(
-    id: 'golden_boots',
-    slot: EquipmentSlot.feet,
-    rarity: Rarity.rare,
-    dyeable: true,
-    material: EquipmentMaterial.plate,
-  ),
-  EquipmentItem(
-    id: 'steel_gauntlets',
-    slot: EquipmentSlot.hands,
-    rarity: Rarity.rare,
-    dyeable: true,
-    material: EquipmentMaterial.plate,
-  ),
-  EquipmentItem(
-    id: 'leather_gloves',
-    slot: EquipmentSlot.hands,
-    rarity: Rarity.common,
-    dyeable: true,
-    material: EquipmentMaterial.leather,
-  ),
-  EquipmentItem(
-    id: 'fingerless_gloves',
-    slot: EquipmentSlot.hands,
-    rarity: Rarity.common,
-    dyeable: true,
-    world: World.sea,
-    material: EquipmentMaterial.leather,
-  ),
-  EquipmentItem(
-    id: 'silk_gloves',
-    slot: EquipmentSlot.hands,
-    rarity: Rarity.rare,
-    dyeable: true,
-    world: World.arcane,
-    material: EquipmentMaterial.cloth,
-  ),
-  EquipmentItem(
-    id: 'fur_bracers',
-    slot: EquipmentSlot.hands,
-    rarity: Rarity.common,
-    dyeable: true,
-    world: World.north,
-    material: EquipmentMaterial.leather,
-  ),
-];
-
 /// Armes vendues en boutique.
 const List<EquipmentItem> weaponCatalog = [
   EquipmentItem(
@@ -694,7 +539,6 @@ const List<EquipmentItem> weaponCatalog = [
 /// Tout ce que vend la boutique, dans l'ordre d'affichage.
 const List<EquipmentItem> equipmentCatalog = [
   ...outfitCatalog,
-  ...pieceCatalog,
   ...weaponCatalog,
 ];
 

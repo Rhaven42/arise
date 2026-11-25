@@ -153,7 +153,9 @@
 - [x] Écran « Univers » (choix, verrou, avancement)
 - [x] Tenues, pièces et armes rangées par univers et matière ; filtres de la boutique et du sac
 - [x] Vignettes des tenues et pièces tirées des images générées ; barbes recalées sur le visage
+- [x] Pièces séparées retirées : seules restent les tenues complètes et les armes
 - [ ] Nouvelles tenues par univers et matière (crédits SpriteCook à recharger)
+- [ ] Retirer `ARISE_UNLOCK_WORLDS` de l'APK de la CI une fois les univers vérifiés
 - [x] Musiques Pirate (ouverture, Système, boutique)
 - [ ] Musiques Viking manquantes (ouverture, boutique, level up) et jingle Pirate
 

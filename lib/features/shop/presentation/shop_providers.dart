@@ -5,6 +5,7 @@ import 'package:arise/features/progression/presentation/progression_providers.da
 import 'package:arise/features/shop/data/drift_shop_repository.dart';
 import 'package:arise/features/shop/domain/shop_repository.dart';
 import 'package:arise/features/shop/domain/shop_rules.dart';
+import 'package:arise/features/worlds/domain/world.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'shop_providers.g.dart';
@@ -26,7 +27,12 @@ class ShopController extends _$ShopController {
     final achievements = await ref.read(achievementsStateProvider.future);
     final issue = await ref
         .read(shopRepositoryProvider)
-        .buy(article, achievements: achievements.unlocked.keys.toSet());
+        .buy(
+          article,
+          achievements: withWorldTestUnlocks(
+            achievements.unlocked.keys.toSet(),
+          ),
+        );
     if (issue == null) ref.invalidate(progressionControllerProvider);
     return issue;
   }

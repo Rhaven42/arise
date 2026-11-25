@@ -62,7 +62,9 @@ jobs:
         # Numéro de build croissant : Android accepte la mise à jour.
         # Version optimisée (release, signée avec la même clé que le debug),
         # arm64 seulement (téléphones actuels) : l'APK reste sous 400 Mo.
-        run: flutter build apk --release --target-platform android-arm64 --build-number=${{ github.run_number }}
+        # Version de test : tous les univers ouverts sans leurs hauts faits
+        # (ARISE_UNLOCK_WORLDS), pour les vérifier.
+        run: flutter build apk --release --target-platform android-arm64 --build-number=${{ github.run_number }} --dart-define=ARISE_UNLOCK_WORLDS=true
       - uses: actions/upload-artifact@v4
         with:
           name: arise-debug-apk

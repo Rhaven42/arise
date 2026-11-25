@@ -20,7 +20,7 @@ from PIL import Image
 
 sys.path.insert(0, os.path.dirname(__file__))
 from layers import (CANVAS_H, CANVAS_W, SKIN_ALPHA, best_skin,  # noqa: E402
-                    fill_crown, key_layer, load, race_beard_layer, neck_row, outfit_layer, piece_layer, recolor, save)
+                    fill_crown, key_layer, load, race_beard_layer, neck_row, outfit_layer, recolor, save)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(HERE, "raw")
@@ -51,8 +51,7 @@ RACE_BEARDS = ["dwarf", "gnome", "goblin", "minotaur", "orc"]
 # souvent la tête), sauf pour le gnome : son grand visage de dessin animé
 # trompe le recalage, le recalage sur le corps y est plus juste.
 BODY_ALIGNED_BEARDS = {"gnome"}
-# Vignettes : hauteur maximale de l'image générée, et zone (fraction de la
-# hauteur du personnage) montrée pour chaque emplacement de pièce.
+# Vignettes : hauteur maximale de l'image générée.
 ICON_MAX_H = 224
 # Repères des pieds et des mains (fractions de la hauteur du corps) : bande
 # des pieds, bande des mains au-dessus / au-dessous de la paume, et écart
@@ -60,70 +59,7 @@ ICON_MAX_H = 224
 FOOT_BAND = 0.075
 HAND_BAND = (0.05, 0.06)
 HAND_REACH = 0.07
-# Gants peints sur la main du personnage : manchette au-dessus de la boîte de
-# la main (fraction de la hauteur du cou aux pieds), doigts couverts ou non.
-GLOVES = {
-    "leather_gloves": {"cuff": 0.03, "fingers": True},
-    "silk_gloves": {"cuff": 0.13, "fingers": True},
-    "steel_gauntlets": {"cuff": 0.06, "fingers": True},
-    "fingerless_gloves": {"cuff": 0.025, "fingers": False},
-    "fur_bracers": {"cuff": 0.07, "fingers": True},
-}
-RAMP_STEPS = 12
 
-
-def glove_ramps(lay: np.ndarray) -> tuple[list, list]:
-    """Rampes de couleurs d'un gant (du plus sombre au plus clair), prises
-    sur son calque : la main (bas) et la manchette (haut)."""
-    a = lay[..., 3] == 255
-    lum_ = (0.299 * lay[..., 0] + 0.587 * lay[..., 1] + 0.114 * lay[..., 2]) / 255
-    a &= lum_ > 0.1  # sans le contour noir
-    ys = np.nonzero(a.any(axis=1))[0]
-    if len(ys) == 0:
-        return [], []
-    split = int(ys[0] + 0.35 * (ys[-1] - ys[0]))
-
-    def ramp(mask):
-        px = lay[mask][:, :3].astype(float)
-        if len(px) == 0:
-            return []
-        # Couleur dominante seulement (teinte et saturation les plus
-        # fréquentes) : sans les miettes de chemise ou de peau.
-        mx, mn = px.max(1), px.min(1)
-        sat = np.where(mx > 0, (mx - mn) / np.maximum(mx, 1), 0)
-        hue = np.zeros(len(px))
-        d = np.maximum(mx - mn, 1e-6)
-        r, g, b = px[:, 0], px[:, 1], px[:, 2]
-        hue = np.where(mx == r, ((g - b) / d) % 6, np.where(mx == g, (b - r) / d + 2, (r - g) / d + 4)) / 6
-        key = np.where(sat < 0.18, 12, (hue * 12).astype(int) % 12)
-        counts = np.bincount(key, minlength=13)
-        main = key == int(np.argmax(counts))
-        if sat[main].mean() >= 0.18:
-            # Teintes voisines du pic comprises.
-            peak = int(np.argmax(counts))
-            main = (key == peak) | (key == (peak + 1) % 12) | (key == (peak - 1) % 12)
-        px = px[main]
-        order = np.argsort(0.299 * px[:, 0] + 0.587 * px[:, 1] + 0.114 * px[:, 2])
-        px = px[order]
-        out = []
-        n = len(px)
-        for i in range(RAMP_STEPS):
-            lo = int(i * n / RAMP_STEPS)
-            chunk = px[lo: max(int((i + 1) * n / RAMP_STEPS), lo + 1)]
-            out.append([int(c) for c in np.median(chunk, axis=0)])
-        return out
-
-    hand_ = a.copy()
-    hand_[:split] = False
-    cuff_ = a.copy()
-    cuff_[split:] = False
-    return ramp(hand_), ramp(cuff_)
-ICON_SLOT_ROWS = {"top": (0.12, 0.58), "legs": (0.44, 1.0), "feet": (0.76, 1.0),
-                  "hands": (0.36, 0.64)}
-# Races à cornes : les cornes passent devant la coiffure.
-HORNED = {"demon", "minotaur"}
-# Alpha des pixels d'un corps dessinés devant la coiffure (cornes).
-FRONT_ALPHA = 253
 
 
 def horns(a: np.ndarray, skin: np.ndarray, skull: tuple, neck: int) -> np.ndarray:
@@ -347,28 +283,9 @@ def main() -> None:
                                heads["arms"].get(tpl["base"]))
             save(lay, os.path.join(OUT, "outfits", f"{oid}_{g}.png"))
 
-    # Pièces séparées (haut, bas, chaussures, gants) par gabarit.
-    pieces = json.load(open(os.path.join(HERE, "pieces.json")))
-    os.makedirs(os.path.join(OUT, "pieces"), exist_ok=True)
-    meta["pieces"] = {}
-    glove_size: dict = {}
-    for g, tpl in outfits["templates"].items():
-        b = load(raw(tpl["base"]))
-        x0, t, x1 = heads[tpl["base"]]
-        neck = neck_of(heads, tpl["base"], b)
-        feet = int(np.where((b[..., 3] > 0).any(axis=1))[0][-1])
-        sample = (int((x0 + x1) / 2), int(t + 0.62 * (x1 - x0)))
-        for pid, (slot, _) in pieces["pieces"].items():
-            lay = piece_layer(b, load(raw(f"piece_{pid}_{g}")), slot, neck, feet, sample, t,
-                              heads["arms"].get(tpl["base"]))
-            save(lay, os.path.join(OUT, "pieces", f"{pid}_{g}.png"))
-            meta["pieces"][pid] = slot
-            # Rampes du gant : celles du gabarit où il est le plus grand.
-            if pid in GLOVES and int((lay[..., 3] == 255).sum()) > glove_size.get(pid, 0):
-                glove_size[pid] = int((lay[..., 3] == 255).sum())
-                hand_ramp, cuff_ramp = glove_ramps(lay)
-                meta.setdefault("gloves", {})[pid] = {
-                    **GLOVES[pid], "ramp": hand_ramp, "cuffRamp": cuff_ramp or hand_ramp}
+    # Pièces séparées (haut, bas, chaussures, gants) : retirées de l'appli le
+    # 25/11/2026 (seules restent les tenues complètes) ; leurs images
+    # générées restent dans raw/piece_*.
 
     # Armes recadrées, prise de la main.
     for f in sorted(os.listdir(RAW)):
@@ -406,10 +323,7 @@ def main() -> None:
 
     for oid in outfits["outfits"]:
         crop_save(generated(f"armor_{oid}_mm"), oid)
-    for pid, slot in meta["pieces"].items():
-        im = generated(f"piece_{pid}_mm")
-        top, bottom = ICON_SLOT_ROWS[slot]
-        crop_save(im.crop((0, round(top * im.height), im.width, round(bottom * im.height))), pid)
+
     for wid in meta["weapons"]:
         crop_save(Image.open(os.path.join(OUT, "weapons", f"{wid}.png")).convert("RGBA"), wid)
     for i in range(1, HAIR_COUNT + 1):

@@ -34,20 +34,6 @@ void main() {
         isTrue,
       );
     }
-    expect(pieceCatalog, hasLength(20));
-    final pieces = meta['pieces'] as Map<String, dynamic>;
-    for (final item in pieceCatalog) {
-      expect(pieceSlots, contains(item.slot));
-      expect(pieces[item.id], item.slot.name, reason: item.id);
-      for (final g in gabarits) {
-        expect(
-          File('assets/sprites/pieces/${item.id}_$g.png').existsSync(),
-          isTrue,
-          reason: '${item.id} $g',
-        );
-      }
-      expect(File('assets/sprites/icons/${item.id}.png').existsSync(), isTrue);
-    }
     for (final item in weaponCatalog) {
       expect(item.slot, EquipmentSlot.weapon);
       expect(
@@ -77,56 +63,21 @@ void main() {
     expect(unequip(second, EquipmentSlot.chest).equipped, isEmpty);
   });
 
-  test('tenue complète ou haut et bas, chaussures et gants avec tout', () {
+  test('les anciennes pièces séparées ne se portent plus', () {
+    // Retirées le 25/11/2026 : seules restent les tenues complètes.
     const bag = Inventory(
-      owned: [
-        'awakened_leather',
-        'forest_jerkin',
-        'iron_greaves',
-        'riding_boots',
-        'silk_gloves',
-      ],
-    );
-    var inv = equip(bag, 'forest_jerkin').inventory;
-    inv = equip(inv, 'iron_greaves').inventory;
-    inv = equip(inv, 'riding_boots').inventory;
-    inv = equip(inv, 'silk_gloves').inventory;
-    expect(inv.equipped, hasLength(4));
-    // La tenue complète retire le haut et le bas, pas les chaussures ni les
-    // gants.
-    inv = equip(inv, 'awakened_leather').inventory;
-    expect(inv.equipped, {
-      EquipmentSlot.chest: 'awakened_leather',
-      EquipmentSlot.feet: 'riding_boots',
-      EquipmentSlot.hands: 'silk_gloves',
-    });
-    // Un bas retire la tenue.
-    inv = equip(inv, 'iron_greaves').inventory;
-    expect(inv.equipped.containsKey(EquipmentSlot.chest), isFalse);
-    expect(inv.equipped[EquipmentSlot.legs], 'iron_greaves');
-  });
-
-  test('pièces portées : ordre de dessin, teinture, essayage', () {
-    const bag = Inventory(
-      owned: ['forest_jerkin', 'iron_greaves', 'silk_gloves', 'dawn_plate'],
+      owned: ['forest_jerkin', 'silk_gloves', 'dawn_plate'],
       equipped: {
         EquipmentSlot.hands: 'silk_gloves',
         EquipmentSlot.top: 'forest_jerkin',
-        EquipmentSlot.legs: 'iron_greaves',
+        EquipmentSlot.chest: 'dawn_plate',
       },
-      dyes: {'forest_jerkin': 0xFF7A1E1E},
     );
     final loadout = loadoutOf(bag);
-    expect(loadout.outfitId, isNull);
-    expect(loadout.pieces, const [
-      WornPiece('iron_greaves'),
-      WornPiece('forest_jerkin', 0xFF7A1E1E),
-      WornPiece('silk_gloves'),
-    ]);
-    // Essayer une tenue complète masque le haut et le bas, garde les gants.
-    final trying = loadoutOf(bag, tryOn: itemById('dawn_plate'));
-    expect(trying.outfitId, 'dawn_plate');
-    expect(trying.pieces, const [WornPiece('silk_gloves')]);
+    expect(loadout.outfitId, 'dawn_plate');
+    expect(loadout.pieces, isEmpty);
+    expect(itemById('silk_gloves'), isNull);
+    expect(usedSlots, [EquipmentSlot.chest, EquipmentSlot.weapon]);
   });
 
   test('tenue affichée : sprite, teinture, arme, essayage', () {
