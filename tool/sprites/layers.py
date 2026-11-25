@@ -354,6 +354,9 @@ def fit_to_head(layer: np.ndarray, src: str, dst: str) -> np.ndarray:
 # Alpha réservé aux pixels de peau d'un calque (recolorés à la teinte du
 # personnage dans l'appli) ; les autres pixels opaques ont l'alpha 255.
 SKIN_ALPHA = 254
+# Hauteur maximale d'un gant au-dessus du bout des doigts (fraction de la
+# hauteur du cou aux pieds) : poing et poignet, jamais jusqu'au coude.
+GLOVE_REACH = 0.17
 
 
 def face_palette(base: np.ndarray, sample: tuple[int, int], radius: int = 6) -> np.ndarray:
@@ -756,6 +759,22 @@ def piece_layer(base: np.ndarray, edit: np.ndarray, slot: str, neck: int, feet: 
             sizes = ndimage.sum(bare, parts, range(1, n + 1))
             bare = np.isin(parts, [i + 1 for i, s_ in enumerate(sizes) if s_ >= 8])
         out[bare, 3] = SKIN_ALPHA
+        # Peau du gabarit au-dessus du gant (avant-bras redessiné) : retirée,
+        # celle du personnage apparaît (pas de peau verte d'orc sur un
+        # minotaure).
+        skin_like = skin_mask(edit, face_palette(base, skin_sample), 28) & whole
+        core = whole & ~skin_like
+        cxi = int(np.mean(np.nonzero(base[..., 3] > 0)[1]))
+        for cols in (slice(0, cxi), slice(cxi, base.shape[1])):
+            ys_ = np.nonzero(core[:, cols].any(axis=1))[0]
+            if len(ys_):
+                above = np.zeros_like(whole)
+                above[: ys_[0], cols] = True
+                out[skin_like & above] = 0
+        # Peau du corps de base restée telle quelle (avant-bras au-dessus du
+        # gant) : transparente, la peau du personnage apparaît dessous.
+        out[skin_mask(edit, face_palette(base, skin_sample), 30) & whole
+            & (color_dist(edit, base) < 40)] = 0
         # Manches de la chemise de base (beige clair) écartées.
         span = feet - neck
         cx = int(np.mean(np.nonzero(base[..., 3] > 0)[1]))
@@ -773,6 +792,26 @@ def piece_layer(base: np.ndarray, edit: np.ndarray, slot: str, neck: int, feet: 
             out[ey[drop], ex[drop]] = 0
         keep = ndimage.binary_opening(out[..., 3] > 0, np.ones((2, 2)))
         out[~keep] = 0
+        # De chaque côté, seulement le gant (le plus grand morceau) : les
+        # miettes près du coude ou de la manche sont écartées, et rien
+        # au-dessus du haut de l'avant-bras (GLOVE_REACH de la longueur du
+        # corps sous le bout des doigts).
+        cxi = int(np.mean(np.nonzero(base[..., 3] > 0)[1]))
+        for cols in (slice(0, cxi), slice(cxi, base.shape[1])):
+            hy = np.nonzero(hands[:, cols].any(axis=1))[0]
+            if len(hy):
+                out[: max(0, hy[-1] - int(GLOVE_REACH * (feet - neck))), cols] = 0
+            side = np.zeros(out.shape[:2], bool)
+            side[:, cols] = True
+            core = side & (out[..., 3] == 255)
+            parts, n = ndimage.label(core, np.ones((3, 3)))
+            if n == 0:
+                continue
+            sizes = ndimage.sum(core, parts, range(1, n + 1))
+            glove = parts == int(np.argmax(sizes)) + 1
+            # Peau nue (doigts d'une mitaine) gardée seulement contre le gant.
+            near = ndimage.binary_dilation(glove, np.ones((3, 3)), iterations=2)
+            out[side & (out[..., 3] > 0) & ~glove & ~(near & (out[..., 3] == SKIN_ALPHA))] = 0
         return out
     skin = base_skin & mask & (color_dist(edit, base) < 40)
     if slot == "top":

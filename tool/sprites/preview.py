@@ -162,6 +162,22 @@ def place_warp(canvas, layer, warp, colour=None, skip=None):
 # Marge de la barbe au-delà du contour de la joue (pixels).
 JAW_MARGIN = 0.5
 
+# Échelle d'une botte ou d'un gant (bornes, comme l'appli).
+EXTREMITY_MIN, EXTREMITY_MAX = 0.8, 1.8
+
+
+def extremity_scale(src, dst, feet):
+    """Échelle d'une botte (couvre la boîte du pied : le plus grand des deux
+    rapports) ou d'un gant (longueur de la main, plus stable que sa largeur,
+    qui dépend de la pose), bornée."""
+    sw, sh = src[2] - src[0], src[3] - src[1]
+    dw, dh = dst[2] - dst[0], dst[3] - dst[1]
+    if min(sw, sh, dw, dh) <= 0:
+        return None
+    k = max(dw / sw, dh / sh) if feet else dh / sh
+    return min(EXTREMITY_MAX, max(EXTREMITY_MIN, k))
+
+
 PIECE_ORDER = ["legs", "feet", "top", "hands"]
 
 
@@ -209,16 +225,37 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         lay = img(f"pieces/{pid}_{b['gabarit']}.png")
         bare = lay[..., 3] == META["skinAlpha"]
         lay[bare, :3] = tint(lay[bare, :3], lum(np.array(t["skinRef"], float)), skin)
-        if META["pieces"][pid] != "hands":
+        slot = META["pieces"][pid]
+        cut = int(np.floor(t["cx"] + 0.5))
+        key = "feetBoxes" if slot == "feet" else "handBoxes"
+        if (slot in ("feet", "hands") and not outfit
+                and len(t.get(key, [])) == 2 and len(b.get(key, [])) == 2):
+            # Bottes et gants ajustés au pied et à la main de ce corps (sabots,
+            # grandes mains) : chaque côté mis à l'échelle de sa boîte, posé
+            # au sol (pieds) ou au centre de la main (comme l'appli).
+            for side in (0, 1):
+                half = lay.copy()
+                if side == 0:
+                    half[:, cut:] = 0
+                else:
+                    half[:, :cut] = 0
+                src, dst = t[key][side], b[key][side]
+                k = extremity_scale(src, dst, slot == "feet")
+                if k is None:
+                    continue
+                sx_, dx_ = (src[0] + src[2]) / 2, (dst[0] + dst[2]) / 2
+                if slot == "feet":
+                    sy_, dy_ = src[3], dst[3]
+                else:
+                    sy_, dy_ = (src[1] + src[3]) / 2, (dst[1] + dst[3]) / 2
+                place(canvas, half, k, dx_ - sx_ * k, dy_ - sy_ * k, k)
+            continue
+        if slot != "hands":
             place(canvas, lay, s_y, b["cx"] - t["cx"] * s_x, b["feet"] - t["feet"] * s_y, s_x)
             continue
-        # Gants : chaque gant calé sur la main du personnage (ou de sa tenue),
-        # pas sur celle du gabarit (comme l'appli).
-        body_hx = b["hand"][0] if not outfit else hx
-        body_hy = b["hand"][1] if not outfit else hy
-        cut = int(np.floor(t["cx"] + 0.5))
+        # Gants sur une tenue : chaque gant calé sur la main de la tenue.
         t_hands = sorted([t["hand"][0], 2 * t["cx"] - t["hand"][0]])
-        b_hands = sorted([body_hx, 2 * b["cx"] - body_hx])
+        b_hands = sorted([hx, 2 * b["cx"] - hx])
         for side in (0, 1):
             half = lay.copy()
             if side == 0:
@@ -226,7 +263,7 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
             else:
                 half[:, :cut] = 0
             tx, bx = t_hands[side], b_hands[side]
-            place(canvas, half, s_y, bx - tx * s_x, body_hy - t["hand"][1] * s_y, s_x)
+            place(canvas, half, s_y, bx - tx * s_x, hy - t["hand"][1] * s_y, s_x)
     if outfit or pieces:
         # Visage intact : le col d'une tenue ou d'un haut ne recouvre jamais
         # la peau du visage au-dessus du menton.

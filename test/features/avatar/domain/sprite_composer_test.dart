@@ -326,6 +326,46 @@ void main() {
     expect(_px(out, 3, 14), isNot([40, 30, 20, 255]));
   });
 
+  test('une botte couvre le pied du corps, sabots compris', () {
+    // Pied gauche du gabarit : 4 × 4 pixels ; celui du corps : 6 × 6.
+    final json = _metaJson()..['pieces'] = {'iron_greaves': 'feet'};
+    ((json['templates']! as Map)['mm'] as Map)['feetBoxes'] = [
+      [2, 16, 6, 20],
+      [6, 16, 8, 20],
+    ];
+    ((json['bodies']! as Map)['human_male'] as Map)['feetBoxes'] = [
+      [1, 14, 7, 20],
+      [7, 14, 10, 20],
+    ];
+    final boots = SpriteComposer(SpriteMeta.fromJson(json));
+    final boot = _fill(10, 20, (x, y) => x >= 2 && x < 6 && y >= 16, [
+      200,
+      200,
+      210,
+      255,
+    ]);
+    final out = boots.compose(
+      const CharacterAppearance(
+        bodyId: 'human_male',
+        skinColor: 0xFF00FF00,
+        hairColor: 0,
+        pieces: [WornPiece('iron_greaves')],
+      ),
+      SpriteLayers(body: body, pieces: [boot]),
+    );
+    expect(
+      extremityScale(
+        const Box(2, 16, 6, 20),
+        const Box(1, 14, 7, 20),
+        feet: true,
+      ),
+      1.5,
+    );
+    for (final (x, y) in [(1, 14), (6, 14), (1, 19), (6, 19)]) {
+      expect(_px(out, x, y), [200, 200, 210, 255], reason: '($x, $y)');
+    }
+  });
+
   test('les repères réels couvrent chaque race, tenue et arme', () {
     final meta = SpriteMeta.fromJson(
       jsonDecode(File('assets/sprites/sprites.json').readAsStringSync())
