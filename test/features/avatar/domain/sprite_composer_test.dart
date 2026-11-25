@@ -228,6 +228,25 @@ void main() {
     expect(_px(out, 2, 1), [30, 20, 10, 255]);
   });
 
+  test('au-dessus du menton, la barbe ne dépasse pas la joue', () {
+    final beard = _fill(10, 20, (x, y) => y >= 3 && y <= 8, [40, 30, 20, 255]);
+    final out = composer.compose(
+      const CharacterAppearance(
+        bodyId: 'human_male',
+        skinColor: 0xFFC8963C,
+        hairColor: 0xFF000000,
+        beardId: 'b01',
+      ),
+      SpriteLayers(body: body, beard: beard),
+    );
+    // Ligne 4 (au-dessus du menton) : joue large de 2 pixels autour du
+    // centre 5, plus la marge.
+    expect(_px(out, 1, 4)[3], 0);
+    expect(_px(out, 3, 4), isNot([200, 150, 100, 255]));
+    // Ligne 7 (sous le menton) : la barbe tombe librement.
+    expect(_px(out, 1, 7)[3], 255);
+  });
+
   test('la tête cible épouse sa forme : échelle par ligne', () {
     const source = HeadFrame(
       skull: Skull(0, 0, 10),

@@ -349,6 +349,10 @@ const double pommelAbove = 0.035;
 /// dessinée.
 const double faceInner = 0.6;
 
+/// Marge (pixels) de la barbe au-delà du contour de la joue, au-dessus du
+/// menton.
+const double jawMargin = 0.5;
+
 /// Part de la teinture dans la couleur d'une tenue teinte.
 const double dyeStrength = 0.6;
 
@@ -570,6 +574,14 @@ class SpriteComposer {
         beard,
         headWarp(beardSource, body.head, meta.height, hugJaw: true),
         (r, g, b) => tintHairPixel(r, g, b, ref, color),
+        // Au-dessus du menton, la barbe suit le contour du visage : rien
+        // au-delà de la joue.
+        skip: (x, y) {
+          if (y > body.head.neck) return false;
+          final half = body.head.halfWidthAt(y.toDouble());
+          return half != null &&
+              (x + 0.5 - body.head.skull.centre).abs() > half + jawMargin;
+        },
       );
     }
     final hair = layers.hair;

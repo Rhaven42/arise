@@ -19,7 +19,7 @@ from PIL import Image
 
 sys.path.insert(0, os.path.dirname(__file__))
 from layers import (CANVAS_H, CANVAS_W, SKIN_ALPHA, best_skin,  # noqa: E402
-                    key_layer, load, race_beard_layer, neck_row, outfit_layer, piece_layer, recolor, save)
+                    fill_crown, key_layer, load, race_beard_layer, neck_row, outfit_layer, piece_layer, recolor, save)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(HERE, "raw")
@@ -46,6 +46,10 @@ HAIR_COUNT = 14
 BEARD_COUNT = 10
 # Races dont chaque barbe est générée sur leur propre visage (homme).
 RACE_BEARDS = ["dwarf", "gnome", "goblin", "minotaur", "orc"]
+# Barbes recalées sur le visage redessiné (le modèle grossit ou décale
+# souvent la tête), sauf pour le gnome : son grand visage de dessin animé
+# trompe le recalage, le recalage sur le corps y est plus juste.
+BODY_ALIGNED_BEARDS = {"gnome"}
 # Races à cornes : les cornes passent devant la coiffure.
 HORNED = {"demon", "minotaur"}
 # Alpha des pixels d'un corps dessinés devant la coiffure (cornes).
@@ -186,11 +190,12 @@ def main() -> None:
     meta["hairSources"] = {"male": source("human_male"), "female": source("human_female"),
                            "beard": source("human_male")}
     for i in range(1, HAIR_COUNT + 1):
-        save(key_layer(hm, load(raw(f"hair_m{i:02d}")), tol=0.09, min_sat=0.25), os.path.join(OUT, "hair", f"m{i:02d}.png"))
-        save(key_layer(hf, load(raw(f"hair_f{i:02d}")), tol=0.09, min_sat=0.25), os.path.join(OUT, "hair", f"f{i:02d}.png"))
+        save(fill_crown(key_layer(hm, load(raw(f"hair_m{i:02d}")), tol=0.09, min_sat=0.25), hm),
+             os.path.join(OUT, "hair", f"m{i:02d}.png"))
+        save(fill_crown(key_layer(hf, load(raw(f"hair_f{i:02d}")), tol=0.09, min_sat=0.25), hf),
+             os.path.join(OUT, "hair", f"f{i:02d}.png"))
     for i in range(1, BEARD_COUNT + 1):
-        lay = key_layer(hm, load(raw(f"beard_{i:02d}")), hue=0.952, tol=0.065, min_sat=0.15,
-                        open_mouth=True)
+        lay = race_beard_layer(hm, load(raw(f"beard_{i:02d}")))
         save(lay, os.path.join(OUT, "beards", f"b{i:02d}.png"))
     # Barbes dessinées sur le visage de chaque race trop éloignée de l'humain
     # (raw/beard_<race>_NN.png) : posées telles quelles dans l'appli.
@@ -198,7 +203,8 @@ def main() -> None:
         base = load(raw(body_name(race, "male")))
         os.makedirs(os.path.join(OUT, "beards", race), exist_ok=True)
         for i in range(1, BEARD_COUNT + 1):
-            lay = race_beard_layer(base, load(raw(f"beard_{race}_{i:02d}")))
+            lay = race_beard_layer(base, load(raw(f"beard_{race}_{i:02d}")),
+                                   face=race not in BODY_ALIGNED_BEARDS)
             save(lay, os.path.join(OUT, "beards", race, f"b{i:02d}.png"))
     meta["raceBeards"] = list(RACE_BEARDS)
 

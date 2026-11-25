@@ -110,6 +110,54 @@ def prealign(edit: np.ndarray, base: np.ndarray) -> np.ndarray:
     return np.asarray(out).astype(np.int16).copy()
 
 
+def _scaled_at(a: np.ndarray, scale: float, cx: float, cy: float) -> np.ndarray:
+    """Mise à l'échelle autour du point ([cx], [cy])."""
+    if abs(scale - 1) < 1e-6:
+        return a
+    h, w = a.shape[:2]
+    im = Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA")
+    nw, nh = max(1, round(w * scale)), max(1, round(h * scale))
+    im = im.resize((nw, nh), Image.NEAREST)
+    out = Image.new("RGBA", (w, h))
+    out.paste(im, (round(cx - cx * scale), round(cy - cy * scale)))
+    return np.asarray(out).astype(np.int16).copy()
+
+
+def face_align(edit: np.ndarray, base: np.ndarray, hue: float, radius: int = 8) -> np.ndarray:
+    """Recalage sur le visage : le modèle redessine parfois la tête plus
+    grande ou décalée ; la barbe suit le visage redessiné, on cale donc ce
+    visage (yeux, nez, bouche, hors teinte clé) sur celui du corps."""
+    x0, top, x1, neck = head_box(base)
+    cx, cy = (x0 + x1) / 2, (top + neck) / 2
+    rows = slice(top, neck + 1)
+    cols = slice(x0, x1)
+    lb = luminance(base[rows, cols].astype(float))
+    gb = np.abs(np.diff(lb, axis=0))[:, :-1] + np.abs(np.diff(lb, axis=1))[:-1]
+    base_in = base[rows, cols, 3] > 0
+    best, best_score = edit, None
+    for sc in np.round(np.arange(0.84, 1.201, 0.02), 2):
+        es = _scaled_at(edit, float(sc), cx, cy)
+        for dy in range(-radius, radius + 1):
+            for dx in range(-radius, radius + 1):
+                e = shift(es, dx, dy)[rows, cols]
+                h, s, _ = _hue_sat_val(e)
+                dh = np.abs(((h - hue + 0.5) % 1) - 0.5)
+                ok = base_in & (e[..., 3] > 0) & ~((dh < 0.08) & (s > 0.15))
+                okg = ok[:-1, :-1] & ok[1:, :-1] & ok[:-1, 1:]
+                if okg.sum() < 0.3 * base_in.sum():
+                    continue
+                le = luminance(e.astype(float))
+                ge = np.abs(np.diff(le, axis=0))[:, :-1] + np.abs(np.diff(le, axis=1))[:-1]
+                # Traits du visage : écart des contrastes locaux, plus la
+                # couleur.
+                score = -(np.abs(ge - gb)[okg].mean() * 4
+                          + color_dist(e, base[rows, cols])[ok].mean() / 255)
+                if best_score is None or score > best_score:
+                    best_score = score
+                    best = shift(es, dx, dy)
+    return best
+
+
 def head_box(base: np.ndarray) -> tuple[int, int, int, int]:
     """Boîte de la tête : du sommet jusqu'au cou (ligne la plus étroite)."""
     alpha = base[..., 3] > 0
@@ -159,11 +207,13 @@ KEY_HUE = 0.87
 def key_layer(base: np.ndarray, edit: np.ndarray, hue: float | None = None,
               tol: float = 0.05, min_sat: float = 0.35,
               seed_rows: tuple[float, float] | None = (0.0, 0.3),
-              open_mouth: bool = False) -> np.ndarray:
+              open_mouth: bool = False, face: bool = False) -> np.ndarray:
     """Calque des pixels de la teinte clé (coiffure, barbe), avec leur
     contour sombre. Les couleurs sont ensuite recolorées dans l'appli."""
     x0, top, x1, neck = head_box(base)
     edit = align(edit, base, slice(neck + 20, CANVAS_H))
+    if face and hue is not None:
+        edit = face_align(edit, base, hue)
     h, s, v = _hue_sat_val(edit)
     opaque = edit[..., 3] > 0
     if hue is None:
@@ -211,12 +261,12 @@ def key_layer(base: np.ndarray, edit: np.ndarray, hue: float | None = None,
     return out
 
 
-def race_beard_layer(base: np.ndarray, edit: np.ndarray) -> np.ndarray:
+def race_beard_layer(base: np.ndarray, edit: np.ndarray, face: bool = True) -> np.ndarray:
     """Barbe dessinée sur le corps d'une race : recalage grossier puis fin,
     tout le magenta (sans graine au-dessus du cou), bouche transparente ; les
     miettes détachées de la barbe (perles, reflets isolés) sont écartées."""
     lay = key_layer(base, prealign(edit, base), hue=0.952, tol=0.065, min_sat=0.15,
-                    seed_rows=None, open_mouth=True)
+                    seed_rows=None, open_mouth=True, face=face)
     m = lay[..., 3] > 0
     parts, n = ndimage.label(m, np.ones((3, 3)))
     if n > 1:
@@ -224,8 +274,32 @@ def race_beard_layer(base: np.ndarray, edit: np.ndarray) -> np.ndarray:
         main = parts == int(np.argmax(sizes)) + 1
         near = ndimage.binary_dilation(main, np.ones((3, 3)), iterations=3)
         keep = set(np.unique(parts[near])) - {0}
+        # Morceaux symétriques (favoris des deux côtés) : gardés aussi.
+        keep |= {i + 1 for i, sz in enumerate(sizes) if sz >= 0.3 * sizes.max()}
         lay[~np.isin(parts, list(keep))] = 0
     return lay
+
+
+def fill_crown(layer: np.ndarray, base: np.ndarray, max_gap: int = 6) -> np.ndarray:
+    """Coiffure : comble la bande de crâne nu entre le sommet de la tête et
+    le début des cheveux (quelques lignes), colonne par colonne ; le contour
+    sombre remonte au sommet. Les côtés rasés (sans cheveux) ne bougent pas."""
+    out = layer.copy()
+    x0, top, x1, neck = head_box(base)
+    head = base[..., 3] > 0
+    hair = layer[..., 3] > 0
+    for x in range(x0, x1):
+        hs = np.where(hair[top:neck, x])[0]
+        ts = np.where(head[top:neck, x])[0]
+        if not len(hs) or not len(ts):
+            continue
+        hy, ty = top + hs[0], top + ts[0]
+        if not 0 < hy - ty <= max_gap:
+            continue
+        fill = layer[min(hy + 2, neck), x] if hair[min(hy + 2, neck), x] else layer[hy, x]
+        out[ty + 1:hy + 1, x] = fill
+        out[ty, x] = layer[hy, x]
+    return out
 
 
 def luminance(a: np.ndarray) -> np.ndarray:
