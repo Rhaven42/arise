@@ -53,6 +53,12 @@ BODY_ALIGNED_BEARDS = {"gnome"}
 # Vignettes : hauteur maximale de l'image générée, et zone (fraction de la
 # hauteur du personnage) montrée pour chaque emplacement de pièce.
 ICON_MAX_H = 224
+# Repères des pieds et des mains (fractions de la hauteur du corps) : bande
+# des pieds, bande des mains au-dessus / au-dessous de la paume, et écart
+# horizontal maximal à la main.
+FOOT_BAND = 0.075
+HAND_BAND = (0.05, 0.06)
+HAND_REACH = 0.07
 ICON_SLOT_ROWS = {"top": (0.12, 0.58), "legs": (0.44, 1.0), "feet": (0.76, 1.0),
                   "hands": (0.36, 0.64)}
 # Races à cornes : les cornes passent devant la coiffure.
@@ -152,6 +158,36 @@ def hand(a: np.ndarray, skin: np.ndarray, sp: dict) -> list[float]:
     return [round(float(xs[palm].mean()), 1), round(float(ys[palm].mean()), 1)]
 
 
+def extremity_boxes(a: np.ndarray, skin: np.ndarray, sp: dict, hand_pt: list[float]) -> dict:
+    """Boîtes des pieds (bande du bas, tout ce qui est opaque : sabots
+    compris) et des mains (peau autour de la main et de son symétrique),
+    côté gauche puis droit de l'image : bottes et gants s'y ajustent."""
+    h = sp["feet"] - sp["top"]
+    cx = sp["cx"]
+    opaque = a[..., 3] > 0
+
+    def box(mask: np.ndarray) -> list[int]:
+        ys, xs = np.nonzero(mask)
+        if len(ys) == 0:
+            return [0, 0, 0, 0]
+        return [int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1]
+
+    feet = np.zeros_like(opaque)
+    feet[int(sp["feet"] - FOOT_BAND * h): sp["feet"] + 1] = True
+    hands = np.zeros_like(opaque)
+    hy = hand_pt[1]
+    hands[int(hy - HAND_BAND[0] * h): int(hy + HAND_BAND[1] * h) + 1] = True
+    cols = np.arange(a.shape[1])[None, :]
+    out = {"feetBoxes": [], "handBoxes": []}
+    for side in (0, 1):
+        half = cols < cx if side == 0 else cols >= cx
+        hx = hand_pt[0] if side == 0 else 2 * cx - hand_pt[0]
+        near = np.abs(cols - hx) <= HAND_REACH * h
+        out["feetBoxes"].append(box(opaque & feet & half))
+        out["handBoxes"].append(box(skin & hands & half & near))
+    return out
+
+
 def main() -> None:
     heads = json.load(open(os.path.join(HERE, "heads.json")))
     outfits = json.load(open(os.path.join(HERE, "outfits.json")))
@@ -182,6 +218,8 @@ def main() -> None:
                 "profile": profile(a, skull, neck, PROFILE_LIMIT.get(race, 1.0 if race in HORNED else 1.15)), **sp, "hand": hand(a, skin, sp),
                 "skinRef": [int(c) for c in np.median(a[skin][:, :3], axis=0)],
             }
+            body = meta["bodies"][f"{race}_{sex}"]
+            body.update(extremity_boxes(a, skin, sp, body["hand"]))
 
     # Coiffures et barbes : couleur clé, sur le crâne de leur corps source.
     hm, hf = load(raw("human_male")), load(raw("human_female"))
@@ -233,7 +271,8 @@ def main() -> None:
         sample = (int((x0 + x1) / 2), int(t + 0.62 * (x1 - x0)))
         tskin, _ = best_skin(b, tuple(heads[tpl["base"]]), neck, heads["arms"].get(tpl["base"]))
         sp = span(b, neck)
-        meta["templates"][g] = {"neck": neck, **sp, "hand": hand(b, tskin, sp),
+        thand = hand(b, tskin, sp)
+        meta["templates"][g] = {"neck": neck, **sp, "hand": thand, **extremity_boxes(b, tskin, sp, thand),
                                 "skinRef": [int(c) for c in np.median(b[tskin][:, :3], axis=0)]}
         for oid in outfits["outfits"]:
             lay = outfit_layer(b, load(raw(f"armor_{oid}_{g}")),

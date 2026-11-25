@@ -74,6 +74,28 @@ class HeadFrame {
   }
 }
 
+/// Boîte d'un pied ou d'une main (bords gauche, haut, droit, bas exclus).
+class Box {
+  const Box(this.left, this.top, this.right, this.bottom);
+
+  factory Box.fromJson(List<dynamic> v) => Box(
+    (v[0] as num).toDouble(),
+    (v[1] as num).toDouble(),
+    (v[2] as num).toDouble(),
+    (v[3] as num).toDouble(),
+  );
+
+  final double left;
+  final double top;
+  final double right;
+  final double bottom;
+
+  double get width => right - left;
+  double get height => bottom - top;
+  double get centreX => (left + right) / 2;
+  double get centreY => (top + bottom) / 2;
+}
+
 /// Repères d'un corps ou d'un gabarit de tenue.
 class BodyFrame {
   const BodyFrame({
@@ -83,16 +105,31 @@ class BodyFrame {
     required this.centreX,
     required this.torso,
     double? chin,
+    this.feetBoxes = const [],
+    this.handBoxes = const [],
   }) : chin = chin ?? neck;
 
-  factory BodyFrame.fromJson(Map<String, dynamic> json) => BodyFrame(
-    neck: (json['neck'] as num).toDouble(),
-    chin: (json['chin'] as num?)?.toDouble(),
-    top: (json['top'] as num).toDouble(),
-    feet: (json['feet'] as num).toDouble(),
-    centreX: (json['cx'] as num).toDouble(),
-    torso: (json['torso'] as num).toDouble(),
-  );
+  factory BodyFrame.fromJson(Map<String, dynamic> json) {
+    List<Box> boxes(String key) => [
+      for (final v in json[key] as List<dynamic>? ?? const [])
+        Box.fromJson(v as List<dynamic>),
+    ];
+    return BodyFrame(
+      neck: (json['neck'] as num).toDouble(),
+      chin: (json['chin'] as num?)?.toDouble(),
+      top: (json['top'] as num).toDouble(),
+      feet: (json['feet'] as num).toDouble(),
+      centreX: (json['cx'] as num).toDouble(),
+      torso: (json['torso'] as num).toDouble(),
+      feetBoxes: boxes('feetBoxes'),
+      handBoxes: boxes('handBoxes'),
+    );
+  }
+
+  /// Pieds (sabots compris) et mains, côté gauche puis droit de l'image :
+  /// bottes et gants s'y ajustent.
+  final List<Box> feetBoxes;
+  final List<Box> handBoxes;
 
   final double neck;
 
@@ -354,6 +391,28 @@ const double handRadiusY = 0.036;
 /// fraction de la hauteur du corps.
 const double pommelAbove = 0.035;
 
+/// Bornes de l'échelle d'une botte ou d'un gant ajusté au corps.
+const double extremityMinScale = 0.8;
+const double extremityMaxScale = 1.8;
+
+/// Échelle d'une botte (couvre la boîte du pied : le plus grand des deux
+/// rapports) ou d'un gant (longueur de la main, plus stable que sa largeur
+/// qui dépend de la pose), bornée ; `null` si une boîte est vide. Même
+/// calcul que `tool/sprites/preview.py`.
+double? extremityScale(Box from, Box to, {required bool feet}) {
+  if (math.min(
+        math.min(from.width, from.height),
+        math.min(to.width, to.height),
+      ) <=
+      0) {
+    return null;
+  }
+  final k = feet
+      ? math.max(to.width / from.width, to.height / from.height)
+      : to.height / from.height;
+  return k.clamp(extremityMinScale, extremityMaxScale);
+}
+
 /// Part centrale du visage (en demi-largeur de tête) où aucune mèche n'est
 /// dessinée.
 const double faceInner = 0.6;
@@ -543,7 +602,39 @@ class SpriteComposer {
           return (mix(r, tr), mix(g, tg), mix(b, tb));
         }
 
-        if (meta.pieceSlots[a.pieces[k].spriteId] != 'hands') {
+        final slot = meta.pieceSlots[a.pieces[k].spriteId];
+        final cut = (t.centreX + 0.5).floor();
+        // Bottes et gants sans tenue : ajustés au pied et à la main de ce
+        // corps (sabots, grandes mains), chaque côté à l'échelle de sa boîte.
+        final feet = slot == 'feet';
+        final from = feet ? t.feetBoxes : t.handBoxes;
+        final to = feet ? f.feetBoxes : f.handBoxes;
+        final fitted =
+            outfit == null &&
+            (feet || slot == 'hands') &&
+            from.length == 2 &&
+            to.length == 2;
+        if (fitted) {
+          for (var side = 0; side < 2; side++) {
+            final k = extremityScale(from[side], to[side], feet: feet);
+            if (k == null) continue;
+            final src = from[side];
+            final dst = to[side];
+            _place(
+              out,
+              _half(layer, cut, left: side == 0),
+              scaleX: k,
+              scaleY: k,
+              originX: dst.centreX - src.centreX * k,
+              originY: feet
+                  ? dst.bottom - src.bottom * k
+                  : dst.centreY - src.centreY * k,
+              colour: colour,
+            );
+          }
+          continue;
+        }
+        if (slot != 'hands') {
           _place(
             out,
             layer,
@@ -555,9 +646,7 @@ class SpriteComposer {
           );
           continue;
         }
-        // Gants : chaque gant calé sur la main du personnage (ou de sa
-        // tenue), pas sur celle du gabarit.
-        final cut = (t.centreX + 0.5).floor();
+        // Gants sur une tenue : chaque gant calé sur la main de la tenue.
         final templateHands = [template.handX, 2 * t.centreX - template.handX]
           ..sort();
         final bodyHands = [handX, 2 * f.centreX - handX]..sort();
