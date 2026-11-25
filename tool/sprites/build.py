@@ -129,13 +129,18 @@ def hand(a: np.ndarray, skin: np.ndarray, sp: dict) -> list[float]:
     du côté gauche, entre 45 et 75 % de la hauteur."""
     h = sp["feet"] - sp["top"]
     band = np.zeros_like(skin)
-    band[sp["top"] + int(0.42 * h): sp["top"] + int(0.78 * h), : int(sp["cx"])] = True
+    band[sp["top"] + int(0.42 * h): sp["top"] + int(0.80 * h), : int(sp["cx"])] = True
     m = skin & band
     ys, xs = np.nonzero(m)
     if len(ys) == 0:
         return [sp["cx"] - 20, sp["top"] + 0.6 * h]
-    low = ys >= np.percentile(ys, 60)
-    return [round(float(xs[low].mean()), 1), round(float(ys[low].mean()), 1)]
+    # Paume : le creux du poing, sous le poignet et au-dessus du bout des
+    # doigts (le poing fait environ 7 % de la hauteur du corps).
+    tip = ys.max()
+    palm = (ys >= tip - 0.065 * h) & (ys <= tip - 0.015 * h)
+    if not palm.any():
+        palm = ys >= np.percentile(ys, 80)
+    return [round(float(xs[palm].mean()), 1), round(float(ys[palm].mean()), 1)]
 
 
 def main() -> None:

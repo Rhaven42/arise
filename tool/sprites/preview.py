@@ -16,7 +16,8 @@ from PIL import Image
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, "..", "..", "assets", "sprites")
 META = json.load(open(os.path.join(ASSETS, "sprites.json")))
-HAND_RX, HAND_RY = 0.018, 0.024  # main devant la poignée (comme l'appli)
+HAND_RX, HAND_RY = 0.026, 0.036
+POMMEL_ABOVE = 0.035  # main devant la poignée (comme l'appli)
 LOWERED = {"sword", "dagger", "scimitar", "axe", "mace", "hammer", "wand"}
 FACE_INNER = 0.6  # centre du visage sans mèche (comme l'appli)
 NECK_BAND = 0.08  # bande du cou gardée sous le menton (comme l'appli)
@@ -255,10 +256,13 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         hand = (((xx + 0.5 - hx) / rx) ** 2 + ((yy + 0.5 - hy) / ry) ** 2 <= 1) & (canvas[..., 3] > 0)
         saved = canvas[hand].copy()
         # Arme courte au repos : retournée, la poignée reste dans la main.
-        grip = w["grip"]
         if weapon.split("_")[0] in LOWERED:
-            lay, grip = lay[::-1].copy(), 1 - grip
-        place(canvas, lay, s, hx - w["size"][0] * s / 2, hy - grip * w["size"][1] * s)
+            # Au repos : le pommeau dépasse juste au-dessus du poing.
+            lay = lay[::-1].copy()
+            oy = hy - POMMEL_ABOVE * size
+        else:
+            oy = hy - w["grip"] * w["size"][1] * s
+        place(canvas, lay, s, hx - w["size"][0] * s / 2, oy)
         canvas[hand] = saved
     return canvas
 
