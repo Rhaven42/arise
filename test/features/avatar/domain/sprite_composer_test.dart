@@ -229,6 +229,35 @@ void main() {
     expect(_px(out, 2, 6)[3], 0);
   });
 
+  test('la tenue couvre les trapèzes plus hauts que son épaule', () {
+    // Corps aux épaules hautes (chemise dès la ligne 3 sur toute la largeur)
+    // et cou nu sous le menton (ligne 7).
+    final traps = _fill(10, 20, (x, y) => y >= 3, [90, 60, 40, 255]);
+    for (var y = 0; y < 5; y++) {
+      for (var x = 3; x < 7; x++) {
+        traps.pixels.setAll((y * 10 + x) * 4, [200, 150, 100, 254]);
+      }
+    }
+    for (final x in [4, 5]) {
+      traps.pixels.setAll((7 * 10 + x) * 4, [200, 150, 100, 254]);
+    }
+    final outfit = _fill(10, 20, (x, y) => y > 6, [10, 20, 30, 255]);
+    final out = composer.compose(
+      const CharacterAppearance(
+        bodyId: 'human_male',
+        skinColor: 0xFFC8966A,
+        hairColor: 0,
+        outfitId: 'awakened_leather',
+      ),
+      SpriteLayers(body: traps, outfit: outfit),
+    );
+    // Épaule : la tenue étirée monte jusqu'au sommet du trapèze.
+    expect(_px(out, 0, 3), [10, 20, 30, 255]);
+    expect(_px(out, 9, 4), [10, 20, 30, 255]);
+    // Le visage n'est pas couvert.
+    expect(_px(out, 4, 3)[0], isNot(10));
+  });
+
   test('la frange laisse le visage dégagé et les cornes passent devant', () {
     final horned = RgbaImage(10, 20, Uint8List.fromList(body.pixels));
     // Corne à gauche du crâne, sur la ligne 1.

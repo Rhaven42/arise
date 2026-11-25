@@ -417,6 +417,12 @@ const double neckBandRatio = 0.08;
 /// la hauteur du menton aux pieds.
 const double neckGapRatio = 0.05;
 
+/// Épaules du corps plus hautes que la tenue (trapèzes du minotaure) :
+/// hauteur maximale couverte au-dessus du menton, et hauteur minimale du haut
+/// de la tenue étiré, en fraction de la hauteur du menton aux pieds.
+const double shoulderRiseRatio = 0.12;
+const double shoulderStretchRatio = 0.04;
+
 /// Armes courtes tenues au repos, lame (ou tête) vers le bas ; les armes
 /// d'hast, bâtons, arcs et mousquet restent debout.
 const Set<String> loweredWeapons = {
@@ -656,6 +662,7 @@ class SpriteComposer {
         neck,
         (neckGapRatio * (f.feet - f.neck)).round(),
       );
+      _stretchShoulders(out, marks, src, body, neck, f.feet - f.neck);
       // L'arme suit la main de la tenue.
       handX = f.centreX + (template.handX - t.centreX) * sx;
       handY = originY + template.handY * sy;
@@ -1023,6 +1030,81 @@ class SpriteComposer {
           }
         }
         break;
+      }
+    }
+  }
+
+  /// Trapèzes et épaules du corps plus hauts que la tenue : le haut de la
+  /// tenue est étiré, colonne par colonne, jusqu'à leur sommet (ligne lissée
+  /// sur 5 colonnes). Le cou, de sa largeur sous le menton, reste nu. Même
+  /// calcul que `stretch_shoulders` dans `tool/sprites/preview.py`.
+  void _stretchShoulders(
+    RgbaImage img,
+    Uint8List marks,
+    RgbaImage src,
+    BodyMeta body,
+    int neck,
+    double span,
+  ) {
+    final w = img.width;
+    final h = img.height;
+    final cx = body.head.skull.centre;
+    final rise = (shoulderRiseRatio * span).round();
+    final keepMin = math.max(2, (shoulderStretchRatio * span).round());
+    // Largeur du cou juste sous le menton (peau à moins de 3/4 de crâne de
+    // l'axe ; un contour au milieu ne la coupe pas).
+    final row = math.min(h - 1, neck + 2);
+    final reach = 0.75 * body.head.skull.width;
+    var left = cx.floor();
+    var right = cx.floor();
+    var found = false;
+    for (var x = 0; x < src.width && row < src.height; x++) {
+      if (src.alphaAt(x, row) != meta.skinAlpha) continue;
+      if ((x + 0.5 - cx).abs() > reach) continue;
+      if (!found || x < left) left = x;
+      if (!found || x > right) right = x;
+      found = true;
+    }
+    final tops = List<int?>.filled(w, null);
+    for (var x = 0; x < w && x < src.width; x++) {
+      if (x >= left - 1 && x <= right + 1) continue;
+      for (var y = neck; y >= math.max(0, neck - rise); y--) {
+        final half = body.head.halfWidthAt(y.toDouble());
+        final inside = half != null && (x + 0.5 - cx).abs() <= half + 1;
+        if (y >= src.height) continue;
+        final alpha = src.alphaAt(x, y);
+        if (inside || alpha == 0 || alpha == meta.frontAlpha) break;
+        tops[x] = y;
+      }
+    }
+    for (var x = 0; x < w; x++) {
+      if (tops[x] == null) continue;
+      final near = [
+        for (var k = math.max(0, x - 2); k <= math.min(w - 1, x + 2); k++)
+          ?tops[k],
+      ]..sort();
+      final top = near[near.length ~/ 2];
+      var from = neck + 1;
+      while (from < h && from - neck <= rise && img.alphaAt(x, from) == 0) {
+        from++;
+      }
+      if (from >= h || from - neck > rise || from <= top) continue;
+      if (marks[from * w + x] == 1) continue;
+      final end = math.min<int>(h, from + math.max<int>(keepMin, from - top));
+      final count = end - from;
+      final pixels = Uint8List(count * 4);
+      final skin = Uint8List(count);
+      for (var k = 0; k < count; k++) {
+        final i = ((from + k) * w + x) * 4;
+        pixels.setRange(k * 4, k * 4 + 4, img.pixels, i);
+        skin[k] = marks[(from + k) * w + x];
+      }
+      final n = end - top;
+      for (var k = 0; k < n; k++) {
+        final j = ((k + 0.5) * count / n).floor();
+        final i = ((top + k) * w + x) * 4;
+        img.pixels.setRange(i, i + 4, pixels, j * 4);
+        marks[(top + k) * w + x] = skin[j];
       }
     }
   }
