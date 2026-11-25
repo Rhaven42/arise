@@ -516,9 +516,17 @@ double luminanceOf(int r, int g, int b) => 0.299 * r + 0.587 * g + 0.114 * b;
   int color,
 ) {
   final k = (luminanceOf(r, g, b) / math.max(reference, 1)).clamp(0.3, 1.6);
+  // Reflets : la couleur s'éclaircit dans sa propre teinte ; le blanc ajouté
+  // est dosé selon sa clarté (une barbe noire ne vire pas au gris plat).
+  final lift =
+      0.35 *
+      (luminanceOf((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF) /
+              140)
+          .clamp(0.3, 1.0);
   int channel(int c) {
-    final v = k <= 1 ? c * k : c + (255 - c) * (k - 1) * 0.35;
-    return v.round().clamp(0, 255);
+    if (k <= 1) return (c * k).round().clamp(0, 255);
+    final base = math.min(255, c * math.min(k, 1.3));
+    return (base + (255 - base) * (k - 1) * lift).round().clamp(0, 255);
   }
 
   return (
@@ -990,7 +998,7 @@ class SpriteComposer {
   }
 
   /// Raccord entre le cou et le haut de la tenue : dans chaque colonne, la
-  /// fente vide sous un pixel peint (cou, menton) prend la couleur du premier
+  /// fente vide sous la peau du cou prend la couleur du premier
   /// pixel de tenue en dessous, si elle ne dépasse pas [gap] pixels. Sans ça,
   /// un trait vide barre la gorge des races au cou épais (minotaure).
   static void _fillNeckGap(RgbaImage img, Uint8List marks, int neck, int gap) {
@@ -999,7 +1007,9 @@ class SpriteComposer {
     final y1 = neck + g + 1 < img.height ? neck + g + 1 : img.height;
     for (var x = 0; x < img.width; x++) {
       for (var y = y0; y < y1; y++) {
-        if (img.alphaAt(x, y) != 0 || img.alphaAt(x, y - 1) == 0) continue;
+        if (img.alphaAt(x, y) != 0 || marks[(y - 1) * img.width + x] != 1) {
+          continue;
+        }
         var end = y;
         while (end < img.height && end - y <= g && img.alphaAt(x, end) == 0) {
           end++;

@@ -47,7 +47,9 @@ def tint_hair(px: np.ndarray, ref: float, color: tuple[int, int, int]) -> np.nda
     partagée avec l'appli)."""
     k = np.clip(lum(px) / max(ref, 1), 0.3, 1.6)[..., None]
     c = np.array(color, float)
-    return np.where(k <= 1, c * k, c + (255 - c) * (k - 1) * 0.35)
+    lift = 0.35 * min(1.0, max(0.3, float(lum(c)) / 140))
+    base = np.minimum(255, c * np.minimum(k, 1.3))
+    return np.where(k <= 1, c * k, base + (255 - base) * (k - 1) * lift)
 
 
 def place(canvas: np.ndarray, layer: np.ndarray, scale: float, ox: float, oy: float,
@@ -184,14 +186,14 @@ NECK_GAP = 0.05
 
 
 def fill_neck_gap(canvas, marks, neck, span):
-    """Raccord entre le cou et le haut de la tenue : la fente vide sous un
-    pixel peint (cou, menton) prend la couleur du premier pixel de tenue en
+    """Raccord entre le cou et le haut de la tenue : la fente vide sous la
+    peau du cou prend la couleur du premier pixel de tenue en
     dessous (comme l'appli)."""
     H, W = canvas.shape[:2]
     gap = max(1, round(NECK_GAP * span))
     for x in range(W):
         for y in range(max(1, neck - gap), min(H, neck + gap + 1)):
-            if canvas[y, x, 3] or not canvas[y - 1, x, 3]:
+            if canvas[y, x, 3] or marks[y - 1, x, 0] != 255:
                 continue
             end = y
             while end < H and end - y <= gap and canvas[end, x, 3] == 0:
