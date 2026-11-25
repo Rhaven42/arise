@@ -178,6 +178,128 @@ def extremity_scale(src, dst, feet):
     return min(EXTREMITY_MAX, max(EXTREMITY_MIN, k))
 
 
+def glove_boxes(b, t, outfit, s_x, s_y):
+    """Boîtes des mains sur la toile : celles du corps, ou celles du gabarit
+    portées par la tenue."""
+    if not outfit:
+        return b.get("handBoxes", [])
+    ox = b["cx"] - t["cx"] * s_x
+    oy = b["feet"] - t["feet"] * s_y
+    return [[ox + x0 * s_x, oy + y0 * s_y, ox + x1 * s_x, oy + y1 * s_y]
+            for x0, y0, x1, y1 in t.get("handBoxes", [])]
+
+
+def glove_palms(b, t, outfit, s_x, s_y):
+    """Abscisses des deux paumes sur la toile (gauche puis droite)."""
+    if not outfit:
+        hx, cx = b["hand"][0], b["cx"]
+    else:
+        cx = b["cx"]
+        hx = cx + (t["hand"][0] - t["cx"]) * s_x
+    return sorted([hx, 2 * cx - hx])
+
+
+def paint_glove(canvas, marks, b, t, style, outfit, s_x, s_y, skin_rgb):
+    """Gant peint sur la main visible (peau de la toile) : la forme est
+    celle de la main du personnage, les couleurs celles du gant (rampe
+    choisie par la luminance de la peau, manchette au-dessus du poignet).
+    Même calcul que l'appli."""
+    span = b["feet"] - b["neck"]
+    ramp = np.array(style["ramp"], float)
+    cuff_ramp = np.array(style["cuffRamp"], float)
+    if len(ramp) == 0:
+        return
+    H, W = canvas.shape[:2]
+    palms = glove_palms(b, t, outfit, s_x, s_y)
+    for (x0, y0, x1, y1), palm in zip(glove_boxes(b, t, outfit, s_x, s_y), palms):
+        if x1 <= x0 or y1 <= y0:
+            continue
+        top = y0 - style["cuff"] * span
+        bottom = (y1 + GLOVE_TIPS * span if style["fingers"]
+                  else y0 + GLOVE_FINGERLESS * (y1 - y0))
+        half_w = GLOVE_HALF * span
+        ys = np.arange(H)[:, None]
+        xs = np.arange(W)[None, :]
+        region = ((ys >= np.floor(top)) & (ys < np.ceil(bottom))
+                  & (np.abs(xs + 0.5 - palm) <= half_w)
+                  & (marks[..., 0] == 255) & (marks[..., 3] > 0))
+        # Seulement la peau reliée à la main (pas une plage voisine).
+        core = region & (ys >= y0) & (ys < y1)
+        region = grow_into(core, region)
+        if not region.any():
+            continue
+        # Bords de la main (bouts des doigts, reflets) qui ne sont pas marqués
+        # peau mais n'en sont pas loin : un pixel autour, hors contour sombre.
+        lums0 = lum(canvas[..., :3].astype(float))
+        rgb = canvas[..., :3].astype(float)
+        tot = np.maximum(rgb.sum(-1), 1)
+        sk = np.array(skin_rgb, float)
+        chroma = (np.abs(rgb[..., 0] / tot - sk[0] / sk.sum())
+                  + np.abs(rgb[..., 1] / tot - sk[1] / sk.sum()))
+        edge_ok = ((lums0 / 255 > GLOVE_OUTLINE) & (canvas[..., 3] > 0) & (chroma < GLOVE_CHROMA)
+                   & (ys < np.ceil(bottom)) & (np.abs(xs + 0.5 - palm) <= half_w))
+        for _ in range(GLOVE_EDGE):
+            near = region.copy()
+            near[1:] |= region[:-1]
+            near[:-1] |= region[1:]
+            near[:, 1:] |= region[:, :-1]
+            near[:, :-1] |= region[:, 1:]
+            region |= near & edge_ok
+        lums = lum(canvas[..., :3].astype(float))
+        v = lums[region]
+        lo, hi = np.percentile(v, 5), np.percentile(v, 95)
+        k = np.clip((lums - lo) / max(hi - lo, 1e-6), 0, 1)
+        idx = np.minimum((k * len(ramp)).astype(int), len(ramp) - 1)
+        cuff = region & (ys < y0)
+        hand_ = region & ~cuff
+        canvas[hand_, :3] = ramp[idx[hand_]]
+        canvas[cuff, :3] = cuff_ramp[np.minimum(idx[cuff], len(cuff_ramp) - 1)]
+        # Bord du gant : liseré sombre en haut de la manchette (et au bas
+        # d'une mitaine).
+        edge_rows = [int(np.floor(top))]
+        if not style["fingers"]:
+            edge_rows.append(int(np.ceil(bottom)) - 1)
+        for ey in edge_rows:
+            if 0 <= ey < H:
+                row = region[ey]
+                canvas[ey, row, :3] = ramp[0]
+
+
+# Part de la main couverte par une mitaine (depuis le poignet), et écart
+# horizontal toléré pour la manchette sur l'avant-bras (fraction de la
+# hauteur du cou aux pieds).
+GLOVE_FINGERLESS = 0.55
+# Demi-largeur de la fenêtre du gant autour de la paume (fraction de la
+# hauteur du cou aux pieds) : rien d'autre que la main et l'avant-bras.
+GLOVE_HALF = 0.06
+# Marge sous la boîte de la main pour les bouts des doigts.
+GLOVE_TIPS = 0.02
+# Luminance sous laquelle un pixel est le contour sombre (jamais peint).
+GLOVE_OUTLINE = 0.22
+# Pixels de bord repris (anneaux autour de la peau) et écart de chromaticité
+# toléré avec la peau du personnage.
+GLOVE_EDGE = 2
+GLOVE_CHROMA = 0.06
+
+
+def grow_into(seed, allowed):
+    """Pixels de [allowed] reliés (8 voisins) à [seed]."""
+    out = seed & allowed
+    while True:
+        grown = out.copy()
+        grown[1:] |= out[:-1]
+        grown[:-1] |= out[1:]
+        grown[:, 1:] |= out[:, :-1]
+        grown[:, :-1] |= out[:, 1:]
+        grown[1:, 1:] |= out[:-1, :-1]
+        grown[1:, :-1] |= out[:-1, 1:]
+        grown[:-1, 1:] |= out[1:, :-1]
+        grown[:-1, :-1] |= out[1:, 1:]
+        grown &= allowed
+        if (grown == out).all():
+            return out
+        out = grown
+
 PIECE_ORDER = ["legs", "feet", "top", "hands"]
 
 
@@ -203,6 +325,16 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         keep |= own_neck
     canvas[keep] = body[keep]
     canvas[..., 3] = np.where(canvas[..., 3] > 0, 255, 0)
+    # Peau visible de la toile (rouge = peau) : les gants y sont peints.
+    marks = np.zeros_like(canvas)
+    marks[keep & skin_px, 0] = 255
+    marks[keep, 3] = 255
+
+    def mark(layer):
+        m = np.zeros_like(layer)
+        m[..., 3] = layer[..., 3]
+        m[layer[..., 3] == META["skinAlpha"], 0] = 255
+        return m
     hx, hy = b["hand"]
     if outfit:
         t = META["templates"][b["gabarit"]]
@@ -213,15 +345,23 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         tref = lum(np.array(t["skinRef"], float))
         bare = lay[..., 3] == META["skinAlpha"]
         lay[bare, :3] = tint(lay[bare, :3], tref, skin)
-        place(canvas, lay, s, b["cx"] - t["cx"] * sx, oy, sx,
-              skip=lambda x, y, px: px[3] == META["skinAlpha"] and own_neck[y, x])
+        skip_neck = lambda x, y, px: px[3] == META["skinAlpha"] and own_neck[y, x]  # noqa: E731
+        m_lay = mark(lay)
+        place(canvas, lay, s, b["cx"] - t["cx"] * sx, oy, sx, skip=skip_neck)
+        place(marks, m_lay, s, b["cx"] - t["cx"] * sx, oy, sx,
+              skip=lambda x, y, px: px[0] == 255 and own_neck[y, x])
         hx = b["cx"] + (t["hand"][0] - t["cx"]) * sx
         hy = oy + t["hand"][1] * s
     # Pièces séparées : même cadrage que les tenues, dans l'ordre de dessin.
     t = META["templates"][b["gabarit"]]
     s_y = (b["feet"] - b["neck"]) / (t["feet"] - t["neck"])
     s_x = b["torso"] / t["torso"]
+    gloves = []
     for pid in sorted(pieces, key=lambda q: PIECE_ORDER.index(META["pieces"][q])):
+        if pid in META.get("gloves", {}):
+            # Gant peint plus bas sur la main elle-même (comme l'appli).
+            gloves.append(pid)
+            continue
         lay = img(f"pieces/{pid}_{b['gabarit']}.png")
         bare = lay[..., 3] == META["skinAlpha"]
         lay[bare, :3] = tint(lay[bare, :3], lum(np.array(t["skinRef"], float)), skin)
@@ -249,9 +389,11 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
                 else:
                     sy_, dy_ = (src[1] + src[3]) / 2, (dst[1] + dst[3]) / 2
                 place(canvas, half, k, dx_ - sx_ * k, dy_ - sy_ * k, k)
+                place(marks, mark(half), k, dx_ - sx_ * k, dy_ - sy_ * k, k)
             continue
         if slot != "hands":
             place(canvas, lay, s_y, b["cx"] - t["cx"] * s_x, b["feet"] - t["feet"] * s_y, s_x)
+            place(marks, mark(lay), s_y, b["cx"] - t["cx"] * s_x, b["feet"] - t["feet"] * s_y, s_x)
             continue
         # Gants sur une tenue : chaque gant calé sur la main de la tenue.
         t_hands = sorted([t["hand"][0], 2 * t["cx"] - t["hand"][0]])
@@ -264,6 +406,8 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
                 half[:, :cut] = 0
             tx, bx = t_hands[side], b_hands[side]
             place(canvas, half, s_y, bx - tx * s_x, hy - t["hand"][1] * s_y, s_x)
+    for pid in gloves:
+        paint_glove(canvas, marks, b, t, META["gloves"][pid], bool(outfit), s_x, s_y, skin)
     if outfit or pieces:
         # Visage intact : le col d'une tenue ou d'un haut ne recouvre jamais
         # la peau du visage au-dessus du menton.

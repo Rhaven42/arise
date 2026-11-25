@@ -366,6 +366,54 @@ void main() {
     }
   });
 
+  test('un gant est peint sur la main du personnage, à sa forme', () {
+    final json = _metaJson()
+      ..['pieces'] = {'leather_gloves': 'hands'}
+      ..['gloves'] = {
+        'leather_gloves': {
+          'cuff': 0,
+          'fingers': true,
+          'ramp': [
+            [10, 10, 10],
+            [50, 50, 50],
+          ],
+          'cuffRamp': <List<int>>[],
+        },
+      };
+    ((json['bodies']! as Map)['human_male'] as Map)
+      ..['hand'] = [2, 11]
+      ..['handBoxes'] = [
+        [1, 10, 3, 13],
+        [7, 10, 9, 13],
+      ];
+    final gloves = SpriteComposer(SpriteMeta.fromJson(json));
+    // Corps : chemise, mains nues (peau) en x 1-2 et 7-8, lignes 10 à 12.
+    final hands = _fill(10, 20, (x, y) => x >= 1 && x <= 8, [90, 60, 40, 255]);
+    for (var y = 10; y <= 12; y++) {
+      for (final x in [1, 2, 7, 8]) {
+        hands.pixels.setAll((y * 10 + x) * 4, [200, 150, 100, 254]);
+      }
+    }
+    final out = gloves.compose(
+      const CharacterAppearance(
+        bodyId: 'human_male',
+        skinColor: 0xFFC8963C,
+        hairColor: 0,
+        pieces: [WornPiece('leather_gloves')],
+      ),
+      SpriteLayers(body: hands, pieces: [RgbaImage(10, 20)]),
+    );
+    for (final (x, y) in [(1, 11), (2, 12), (7, 10), (8, 11)]) {
+      expect(
+        _px(out, x, y),
+        anyOf(equals([10, 10, 10, 255]), equals([50, 50, 50, 255])),
+        reason: '($x, $y)',
+      );
+    }
+    // La chemise entre les mains ne change pas.
+    expect(_px(out, 4, 11), [90, 60, 40, 255]);
+  });
+
   test('les repères réels couvrent chaque race, tenue et arme', () {
     final meta = SpriteMeta.fromJson(
       jsonDecode(File('assets/sprites/sprites.json').readAsStringSync())

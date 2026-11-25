@@ -234,6 +234,40 @@ class WeaponMeta {
   final double grip;
 }
 
+/// Gant peint sur la main du personnage : manchette (fraction de la hauteur
+/// du cou aux pieds), doigts couverts ou non, rampes de couleurs du gant (du
+/// plus sombre au plus clair) pour la main et la manchette.
+class GloveStyle {
+  const GloveStyle({
+    required this.cuff,
+    required this.fingers,
+    required this.ramp,
+    required this.cuffRamp,
+  });
+
+  factory GloveStyle.fromJson(Map<String, dynamic> json) {
+    List<(int, int, int)> ramp(String key) => [
+      for (final c in json[key] as List<dynamic>? ?? const [])
+        (
+          ((c as List<dynamic>)[0] as num).toInt(),
+          (c[1] as num).toInt(),
+          (c[2] as num).toInt(),
+        ),
+    ];
+    return GloveStyle(
+      cuff: (json['cuff'] as num).toDouble(),
+      fingers: json['fingers'] as bool,
+      ramp: ramp('ramp'),
+      cuffRamp: ramp('cuffRamp'),
+    );
+  }
+
+  final double cuff;
+  final bool fingers;
+  final List<(int, int, int)> ramp;
+  final List<(int, int, int)> cuffRamp;
+}
+
 /// Repères de tous les sprites (`assets/sprites/sprites.json`, produit par
 /// `tool/sprites/build.py`).
 class SpriteMeta {
@@ -248,6 +282,7 @@ class SpriteMeta {
     required this.weapons,
     this.raceBeards = const {},
     this.pieceSlots = const {},
+    this.gloves = const {},
   });
 
   factory SpriteMeta.fromJson(Map<String, dynamic> json) {
@@ -286,6 +321,11 @@ class SpriteMeta {
             in (json['pieces'] as Map<String, dynamic>? ?? const {}).entries)
           e.key: e.value as String,
       },
+      gloves: {
+        for (final e
+            in (json['gloves'] as Map<String, dynamic>? ?? const {}).entries)
+          e.key: GloveStyle.fromJson(e.value as Map<String, dynamic>),
+      },
     );
   }
 
@@ -308,6 +348,9 @@ class SpriteMeta {
 
   /// Emplacement de chaque pièce séparée (`top`, `legs`, `feet`, `hands`).
   final Map<String, String> pieceSlots;
+
+  /// Gants peints sur la main du personnage (au lieu d'un calque posé).
+  final Map<String, GloveStyle> gloves;
 
   /// Barbe dessinée sur ce corps même, plutôt qu'adaptée depuis l'humain ?
   bool ownBeard(String bodyId) {
@@ -390,6 +433,17 @@ const double handRadiusY = 0.036;
 /// Hauteur du pommeau d'une arme au repos au-dessus du centre du poing, en
 /// fraction de la hauteur du corps.
 const double pommelAbove = 0.035;
+
+/// Gants peints : part de la main couverte par une mitaine, demi-largeur de
+/// la fenêtre autour de la paume et marge des bouts des doigts (fractions
+/// de la hauteur du cou aux pieds), luminance du contour sombre, anneaux de
+/// bord repris et écart de chromaticité toléré avec la peau.
+const double gloveFingerless = 0.55;
+const double gloveHalf = 0.06;
+const double gloveTips = 0.02;
+const double gloveOutline = 0.22;
+const int gloveEdge = 2;
+const double gloveChroma = 0.06;
 
 /// Bornes de l'échelle d'une botte ou d'un gant ajusté au corps.
 const double extremityMinScale = 0.8;
@@ -511,6 +565,8 @@ class SpriteComposer {
   RgbaImage compose(CharacterAppearance a, SpriteLayers layers) {
     final body = meta.bodies[a.bodyId]!;
     final out = RgbaImage(meta.width, meta.height);
+    // Peau visible de la toile (1) : les gants y sont peints.
+    final marks = Uint8List(meta.width * meta.height);
     final src = layers.body;
     final neck = body.frame.chin.round();
     final outfit = layers.outfit;
@@ -541,6 +597,7 @@ class SpriteComposer {
           (r, g, b) = tintPixel(r, g, b, body.skinRef, a.skinColor);
         }
         _put(out, x, y, r, g, b);
+        marks[y * out.width + x] = alpha == meta.skinAlpha ? 1 : 0;
       }
     }
     var handX = body.handX;
@@ -563,6 +620,8 @@ class SpriteComposer {
         originY: originY,
         // Peau du cou de la tenue : celle du personnage la remplace.
         skip: (x, y, alpha) => alpha == meta.skinAlpha && ownNeck(x, y),
+        marks: marks,
+        skinAlpha: meta.skinAlpha,
         colour: (r, g, b, alpha) {
           // Peau nue de la tenue (cou, mains) : teinte du personnage.
           if (alpha == meta.skinAlpha) {
@@ -588,6 +647,8 @@ class SpriteComposer {
       final sy = (f.feet - f.neck) / (t.feet - t.neck);
       final sx = f.torso / t.torso;
       for (var k = 0; k < layers.pieces.length && k < a.pieces.length; k++) {
+        // Gant peint plus bas sur la main elle-même.
+        if (meta.gloves.containsKey(a.pieces[k].spriteId)) continue;
         final layer = layers.pieces[k];
         final tint = a.pieces[k].tint;
         final ref = tint == null ? 0.0 : _medianLuminance(layer);
@@ -630,6 +691,8 @@ class SpriteComposer {
                   ? dst.bottom - src.bottom * k
                   : dst.centreY - src.centreY * k,
               colour: colour,
+              marks: marks,
+              skinAlpha: meta.skinAlpha,
             );
           }
           continue;
@@ -643,6 +706,8 @@ class SpriteComposer {
             originX: f.centreX - t.centreX * sx,
             originY: f.feet - t.feet * sy,
             colour: colour,
+            marks: marks,
+            skinAlpha: meta.skinAlpha,
           );
           continue;
         }
@@ -661,9 +726,26 @@ class SpriteComposer {
             originX: bodyHand - templateHand * sx,
             originY: handY - template.handY * sy,
             colour: colour,
+            marks: marks,
+            skinAlpha: meta.skinAlpha,
           );
         }
       }
+    }
+    // Gants : peints sur la main visible du personnage (sa forme exacte),
+    // aux couleurs du gant.
+    for (final piece in a.pieces) {
+      final style = meta.gloves[piece.spriteId];
+      if (style == null) continue;
+      _paintGlove(
+        out,
+        marks,
+        body,
+        meta.templates[body.gabarit]!,
+        style,
+        outfit: outfit != null,
+        skinColor: a.skinColor,
+      );
     }
     // Visage intact : le col d'une tenue ou d'un haut ne recouvre jamais la
     // peau du visage au-dessus du menton.
@@ -913,6 +995,8 @@ class SpriteComposer {
     required double originY,
     (int, int, int) Function(int r, int g, int b, int alpha)? colour,
     bool Function(int x, int y, int alpha)? skip,
+    Uint8List? marks,
+    int skinAlpha = -1,
   }) {
     final nw = math.max(1, (layer.width * scaleX).round());
     final nh = math.max(1, (layer.height * scaleY).round());
@@ -935,8 +1019,169 @@ class SpriteComposer {
         var b = layer.pixels[k + 2];
         if (colour != null) (r, g, b) = colour(r, g, b, alpha);
         _put(out, x, y, r, g, b);
+        if (marks != null) {
+          marks[y * out.width + x] = alpha == skinAlpha ? 1 : 0;
+        }
       }
     }
+  }
+
+  /// Gant peint sur la main visible (peau de la toile, [marks]) : la forme
+  /// est celle de la main du personnage, les couleurs celles du gant (rampe
+  /// choisie par la luminance de la peau, manchette au-dessus du poignet).
+  /// Même calcul que `paint_glove` de `tool/sprites/preview.py`.
+  static void _paintGlove(
+    RgbaImage out,
+    Uint8List marks,
+    BodyMeta body,
+    OutfitTemplate template,
+    GloveStyle style, {
+    required bool outfit,
+    required int skinColor,
+  }) {
+    if (style.ramp.isEmpty) return;
+    final f = body.frame;
+    final t = template.frame;
+    final span = f.feet - f.neck;
+    final sy = span / (t.feet - t.neck);
+    final sx = f.torso / t.torso;
+    final ox = f.centreX - t.centreX * sx;
+    final oy = f.feet - t.feet * sy;
+    final boxes = outfit
+        ? [
+            for (final b in t.handBoxes)
+              Box(
+                ox + b.left * sx,
+                oy + b.top * sy,
+                ox + b.right * sx,
+                oy + b.bottom * sy,
+              ),
+          ]
+        : f.handBoxes;
+    final palm = outfit
+        ? f.centreX + (template.handX - t.centreX) * sx
+        : body.handX;
+    final palms = [palm, 2 * f.centreX - palm]..sort();
+    final w = out.width;
+    final h = out.height;
+    final px = out.pixels;
+    double lumAt(int i) => luminanceOf(px[i * 4], px[i * 4 + 1], px[i * 4 + 2]);
+    final sr = (skinColor >> 16) & 0xFF;
+    final sg = (skinColor >> 8) & 0xFF;
+    final sb = skinColor & 0xFF;
+    final sTot = math.max(1, sr + sg + sb);
+    for (var side = 0; side < boxes.length && side < 2; side++) {
+      final box = boxes[side];
+      if (box.width <= 0 || box.height <= 0) continue;
+      final centre = palms[side];
+      final top = box.top - style.cuff * span;
+      final bottom = style.fingers
+          ? box.bottom + gloveTips * span
+          : box.top + gloveFingerless * box.height;
+      final halfW = gloveHalf * span;
+      final y0 = math.max(0, top.floor());
+      final y1 = math.min(h, bottom.ceil());
+      bool inWindow(int x, int y) =>
+          y >= y0 && y < y1 && (x + 0.5 - centre).abs() <= halfW;
+      bool candidate(int x, int y) =>
+          inWindow(x, y) &&
+          marks[y * w + x] == 1 &&
+          px[(y * w + x) * 4 + 3] > 0;
+      // Peau reliée à la main (8 voisins) depuis la main elle-même.
+      final region = Uint8List(w * h);
+      final stack = <int>[];
+      for (var y = y0; y < y1; y++) {
+        if (y < box.top || y >= box.bottom) continue;
+        for (var x = 0; x < w; x++) {
+          if (candidate(x, y)) {
+            region[y * w + x] = 1;
+            stack.add(y * w + x);
+          }
+        }
+      }
+      while (stack.isNotEmpty) {
+        final i = stack.removeLast();
+        final x = i % w;
+        final y = i ~/ w;
+        for (var dy = -1; dy <= 1; dy++) {
+          for (var dx = -1; dx <= 1; dx++) {
+            final nx = x + dx;
+            final ny = y + dy;
+            if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+            final j = ny * w + nx;
+            if (region[j] == 1 || !candidate(nx, ny)) continue;
+            region[j] = 1;
+            stack.add(j);
+          }
+        }
+      }
+      // Bords de la main (bouts des doigts, reflets) proches de la couleur
+      // de la peau, hors contour sombre.
+      bool edgeOk(int x, int y) {
+        if (!inWindow(x, y)) return false;
+        final i = y * w + x;
+        if (px[i * 4 + 3] == 0 || lumAt(i) / 255 <= gloveOutline) return false;
+        final r = px[i * 4];
+        final g = px[i * 4 + 1];
+        final b = px[i * 4 + 2];
+        final tot = math.max(1, r + g + b);
+        final chroma =
+            (r / tot - sr / sTot).abs() + (g / tot - sg / sTot).abs();
+        return chroma < gloveChroma;
+      }
+
+      for (var pass = 0; pass < gloveEdge; pass++) {
+        final add = <int>[];
+        for (var i = 0; i < w * h; i++) {
+          if (region[i] == 1) continue;
+          final x = i % w;
+          final y = i ~/ w;
+          final touches =
+              (y > 0 && region[i - w] == 1) ||
+              (y < h - 1 && region[i + w] == 1) ||
+              (x > 0 && region[i - 1] == 1) ||
+              (x < w - 1 && region[i + 1] == 1);
+          if (touches && edgeOk(x, y)) add.add(i);
+        }
+        for (final i in add) {
+          region[i] = 1;
+        }
+      }
+      final lums = <double>[
+        for (var i = 0; i < w * h; i++)
+          if (region[i] == 1) lumAt(i),
+      ];
+      if (lums.isEmpty) continue;
+      final lo = _percentile(lums, 0.05);
+      final hi = _percentile(lums, 0.95);
+      final n = style.ramp.length;
+      final cuffRamp = style.cuffRamp.isEmpty ? style.ramp : style.cuffRamp;
+      final edgeRows = {top.floor(), if (!style.fingers) bottom.ceil() - 1};
+      for (var i = 0; i < w * h; i++) {
+        if (region[i] == 0) continue;
+        final y = i ~/ w;
+        final k = ((lumAt(i) - lo) / math.max(hi - lo, 1e-6)).clamp(0.0, 1.0);
+        final idx = math.min((k * n).floor(), n - 1);
+        final (r, g, b) = edgeRows.contains(y)
+            ? style.ramp[0]
+            : y < box.top
+            ? cuffRamp[math.min(idx, cuffRamp.length - 1)]
+            : style.ramp[idx];
+        px
+          ..[i * 4] = r
+          ..[i * 4 + 1] = g
+          ..[i * 4 + 2] = b;
+      }
+    }
+  }
+
+  /// Centile [q] (interpolation linéaire, comme numpy).
+  static double _percentile(List<double> values, double q) {
+    final v = [...values]..sort();
+    final pos = (v.length - 1) * q;
+    final lo = pos.floor();
+    final hi = math.min(lo + 1, v.length - 1);
+    return v[lo] + (v[hi] - v[lo]) * (pos - lo);
   }
 
   /// Moitié gauche (colonnes avant [cut]) ou droite de [layer].
