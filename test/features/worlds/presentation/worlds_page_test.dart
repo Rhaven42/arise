@@ -35,11 +35,7 @@ void main() {
     await tester.tap(find.text('Entrer dans cet univers'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
-    expect(
-      (await container.read(profileRepositoryProvider).watchProfile().first)
-          ?.world,
-      World.arcane,
-    );
+    expect(container.read(playerProfileProvider).value?.world, World.arcane);
     // Ambiance de l'univers : palette et police des titres.
     expect(WorldPalette.active, WorldPalette.arcane);
     expect(WorldPalette.active.displayFont, 'Metamorphous');
