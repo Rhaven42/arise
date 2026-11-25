@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:arise/core/design_system/widgets/choice_chip_row.dart';
 import 'package:arise/core/design_system/widgets/labeled_tag.dart';
 import 'package:arise/core/theme/arise_colors.dart';
 import 'package:arise/core/theme/arise_spacing.dart';
@@ -9,6 +10,7 @@ import 'package:arise/features/avatar/presentation/character_renderer.dart';
 import 'package:arise/features/character_creation/domain/character_sheet.dart';
 import 'package:arise/features/character_creation/presentation/character_providers.dart';
 import 'package:arise/features/inventory/domain/equipment.dart';
+import 'package:arise/features/inventory/domain/equipment_filter.dart';
 import 'package:arise/features/inventory/domain/inventory.dart';
 import 'package:arise/features/inventory/domain/inventory_rules.dart';
 import 'package:arise/features/inventory/presentation/inventory_labels.dart';
@@ -19,6 +21,8 @@ import 'package:arise/features/progression/presentation/progression_providers.da
 import 'package:arise/features/shop/domain/shop_rules.dart';
 import 'package:arise/features/shop/presentation/shop_labels.dart';
 import 'package:arise/features/shop/presentation/shop_providers.dart';
+import 'package:arise/features/worlds/domain/world.dart';
+import 'package:arise/features/worlds/presentation/world_labels.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,8 +43,8 @@ class ShopPage extends ConsumerStatefulWidget {
 }
 
 class _ShopPageState extends ConsumerState<ShopPage> {
-  /// Emplacement filtré ; `null` = tout ; [_hairFilter] = coiffures.
-  EquipmentSlot? _slot;
+  /// Univers, matière et emplacement filtrés ; [_hairFilter] = coiffures.
+  EquipmentFilter _filter = const EquipmentFilter();
   bool _hairFilter = false;
 
   Future<void> _buy(ShopArticle article, Coins price) async {
@@ -126,40 +130,52 @@ class _ShopPageState extends ConsumerState<ShopPage> {
               ),
             ),
           ),
-          SizedBox(
-            height: 48,
-            child: ListView(
-              key: ShopPage.filtersKey,
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: AriseSpacing.md),
-              children: [
-                _FilterChip(
-                  label: l10n.shopAll,
-                  selected: _slot == null && !_hairFilter,
-                  onSelected: () => setState(() {
-                    _slot = null;
-                    _hairFilter = false;
-                  }),
+          Column(
+            key: ShopPage.filtersKey,
+            children: [
+              ChoiceChipRow<String>(
+                title: l10n.filterSlot,
+                allLabel: l10n.shopAll,
+                options: [
+                  for (final slot in usedSlots)
+                    ChipOption(slot.name, slotLabel(l10n, slot)),
+                  ChipOption(_hairKind, l10n.shopHairStyles),
+                ],
+                selected: _hairFilter ? _hairKind : _filter.slot?.name,
+                onChanged: (kind) => setState(() {
+                  _hairFilter = kind == _hairKind;
+                  _filter = _filter.withSlot(
+                    usedSlots.where((s) => s.name == kind).firstOrNull,
+                  );
+                }),
+              ),
+              if (!_hairFilter) ...[
+                ChoiceChipRow<World>(
+                  title: l10n.filterWorld,
+                  allLabel: l10n.filterAllWorlds,
+                  options: [
+                    for (final world in World.values)
+                      ChipOption(world, worldLabel(l10n, world)),
+                  ],
+                  selected: _filter.world,
+                  onChanged: (world) =>
+                      setState(() => _filter = _filter.withWorld(world)),
                 ),
-                for (final slot in usedSlots)
-                  _FilterChip(
-                    label: slotLabel(l10n, slot),
-                    selected: _slot == slot,
-                    onSelected: () => setState(() {
-                      _slot = slot;
-                      _hairFilter = false;
-                    }),
+                if (_filter.slot != EquipmentSlot.weapon)
+                  ChoiceChipRow<EquipmentMaterial>(
+                    title: l10n.filterMaterial,
+                    allLabel: l10n.filterAllMaterials,
+                    options: [
+                      for (final material in EquipmentMaterial.values)
+                        ChipOption(material, materialLabel(l10n, material)),
+                    ],
+                    selected: _filter.material,
+                    onChanged: (material) => setState(
+                      () => _filter = _filter.withMaterial(material),
+                    ),
                   ),
-                _FilterChip(
-                  label: l10n.shopHairStyles,
-                  selected: _hairFilter,
-                  onSelected: () => setState(() {
-                    _slot = null;
-                    _hairFilter = true;
-                  }),
-                ),
               ],
-            ),
+            ],
           ),
           Expanded(
             child: CustomScrollView(
@@ -171,6 +187,16 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                       padding: const EdgeInsets.all(AriseSpacing.sm),
                       child: Text(
                         l10n.shopNoCharacter,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                if (articles.isEmpty)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AriseSpacing.lg),
+                      child: Text(
+                        l10n.filterNoResult,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -247,35 +273,12 @@ class _ShopPageState extends ConsumerState<ShopPage> {
     );
   }
 
+  static const _hairKind = 'hair';
+
   bool _matches(ShopArticle article) => switch (article) {
-    ItemArticle(:final item) =>
-      !_hairFilter && (_slot == null || item.slot == _slot),
-    HairStyleArticle() => _hairFilter || _slot == null,
+    ItemArticle(:final item) => !_hairFilter && _filter.matches(item),
+    HairStyleArticle() => _hairFilter || _filter.isEmpty,
   };
-}
-
-class _FilterChip extends StatelessWidget {
-  const _FilterChip({
-    required this.label,
-    required this.selected,
-    required this.onSelected,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: AriseSpacing.xs),
-      child: ChoiceChip(
-        label: Text(label),
-        selected: selected,
-        onSelected: (_) => onSelected(),
-      ),
-    );
-  }
 }
 
 /// Grande vue : le personnage enregistré porte l'article, par-dessus sa

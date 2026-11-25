@@ -739,10 +739,14 @@ enum AchievementMetric {
   restDaysRespected,
   painStops,
 
-  /// Zones conquises : chacune vaut 1 une fois sa conquête terminée.
-  northRealmConquered,
-  seaRealmConquered,
-  arcaneRealmConquered,
+  /// Appel d'un univers : meilleur nombre de séances sur une fenêtre de
+  /// [AchievementsConfig.realmWindowDays] jours. Nord : séances de Force ;
+  /// Mers : séances d'Endurance ; Arcanes : toutes les séances, plafonnées
+  /// par celles de souplesse (voir
+  /// [AchievementsConfig.arcaneFlexibilitySessions]).
+  northCallSessions,
+  seaCallSessions,
+  arcaneCallSessions,
 }
 
 /// Haut fait : atteint quand [metric] vaut au moins [threshold].
@@ -806,6 +810,8 @@ class AchievementsConfig {
     required this.balancedWeekMinPoints,
     required this.dawnBeforeMinutes,
     required this.eveningFromMinutes,
+    required this.realmWindowDays,
+    required this.arcaneFlexibilitySessions,
   });
 
   final List<AchievementDefinition> definitions;
@@ -832,6 +838,13 @@ class AchievementsConfig {
   /// Séance « du soir » : commencée à partir de cette heure.
   final int eveningFromMinutes;
 
+  /// Fenêtre glissante (jours) des hauts faits d'appel des univers.
+  final int realmWindowDays;
+
+  /// Séances de souplesse exigées par l'appel des Arcanes, dans la même
+  /// fenêtre que ses séances.
+  final int arcaneFlexibilitySessions;
+
   Map<String, Object> toJson() => {
     'definitions': [for (final d in definitions) d.toJson()],
     'auras': [for (final a in auras) a.toJson()],
@@ -841,6 +854,8 @@ class AchievementsConfig {
     'balancedWeekMinPoints': balancedWeekMinPoints,
     'dawnBeforeMinutes': dawnBeforeMinutes,
     'eveningFromMinutes': eveningFromMinutes,
+    'realmWindowDays': realmWindowDays,
+    'arcaneFlexibilitySessions': arcaneFlexibilitySessions,
   };
 }
 
@@ -1296,20 +1311,20 @@ const gameConfig = GameConfig(
       AchievementDefinition(
         id: 'realm_north',
         category: AchievementCategory.exploration,
-        metric: AchievementMetric.northRealmConquered,
-        threshold: 1,
+        metric: AchievementMetric.northCallSessions,
+        threshold: 25,
       ),
       AchievementDefinition(
         id: 'realm_sea',
         category: AchievementCategory.exploration,
-        metric: AchievementMetric.seaRealmConquered,
-        threshold: 1,
+        metric: AchievementMetric.seaCallSessions,
+        threshold: 30,
       ),
       AchievementDefinition(
         id: 'realm_arcane',
         category: AchievementCategory.exploration,
-        metric: AchievementMetric.arcaneRealmConquered,
-        threshold: 1,
+        metric: AchievementMetric.arcaneCallSessions,
+        threshold: 30,
       ),
       AchievementDefinition(
         id: 'first_item',
@@ -1463,6 +1478,8 @@ const gameConfig = GameConfig(
     balancedWeekMinPoints: 4,
     dawnBeforeMinutes: 390,
     eveningFromMinutes: 1290,
+    realmWindowDays: 60,
+    arcaneFlexibilitySessions: 10,
   ),
   trials: TrialsConfig(
     retryCooldownHours: 48,

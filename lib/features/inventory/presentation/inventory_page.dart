@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:arise/core/config/game_config.dart';
+import 'package:arise/core/design_system/widgets/choice_chip_row.dart';
 import 'package:arise/core/design_system/widgets/labeled_tag.dart';
 import 'package:arise/core/router/app_routes.dart';
 import 'package:arise/core/theme/arise_colors.dart';
@@ -9,6 +10,7 @@ import 'package:arise/features/avatar/domain/character_appearance.dart';
 import 'package:arise/features/avatar/presentation/character_renderer.dart';
 import 'package:arise/features/character_creation/presentation/character_providers.dart';
 import 'package:arise/features/inventory/domain/equipment.dart';
+import 'package:arise/features/inventory/domain/equipment_filter.dart';
 import 'package:arise/features/inventory/domain/inventory.dart';
 import 'package:arise/features/inventory/domain/inventory_rules.dart';
 import 'package:arise/features/inventory/presentation/inventory_labels.dart';
@@ -18,6 +20,8 @@ import 'package:arise/features/progression/presentation/progression_labels.dart'
 import 'package:arise/features/shop/presentation/shop_labels.dart';
 import 'package:arise/features/shop/presentation/shop_providers.dart';
 import 'package:arise/features/titles/presentation/titles_providers.dart';
+import 'package:arise/features/worlds/domain/world.dart';
+import 'package:arise/features/worlds/presentation/world_labels.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,11 +29,19 @@ import 'package:go_router/go_router.dart';
 
 /// Inventaire : objets achetés, rangés par emplacement ; porter, retirer,
 /// teindre.
-class InventoryPage extends ConsumerWidget {
+class InventoryPage extends ConsumerStatefulWidget {
   const InventoryPage({super.key});
 
   /// Liste des objets (repère pour les tests).
   static const listKey = Key('inventory-list');
+
+  @override
+  ConsumerState<InventoryPage> createState() => _InventoryPageState();
+}
+
+class _InventoryPageState extends ConsumerState<InventoryPage> {
+  /// Univers, matière et emplacement filtrés (aucun = tout).
+  EquipmentFilter _filter = const EquipmentFilter();
 
   Future<void> _dye(
     BuildContext context,
@@ -109,7 +121,7 @@ class InventoryPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final inventory = ref.watch(inventoryProvider).value ?? const Inventory();
     final sheet = ref.watch(savedCharacterProvider).value;
@@ -117,7 +129,7 @@ class InventoryPage extends ConsumerWidget {
     final controller = ref.read(inventoryControllerProvider.notifier);
     final owned = [
       for (final item in [...equipmentCatalog, ...bossRewardItems])
-        if (inventory.owned.contains(item.id)) item,
+        if (inventory.owned.contains(item.id) && _filter.matches(item)) item,
     ];
     return Scaffold(
       appBar: AppBar(
@@ -146,78 +158,119 @@ class InventoryPage extends ConsumerWidget {
                   ),
             ),
           Expanded(
-            child: owned.isEmpty
-                ? Center(
+            child: CustomScrollView(
+              key: InventoryPage.listKey,
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      ChoiceChipRow<EquipmentSlot>(
+                        title: l10n.filterSlot,
+                        allLabel: l10n.shopAll,
+                        options: [
+                          for (final slot in usedSlots)
+                            ChipOption(slot, slotLabel(l10n, slot)),
+                        ],
+                        selected: _filter.slot,
+                        onChanged: (slot) =>
+                            setState(() => _filter = _filter.withSlot(slot)),
+                      ),
+                      ChoiceChipRow<World>(
+                        title: l10n.filterWorld,
+                        allLabel: l10n.filterAllWorlds,
+                        options: [
+                          for (final world in World.values)
+                            ChipOption(world, worldLabel(l10n, world)),
+                        ],
+                        selected: _filter.world,
+                        onChanged: (world) =>
+                            setState(() => _filter = _filter.withWorld(world)),
+                      ),
+                      if (_filter.slot != EquipmentSlot.weapon)
+                        ChoiceChipRow<EquipmentMaterial>(
+                          title: l10n.filterMaterial,
+                          allLabel: l10n.filterAllMaterials,
+                          options: [
+                            for (final material in EquipmentMaterial.values)
+                              ChipOption(
+                                material,
+                                materialLabel(l10n, material),
+                              ),
+                          ],
+                          selected: _filter.material,
+                          onChanged: (material) => setState(
+                            () => _filter = _filter.withMaterial(material),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                if (owned.isEmpty)
+                  SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(AriseSpacing.lg),
                       child: Text(
-                        l10n.inventoryEmpty,
+                        _filter.isEmpty
+                            ? l10n.inventoryEmpty
+                            : l10n.filterNoResult,
                         textAlign: TextAlign.center,
                       ),
                     ),
-                  )
-                : CustomScrollView(
-                    key: listKey,
-                    slivers: [
-                      for (final slot in usedSlots)
-                        if (owned.any((i) => i.slot == slot)) ...[
-                          SliverPadding(
-                            padding: const EdgeInsets.fromLTRB(
-                              AriseSpacing.md,
-                              AriseSpacing.md,
-                              AriseSpacing.md,
-                              AriseSpacing.xs,
-                            ),
-                            sliver: SliverToBoxAdapter(
-                              child: Text(
-                                slotLabel(l10n, slot),
-                                style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                for (final slot in usedSlots)
+                  if (owned.any((i) => i.slot == slot)) ...[
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AriseSpacing.md,
+                        AriseSpacing.md,
+                        AriseSpacing.md,
+                        AriseSpacing.xs,
+                      ),
+                      sliver: SliverToBoxAdapter(
+                        child: Text(
+                          slotLabel(l10n, slot),
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AriseSpacing.sm,
+                      ),
+                      sliver: SliverGrid.extent(
+                        maxCrossAxisExtent: 110,
+                        mainAxisSpacing: AriseSpacing.sm,
+                        crossAxisSpacing: AriseSpacing.sm,
+                        childAspectRatio: 0.78,
+                        children: [
+                          for (final item in owned.where((i) => i.slot == slot))
+                            _ItemTile(
+                              item: item,
+                              equipped: inventory.equipped[slot] == item.id,
+                              dye: inventory.dyes[item.id],
+                              onTap: () => _openItem(
+                                context,
+                                ref,
+                                item,
+                                equipped: inventory.equipped[slot] == item.id,
+                                onToggle: () async {
+                                  if (inventory.equipped[slot] == item.id) {
+                                    await controller.unequipSlot(slot);
+                                  } else {
+                                    await controller.equipItem(item.id);
+                                  }
+                                },
                               ),
                             ),
-                          ),
-                          SliverPadding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AriseSpacing.sm,
-                            ),
-                            sliver: SliverGrid.extent(
-                              maxCrossAxisExtent: 110,
-                              mainAxisSpacing: AriseSpacing.sm,
-                              crossAxisSpacing: AriseSpacing.sm,
-                              childAspectRatio: 0.78,
-                              children: [
-                                for (final item in owned.where(
-                                  (i) => i.slot == slot,
-                                ))
-                                  _ItemTile(
-                                    item: item,
-                                    equipped:
-                                        inventory.equipped[slot] == item.id,
-                                    dye: inventory.dyes[item.id],
-                                    onTap: () => _openItem(
-                                      context,
-                                      ref,
-                                      item,
-                                      equipped:
-                                          inventory.equipped[slot] == item.id,
-                                      onToggle: () async {
-                                        if (inventory.equipped[slot] ==
-                                            item.id) {
-                                          await controller.unequipSlot(slot);
-                                        } else {
-                                          await controller.equipItem(item.id);
-                                        }
-                                      },
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
                         ],
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: AriseSpacing.lg),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AriseSpacing.lg),
+                ),
+              ],
+            ),
           ),
         ],
       ),

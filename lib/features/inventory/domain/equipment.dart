@@ -1,3 +1,5 @@
+import 'package:arise/features/worlds/domain/world.dart';
+
 /// Emplacements d'équipement du personnage.
 ///
 /// En pixel art : [chest] (tenue complète), [top] (haut), [legs] (bas),
@@ -49,7 +51,8 @@ class EquipmentItem {
     this.dyeable = false,
     this.baseId,
     this.tint,
-    this.unlockAchievement,
+    this.world = World.medieval,
+    this.material,
   });
 
   /// Identifiant stable ; le sprite s'appelle comme l'objet (ou [baseId]).
@@ -68,8 +71,15 @@ class EquipmentItem {
   /// teinture.
   final int? tint;
 
+  /// Univers de l'objet : hors Médiéval, il ne s'achète qu'une fois
+  /// l'univers ouvert par son haut fait.
+  final World world;
+
+  /// Matière d'une tenue ou d'une pièce ; `null` pour une arme.
+  final EquipmentMaterial? material;
+
   /// Haut fait à obtenir avant de pouvoir acheter l'objet, le cas échéant.
-  final String? unlockAchievement;
+  String? get unlockAchievement => world.unlockAchievement;
 
   bool get isExclusive => baseId != null;
 
@@ -87,6 +97,7 @@ const List<EquipmentItem> bossRewardItems = [
     dyeable: true,
     baseId: 'awakened_leather',
     tint: 0xFF6E6A64,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'stag_cape',
@@ -95,6 +106,7 @@ const List<EquipmentItem> bossRewardItems = [
     dyeable: true,
     baseId: 'silver_knight',
     tint: 0xFFB8C2CC,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'wind_hood',
@@ -103,6 +115,7 @@ const List<EquipmentItem> bossRewardItems = [
     dyeable: true,
     baseId: 'sylvan_ranger',
     tint: 0xFF5E9C95,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'colossus_leggings',
@@ -111,6 +124,7 @@ const List<EquipmentItem> bossRewardItems = [
     dyeable: true,
     baseId: 'obsidian_knight',
     tint: 0xFF3E3A40,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'comet_cape',
@@ -119,6 +133,7 @@ const List<EquipmentItem> bossRewardItems = [
     dyeable: true,
     baseId: 'golden_king',
     tint: 0xFFB0302A,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'tempest_hood',
@@ -127,6 +142,7 @@ const List<EquipmentItem> bossRewardItems = [
     dyeable: true,
     baseId: 'pale_coat',
     tint: 0xFF2E2440,
+    material: EquipmentMaterial.cloth,
   ),
 ];
 
@@ -137,231 +153,277 @@ const List<EquipmentItem> outfitCatalog = [
     slot: EquipmentSlot.chest,
     rarity: Rarity.common,
     dyeable: true,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'hunter_leather',
     slot: EquipmentSlot.chest,
     rarity: Rarity.common,
     dyeable: true,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'pale_coat',
     slot: EquipmentSlot.chest,
     rarity: Rarity.common,
     dyeable: true,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'desert_sentinel',
     slot: EquipmentSlot.chest,
     rarity: Rarity.common,
     dyeable: true,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'jade_monk',
     slot: EquipmentSlot.chest,
     rarity: Rarity.common,
     dyeable: true,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'warden_mail',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.mail,
   ),
   EquipmentItem(
     id: 'wanderer_coat',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'scale_warden',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.mail,
   ),
   EquipmentItem(
     id: 'north_lamellar',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    world: World.north,
+    material: EquipmentMaterial.mail,
   ),
   EquipmentItem(
     id: 'sylvan_ranger',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'oath_knight',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'city_guard',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.mail,
   ),
   EquipmentItem(
     id: 'verdant_guardian',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'frost_warden',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    world: World.north,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'crimson_vanguard',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'ember_berserker',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    world: World.north,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'shadow_assassin',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'pirate_captain',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
-    unlockAchievement: 'realm_sea',
+    world: World.sea,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'viking_raider',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
-    unlockAchievement: 'realm_north',
+    world: World.north,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'dawn_plate',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'obsidian_knight',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'silver_knight',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'noble_gown',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'lotus_samurai',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'storm_templar',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
+    world: World.arcane,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'bone_reaver',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'arcane_battlemage',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
+    world: World.arcane,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'royal_mage',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
-    unlockAchievement: 'realm_arcane',
+    world: World.arcane,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'dragon_scale',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
+    material: EquipmentMaterial.mail,
   ),
   EquipmentItem(
     id: 'golden_king',
     slot: EquipmentSlot.chest,
     rarity: Rarity.legendary,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'abyss_knight',
     slot: EquipmentSlot.chest,
     rarity: Rarity.legendary,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'sun_paladin',
     slot: EquipmentSlot.chest,
     rarity: Rarity.legendary,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'infernal_warlord',
     slot: EquipmentSlot.chest,
     rarity: Rarity.legendary,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'plague_coat',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'blood_hunter',
     slot: EquipmentSlot.chest,
     rarity: Rarity.rare,
     dyeable: true,
+    world: World.sea,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'necromancer_robe',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
+    world: World.arcane,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'void_cultist',
     slot: EquipmentSlot.chest,
     rarity: Rarity.epic,
     dyeable: true,
+    world: World.arcane,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'death_knight',
     slot: EquipmentSlot.chest,
     rarity: Rarity.legendary,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
 ];
 
@@ -374,120 +436,146 @@ const List<EquipmentItem> pieceCatalog = [
     slot: EquipmentSlot.top,
     rarity: Rarity.common,
     dyeable: true,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'padded_gambeson',
     slot: EquipmentSlot.top,
     rarity: Rarity.common,
     dyeable: true,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'chain_shirt',
     slot: EquipmentSlot.top,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.mail,
   ),
   EquipmentItem(
     id: 'noble_doublet',
     slot: EquipmentSlot.top,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'fur_vest',
     slot: EquipmentSlot.top,
     rarity: Rarity.common,
     dyeable: true,
+    world: World.north,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'iron_greaves',
     slot: EquipmentSlot.legs,
     rarity: Rarity.common,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'black_breeches',
     slot: EquipmentSlot.legs,
     rarity: Rarity.common,
     dyeable: true,
+    world: World.sea,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'chain_chausses',
     slot: EquipmentSlot.legs,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.mail,
   ),
   EquipmentItem(
     id: 'ranger_trousers',
     slot: EquipmentSlot.legs,
     rarity: Rarity.common,
     dyeable: true,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'royal_breeches',
     slot: EquipmentSlot.legs,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'steel_sabatons',
     slot: EquipmentSlot.feet,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'fur_boots',
     slot: EquipmentSlot.feet,
     rarity: Rarity.common,
     dyeable: true,
+    world: World.north,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'elven_boots',
     slot: EquipmentSlot.feet,
     rarity: Rarity.common,
     dyeable: true,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'riding_boots',
     slot: EquipmentSlot.feet,
     rarity: Rarity.common,
     dyeable: true,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'golden_boots',
     slot: EquipmentSlot.feet,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'steel_gauntlets',
     slot: EquipmentSlot.hands,
     rarity: Rarity.rare,
     dyeable: true,
+    material: EquipmentMaterial.plate,
   ),
   EquipmentItem(
     id: 'leather_gloves',
     slot: EquipmentSlot.hands,
     rarity: Rarity.common,
     dyeable: true,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'fingerless_gloves',
     slot: EquipmentSlot.hands,
     rarity: Rarity.common,
     dyeable: true,
+    world: World.sea,
+    material: EquipmentMaterial.leather,
   ),
   EquipmentItem(
     id: 'silk_gloves',
     slot: EquipmentSlot.hands,
     rarity: Rarity.rare,
     dyeable: true,
+    world: World.arcane,
+    material: EquipmentMaterial.cloth,
   ),
   EquipmentItem(
     id: 'fur_bracers',
     slot: EquipmentSlot.hands,
     rarity: Rarity.common,
     dyeable: true,
+    world: World.north,
+    material: EquipmentMaterial.leather,
   ),
 ];
 
@@ -502,6 +590,7 @@ const List<EquipmentItem> weaponCatalog = [
     id: 'axe_war',
     slot: EquipmentSlot.weapon,
     rarity: Rarity.common,
+    world: World.north,
   ),
   EquipmentItem(
     id: 'mace_spiked',
@@ -517,11 +606,13 @@ const List<EquipmentItem> weaponCatalog = [
     id: 'scimitar_jade',
     slot: EquipmentSlot.weapon,
     rarity: Rarity.rare,
+    world: World.sea,
   ),
   EquipmentItem(
     id: 'staff_dusk',
     slot: EquipmentSlot.weapon,
     rarity: Rarity.rare,
+    world: World.arcane,
   ),
   EquipmentItem(
     id: 'sword_frost',
@@ -537,6 +628,7 @@ const List<EquipmentItem> weaponCatalog = [
     id: 'hammer_runic',
     slot: EquipmentSlot.weapon,
     rarity: Rarity.epic,
+    world: World.north,
   ),
   EquipmentItem(
     id: 'sword_dawn',
@@ -552,6 +644,7 @@ const List<EquipmentItem> weaponCatalog = [
     id: 'staff_ember',
     slot: EquipmentSlot.weapon,
     rarity: Rarity.mythic,
+    world: World.arcane,
   ),
   EquipmentItem(
     id: 'bow_hunter',
@@ -572,16 +665,19 @@ const List<EquipmentItem> weaponCatalog = [
     id: 'rifle_flintlock',
     slot: EquipmentSlot.weapon,
     rarity: Rarity.rare,
+    world: World.sea,
   ),
   EquipmentItem(
     id: 'wand_bone',
     slot: EquipmentSlot.weapon,
     rarity: Rarity.rare,
+    world: World.arcane,
   ),
   EquipmentItem(
     id: 'dagger_venom',
     slot: EquipmentSlot.weapon,
     rarity: Rarity.rare,
+    world: World.sea,
   ),
   EquipmentItem(
     id: 'sword_shadow',
