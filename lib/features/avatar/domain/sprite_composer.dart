@@ -338,8 +338,12 @@ const Set<String> loweredWeapons = {
 
 /// Demi-axes de la main qui passe devant la poignée d'une arme, en fraction
 /// de la hauteur du corps.
-const double handRadiusX = 0.018;
-const double handRadiusY = 0.024;
+const double handRadiusX = 0.026;
+const double handRadiusY = 0.036;
+
+/// Hauteur du pommeau d'une arme au repos au-dessus du centre du poing, en
+/// fraction de la hauteur du corps.
+const double pommelAbove = 0.035;
 
 /// Part centrale du visage (en demi-largeur de tête) où aucune mèche n'est
 /// dessinée.
@@ -632,14 +636,17 @@ class SpriteComposer {
       ];
       // Arme courte au repos : retournée, la poignée reste dans la main.
       final lowered = loweredWeapons.contains(kind);
-      final grip = lowered ? 1 - w.grip : w.grip;
       _place(
         out,
         lowered ? _flipped(weapon) : weapon,
         scaleX: s,
         scaleY: s,
         originX: handX - w.width * s / 2,
-        originY: handY - grip * w.height * s,
+        // Au repos, le pommeau dépasse juste au-dessus du poing ; debout,
+        // la poignée de l'arme est dans la main.
+        originY: lowered
+            ? handY - pommelAbove * size
+            : handY - w.grip * w.height * s,
       );
       for (final (x, y, r, g, b) in hand) {
         _put(out, x, y, r, g, b);

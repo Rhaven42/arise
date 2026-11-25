@@ -164,6 +164,9 @@ void main() {
     expect(_px(out, 2, 18).take(3), [250, 250, 250]);
     expect(_px(out, 2, 8).take(3), [90, 60, 40]);
     expect(loweredWeapons, containsAll(['sword', 'dagger', 'axe']));
+    // Le pommeau dépasse juste au-dessus du poing (3,5 % de 19 px ≈ 1 px).
+    expect(_px(out, 2, 11).take(3), [250, 250, 250]);
+    expect(_px(out, 2, 10).take(3), [90, 60, 40]);
     expect(loweredWeapons, isNot(contains('staff')));
   });
 
