@@ -209,7 +209,24 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         lay = img(f"pieces/{pid}_{b['gabarit']}.png")
         bare = lay[..., 3] == META["skinAlpha"]
         lay[bare, :3] = tint(lay[bare, :3], lum(np.array(t["skinRef"], float)), skin)
-        place(canvas, lay, s_y, b["cx"] - t["cx"] * s_x, b["feet"] - t["feet"] * s_y, s_x)
+        if META["pieces"][pid] != "hands":
+            place(canvas, lay, s_y, b["cx"] - t["cx"] * s_x, b["feet"] - t["feet"] * s_y, s_x)
+            continue
+        # Gants : chaque gant calé sur la main du personnage (ou de sa tenue),
+        # pas sur celle du gabarit (comme l'appli).
+        body_hx = b["hand"][0] if not outfit else hx
+        body_hy = b["hand"][1] if not outfit else hy
+        cut = int(np.floor(t["cx"] + 0.5))
+        t_hands = sorted([t["hand"][0], 2 * t["cx"] - t["hand"][0]])
+        b_hands = sorted([body_hx, 2 * b["cx"] - body_hx])
+        for side in (0, 1):
+            half = lay.copy()
+            if side == 0:
+                half[:, cut:] = 0
+            else:
+                half[:, :cut] = 0
+            tx, bx = t_hands[side], b_hands[side]
+            place(canvas, half, s_y, bx - tx * s_x, body_hy - t["hand"][1] * s_y, s_x)
     if outfit or pieces:
         # Visage intact : le col d'une tenue ou d'un haut ne recouvre jamais
         # la peau du visage au-dessus du menton.

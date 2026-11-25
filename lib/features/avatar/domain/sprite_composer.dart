@@ -210,6 +210,7 @@ class SpriteMeta {
     required this.hairSources,
     required this.weapons,
     this.raceBeards = const {},
+    this.pieceSlots = const {},
   });
 
   factory SpriteMeta.fromJson(Map<String, dynamic> json) {
@@ -243,6 +244,11 @@ class SpriteMeta {
         for (final r in json['raceBeards'] as List<dynamic>? ?? const [])
           r as String,
       },
+      pieceSlots: {
+        for (final e
+            in (json['pieces'] as Map<String, dynamic>? ?? const {}).entries)
+          e.key: e.value as String,
+      },
     );
   }
 
@@ -262,6 +268,9 @@ class SpriteMeta {
   /// Races dont les barbes sont dessinées sur leur propre visage
   /// (`beards/<race>/bNN.png`, corps masculin) : posées telles quelles.
   final Set<String> raceBeards;
+
+  /// Emplacement de chaque pièce séparée (`top`, `legs`, `feet`, `hands`).
+  final Map<String, String> pieceSlots;
 
   /// Barbe dessinée sur ce corps même, plutôt qu'adaptée depuis l'humain ?
   bool ownBeard(String bodyId) {
@@ -523,24 +532,48 @@ class SpriteComposer {
         final layer = layers.pieces[k];
         final tint = a.pieces[k].tint;
         final ref = tint == null ? 0.0 : _medianLuminance(layer);
-        _place(
-          out,
-          layer,
-          scaleX: sx,
-          scaleY: sy,
-          originX: f.centreX - t.centreX * sx,
-          originY: f.feet - t.feet * sy,
-          colour: (r, g, b, alpha) {
-            if (alpha == meta.skinAlpha) {
-              return tintPixel(r, g, b, template.skinRef, a.skinColor);
-            }
-            if (tint == null) return (r, g, b);
-            final (tr, tg, tb) = tintPixel(r, g, b, ref, tint);
-            int mix(int o, int d) =>
-                (o + (d - o) * dyeStrength).round().clamp(0, 255);
-            return (mix(r, tr), mix(g, tg), mix(b, tb));
-          },
-        );
+        (int, int, int) colour(int r, int g, int b, int alpha) {
+          if (alpha == meta.skinAlpha) {
+            return tintPixel(r, g, b, template.skinRef, a.skinColor);
+          }
+          if (tint == null) return (r, g, b);
+          final (tr, tg, tb) = tintPixel(r, g, b, ref, tint);
+          int mix(int o, int d) =>
+              (o + (d - o) * dyeStrength).round().clamp(0, 255);
+          return (mix(r, tr), mix(g, tg), mix(b, tb));
+        }
+
+        if (meta.pieceSlots[a.pieces[k].spriteId] != 'hands') {
+          _place(
+            out,
+            layer,
+            scaleX: sx,
+            scaleY: sy,
+            originX: f.centreX - t.centreX * sx,
+            originY: f.feet - t.feet * sy,
+            colour: colour,
+          );
+          continue;
+        }
+        // Gants : chaque gant calé sur la main du personnage (ou de sa
+        // tenue), pas sur celle du gabarit.
+        final cut = (t.centreX + 0.5).floor();
+        final templateHands = [template.handX, 2 * t.centreX - template.handX]
+          ..sort();
+        final bodyHands = [handX, 2 * f.centreX - handX]..sort();
+        for (final left in [true, false]) {
+          final templateHand = templateHands[left ? 0 : 1];
+          final bodyHand = bodyHands[left ? 0 : 1];
+          _place(
+            out,
+            _half(layer, cut, left: left),
+            scaleX: sx,
+            scaleY: sy,
+            originX: bodyHand - templateHand * sx,
+            originY: handY - template.handY * sy,
+            colour: colour,
+          );
+        }
       }
     }
     // Visage intact : le col d'une tenue ou d'un haut ne recouvre jamais la
@@ -815,6 +848,23 @@ class SpriteComposer {
         _put(out, x, y, r, g, b);
       }
     }
+  }
+
+  /// Moitié gauche (colonnes avant [cut]) ou droite de [layer].
+  static RgbaImage _half(RgbaImage layer, int cut, {required bool left}) {
+    final out = RgbaImage(layer.width, layer.height);
+    final from = left ? 0 : math.max(0, cut);
+    final to = left ? math.min(layer.width, cut) : layer.width;
+    for (var y = 0; y < layer.height; y++) {
+      final row = y * layer.width * 4;
+      out.pixels.setRange(
+        row + from * 4,
+        row + to * 4,
+        layer.pixels,
+        row + from * 4,
+      );
+    }
+    return out;
   }
 
   /// [layer] retourné de haut en bas.

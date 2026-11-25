@@ -742,10 +742,20 @@ def piece_layer(base: np.ndarray, edit: np.ndarray, slot: str, neck: int, feet: 
     # Peau dévoilée : seulement pour un haut ou des gants (bras nus) ; sur le
     # bas et les chaussures, les reflets du métal ressemblent à de la peau.
     if slot == "hands":
-        # Gants : seulement ce qui a changé (la peau intacte de l'avant-bras
-        # reste celle du corps, sous une éventuelle manche).
-        out[mask & (color_dist(edit, base) < 40)] = 0
-        out[skin_mask(edit, face_palette(base, skin_sample), 20) & mask] = 0
+        # Gants : toute la main dessinée par le modèle autour de la main du
+        # corps (le gant entier, même là où il ressemble à la peau) ; la peau
+        # qui reste visible (doigts d'une mitaine) garde la marque de peau
+        # pour prendre la teinte du personnage.
+        whole = rows & opaque
+        out[whole] = edit[whole]
+        bare = skin_mask(edit, face_palette(base, skin_sample), 20) & whole
+        # Peau : seulement les vraies plages (doigts nus), pas les reflets
+        # isolés du cuir ou du métal qui ressemblent à la peau.
+        parts, n = ndimage.label(bare, np.ones((3, 3)))
+        if n:
+            sizes = ndimage.sum(bare, parts, range(1, n + 1))
+            bare = np.isin(parts, [i + 1 for i, s_ in enumerate(sizes) if s_ >= 8])
+        out[bare, 3] = SKIN_ALPHA
         # Manches de la chemise de base (beige clair) écartées.
         span = feet - neck
         cx = int(np.mean(np.nonzero(base[..., 3] > 0)[1]))
@@ -755,8 +765,12 @@ def piece_layer(base: np.ndarray, edit: np.ndarray, slot: str, neck: int, feet: 
         shirt = shirt[(v_sh[0] > 0.55) & (s_sh[0] < 0.4)]
         ey, ex = np.nonzero(out[..., 3] > 0)
         if len(ey) and len(shirt):
+            # Seulement la manche d'origine restée telle quelle : un long gant
+            # clair (soie) dessiné à sa place reste.
             d_sh = np.abs(out[ey, ex, None, :3] - shirt[None]).sum(-1).min(1)
-            out[ey[d_sh < 24], ex[d_sh < 24]] = 0
+            same = color_dist(out[ey, ex], base[ey, ex]) < 30
+            drop = (d_sh < 24) & same
+            out[ey[drop], ex[drop]] = 0
         keep = ndimage.binary_opening(out[..., 3] > 0, np.ones((2, 2)))
         out[~keep] = 0
         return out

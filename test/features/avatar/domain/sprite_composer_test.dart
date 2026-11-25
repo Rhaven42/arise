@@ -17,7 +17,7 @@ const Map<String, Object> _head = {
 };
 
 /// Toile 10 × 20 : tête au-dessus de la ligne 5, peau marquée par l'alpha.
-SpriteMeta _meta() => SpriteMeta.fromJson({
+Map<String, Object> _metaJson() => {
   'canvas': [10, 20],
   'skinAlpha': 254,
   'frontAlpha': 253,
@@ -54,7 +54,9 @@ SpriteMeta _meta() => SpriteMeta.fromJson({
       'grip': 0.75,
     },
   },
-});
+};
+
+SpriteMeta _meta() => SpriteMeta.fromJson(_metaJson());
 
 RgbaImage _fill(int w, int h, bool Function(int x, int y) on, List<int> rgba) {
   final img = RgbaImage(w, h);
@@ -297,6 +299,31 @@ void main() {
     expect(_px(out, 2, 13), [0, 255, 0, 255]);
     // Sans tenue complète, les vêtements de base restent dessous.
     expect(_px(out, 4, 10), [90, 60, 40, 255]);
+  });
+
+  test('chaque gant est calé sur la main du personnage', () {
+    // Gabarit : mains en x = 3 et 7, ligne 14 ; corps : x = 2 et 8, ligne 12.
+    final json = _metaJson()..['pieces'] = {'leather_gloves': 'hands'};
+    final gloves = SpriteComposer(SpriteMeta.fromJson(json));
+    final glove = _fill(10, 20, (x, y) => y == 14 && (x == 3 || x == 7), [
+      40,
+      30,
+      20,
+      255,
+    ]);
+    final out = gloves.compose(
+      const CharacterAppearance(
+        bodyId: 'human_male',
+        skinColor: 0xFF00FF00,
+        hairColor: 0,
+        pieces: [WornPiece('leather_gloves')],
+      ),
+      SpriteLayers(body: body, pieces: [glove]),
+    );
+    expect(_px(out, 2, 12), [40, 30, 20, 255]);
+    expect(_px(out, 8, 12), [40, 30, 20, 255]);
+    // Plus rien à l'emplacement des mains du gabarit.
+    expect(_px(out, 3, 14), isNot([40, 30, 20, 255]));
   });
 
   test('les repères réels couvrent chaque race, tenue et arme', () {
