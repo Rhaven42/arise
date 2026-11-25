@@ -149,14 +149,24 @@ class _Banner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 96,
+      alignment: Alignment.bottomLeft,
       padding: const EdgeInsets.symmetric(
         horizontal: AriseSpacing.md,
         vertical: AriseSpacing.sm,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AriseSpacing.radius),
-        gradient: LinearGradient(
-          colors: [palette.backdropTop, palette.wood, palette.backdropBottom],
+        // Aperçu du décor de l'univers, assombri sous le titre.
+        image: DecorationImage(
+          image: AssetImage(palette.backdrop),
+          fit: BoxFit.cover,
+          alignment: const Alignment(0, 0.3),
+          filterQuality: FilterQuality.none,
+          colorFilter: ColorFilter.mode(
+            palette.abyss.withValues(alpha: 0.35),
+            BlendMode.darken,
+          ),
         ),
         border: Border.all(color: palette.gold),
       ),
@@ -164,8 +174,9 @@ class _Banner extends StatelessWidget {
         title,
         style: TextStyle(
           fontFamily: palette.displayFont,
-          fontSize: 24,
+          fontSize: 26,
           color: palette.goldBright,
+          shadows: const [Shadow(blurRadius: 4)],
         ),
       ),
     );
