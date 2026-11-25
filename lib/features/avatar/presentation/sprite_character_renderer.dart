@@ -225,6 +225,14 @@ class _CharacterPainter extends CustomPainter {
     SceneLighting.tavern: [Color(0xFF2A1A10), Color(0xFF6A4220)],
   };
 
+  /// Teinte de l'éclairage posée sur un paysage : jour tel quel, nuit
+  /// bleutée, taverne chaude.
+  static const Map<SceneLighting, Color> _landscapeTints = {
+    SceneLighting.day: Color(0x00000000),
+    SceneLighting.night: Color(0x660A1030),
+    SceneLighting.tavern: Color(0x4D5A2A08),
+  };
+
   /// Teintes des Ombres (silhouettes derrière le héros), par numéro.
   static const List<Color> _shadowTints = [
     Color(0xFF3A2A6A),
@@ -239,16 +247,22 @@ class _CharacterPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
-    final colors = _backdrops[scene.lighting]!;
-    canvas.drawRect(
-      rect,
-      Paint()
-        ..shader = LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: colors,
-        ).createShader(rect),
-    );
+    if (scene.landscape) {
+      // Paysage peint dessous par l'écran : l'éclairage le teinte.
+      final tint = _landscapeTints[scene.lighting]!;
+      if (tint.a > 0) canvas.drawRect(rect, Paint()..color = tint);
+    } else {
+      final colors = _backdrops[scene.lighting]!;
+      canvas.drawRect(
+        rect,
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: colors,
+          ).createShader(rect),
+      );
+    }
     // Cadrage : tout le corps, ou le visage.
     final body = meta.bodies[appearance.bodyId];
     final src = scene.focus == SceneFocus.face && body != null

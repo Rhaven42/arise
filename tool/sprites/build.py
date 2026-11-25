@@ -51,6 +51,10 @@ RACE_BEARDS = ["dwarf", "gnome", "goblin", "minotaur", "orc"]
 # souvent la tête), sauf pour le gnome : son grand visage de dessin animé
 # trompe le recalage, le recalage sur le corps y est plus juste.
 BODY_ALIGNED_BEARDS = {"gnome"}
+# Races à cornes : les cornes passent devant la coiffure.
+HORNED = {"demon", "minotaur"}
+# Alpha des pixels d'un corps dessinés devant la coiffure (cornes).
+FRONT_ALPHA = 253
 # Vignettes : hauteur maximale de l'image générée.
 ICON_MAX_H = 224
 # Repères des pieds et des mains (fractions de la hauteur du corps) : bande

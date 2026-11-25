@@ -413,6 +413,10 @@ const Map<String, double> weaponLength = {
 /// fraction de la hauteur du menton aux pieds.
 const double neckBandRatio = 0.08;
 
+/// Écart maximal comblé entre le cou et le haut d'une tenue, en fraction de
+/// la hauteur du menton aux pieds.
+const double neckGapRatio = 0.05;
+
 /// Armes courtes tenues au repos, lame (ou tête) vers le bas ; les armes
 /// d'hast, bâtons, arcs et mousquet restent debout.
 const Set<String> loweredWeapons = {
@@ -637,6 +641,12 @@ class SpriteComposer {
               (o + (d - o) * dyeStrength).round().clamp(0, 255);
           return (mix(r, tr), mix(g, tg), mix(b, tb));
         },
+      );
+      _fillNeckGap(
+        out,
+        marks,
+        neck,
+        (neckGapRatio * (f.feet - f.neck)).round(),
       );
       // L'arme suit la main de la tenue.
       handX = f.centreX + (template.handX - t.centreX) * sx;
@@ -975,6 +985,34 @@ class SpriteComposer {
           layer.pixels[i + 2],
         );
         _put(out, x, y, cr, cg, cb);
+      }
+    }
+  }
+
+  /// Raccord entre le cou et le haut de la tenue : dans chaque colonne, la
+  /// fente vide sous un pixel peint (cou, menton) prend la couleur du premier
+  /// pixel de tenue en dessous, si elle ne dépasse pas [gap] pixels. Sans ça,
+  /// un trait vide barre la gorge des races au cou épais (minotaure).
+  static void _fillNeckGap(RgbaImage img, Uint8List marks, int neck, int gap) {
+    final g = gap < 1 ? 1 : gap;
+    final y0 = neck - g < 1 ? 1 : neck - g;
+    final y1 = neck + g + 1 < img.height ? neck + g + 1 : img.height;
+    for (var x = 0; x < img.width; x++) {
+      for (var y = y0; y < y1; y++) {
+        if (img.alphaAt(x, y) != 0 || img.alphaAt(x, y - 1) == 0) continue;
+        var end = y;
+        while (end < img.height && end - y <= g && img.alphaAt(x, end) == 0) {
+          end++;
+        }
+        if (end < img.height && end - y <= g) {
+          final from = (end * img.width + x) * 4;
+          for (var k = y; k < end; k++) {
+            final to = (k * img.width + x) * 4;
+            img.pixels.setRange(to, to + 4, img.pixels, from);
+            marks[k * img.width + x] = marks[end * img.width + x];
+          }
+        }
+        break;
       }
     }
   }

@@ -168,6 +168,18 @@ void main() {
     expect(sheet().skinColor, 0xFF45281A);
     expect(find.text('Couleur de peau : Ébène'), findsOneWidget);
 
+    // Le héros se tient devant le paysage du carrefour des mondes.
+    expect(renderer.lastScene?.landscape, isTrue);
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Image &&
+            w.image is AssetImage &&
+            (w.image as AssetImage).assetName == creationBackdrop,
+      ),
+      findsOneWidget,
+    );
+
     // L'onglet Coiffure cadre le visage ; pas de barbe pour une femme.
     await _openTab(tester, 'Coiffure');
     expect(renderer.lastScene?.focus, SceneFocus.face);

@@ -178,6 +178,30 @@ def extremity_scale(src, dst, feet):
     return min(EXTREMITY_MAX, max(EXTREMITY_MIN, k))
 
 
+# Écart maximal comblé entre le cou et le haut d'une tenue (fraction de la
+# hauteur du cou aux pieds, comme l'appli).
+NECK_GAP = 0.05
+
+
+def fill_neck_gap(canvas, marks, neck, span):
+    """Raccord entre le cou et le haut de la tenue : la fente vide sous un
+    pixel peint (cou, menton) prend la couleur du premier pixel de tenue en
+    dessous (comme l'appli)."""
+    H, W = canvas.shape[:2]
+    gap = max(1, round(NECK_GAP * span))
+    for x in range(W):
+        for y in range(max(1, neck - gap), min(H, neck + gap + 1)):
+            if canvas[y, x, 3] or not canvas[y - 1, x, 3]:
+                continue
+            end = y
+            while end < H and end - y <= gap and canvas[end, x, 3] == 0:
+                end += 1
+            if end < H and end - y <= gap:
+                canvas[y:end, x] = canvas[end, x]
+                marks[y:end, x] = marks[end, x]
+            break
+
+
 def glove_boxes(b, t, outfit, s_x, s_y):
     """Boîtes des mains sur la toile : celles du corps, ou celles du gabarit
     portées par la tenue."""
@@ -377,6 +401,7 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
               skip=lambda x, y, px: px[0] == 255 and own_neck[y, x])
         hx = b["cx"] + (t["hand"][0] - t["cx"]) * sx
         hy = oy + t["hand"][1] * s
+        fill_neck_gap(canvas, marks, neck, b["feet"] - b["neck"])
     # Pièces séparées : même cadrage que les tenues, dans l'ordre de dessin.
     t = META["templates"][b["gabarit"]]
     s_y = (b["feet"] - b["neck"]) / (t["feet"] - t["neck"])
