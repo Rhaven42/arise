@@ -445,6 +445,10 @@ const double gloveOutline = 0.22;
 const int gloveEdge = 2;
 const double gloveChroma = 0.06;
 
+/// Sous cette luminance relative (creux entre les doigts), la main garde la
+/// rampe sombre plutôt que l'image du gant.
+const double gloveCrease = 0.12;
+
 /// Bornes de l'échelle d'une botte ou d'un gant ajusté au corps.
 const double extremityMinScale = 0.8;
 const double extremityMaxScale = 1.8;
@@ -734,8 +738,8 @@ class SpriteComposer {
     }
     // Gants : peints sur la main visible du personnage (sa forme exacte),
     // aux couleurs du gant.
-    for (final piece in a.pieces) {
-      final style = meta.gloves[piece.spriteId];
+    for (var k = 0; k < a.pieces.length; k++) {
+      final style = meta.gloves[a.pieces[k].spriteId];
       if (style == null) continue;
       _paintGlove(
         out,
@@ -745,6 +749,7 @@ class SpriteComposer {
         style,
         outfit: outfit != null,
         skinColor: a.skinColor,
+        layer: k < layers.pieces.length ? layers.pieces[k] : null,
       );
     }
     // Visage intact : le col d'une tenue ou d'un haut ne recouvre jamais la
@@ -1038,6 +1043,7 @@ class SpriteComposer {
     GloveStyle style, {
     required bool outfit,
     required int skinColor,
+    RgbaImage? layer,
   }) {
     if (style.ramp.isEmpty) return;
     final f = body.frame;
@@ -1147,9 +1153,14 @@ class SpriteComposer {
           region[i] = 1;
         }
       }
+      // Luminance de la main avant peinture (modelé et creux des doigts).
+      final before = Float64List(w * h);
+      for (var i = 0; i < w * h; i++) {
+        if (region[i] == 1) before[i] = lumAt(i);
+      }
       final lums = <double>[
         for (var i = 0; i < w * h; i++)
-          if (region[i] == 1) lumAt(i),
+          if (region[i] == 1) before[i],
       ];
       if (lums.isEmpty) continue;
       final lo = _percentile(lums, 0.05);
@@ -1160,7 +1171,7 @@ class SpriteComposer {
       for (var i = 0; i < w * h; i++) {
         if (region[i] == 0) continue;
         final y = i ~/ w;
-        final k = ((lumAt(i) - lo) / math.max(hi - lo, 1e-6)).clamp(0.0, 1.0);
+        final k = ((before[i] - lo) / math.max(hi - lo, 1e-6)).clamp(0.0, 1.0);
         final idx = math.min((k * n).floor(), n - 1);
         final (r, g, b) = edgeRows.contains(y)
             ? style.ramp[0]
@@ -1171,6 +1182,36 @@ class SpriteComposer {
           ..[i * 4] = r
           ..[i * 4 + 1] = g
           ..[i * 4 + 2] = b;
+      }
+      // Reliefs du gant généré (plaques, coutures, fourrure) : son image,
+      // ramenée de la main du gabarit sur celle du personnage, colore
+      // l'intérieur de la main ; les creux entre les doigts restent sombres.
+      if (layer == null || side >= t.handBoxes.length) continue;
+      final src = t.handBoxes[side];
+      final k = extremityScale(src, box, feet: false);
+      if (k == null) continue;
+      for (var i = 0; i < w * h; i++) {
+        if (region[i] == 0) continue;
+        final shade = ((before[i] - lo) / math.max(hi - lo, 1e-6)).clamp(
+          0.0,
+          1.0,
+        );
+        if (shade < gloveCrease) continue;
+        final x = i % w;
+        final y = i ~/ w;
+        // Le liseré du bord, peint après dans l'aperçu, reste.
+        if (edgeRows.contains(y)) continue;
+        final lx = (src.centreX + (x + 0.5 - box.centreX) / k).floor();
+        final ly = (src.centreY + (y + 0.5 - box.centreY) / k).floor();
+        if (lx < 0 || ly < 0 || lx >= layer.width || ly >= layer.height) {
+          continue;
+        }
+        final j = (ly * layer.width + lx) * 4;
+        if (layer.pixels[j + 3] != 255) continue;
+        px
+          ..[i * 4] = layer.pixels[j]
+          ..[i * 4 + 1] = layer.pixels[j + 1]
+          ..[i * 4 + 2] = layer.pixels[j + 2];
       }
     }
   }

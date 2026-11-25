@@ -199,7 +199,7 @@ def glove_palms(b, t, outfit, s_x, s_y):
     return sorted([hx, 2 * cx - hx])
 
 
-def paint_glove(canvas, marks, b, t, style, outfit, s_x, s_y, skin_rgb):
+def paint_glove(canvas, marks, b, t, style, outfit, s_x, s_y, skin_rgb, layer=None):
     """Gant peint sur la main visible (peau de la toile) : la forme est
     celle de la main du personnage, les couleurs celles du gant (rampe
     choisie par la luminance de la peau, manchette au-dessus du poignet).
@@ -211,7 +211,8 @@ def paint_glove(canvas, marks, b, t, style, outfit, s_x, s_y, skin_rgb):
         return
     H, W = canvas.shape[:2]
     palms = glove_palms(b, t, outfit, s_x, s_y)
-    for (x0, y0, x1, y1), palm in zip(glove_boxes(b, t, outfit, s_x, s_y), palms):
+    src_boxes = t.get("handBoxes", [])
+    for side, ((x0, y0, x1, y1), palm) in enumerate(zip(glove_boxes(b, t, outfit, s_x, s_y), palms)):
         if x1 <= x0 or y1 <= y0:
             continue
         top = y0 - style["cuff"] * span
@@ -254,6 +255,27 @@ def paint_glove(canvas, marks, b, t, style, outfit, s_x, s_y, skin_rgb):
         hand_ = region & ~cuff
         canvas[hand_, :3] = ramp[idx[hand_]]
         canvas[cuff, :3] = cuff_ramp[np.minimum(idx[cuff], len(cuff_ramp) - 1)]
+        # Reliefs du gant généré (plaques, coutures, fourrure) : son image,
+        # ramenée de la main du gabarit sur celle du personnage, colore
+        # l'intérieur de la main ; les creux entre les doigts du personnage
+        # restent sombres.
+        if layer is not None and side < len(src_boxes):
+            src = src_boxes[side]
+            k = extremity_scale(src, [x0, y0, x1, y1], False)
+            if k is not None:
+                scx, scy = (src[0] + src[2]) / 2, (src[1] + src[3]) / 2
+                dcx, dcy = (x0 + x1) / 2, (y0 + y1) / 2
+                ry, rx = np.nonzero(region)
+                sxs = np.floor(scx + (rx + 0.5 - dcx) / k).astype(int)
+                sys_ = np.floor(scy + (ry + 0.5 - dcy) / k).astype(int)
+                ok = ((sxs >= 0) & (sys_ >= 0) & (sxs < layer.shape[1]) & (sys_ < layer.shape[0]))
+                ry, rx, sxs, sys_ = ry[ok], rx[ok], sxs[ok], sys_[ok]
+                samp = layer[sys_, sxs]
+                use = samp[:, 3] == 255
+                shade = k_shade = np.clip((lums[ry, rx] - lo) / max(hi - lo, 1e-6), 0, 1)
+                use &= shade >= GLOVE_CREASE
+                canvas[ry[use], rx[use], :3] = samp[use, :3]
+                del k_shade
         # Bord du gant : liseré sombre en haut de la manchette (et au bas
         # d'une mitaine).
         edge_rows = [int(np.floor(top))]
@@ -280,6 +302,9 @@ GLOVE_OUTLINE = 0.22
 # toléré avec la peau du personnage.
 GLOVE_EDGE = 2
 GLOVE_CHROMA = 0.06
+# Sous cette luminance relative (creux entre les doigts), la main garde la
+# rampe sombre plutôt que l'image du gant.
+GLOVE_CREASE = 0.12
 
 
 def grow_into(seed, allowed):
@@ -360,7 +385,7 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
     for pid in sorted(pieces, key=lambda q: PIECE_ORDER.index(META["pieces"][q])):
         if pid in META.get("gloves", {}):
             # Gant peint plus bas sur la main elle-même (comme l'appli).
-            gloves.append(pid)
+            gloves.append((pid, img(f"pieces/{pid}_{b['gabarit']}.png")))
             continue
         lay = img(f"pieces/{pid}_{b['gabarit']}.png")
         bare = lay[..., 3] == META["skinAlpha"]
@@ -406,8 +431,9 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
                 half[:, :cut] = 0
             tx, bx = t_hands[side], b_hands[side]
             place(canvas, half, s_y, bx - tx * s_x, hy - t["hand"][1] * s_y, s_x)
-    for pid in gloves:
-        paint_glove(canvas, marks, b, t, META["gloves"][pid], bool(outfit), s_x, s_y, skin)
+    for pid, glove_lay in gloves:
+        paint_glove(canvas, marks, b, t, META["gloves"][pid], bool(outfit), s_x, s_y, skin,
+                    glove_lay)
     if outfit or pieces:
         # Visage intact : le col d'une tenue ou d'un haut ne recouvre jamais
         # la peau du visage au-dessus du menton.
