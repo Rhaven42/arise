@@ -50,6 +50,11 @@ RACE_BEARDS = ["dwarf", "gnome", "goblin", "minotaur", "orc"]
 # souvent la tête), sauf pour le gnome : son grand visage de dessin animé
 # trompe le recalage, le recalage sur le corps y est plus juste.
 BODY_ALIGNED_BEARDS = {"gnome"}
+# Vignettes : hauteur maximale de l'image générée, et zone (fraction de la
+# hauteur du personnage) montrée pour chaque emplacement de pièce.
+ICON_MAX_H = 224
+ICON_SLOT_ROWS = {"top": (0.12, 0.58), "legs": (0.44, 1.0), "feet": (0.76, 1.0),
+                  "hands": (0.36, 0.64)}
 # Races à cornes : les cornes passent devant la coiffure.
 HORNED = {"demon", "minotaur"}
 # Alpha des pixels d'un corps dessinés devant la coiffure (cornes).
@@ -276,10 +281,22 @@ def main() -> None:
         box = img.getchannel("A").getbbox()
         img.crop(box).save(os.path.join(icons, name + ".png"), optimize=True)
 
+    # Tenues et pièces : l'image générée telle quelle (personnage entier
+    # qui la porte, comme sur SpriteCook) ; une pièce est cadrée sur sa zone.
+    def generated(name: str) -> Image.Image:
+        im = Image.open(raw(name)).convert("RGBA")
+        im = im.crop(im.getchannel("A").getbbox())
+        if im.height > ICON_MAX_H:
+            s = ICON_MAX_H / im.height
+            im = im.resize((max(1, round(im.width * s)), ICON_MAX_H), Image.NEAREST)
+        return im
+
     for oid in outfits["outfits"]:
-        crop_save(Image.open(os.path.join(OUT, "outfits", f"{oid}_mm.png")).convert("RGBA"), oid)
-    for pid in meta["pieces"]:
-        crop_save(Image.open(os.path.join(OUT, "pieces", f"{pid}_mm.png")).convert("RGBA"), pid)
+        crop_save(generated(f"armor_{oid}_mm"), oid)
+    for pid, slot in meta["pieces"].items():
+        im = generated(f"piece_{pid}_mm")
+        top, bottom = ICON_SLOT_ROWS[slot]
+        crop_save(im.crop((0, round(top * im.height), im.width, round(bottom * im.height))), pid)
     for wid in meta["weapons"]:
         crop_save(Image.open(os.path.join(OUT, "weapons", f"{wid}.png")).convert("RGBA"), wid)
     for i in range(1, HAIR_COUNT + 1):
