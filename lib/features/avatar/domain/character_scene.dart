@@ -13,23 +13,33 @@ class CharacterScene {
   const CharacterScene({
     this.lighting = SceneLighting.tavern,
     this.focus = SceneFocus.body,
+    this.landscape = false,
   });
 
   final SceneLighting lighting;
   final SceneFocus focus;
 
-  CharacterScene copyWith({SceneLighting? lighting, SceneFocus? focus}) =>
-      CharacterScene(
-        lighting: lighting ?? this.lighting,
-        focus: focus ?? this.focus,
-      );
+  /// Le personnage est peint devant un paysage fourni par l'écran :
+  /// l'éclairage ne fait plus que teinter ce paysage (pas de dégradé).
+  final bool landscape;
+
+  CharacterScene copyWith({
+    SceneLighting? lighting,
+    SceneFocus? focus,
+    bool? landscape,
+  }) => CharacterScene(
+    lighting: lighting ?? this.lighting,
+    focus: focus ?? this.focus,
+    landscape: landscape ?? this.landscape,
+  );
 
   @override
   bool operator ==(Object other) =>
       other is CharacterScene &&
       other.lighting == lighting &&
-      other.focus == focus;
+      other.focus == focus &&
+      other.landscape == landscape;
 
   @override
-  int get hashCode => Object.hash(lighting, focus);
+  int get hashCode => Object.hash(lighting, focus, landscape);
 }

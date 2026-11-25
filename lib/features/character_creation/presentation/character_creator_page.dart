@@ -143,6 +143,7 @@ class _CharacterCreatorPageState extends ConsumerState<CharacterCreatorPage>
                     focus: _tabs.index == CreatorTab.hair.index
                         ? SceneFocus.face
                         : SceneFocus.body,
+                    landscape: true,
                   ),
                   snapshots: _snapshots,
                   showBefore: _showBefore,
@@ -191,6 +192,9 @@ class _CharacterCreatorPageState extends ConsumerState<CharacterCreatorPage>
 }
 
 /// Rendu du personnage avec les réglages de scène (éclairage, avant / après).
+/// Décor de l'écran de création (`assets/backgrounds/creation.png`).
+const String creationBackdrop = 'assets/backgrounds/creation.png';
+
 class _Preview extends ConsumerWidget {
   const _Preview({
     required this.state,
@@ -219,6 +223,15 @@ class _Preview extends ConsumerWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
+          // Paysage commun à tous les univers : le carrefour des mondes,
+          // le héros debout sur le chemin.
+          Image.asset(
+            creationBackdrop,
+            fit: BoxFit.cover,
+            alignment: const Alignment(0, 0.4),
+            filterQuality: FilterQuality.none,
+            excludeFromSemantics: true,
+          ),
           Semantics(
             label: l10n.characterPreviewSemantics(
               describeCharacter(l10n, shown),

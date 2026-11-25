@@ -2109,5 +2109,10 @@
   "asset_id": "07fea807-5940-4c4e-8f27-adf0cafb38d1",
   "sha12": "b938f51b6a31",
   "label": "fond sea"
+ },
+ "background_creation": {
+  "asset_id": "9f1805d4-c011-4fdf-ae85-67b2ade579b5",
+  "sha12": "a82ef4334491",
+  "label": "fond création"
  }
 }
