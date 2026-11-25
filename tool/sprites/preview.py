@@ -159,6 +159,9 @@ def place_warp(canvas, layer, warp, colour=None, skip=None):
             canvas[y, x, 3] = 255
 
 
+# Marge de la barbe au-delà du contour de la joue (pixels).
+JAW_MARGIN = 0.5
+
 PIECE_ORDER = ["legs", "feet", "top", "hands"]
 
 
@@ -221,8 +224,20 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         m = lay[..., 3] > 0
         ref = float(np.median(lum(lay[m, :3])))
         src = b if own else META["hairSources"]["beard"]
+
+        def jaw(x, y):
+            # Au-dessus du menton, la barbe suit le contour du visage : rien
+            # au-delà de la joue (comme l'appli).
+            if y > b["neck"]:
+                return False
+            i = y - int(b["skull"][1])
+            prof = b["profile"]
+            half = prof[i] if 0 <= i < len(prof) and prof[i] >= 0.25 * (b["skull"][2] - b["skull"][0]) else None
+            cx = (b["skull"][0] + b["skull"][2]) / 2
+            return half is not None and abs(x + 0.5 - cx) > half + JAW_MARGIN
+
         place_warp(canvas, lay, head_warp(src, b, canvas.shape[0], True),
-                   lambda px: tint_hair(px[:3], ref, beard_color or hair_color))
+                   lambda px: tint_hair(px[:3], ref, beard_color or hair_color), skip=jaw)
     if hair:
         lay = img(f"hair/{hair}.png")
         m = lay[..., 3] > 0
