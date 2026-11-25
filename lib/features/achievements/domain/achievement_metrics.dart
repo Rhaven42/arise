@@ -3,6 +3,7 @@ import 'package:arise/core/config/game_config.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/exercises/domain/stat_id.dart';
 import 'package:arise/features/muscle_analysis/domain/muscle_volume.dart';
+import 'package:arise/features/planning/domain/program.dart';
 import 'package:arise/features/progression/domain/civil_date.dart';
 import 'package:arise/features/progression/domain/progression_state.dart';
 import 'package:arise/features/quests/domain/quest_board_rules.dart';
@@ -24,7 +25,6 @@ class AchievementInputs {
     this.customExercises = 0,
     this.programs = 0,
     this.eventsCompleted = 0,
-    this.realmsConquered = const {},
   });
 
   final List<CompletedSession> sessions;
@@ -41,10 +41,6 @@ class AchievementInputs {
   final int customExercises;
   final int programs;
   final int eventsCompleted;
-
-  /// Zones conquises (`north`, `sea`, `arcane`) ; vide tant qu'aucune zone
-  /// n'a été parcourue jusqu'au bout.
-  final Set<String> realmsConquered;
 }
 
 /// Valeur de chaque mesure suivie par les hauts faits.
@@ -176,9 +172,7 @@ Map<AchievementMetric, int> computeAchievementMetrics(
     }).length,
     AchievementMetric.restDaysRespected: _restDaysRespected(inputs),
     AchievementMetric.painStops: sessions.where((s) => s.stoppedForPain).length,
-    AchievementMetric.northRealmConquered: _conquered(inputs, 'north'),
-    AchievementMetric.seaRealmConquered: _conquered(inputs, 'sea'),
-    AchievementMetric.arcaneRealmConquered: _conquered(inputs, 'arcane'),
+    ..._realmCalls(completed, inputs.exercisesById, config),
   };
 }
 
@@ -227,5 +221,70 @@ int _restDaysRespected(AchievementInputs inputs) {
   return count;
 }
 
-int _conquered(AchievementInputs inputs, String realm) =>
-    inputs.realmsConquered.contains(realm) ? 1 : 0;
+/// Stat dominante d'une séance : celle qui pèse le plus dans ses séries
+/// faites (répartition des stats de chaque exercice).
+StatId? dominantStat(
+  CompletedSession session,
+  Map<String, Exercise> exercisesById,
+) {
+  final weights = <StatId, double>{};
+  for (final set in session.sets) {
+    if (set.skipped) continue;
+    final exercise = exercisesById[set.exerciseId];
+    if (exercise == null) continue;
+    for (final entry in exercise.stats.entries) {
+      weights[entry.key] = (weights[entry.key] ?? 0) + entry.value;
+    }
+  }
+  if (weights.isEmpty) return null;
+  return weights.entries.reduce((a, b) => b.value > a.value ? b : a).key;
+}
+
+/// Hauts faits d'appel des univers : meilleur score sur une fenêtre
+/// glissante de `realmWindowDays` jours.
+Map<AchievementMetric, int> _realmCalls(
+  List<CompletedSession> completed,
+  Map<String, Exercise> exercisesById,
+  GameConfig config,
+) {
+  final c = config.achievements;
+  final days = [
+    for (final s in completed)
+      (
+        day: CivilDate.ofLocal(s.startedAt),
+        stat: dominantStat(s, exercisesById),
+        flexible: s.format == ProgramFormat.mobility,
+      ),
+  ]..sort((a, b) => a.day.compareTo(b.day));
+  final arcaneTarget = c.definitions
+      .firstWhere((d) => d.metric == AchievementMetric.arcaneCallSessions)
+      .threshold;
+  var north = 0;
+  var sea = 0;
+  var arcane = 0;
+  var start = 0;
+  for (var end = 0; end < days.length; end++) {
+    while (days[end].day.daysSince(days[start].day) >= c.realmWindowDays) {
+      start++;
+    }
+    final window = days.sublist(start, end + 1);
+    final strength = window.where((d) => d.stat == StatId.strength).length;
+    final endurance = window.where((d) => d.stat == StatId.endurance).length;
+    final flexible = window.where((d) => d.flexible).length;
+    // Arcanes : toutes les séances, sans dépasser ce que permettent les
+    // séances de souplesse (il en faut arcaneFlexibilitySessions pour
+    // atteindre le seuil).
+    final cap = c.arcaneFlexibilitySessions == 0
+        ? window.length
+        : flexible * arcaneTarget ~/ c.arcaneFlexibilitySessions;
+    final all = window.length < cap ? window.length : cap;
+    if (strength > north) north = strength;
+    if (endurance > sea) sea = endurance;
+    if (all > arcane) arcane = all;
+  }
+  return {
+    AchievementMetric.northCallSessions: north,
+    AchievementMetric.seaCallSessions: sea,
+    AchievementMetric.arcaneCallSessions: arcane,
+  };
+}

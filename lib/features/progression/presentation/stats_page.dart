@@ -128,7 +128,7 @@ class _StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
-    final name = l10n.statName(stat.name);
+    final name = statLabel(l10n, stat);
     final value = state.stat(stat);
     final allocated = state.allocatedIn(stat);
     final toward = state.statXpTowardNextPoint(stat);
@@ -190,7 +190,7 @@ class _StatCard extends StatelessWidget {
               key: StatsPage.allocateKey(stat),
               tooltip: l10n.homeAllocate(name),
               iconSize: 32,
-              icon: const Icon(Icons.add_circle, color: AriseColors.goldBright),
+              icon: Icon(Icons.add_circle, color: AriseColors.goldBright),
               onPressed: onAllocate,
             ),
         ],

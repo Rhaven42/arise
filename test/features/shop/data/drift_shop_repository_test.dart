@@ -30,7 +30,7 @@ void main() {
 
     expect(await shop.buy(cape), PurchaseIssue.alreadyOwned);
     expect(
-      await shop.buy(ItemArticle(itemById('staff_ember')!)),
+      await shop.buy(ItemArticle(itemById('golden_king')!)),
       PurchaseIssue.notEnoughCoins,
     );
     expect((await progression.read())?.coins, 70);

@@ -37,6 +37,7 @@ import 'package:arise/features/shop/presentation/shop_page.dart';
 import 'package:arise/features/titles/presentation/titles_page.dart';
 import 'package:arise/features/trials/presentation/trial_page.dart';
 import 'package:arise/features/workout_player/presentation/workout_page.dart';
+import 'package:arise/features/worlds/presentation/worlds_page.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -192,6 +193,10 @@ GoRouter appRouter(Ref ref) {
           GoRoute(
             path: AppRoutes.inventorySegment,
             builder: (_, _) => const InventoryPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.worldsSegment,
+            builder: (_, _) => const WorldsPage(),
           ),
           GoRoute(
             path: AppRoutes.healthSegment,

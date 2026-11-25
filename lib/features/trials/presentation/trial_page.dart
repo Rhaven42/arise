@@ -7,6 +7,7 @@ import 'package:arise/core/theme/arise_spacing.dart';
 import 'package:arise/core/theme/arise_typography.dart';
 import 'package:arise/features/exercises/domain/exercise.dart';
 import 'package:arise/features/exercises/presentation/exercise_providers.dart';
+import 'package:arise/features/progression/presentation/progression_labels.dart';
 import 'package:arise/features/trials/domain/trial_rules.dart';
 import 'package:arise/features/trials/presentation/trial_labels.dart';
 import 'package:arise/features/trials/presentation/trials_providers.dart';
@@ -25,7 +26,7 @@ String? trialBlockedLabel(AppLocalizations l10n, TrialAccess access) =>
         bossLabel(l10n, trial),
       ),
       TrialStatTooLow(:final trial, :final current) => l10n.trialStatTooLow(
-        l10n.statName(trial.requiredStat.name),
+        statLabel(l10n, trial.requiredStat),
         current,
         trial.requiredValue,
         bossLabel(l10n, trial),
@@ -110,9 +111,7 @@ class TrialPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.trialCardTitle)),
       body: access == null || trial == null
-          ? const Center(
-              child: CircularProgressIndicator(color: AriseColors.gold),
-            )
+          ? Center(child: CircularProgressIndicator(color: AriseColors.gold))
           : ListView(
               padding: const EdgeInsets.all(AriseSpacing.md),
               children: [
@@ -135,7 +134,7 @@ class TrialPage extends ConsumerWidget {
                 const SizedBox(height: AriseSpacing.sm),
                 Text(
                   l10n.trialRequirement(
-                    l10n.statName(trial.requiredStat.name),
+                    statLabel(l10n, trial.requiredStat),
                     trial.requiredValue,
                   ),
                   style: textTheme.bodyLarge,

@@ -27,8 +27,8 @@ class _BackdropPainter extends CustomPainter {
       ..drawRect(
         rect,
         Paint()
-          ..shader = const RadialGradient(
-            center: Alignment(-0.6, -0.4),
+          ..shader = RadialGradient(
+            center: const Alignment(-0.6, -0.4),
             radius: 1.4,
             colors: [AriseColors.backdropTop, AriseColors.backdropBottom],
           ).createShader(rect),

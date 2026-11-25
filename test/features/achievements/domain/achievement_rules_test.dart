@@ -78,20 +78,60 @@ void main() {
       expect(metrics[AchievementMetric.activeMinutes], 40);
     });
 
-    test('zones conquises : 1 par zone terminée', () {
-      expect(_metrics(const [])[AchievementMetric.northRealmConquered], 0);
-      final metrics = computeAchievementMetrics(
-        AchievementInputs(
-          sessions: const [],
-          exercisesById: _exercises,
-          progression: ProgressionState.initial(const CivilDate(2026, 11, 1)),
-          now: DateTime(2026, 11, 30),
-          realmsConquered: const {'sea'},
-        ),
+    test('appel du Nord : séances de Force sur 60 jours glissants', () {
+      final day0 = DateTime(2026, 1, 1, 12);
+      // 20 séances de Force en 40 jours, puis 10 autres 90 jours plus tard.
+      final metrics = _metrics([
+        for (var i = 0; i < 20; i++) _session(day0.add(Duration(days: i * 2))),
+        for (var i = 0; i < 10; i++)
+          _session(day0.add(Duration(days: 130 + i))),
+      ], now: DateTime(2026, 6, 2));
+      expect(metrics[AchievementMetric.northCallSessions], 20);
+      expect(metrics[AchievementMetric.seaCallSessions], 0);
+    });
+
+    test('appel des Mers : séances dominées par l’Endurance', () {
+      final metrics = _metrics([
+        for (var i = 0; i < 3; i++)
+          _session(
+            DateTime(2026, 11, 2 + i, 12),
+            format: ProgramFormat.cardio,
+            sets: const [
+              CompletedSet(exerciseId: 'running', activeSeconds: 900),
+            ],
+          ),
+        _session(DateTime(2026, 11, 8, 12)),
+      ]);
+      expect(metrics[AchievementMetric.seaCallSessions], 3);
+      expect(metrics[AchievementMetric.northCallSessions], 1);
+    });
+
+    test('appel des Arcanes : plafonné par les séances de souplesse', () {
+      final c = gameConfig.achievements;
+      final target = c.definitions
+          .firstWhere((d) => d.metric == AchievementMetric.arcaneCallSessions)
+          .threshold;
+      final day0 = DateTime(2026, 9, 1, 12);
+      List<CompletedSession> sessions(int flexible) => [
+        for (var i = 0; i < target; i++)
+          _session(
+            day0.add(Duration(days: i)),
+            format: i < flexible
+                ? ProgramFormat.mobility
+                : ProgramFormat.strength,
+          ),
+      ];
+      final few = c.arcaneFlexibilitySessions - 1;
+      expect(
+        _metrics(sessions(few))[AchievementMetric.arcaneCallSessions],
+        few * target ~/ c.arcaneFlexibilitySessions,
       );
-      expect(metrics[AchievementMetric.seaRealmConquered], 1);
-      expect(metrics[AchievementMetric.northRealmConquered], 0);
-      expect(metrics[AchievementMetric.arcaneRealmConquered], 0);
+      expect(
+        _metrics(
+          sessions(c.arcaneFlexibilitySessions),
+        )[AchievementMetric.arcaneCallSessions],
+        target,
+      );
     });
 
     test('aube, soir et jour de l’an en heure locale', () {

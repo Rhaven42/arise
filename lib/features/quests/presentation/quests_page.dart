@@ -30,9 +30,7 @@ class QuestsPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.questsPageTitle)),
       body: view == null
-          ? const Center(
-              child: CircularProgressIndicator(color: AriseColors.gold),
-            )
+          ? Center(child: CircularProgressIndicator(color: AriseColors.gold))
           : ListView(
               padding: const EdgeInsets.all(AriseSpacing.md),
               children: [

@@ -48,7 +48,12 @@ void main() {
     );
     await tester.dragUntilVisible(
       outfits,
-      find.byKey(ShopPage.filtersKey),
+      find
+          .descendant(
+            of: find.byKey(ShopPage.filtersKey),
+            matching: find.byType(ListView),
+          )
+          .first,
       const Offset(-150, 0),
     );
     await tester.tap(outfits);
@@ -108,11 +113,18 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('Inventaire'), findsOneWidget);
     // Grille du sac : la fiche de l'objet pour le porter.
+    // Le message de la boutique ne masque plus la grille.
+    tester
+        .state<ScaffoldMessengerState>(find.byType(ScaffoldMessenger).first)
+        .removeCurrentSnackBar();
     await _scrollTo(
       tester,
       find.text("Cuir de l'Éveillé"),
       InventoryPage.listKey,
     );
+    // Remonte la vignette au-dessus du bas de l'écran.
+    await tester.drag(find.byKey(InventoryPage.listKey), const Offset(0, -200));
+    await tester.pump();
     await tester.tap(find.text("Cuir de l'Éveillé"));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Équiper'));
@@ -141,6 +153,36 @@ void main() {
       (await container.read(progressionRepositoryProvider).read())?.coins,
       400,
     );
+    await tester.unmountApp();
+  });
+
+  testWidgets('filtres par univers et par matière', (tester) async {
+    final container = createTestContainer(renderer: FakeCharacterRenderer());
+    await container.read(characterRepositoryProvider).save(defaultSheet());
+    await tester.openWithProfile(container, AppRoutes.shop);
+    await tester.pump(const Duration(milliseconds: 300));
+    Finder chip(String label) => find.descendant(
+      of: find.byKey(ShopPage.filtersKey),
+      matching: find.widgetWithText(ChoiceChip, label),
+    );
+
+    // Univers Pirate : ses tenues seulement, toutes matières confondues.
+    await tester.tap(chip('Pirate'));
+    await tester.pump();
+    expect(find.text('Capitaine des Mers'), findsOneWidget);
+    expect(find.text('Chasseur de Sang'), findsOneWidget);
+    expect(find.text("Cuir de l'Éveillé"), findsNothing);
+
+    // Plus la matière Cuir : le manteau de tissu du capitaine disparaît.
+    await tester.tap(chip('Cuir'));
+    await tester.pump();
+    expect(find.text('Capitaine des Mers'), findsNothing);
+    expect(find.text('Chasseur de Sang'), findsOneWidget);
+
+    // Tous les univers en cuir : le cuir médiéval revient.
+    await tester.tap(chip('Tous'));
+    await tester.pump();
+    expect(find.text("Cuir de l'Éveillé"), findsOneWidget);
     await tester.unmountApp();
   });
 

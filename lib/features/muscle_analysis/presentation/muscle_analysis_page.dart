@@ -82,8 +82,8 @@ class _MuscleAnalysisPageState extends ConsumerState<MuscleAnalysisPage> {
               onMuscleTap: (muscle) => setState(() => _selected = muscle),
             ),
             AsyncError() => Text(l10n.errorGeneric),
-            _ => const Padding(
-              padding: EdgeInsets.all(AriseSpacing.xl),
+            _ => Padding(
+              padding: const EdgeInsets.all(AriseSpacing.xl),
               child: Center(
                 child: CircularProgressIndicator(color: AriseColors.gold),
               ),

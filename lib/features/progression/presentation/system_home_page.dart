@@ -65,9 +65,7 @@ class SystemHomePage extends ConsumerWidget {
         ],
       ),
       body: profile == null || progression == null
-          ? const Center(
-              child: CircularProgressIndicator(color: AriseColors.gold),
-            )
+          ? Center(child: CircularProgressIndicator(color: AriseColors.gold))
           : _SystemHomeBody(
               profile: profile,
               view: progression,
@@ -176,6 +174,7 @@ class _SystemHomeBody extends ConsumerWidget {
               AppRoutes.analysis,
             ),
             (Icons.favorite_outline, l10n.healthTitle, AppRoutes.health),
+            (Icons.public, l10n.homeShortcutWorlds, AppRoutes.worlds),
           ],
         ),
       ],
@@ -393,7 +392,7 @@ class _StatsPanel extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Icon(Icons.chevron_right, color: AriseColors.gold),
+                Icon(Icons.chevron_right, color: AriseColors.gold),
               ],
             ),
           ),
@@ -414,16 +413,16 @@ class _StatsPanel extends StatelessWidget {
                       StatGem(
                         color: statGemColor(stat),
                         value: state.stat(stat),
-                        label: l10n.statName(stat.name),
+                        label: statLabel(l10n, stat),
                         semanticsLabel: l10n.homeStatValue(
-                          l10n.statName(stat.name),
+                          statLabel(l10n, stat),
                           state.stat(stat),
                         ),
                       ),
                       if (canAllocate)
                         IconButton(
-                          tooltip: l10n.homeAllocate(l10n.statName(stat.name)),
-                          icon: const Icon(
+                          tooltip: l10n.homeAllocate(statLabel(l10n, stat)),
+                          icon: Icon(
                             Icons.add_circle_outline,
                             color: AriseColors.goldBright,
                           ),
@@ -515,7 +514,7 @@ class _TodayStrip extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.local_fire_department, color: AriseColors.ember),
+              Icon(Icons.local_fire_department, color: AriseColors.ember),
               const SizedBox(width: AriseSpacing.xs),
               Expanded(
                 child: Text(

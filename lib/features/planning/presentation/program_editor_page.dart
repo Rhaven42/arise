@@ -29,7 +29,7 @@ class ProgramEditorPage extends ConsumerWidget {
     final programs = ref.watch(programsProvider);
     final exercises = ref.watch(exercisesByIdProvider);
     if (programs is! AsyncData || exercises is! AsyncData) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(child: CircularProgressIndicator(color: AriseColors.gold)),
       );
     }

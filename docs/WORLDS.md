@@ -1,4 +1,6 @@
-# WORLDS.md — Progression multi-mondes (à réaliser plus tard)
+# WORLDS.md — Progression multi-mondes
+
+> **25/11/2026** : première version livrée, validée par la propriétaire : un haut fait par univers (60 jours), ambiance complète par univers, progression commune. Voir SPEC.md §42. Le reste de ce cahier (paliers, factions, carte du poids, maîtrise, défis) n'est pas commencé.
 
 > Cahier des charges remis par la propriétaire du projet le 12/11/2026, **à mettre en route une fois terminés les chantiers en cours** (comptes locaux, équipements, santé). Il a été conservé tel quel ci-dessous. Les « Points à trancher » en fin de document doivent être validés avec elle avant de commencer (processus par phase de CLAUDE.md).
 

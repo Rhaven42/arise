@@ -285,7 +285,7 @@ class _SessionChip extends StatelessWidget {
             if (program case final program?)
               IconButton(
                 tooltip: l10n.workoutStartTooltip(program.name),
-                icon: const Icon(Icons.play_circle, color: AriseColors.gold),
+                icon: Icon(Icons.play_circle, color: AriseColors.gold),
                 onPressed: () => context.go(AppRoutes.workout(program.id)),
               ),
           ],

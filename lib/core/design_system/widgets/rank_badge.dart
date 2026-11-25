@@ -37,7 +37,7 @@ class RankBadge extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: const RadialGradient(
+            gradient: RadialGradient(
               colors: [AriseColors.stoneLight, AriseColors.stoneDark],
             ),
             border: Border.all(color: accent, width: 3),

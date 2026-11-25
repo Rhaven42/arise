@@ -66,6 +66,13 @@ Créations de la propriétaire du projet, générées avec Suno sous abonnement 
 - `assets/music/shop.mp3` (« Merchant's Warmth ») : boutique et inventaire ;
 - `assets/sounds/level_up.mp3` (« Level Up! ») : jingle de passage de niveau, la musique s'efface dessous.
 
+Musiques des univers (mêmes origine et droits, même compression ; noms des fichiers envoyés par la propriétaire) :
+- `assets/music/arcane/` (Magie) : `title.mp3` (« Ouverture Magie »), `system.mp3` (« Stats Magie »), `shop.mp3` (« Boutique Magie »), `level_up.mp3` (« Level Up Magie ») ;
+- `assets/music/north/` (Viking) : `system.mp3` (« Stats Viking »).
+Une piste absente d'un univers reprend celle du Médiéval (`MusicVariant`, `world_style.dart`). Pour en ajouter une : la déposer sous le même nom dans le dossier de l'univers et l'ajouter à `musicVariantOf`.
+
+Polices des univers (SIL Open Font License, fichier `OFL.txt` à côté de chacune, tirées de google/fonts) : Metamorphous (Magie), Uncial Antiqua (Viking), Pirata One (Pirate).
+
 Les bips du lecteur de séance (`countdown`, `start`, `rest`, `finish`) restent générés par `tool/sounds.py`. Pas de musique pendant une séance. La musique se mélange aux autres sons du téléphone, respecte le mode silencieux et se règle dans Paramètres → Musique.
 
 ## 6. Auras et Ombres (phase 9)

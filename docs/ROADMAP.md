@@ -144,8 +144,17 @@
 - [x] Armes tenues en main (main devant la poignée, armes courtes lame vers le bas) ; menton intact sous les tenues
 - [x] Mannequins des exercices vérifiés sur tout le cycle (outil et test automatique)
 - [x] Tenues sombres (5) et nouvelles armes (arcs, mousquet, lance, baguette, faux, lame et dague sombres)
-- [x] Tenues pirate, viking et mage royal débloquées par les hauts faits de zone (Nord, Mers, Arcanes)
+- [x] Tenues pirate, viking et mage royal débloquées par les hauts faits de zone (remplacé par les univers)
 - [x] Pièces séparées sans peau ajoutée ; barbes dessinées sur le visage de chaque race (nain, gnome, gobelin, minotaure, orc)
+
+## Univers (25/11/2026)
+- [x] Haut fait d'appel sur 60 jours pour Magie, Viking et Pirate
+- [x] Ambiance par univers : palette, police des titres, musiques, noms des stats, de l'XP et de la monnaie
+- [x] Écran « Univers » (choix, verrou, avancement)
+- [x] Tenues, pièces et armes rangées par univers et matière ; filtres de la boutique et du sac
+- [x] Vignettes des tenues et pièces tirées des images générées ; barbes recalées sur le visage
+- [ ] Nouvelles tenues par univers et matière (crédits SpriteCook à recharger)
+- [ ] Musiques Viking et Pirate manquantes (à fournir par la propriétaire)
 
 ## Phase 12 — Finitions et publication
 - [x] Sons et ambiance (musiques et jingle fournis par la propriétaire du projet, 11/11/2026)

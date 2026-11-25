@@ -55,6 +55,8 @@ flutter:
     - assets/svg/body_back.svg
     - assets/sounds/
     - assets/music/
+    - assets/music/arcane/
+    - assets/music/north/
     - assets/sprites/
     - assets/sprites/bodies/
     - assets/sprites/hair/
@@ -80,3 +82,12 @@ flutter:
         - asset: assets/fonts/im_fell_english/IMFellEnglish-Regular.ttf
         - asset: assets/fonts/im_fell_english/IMFellEnglish-Italic.ttf
           style: italic
+    - family: PirataOne
+      fonts:
+        - asset: assets/fonts/pirata_one/PirataOne-Regular.ttf
+    - family: UncialAntiqua
+      fonts:
+        - asset: assets/fonts/uncial_antiqua/UncialAntiqua-Regular.ttf
+    - family: Metamorphous
+      fonts:
+        - asset: assets/fonts/metamorphous/Metamorphous-Regular.ttf

@@ -50,7 +50,7 @@ class ProgramsPage extends ConsumerWidget {
               ),
               trailing: IconButton(
                 tooltip: l10n.workoutStartTooltip(program.name),
-                icon: const Icon(Icons.play_circle, color: AriseColors.gold),
+                icon: Icon(Icons.play_circle, color: AriseColors.gold),
                 onPressed: () => context.go(AppRoutes.workout(program.id)),
               ),
               onTap: () => context.go(AppRoutes.programEdit(program.id)),
@@ -58,9 +58,7 @@ class ProgramsPage extends ConsumerWidget {
           },
         ),
         AsyncError() => Center(child: Text(l10n.errorGeneric)),
-        _ => const Center(
-          child: CircularProgressIndicator(color: AriseColors.gold),
-        ),
+        _ => Center(child: CircularProgressIndicator(color: AriseColors.gold)),
       },
     );
   }

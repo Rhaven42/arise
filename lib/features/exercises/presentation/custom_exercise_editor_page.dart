@@ -36,7 +36,7 @@ class CustomExerciseEditorPage extends ConsumerWidget {
       AsyncData(:final value) => _Editor(
         existing: value.where((e) => e.id == id).firstOrNull,
       ),
-      _ => const Scaffold(
+      _ => Scaffold(
         body: Center(child: CircularProgressIndicator(color: AriseColors.gold)),
       ),
     };
