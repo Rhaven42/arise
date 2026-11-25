@@ -15,6 +15,7 @@ import os
 import sys
 
 import numpy as np
+from scipy import ndimage
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -59,6 +60,64 @@ ICON_MAX_H = 224
 FOOT_BAND = 0.075
 HAND_BAND = (0.05, 0.06)
 HAND_REACH = 0.07
+# Gants peints sur la main du personnage : manchette au-dessus de la boîte de
+# la main (fraction de la hauteur du cou aux pieds), doigts couverts ou non.
+GLOVES = {
+    "leather_gloves": {"cuff": 0.03, "fingers": True},
+    "silk_gloves": {"cuff": 0.13, "fingers": True},
+    "steel_gauntlets": {"cuff": 0.06, "fingers": True},
+    "fingerless_gloves": {"cuff": 0.025, "fingers": False},
+    "fur_bracers": {"cuff": 0.07, "fingers": True},
+}
+RAMP_STEPS = 12
+
+
+def glove_ramps(lay: np.ndarray) -> tuple[list, list]:
+    """Rampes de couleurs d'un gant (du plus sombre au plus clair), prises
+    sur son calque : la main (bas) et la manchette (haut)."""
+    a = lay[..., 3] == 255
+    lum_ = (0.299 * lay[..., 0] + 0.587 * lay[..., 1] + 0.114 * lay[..., 2]) / 255
+    a &= lum_ > 0.1  # sans le contour noir
+    ys = np.nonzero(a.any(axis=1))[0]
+    if len(ys) == 0:
+        return [], []
+    split = int(ys[0] + 0.35 * (ys[-1] - ys[0]))
+
+    def ramp(mask):
+        px = lay[mask][:, :3].astype(float)
+        if len(px) == 0:
+            return []
+        # Couleur dominante seulement (teinte et saturation les plus
+        # fréquentes) : sans les miettes de chemise ou de peau.
+        mx, mn = px.max(1), px.min(1)
+        sat = np.where(mx > 0, (mx - mn) / np.maximum(mx, 1), 0)
+        hue = np.zeros(len(px))
+        d = np.maximum(mx - mn, 1e-6)
+        r, g, b = px[:, 0], px[:, 1], px[:, 2]
+        hue = np.where(mx == r, ((g - b) / d) % 6, np.where(mx == g, (b - r) / d + 2, (r - g) / d + 4)) / 6
+        key = np.where(sat < 0.18, 12, (hue * 12).astype(int) % 12)
+        counts = np.bincount(key, minlength=13)
+        main = key == int(np.argmax(counts))
+        if sat[main].mean() >= 0.18:
+            # Teintes voisines du pic comprises.
+            peak = int(np.argmax(counts))
+            main = (key == peak) | (key == (peak + 1) % 12) | (key == (peak - 1) % 12)
+        px = px[main]
+        order = np.argsort(0.299 * px[:, 0] + 0.587 * px[:, 1] + 0.114 * px[:, 2])
+        px = px[order]
+        out = []
+        n = len(px)
+        for i in range(RAMP_STEPS):
+            lo = int(i * n / RAMP_STEPS)
+            chunk = px[lo: max(int((i + 1) * n / RAMP_STEPS), lo + 1)]
+            out.append([int(c) for c in np.median(chunk, axis=0)])
+        return out
+
+    hand_ = a.copy()
+    hand_[:split] = False
+    cuff_ = a.copy()
+    cuff_[split:] = False
+    return ramp(hand_), ramp(cuff_)
 ICON_SLOT_ROWS = {"top": (0.12, 0.58), "legs": (0.44, 1.0), "feet": (0.76, 1.0),
                   "hands": (0.36, 0.64)}
 # Races à cornes : les cornes passent devant la coiffure.
@@ -184,7 +243,15 @@ def extremity_boxes(a: np.ndarray, skin: np.ndarray, sp: dict, hand_pt: list[flo
         hx = hand_pt[0] if side == 0 else 2 * cx - hand_pt[0]
         near = np.abs(cols - hx) <= HAND_REACH * h
         out["feetBoxes"].append(box(opaque & feet & half))
-        out["handBoxes"].append(box(skin & hands & half & near))
+        # La main seule : la plage de peau reliée qui touche la paume (pas une
+        # bande voisine prise pour de la peau).
+        cand = skin & hands & half & near
+        parts, n = ndimage.label(cand, np.ones((3, 3)))
+        if n:
+            ys_, xs_ = np.nonzero(cand)
+            d = (xs_ - hx) ** 2 + (ys_ - hy) ** 2
+            cand = parts == parts[ys_[np.argmin(d)], xs_[np.argmin(d)]]
+        out["handBoxes"].append(box(cand))
     return out
 
 
@@ -284,6 +351,7 @@ def main() -> None:
     pieces = json.load(open(os.path.join(HERE, "pieces.json")))
     os.makedirs(os.path.join(OUT, "pieces"), exist_ok=True)
     meta["pieces"] = {}
+    glove_size: dict = {}
     for g, tpl in outfits["templates"].items():
         b = load(raw(tpl["base"]))
         x0, t, x1 = heads[tpl["base"]]
@@ -295,6 +363,12 @@ def main() -> None:
                               heads["arms"].get(tpl["base"]))
             save(lay, os.path.join(OUT, "pieces", f"{pid}_{g}.png"))
             meta["pieces"][pid] = slot
+            # Rampes du gant : celles du gabarit où il est le plus grand.
+            if pid in GLOVES and int((lay[..., 3] == 255).sum()) > glove_size.get(pid, 0):
+                glove_size[pid] = int((lay[..., 3] == 255).sum())
+                hand_ramp, cuff_ramp = glove_ramps(lay)
+                meta.setdefault("gloves", {})[pid] = {
+                    **GLOVES[pid], "ramp": hand_ramp, "cuffRamp": cuff_ramp or hand_ramp}
 
     # Armes recadrées, prise de la main.
     for f in sorted(os.listdir(RAW)):
