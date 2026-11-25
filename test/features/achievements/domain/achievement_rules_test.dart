@@ -85,7 +85,7 @@ void main() {
         for (var i = 0; i < 20; i++) _session(day0.add(Duration(days: i * 2))),
         for (var i = 0; i < 10; i++)
           _session(day0.add(Duration(days: 130 + i))),
-      ], now: DateTime(2026, 6, 1));
+      ], now: DateTime(2026, 6, 2));
       expect(metrics[AchievementMetric.northCallSessions], 20);
       expect(metrics[AchievementMetric.seaCallSessions], 0);
     });
