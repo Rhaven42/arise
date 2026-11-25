@@ -31,6 +31,7 @@ class WorldPalette {
     required this.parchmentMuted,
     required this.ember,
     required this.displayFont,
+    required this.backdrop,
   });
 
   /// Identifiant de l'univers (`medieval`, `arcane`, `north`, `sea`), pour
@@ -61,6 +62,9 @@ class WorldPalette {
   /// Police des titres et des boutons.
   final String displayFont;
 
+  /// Décor en pixel art derrière toutes les pages (`assets/backgrounds/`).
+  final String backdrop;
+
   /// Palette en cours (Médiéval au démarrage).
   static WorldPalette active = medieval;
 
@@ -88,6 +92,7 @@ class WorldPalette {
     parchmentMuted: Color(0xFFB9A98E),
     ember: Color(0xFFE07A2E),
     displayFont: 'Cinzel',
+    backdrop: 'assets/backgrounds/medieval.png',
   );
 
   /// Magie : bleu nuit, bordeaux et or ancien.
@@ -114,6 +119,7 @@ class WorldPalette {
     parchmentMuted: Color(0xFFB2ABCB),
     ember: Color(0xFFC0569A),
     displayFont: 'Metamorphous',
+    backdrop: 'assets/backgrounds/arcane.png',
   );
 
   /// Viking : bleu glacier, bois brun et blanc neige.
@@ -140,6 +146,7 @@ class WorldPalette {
     parchmentMuted: Color(0xFFAEB8C2),
     ember: Color(0xFFE07A2E),
     displayFont: 'UncialAntiqua',
+    backdrop: 'assets/backgrounds/north.png',
   );
 
   /// Pirate : bleu océan, sable et rouge corsaire.
@@ -166,5 +173,6 @@ class WorldPalette {
     parchmentMuted: Color(0xFFC2B48E),
     ember: Color(0xFFE0653A),
     displayFont: 'PirataOne',
+    backdrop: 'assets/backgrounds/sea.png',
   );
 }

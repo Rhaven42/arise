@@ -2089,5 +2089,25 @@
   "asset_id": "430bc238-8aa3-4de5-a094-56b236b10cd1",
   "sha12": "9c3040bd5bd0",
   "label": "barbe 10 minotaur"
+ },
+ "background_medieval": {
+  "asset_id": "6979883f-d0ff-476d-a6c3-c9da87ba066a",
+  "sha12": "d2a7c16d2613",
+  "label": "fond medieval"
+ },
+ "background_arcane": {
+  "asset_id": "f7b3c4dc-ac49-4cf0-9ed5-6feeaca950c7",
+  "sha12": "9994f35c3b64",
+  "label": "fond arcane"
+ },
+ "background_north": {
+  "asset_id": "f9a5db05-a079-44d5-93f8-f8a0d3a0cee4",
+  "sha12": "dfa5a2877e8f",
+  "label": "fond north"
+ },
+ "background_sea": {
+  "asset_id": "07fea807-5940-4c4e-8f27-adf0cafb38d1",
+  "sha12": "b938f51b6a31",
+  "label": "fond sea"
  }
 }

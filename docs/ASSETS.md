@@ -57,6 +57,10 @@ Le héros est dessiné en **pixel art**, en pied, à partir d'images générées
 
 38 tenues complètes (dont 5 sombres) et 20 armes (les 20 pièces séparées, retirées le 25/11/2026, gardent leurs images générées dans `tool/sprites/raw/piece_*`), dont arcs, mousquet, lance, baguette et faux (`outfitCatalog`, `weaponCatalog`), plus 6 récompenses de boss qui reprennent une tenue avec leur propre teinte. Les anciennes pièces 3D possédées sont converties à la relecture (`legacyItemIds`) : chaque pièce d'un ensemble devient la tenue complète, les armes retirées deviennent l'arme la plus proche.
 
+## 4 bis. Décors des univers
+
+Un décor en pixel art par univers, généré avec SpriteCook (gpt-image-2, qualité basse, 9:16, identifiants dans `tool/sprites/spritecook_manifest.json`, clés `background_*`) : `assets/backgrounds/medieval.png` (grande salle de château aux torches), `arcane.png` (bibliothèque de l'école de magie), `north.png` (fjord, drakkar et aurores boréales), `sea.png` (port pirate au crépuscule). Ils sont peints derrière toutes les pages (`AriseBackdrop`, recadrés pour couvrir l'écran), sous un voile sombre plus marqué en bas pour garder les textes lisibles, et servent d'aperçu dans l'écran « Univers ». Pour en changer un : générer une image portrait du même format, la déposer sous le même nom.
+
 ## 5. Musiques et jingles
 
 ### État actuel
