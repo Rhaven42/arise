@@ -1036,7 +1036,7 @@ class SpriteComposer {
 
   /// Trapèzes et épaules du corps plus hauts que la tenue : le haut de la
   /// tenue est étiré, colonne par colonne, jusqu'à leur sommet (ligne lissée
-  /// sur 5 colonnes). Le cou, de sa largeur sous le menton, reste nu. Même
+  /// sur 5 colonnes). Le cou, sous la mâchoire, reste nu. Même
   /// calcul que `stretch_shoulders` dans `tool/sprites/preview.py`.
   void _stretchShoulders(
     RgbaImage img,
@@ -1051,20 +1051,18 @@ class SpriteComposer {
     final cx = body.head.skull.centre;
     final rise = (shoulderRiseRatio * span).round();
     final keepMin = math.max(2, (shoulderStretchRatio * span).round());
-    // Largeur du cou juste sous le menton (peau à moins de 3/4 de crâne de
-    // l'axe ; un contour au milieu ne la coupe pas).
-    final row = math.min(h - 1, neck + 2);
-    final reach = 0.75 * body.head.skull.width;
-    var left = cx.floor();
-    var right = cx.floor();
-    var found = false;
-    for (var x = 0; x < src.width && row < src.height; x++) {
-      if (src.alphaAt(x, row) != meta.skinAlpha) continue;
-      if ((x + 0.5 - cx).abs() > reach) continue;
-      if (!found || x < left) left = x;
-      if (!found || x > right) right = x;
-      found = true;
+    // Cou : sous la mâchoire (sa demi-largeur la plus étroite entre la
+    // bouche et le menton) ; au-delà, trapèzes et épaules, même en peau
+    // (minotaure).
+    final head = body.head;
+    double? jaw;
+    for (var y = (neck - 0.3 * (neck - head.brow)).floor(); y <= neck; y++) {
+      final half = head.halfWidthAt(y.toDouble());
+      if (half != null && (jaw == null || half < jaw)) jaw = half;
     }
+    final neckHalf = jaw ?? 0.25 * head.skull.width;
+    final left = (cx - neckHalf).floor();
+    final right = (cx + neckHalf).floor();
     final tops = List<int?>.filled(w, null);
     for (var x = 0; x < w && x < src.width; x++) {
       if (x >= left - 1 && x <= right + 1) continue;
