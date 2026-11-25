@@ -86,13 +86,17 @@ void main() {
   }
 
   test('cheveux et barbe : reflets et ombres resserrés', () {
-    // Reflet très clair : éclairci de 35 % de l'écart restant à 0,6 près,
-    // jamais blanc.
+    // Reflet très clair : la couleur s'éclaircit dans sa teinte (× 1,3),
+    // avec un peu de blanc dosé selon sa clarté ; jamais blanc.
+    const lift = 0.35 * 0.4471;
     expect(tintHairPixel(255, 255, 255, 100, 0xFF5A371E), (
-      (90 + 165 * 0.6 * 0.35).round(),
-      (55 + 200 * 0.6 * 0.35).round(),
-      (30 + 225 * 0.6 * 0.35).round(),
+      (117 + 138 * 0.6 * lift).round(),
+      (71.5 + 183.5 * 0.6 * lift).round(),
+      (39 + 216 * 0.6 * lift).round(),
     ));
+    // Barbe noire : ses reflets restent sombres, pas gris clair.
+    final (r, _, _) = tintHairPixel(255, 255, 255, 100, 0xFF1C1512);
+    expect(r, lessThan(60));
     // Ombre profonde : 30 % de la couleur au moins.
     expect(tintHairPixel(0, 0, 0, 100, 0xFF5A371E), (27, 17, 9));
   });
@@ -199,7 +203,11 @@ void main() {
   });
 
   test('pas de trait vide entre le cou et une tenue qui commence plus bas', () {
-    // Tenue posée une ligne sous le menton : la fente est comblée.
+    // Cou nu (peau) jusqu'au menton, ligne 5.
+    final neckBody = RgbaImage(10, 20, Uint8List.fromList(body.pixels));
+    neckBody.pixels.setAll((5 * 10 + 4) * 4, [200, 150, 100, 254]);
+    // Tenue posée une ligne sous le menton : la fente sous le cou est
+    // comblée, pas celle sous la chemise.
     final outfit = _fill(10, 20, (x, y) => y > 6 && x >= 3 && x <= 6, [
       10,
       20,
@@ -213,11 +221,41 @@ void main() {
         hairColor: 0,
         outfitId: 'awakened_leather',
       ),
-      SpriteLayers(body: body, outfit: outfit),
+      SpriteLayers(body: neckBody, outfit: outfit),
     );
     expect(_px(out, 4, 6), [10, 20, 30, 255]);
+    expect(_px(out, 5, 6)[3], 0);
     // Hors de la tenue, rien n'est inventé.
     expect(_px(out, 2, 6)[3], 0);
+  });
+
+  test('la tenue couvre les trapèzes plus hauts que son épaule', () {
+    // Corps aux épaules hautes (chemise dès la ligne 3 sur toute la largeur)
+    // et cou nu sous le menton (ligne 7).
+    final traps = _fill(10, 20, (x, y) => y >= 3, [90, 60, 40, 255]);
+    for (var y = 0; y < 5; y++) {
+      for (var x = 3; x < 7; x++) {
+        traps.pixels.setAll((y * 10 + x) * 4, [200, 150, 100, 254]);
+      }
+    }
+    for (final x in [4, 5]) {
+      traps.pixels.setAll((7 * 10 + x) * 4, [200, 150, 100, 254]);
+    }
+    final outfit = _fill(10, 20, (x, y) => y > 6, [10, 20, 30, 255]);
+    final out = composer.compose(
+      const CharacterAppearance(
+        bodyId: 'human_male',
+        skinColor: 0xFFC8966A,
+        hairColor: 0,
+        outfitId: 'awakened_leather',
+      ),
+      SpriteLayers(body: traps, outfit: outfit),
+    );
+    // Épaule : la tenue étirée monte jusqu'au sommet du trapèze.
+    expect(_px(out, 0, 3), [10, 20, 30, 255]);
+    expect(_px(out, 9, 4), [10, 20, 30, 255]);
+    // Le visage n'est pas couvert.
+    expect(_px(out, 4, 3)[0], isNot(10));
   });
 
   test('la frange laisse le visage dégagé et les cornes passent devant', () {

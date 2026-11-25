@@ -47,7 +47,9 @@ def tint_hair(px: np.ndarray, ref: float, color: tuple[int, int, int]) -> np.nda
     partagée avec l'appli)."""
     k = np.clip(lum(px) / max(ref, 1), 0.3, 1.6)[..., None]
     c = np.array(color, float)
-    return np.where(k <= 1, c * k, c + (255 - c) * (k - 1) * 0.35)
+    lift = 0.35 * min(1.0, max(0.3, float(lum(c)) / 140))
+    base = np.minimum(255, c * np.minimum(k, 1.3))
+    return np.where(k <= 1, c * k, base + (255 - base) * (k - 1) * lift)
 
 
 def place(canvas: np.ndarray, layer: np.ndarray, scale: float, ox: float, oy: float,
@@ -184,14 +186,14 @@ NECK_GAP = 0.05
 
 
 def fill_neck_gap(canvas, marks, neck, span):
-    """Raccord entre le cou et le haut de la tenue : la fente vide sous un
-    pixel peint (cou, menton) prend la couleur du premier pixel de tenue en
+    """Raccord entre le cou et le haut de la tenue : la fente vide sous la
+    peau du cou prend la couleur du premier pixel de tenue en
     dessous (comme l'appli)."""
     H, W = canvas.shape[:2]
     gap = max(1, round(NECK_GAP * span))
     for x in range(W):
         for y in range(max(1, neck - gap), min(H, neck + gap + 1)):
-            if canvas[y, x, 3] or not canvas[y - 1, x, 3]:
+            if canvas[y, x, 3] or marks[y - 1, x, 0] != 255:
                 continue
             end = y
             while end < H and end - y <= gap and canvas[end, x, 3] == 0:
@@ -200,6 +202,72 @@ def fill_neck_gap(canvas, marks, neck, span):
                 canvas[y:end, x] = canvas[end, x]
                 marks[y:end, x] = marks[end, x]
             break
+
+
+# Épaules du corps au-dessus du menton recouvertes par la tenue étirée
+# (fractions de la hauteur du cou aux pieds) : hauteur maximale gagnée, et
+# hauteur minimale du haut de la tenue étiré.
+SHOULDER_RISE = 0.12
+SHOULDER_STRETCH = 0.04
+
+
+def head_half(b, y):
+    """Demi-largeur de la tête à la ligne y (None hors du profil)."""
+    i = int(np.floor(y)) - int(b["skull"][1])
+    prof = b["profile"]
+    if 0 <= i < len(prof) and prof[i] >= 0.25 * (b["skull"][2] - b["skull"][0]):
+        return prof[i]
+    return None
+
+
+def stretch_shoulders(canvas, marks, body, skin_px, b, neck, span):
+    """Trapèzes et épaules du corps plus hauts que la tenue (minotaure) : le
+    haut de la tenue est étiré, colonne par colonne, jusqu'à leur sommet
+    (comme l'appli). Le cou lui-même (sa largeur sous le menton) reste nu."""
+    H, W = canvas.shape[:2]
+    cx = (b["skull"][0] + b["skull"][2]) / 2
+    rise = round(SHOULDER_RISE * span)
+    keep_min = max(2, round(SHOULDER_STRETCH * span))
+    # Largeur du cou juste sous le menton.
+    row = skin_px[min(H - 1, neck + 2)]
+    reach = 0.75 * (b["skull"][2] - b["skull"][0])
+    xs = [x for x in range(W) if row[x] and abs(x + 0.5 - cx) <= reach]
+    left, right = (min(xs), max(xs)) if xs else (int(cx), int(cx))
+    tops = [None] * W
+    for x in range(W):
+        if left - 1 <= x <= right + 1:
+            continue
+        y = neck
+        while y >= max(0, neck - rise):
+            half = head_half(b, y)
+            inside = half is not None and abs(x + 0.5 - cx) <= half + 1
+            if inside or body[y, x, 3] == 0 or body[y, x, 3] == META["frontAlpha"]:
+                break
+            tops[x] = y
+            y -= 1
+    # Ligne d'épaule lissée (médiane sur 5 colonnes) : pas de dents de scie.
+    smooth = list(tops)
+    for x in range(W):
+        if tops[x] is None:
+            continue
+        near = sorted(t for t in tops[max(0, x - 2): x + 3] if t is not None)
+        smooth[x] = near[len(near) // 2]
+    for x in range(W):
+        top = smooth[x]
+        if top is None:
+            continue
+        out = neck + 1
+        while out < H and out - neck <= rise and canvas[out, x, 3] == 0:
+            out += 1
+        if out >= H or out - neck > rise or marks[out, x, 0] == 255 or out <= top:
+            continue
+        end = min(H, out + max(keep_min, out - top))
+        src = canvas[out:end, x].copy()
+        msrc = marks[out:end, x].copy()
+        n = end - top
+        idx = ((np.arange(n) + 0.5) * len(src) / n).astype(int)
+        canvas[top:end, x] = src[idx]
+        marks[top:end, x] = msrc[idx]
 
 
 def glove_boxes(b, t, outfit, s_x, s_y):
@@ -402,6 +470,7 @@ def compose(race, sex, skin=None, hair=None, hair_color=(70, 45, 30), beard=None
         hx = b["cx"] + (t["hand"][0] - t["cx"]) * sx
         hy = oy + t["hand"][1] * s
         fill_neck_gap(canvas, marks, neck, b["feet"] - b["neck"])
+        stretch_shoulders(canvas, marks, body, skin_px, b, neck, b["feet"] - b["neck"])
     # Pièces séparées : même cadrage que les tenues, dans l'ordre de dessin.
     t = META["templates"][b["gabarit"]]
     s_y = (b["feet"] - b["neck"]) / (t["feet"] - t["neck"])

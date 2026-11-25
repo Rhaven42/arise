@@ -439,7 +439,13 @@ def body_skin(base: np.ndarray, sample: tuple[int, int], neck: int, skull_top: f
         cand |= alpha & (dh < 0.06) & (ss > 0.45) & (v > 0.2)
     # Sous le cou, un pixel plus proche des couleurs des habits que de
     # celles du visage n'est pas de la peau.
-    cand[neck:] &= (d_face < d_cloth)[neck:]
+    # Entre le cou et la poitrine, seule la chemise compte : la fourrure du
+    # poitrail (minotaure) a la couleur du pantalon, pas de la chemise.
+    shirt = cloth_palette(base, neck, hands, bottom, pal, legs=False)
+    d_shirt = np.full(alpha.shape, 9999.0)
+    d_shirt[py, px] = np.abs(rgb - shirt[None]).sum(-1).min(1)
+    cand[neck:chest] &= (d_face < d_shirt)[neck:chest]
+    cand[chest:] &= (d_face < d_cloth)[chest:]
     # Sous la poitrine, la peau n'est que sur les bras et les mains, au bord
     # de la silhouette ; plus bas que les mains, aucune peau (pantalon,
     # bottes). Les liserés de moins de 3 pixels d'épaisseur sont écartés.
@@ -500,6 +506,18 @@ def body_skin(base: np.ndarray, sample: tuple[int, int], neck: int, skull_top: f
     hand_skin[hands:] = False
     hand_skin = ndimage.binary_opening(hand_skin, np.ones((3, 3)))
     skin = (cand & np.isin(labels, list(keep))) | hand_skin
+    # Encolure : la peau du cou et du poitrail dans le col, même séparée du
+    # menton par un contour épais (minotaure, orque), si elle part du cou.
+    col = np.zeros(alpha.shape, bool)
+    col[max(0, neck - 2): chest, int(cx - 0.07 * h): int(cx + 0.07 * h) + 1] = True
+    # Dans le col, tout ce qui n'est pas la chemise : peau, fourrure et
+    # ombres sous le menton.
+    in_col = col & alpha & ((d_face < d_shirt) | (v < 0.6 * v0)) & ~upper
+    parts, n = ndimage.label(in_col)
+    for i in range(1, n + 1):
+        part = parts == i
+        if part.sum() >= 6 and np.nonzero(part.any(axis=1))[0][0] <= neck + 4:
+            skin |= part
     if arms:
         # Avant-bras relevés à la main : tout ce qui n'est pas la chemise.
         shirt = cloth_palette(base, neck, hands, bottom, pal, legs=False)
@@ -560,11 +578,19 @@ def outfit_layer(base: np.ndarray, edit: np.ndarray, neck: int,
         cols = np.where(head_skin[yy])[0]
         if len(cols):
             left, right = max(left, cols[0]), min(right, cols[-1])
-        head[yy, :max(0, left - 1)] = False
-        head[yy, right + 2:] = False
-    face = ndimage.binary_dilation(head, np.ones((3, 3)))
+        head[yy, :max(0, left - 2)] = False
+        head[yy, right + 3:] = False
+    # Contour de la mâchoire du modèle compris (sinon il reste en mèches
+    # sombres le long du visage).
+    face = ndimage.binary_dilation(head, np.ones((3, 3)), iterations=3)
     collar &= (edit[..., 3] > 0) & ~face & (color_dist(edit, base) > 40)
     collar &= ~skin_mask(edit, pal, 30)
+    # Seuls les morceaux de col reliés à la tenue sous le menton (pas les
+    # restes du contour de la tête du modèle, en mèches à côté du visage).
+    parts, _ = ndimage.label(collar | body, np.ones((3, 3), bool))
+    ids = np.unique(parts[body])
+    collar &= np.isin(parts, ids[ids > 0])
+    collar = ndimage.binary_opening(collar, np.ones((3, 3), bool))
     body |= collar
     out[body] = edit[body]
     near = ndimage.binary_dilation(base_skin, np.ones((3, 3)), iterations=2)
@@ -589,11 +615,52 @@ def outfit_layer(base: np.ndarray, edit: np.ndarray, neck: int,
             hull[yy, cols[0]: cols[-1] + 1] = True
     hull = ndimage.binary_dilation(hull, np.ones((7, 1), bool)) & neck_rows
     skin |= hull & body & (v < 0.3)
+    # Gabarit à peau verte (orque) : ses ombres de peau (col, creux des
+    # bras), non reconnues plus haut, restaient vertes sur les autres races.
+    hs, ss, _ = _hue_sat_val(np.array([[base[y, x, :3]]], float))
+    if 0.12 <= hs[0, 0] <= 0.45 and ss[0, 0] > 0.3:
+        h, s_, _ = _hue_sat_val(edit)
+        band = np.zeros_like(rows)
+        band[max(0, neck - round(COLLAR_BAND * (feet - neck))):] = True
+        green = (np.abs(h - hs[0, 0]) < 0.04) & (s_ > 0.3) & (v < 0.42) & band & (out[..., 3] > 0)
+        for _ in range(2):
+            grow = ndimage.binary_dilation(skin, np.ones((3, 3), bool)) & green & ~skin
+            if not grow.any():
+                break
+            skin |= grow
+        # Bras et mains nus du gabarit (sur les côtés, hors du torse) : peau
+        # aux couleurs du visage, même loin de la peau du corps de base.
+        xs = np.where((base[..., 3] > 0).any(axis=0))[0]
+        mid, half = (xs[0] + xs[-1]) / 2, (xs[-1] - xs[0]) / 2
+        side = np.zeros_like(rows)
+        cols = np.abs(np.arange(base.shape[1]) + 0.5 - mid) > ARM_SIDE * half
+        side[neck:, cols] = True
+        same = (skin_mask(edit, face_palette(base, skin_sample), 26)
+                | ((np.abs(h - hs[0, 0]) < 0.035) & (s_ > 0.4) & (v > 0.25) & (v < 0.8)))
+        same &= side & (out[..., 3] > 0)
+        # La peau est lisse ; les armures vertes (écailles, feuilles) sont
+        # texturées : écart local de clarté faible exigé.
+        vv = v.astype(float)
+        mean = ndimage.uniform_filter(vv, 5)
+        rough = np.sqrt(np.maximum(ndimage.uniform_filter(vv * vv, 5) - mean * mean, 0))
+        same &= rough < SKIN_ROUGHNESS
+        parts, n = ndimage.label(same)
+        sizes = ndimage.sum(same, parts, range(1, n + 1))
+        big = np.isin(parts, np.nonzero(sizes >= 12)[0] + 1)
+        # Trous (reflets, ombres des muscles) bouchés dans la tache de peau.
+        big = ndimage.binary_closing(big, np.ones((3, 3), bool)) & (out[..., 3] > 0) & side
+        skin |= big | (same & ndimage.binary_dilation(skin, np.ones((3, 3), bool)))
     # Peau nue (cou, mains, avant-bras) : marquée par l'alpha de peau,
     # recolorée à la teinte du personnage dans l'appli.
     out[skin, 3] = SKIN_ALPHA
     return out
 
+
+# Bras du gabarit : au-delà de cette fraction de la demi-largeur du corps
+# depuis l'axe (le torse et ses armures vertes restent hors d'atteinte).
+ARM_SIDE = 0.55
+# Écart-type local de clarté (5 × 5) au-delà duquel un pixel est texturé.
+SKIN_ROUGHNESS = 0.12
 
 # Hauteur (fraction du cou aux pieds) au-dessus du menton où la tenue garde
 # ses épaules et son col.
