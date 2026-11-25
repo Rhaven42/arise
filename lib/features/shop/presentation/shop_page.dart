@@ -106,9 +106,9 @@ class _ShopPageState extends ConsumerState<ShopPage> {
         ref.watch(progressionControllerProvider).value?.state.wallet ??
         Coins.zero;
     final sheet = ref.watch(savedCharacterProvider).value;
-    final achievements = {
+    final achievements = withWorldTestUnlocks({
       ...?ref.watch(achievementsStateProvider).value?.unlocked.keys,
-    };
+    });
     final articles = [
       for (final article in shopArticles())
         if (_matches(article)) article,

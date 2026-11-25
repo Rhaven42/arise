@@ -17,6 +17,16 @@ void main() {
     expect(worldFromName('inconnu'), World.medieval);
   });
 
+  test('version de test : tous les univers ouverts', () {
+    expect(withWorldTestUnlocks(const {'x'}), {'x'});
+    final all = withWorldTestUnlocks(const {}, testUnlock: true);
+    for (final world in World.values) {
+      expect(isWorldUnlocked(world, all), isTrue, reason: world.name);
+    }
+    // Les tests et la version normale gardent les verrous.
+    expect(unlockAllWorlds, isFalse);
+  });
+
   test('musiques : celles de l’univers, sinon celles du Médiéval', () {
     final arcane = musicVariantOf(World.arcane);
     final north = musicVariantOf(World.north);

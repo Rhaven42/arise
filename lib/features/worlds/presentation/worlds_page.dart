@@ -25,9 +25,9 @@ class WorldsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final active = ref.watch(activeWorldProvider);
-    final unlocked = {
+    final unlocked = withWorldTestUnlocks({
       ...?ref.watch(achievementsStateProvider).value?.unlocked.keys,
-    };
+    });
     final metrics = ref.watch(achievementMetricsProvider).value ?? const {};
     return Scaffold(
       appBar: AppBar(title: Text(l10n.worldsTitle)),
