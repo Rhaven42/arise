@@ -12,6 +12,7 @@ import 'package:arise/features/character_creation/presentation/character_provide
 import 'package:arise/features/inventory/domain/inventory.dart';
 import 'package:arise/features/inventory/domain/inventory_rules.dart';
 import 'package:arise/features/inventory/presentation/inventory_providers.dart';
+import 'package:arise/features/progression/presentation/progression_labels.dart';
 import 'package:arise/features/progression/presentation/progression_providers.dart';
 import 'package:arise/features/shadows/domain/shadow_rules.dart';
 import 'package:arise/features/shadows/domain/shadows_state.dart';
@@ -82,9 +83,7 @@ class _ShadowsPageState extends ConsumerState<ShadowsPage> {
     if (state == null || progression == null) {
       return Scaffold(
         appBar: AppBar(title: Text(l10n.shadowsTitle)),
-        body: const Center(
-          child: CircularProgressIndicator(color: AriseColors.gold),
-        ),
+        body: Center(child: CircularProgressIndicator(color: AriseColors.gold)),
       );
     }
     final heroClass = progression.heroClass;
@@ -139,7 +138,7 @@ class _ShadowsPageState extends ConsumerState<ShadowsPage> {
                           Text(
                             l10n.shadowBonus(
                               bonus,
-                              l10n.statName(origin.stat.name),
+                              statLabel(l10n, origin.stat),
                             ),
                             style: textTheme.bodyMedium,
                           ),
@@ -176,10 +175,7 @@ class _ShadowsPageState extends ConsumerState<ShadowsPage> {
               title: Text(shadowLabel(l10n, shadow.origin)),
               subtitle: Text(
                 [
-                  l10n.shadowBonus(
-                    bonus,
-                    l10n.statName(shadow.origin.stat.name),
-                  ),
+                  l10n.shadowBonus(bonus, statLabel(l10n, shadow.origin.stat)),
                   if (active.contains(shadow))
                     l10n.shadowActive
                   else

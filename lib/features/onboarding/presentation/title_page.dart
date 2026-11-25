@@ -58,7 +58,7 @@ class TitlePage extends ConsumerWidget {
     ];
 
     final actions = switch ((accounts, profile)) {
-      (null, _) || (_, AsyncLoading()) => const [
+      (null, _) || (_, AsyncLoading()) => [
         Center(child: CircularProgressIndicator(color: AriseColors.gold)),
       ],
       // Aucun compte ouvert : on en crée un (ou on en choisit un).

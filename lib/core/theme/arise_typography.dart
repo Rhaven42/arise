@@ -1,4 +1,5 @@
 import 'package:arise/core/theme/arise_colors.dart';
+import 'package:arise/core/theme/world_palette.dart';
 import 'package:flutter/material.dart';
 
 /// Typographie d'Arisia.
@@ -7,7 +8,8 @@ import 'package:flutter/material.dart';
 /// - IM Fell English (OFL) : textes d'ambiance (citations, récits).
 /// - Police du système : corps de texte, pour une lisibilité maximale.
 abstract final class AriseTypography {
-  static const display = 'Cinzel';
+  /// Police des titres de l'univers actif (Cinzel en Médiéval).
+  static String get display => WorldPalette.active.displayFont;
   static const flavor = 'IMFellEnglish';
 
   /// Graisse de la police variable Cinzel (axe « wght »).
@@ -24,7 +26,7 @@ abstract final class AriseTypography {
       letterSpacing: 0.5,
     );
 
-    const body = TextStyle(color: AriseColors.parchment, height: 1.4);
+    final body = TextStyle(color: AriseColors.parchment, height: 1.4);
 
     return TextTheme(
       displayLarge: cinzel(48, 700),
@@ -46,7 +48,7 @@ abstract final class AriseTypography {
   }
 
   /// Style des textes d'ambiance.
-  static const flavorStyle = TextStyle(
+  static TextStyle get flavorStyle => TextStyle(
     fontFamily: flavor,
     fontStyle: FontStyle.italic,
     fontSize: 17,

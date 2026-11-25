@@ -4,8 +4,11 @@ import 'package:arise/core/audio/music.dart';
 import 'package:arise/core/design_system/widgets/arise_backdrop.dart';
 import 'package:arise/core/router/app_router.dart';
 import 'package:arise/core/theme/arise_theme.dart';
+import 'package:arise/core/theme/world_palette.dart';
 import 'package:arise/features/planning/presentation/planning_providers.dart';
 import 'package:arise/features/profile/presentation/profile_providers.dart';
+import 'package:arise/features/worlds/presentation/world_style.dart';
+import 'package:arise/features/worlds/presentation/worlds_providers.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,7 +71,13 @@ class _AriseAppState extends ConsumerState<AriseApp> {
       });
     final router = ref.watch(appRouterProvider);
     _attach(router);
+    // Ambiance de l'univers actif : palette, police des titres et musiques.
+    // L'application se reconstruit entière quand l'univers change.
+    final world = ref.watch(activeWorldProvider);
+    WorldPalette.active = paletteOf(world);
+    ref.read(musicPlayerProvider).setVariant(musicVariantOf(world));
     return MaterialApp.router(
+      key: ValueKey(world),
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,
       theme: AriseTheme.dark(),

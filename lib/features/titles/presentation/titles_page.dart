@@ -31,9 +31,7 @@ class TitlesPage extends ConsumerWidget {
     if (view == null) {
       return Scaffold(
         appBar: AppBar(title: Text(l10n.titlesTitle)),
-        body: const Center(
-          child: CircularProgressIndicator(color: AriseColors.gold),
-        ),
+        body: Center(child: CircularProgressIndicator(color: AriseColors.gold)),
       );
     }
     final worn = view.worn;

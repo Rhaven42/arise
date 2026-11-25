@@ -435,7 +435,7 @@ class _ArticleTile extends StatelessWidget {
                   color: AriseColors.success,
                 )
               else if (locked)
-                const Icon(
+                Icon(
                   Icons.lock_outline,
                   size: 16,
                   color: AriseColors.parchmentMuted,

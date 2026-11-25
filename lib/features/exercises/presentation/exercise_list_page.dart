@@ -48,7 +48,7 @@ class ExerciseListPage extends ConsumerWidget {
                 ),
               ),
               AsyncError() => Center(child: Text(l10n.errorGeneric)),
-              _ => const Center(
+              _ => Center(
                 child: CircularProgressIndicator(color: AriseColors.gold),
               ),
             },

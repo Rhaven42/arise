@@ -32,17 +32,8 @@
   "systemWindowHeader": "Système",
   "sampleQuestTitle": "Quête quotidienne",
   "sampleQuestBody": "Le Système t'assigne une nouvelle quête : 30 pompes, 30 squats, 15 minutes de marche et 5 minutes d'étirements.",
-  "xpProgress": "{current} / {goal} XP",
-  "@xpProgress": {
-    "placeholders": {
-      "current": {
-        "type": "int"
-      },
-      "goal": {
-        "type": "int"
-      }
-    }
-  },
+  "xpProgress": "{current} / {goal} {world, select, arcane{Mana} north{Gloire} sea{Réputation} other{XP}}",
+  "@xpProgress": {"placeholders": {"current": {"type": "int"}, "goal": {"type": "int"}, "world": {"type": "String"}}},
   "xpSemantics": "Expérience : {current} sur {goal}",
   "@xpSemantics": {
     "placeholders": {
@@ -246,6 +237,8 @@
       }
     }
   },
+  "statNameIn": "{world, select, arcane{{stat, select, strength{Puissance} endurance{Résistance} agility{Fluidité} vitality{Essence} willpower{Concentration} other{Stat}}} north{{stat, select, strength{Rage} endurance{Ténacité} agility{Ancrage} vitality{Robustesse} willpower{Honneur} other{Stat}}} sea{{stat, select, strength{Abordage} endurance{Souffle du large} agility{Pied marin} vitality{Coque solide} willpower{Cran} other{Stat}}} other{{stat, select, strength{Force} endurance{Endurance} agility{Agilité} vitality{Vitalité} willpower{Volonté} other{Stat}}}}",
+  "@statNameIn": {"placeholders": {"world": {"type": "String"}, "stat": {"type": "String"}}},
   "statName": "{stat, select, strength{Force} endurance{Endurance} agility{Agilité} vitality{Vitalité} willpower{Volonté} other{Stat}}",
   "@statName": {
     "placeholders": {
@@ -852,6 +845,7 @@
   },
   "homeStatsTitle": "Statistiques",
   "homeShortcutAnalysis": "Analyse",
+  "homeShortcutWorlds": "Univers",
   "homeFreePoints": "{count, plural, =1{1 point à placer} other{{count} points à placer}}",
   "@homeFreePoints": {
     "placeholders": {
@@ -1113,30 +1107,12 @@
     }
   },
   "analysisMusclesTitle": "Détail par muscle",
-  "coinGold": "{count, plural, =0{0 pièce d'or} =1{1 pièce d'or} other{{count} pièces d'or}}",
-  "@coinGold": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "coinSilver": "{count, plural, =0{0 pièce d'argent} =1{1 pièce d'argent} other{{count} pièces d'argent}}",
-  "@coinSilver": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "coinBronze": "{count, plural, =0{0 pièce de bronze} =1{1 pièce de bronze} other{{count} pièces de bronze}}",
-  "@coinBronze": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+  "coinGold": "{count} {world, select, arcane{{count, plural, =0{sceau} =1{sceau} other{sceaux}}} north{{count, plural, =0{anneau} =1{anneau} other{anneaux}}} sea{{count, plural, =0{doublon} =1{doublon} other{doublons}}} other{{count, plural, =0{pièce} =1{pièce} other{pièces}}}} d'or",
+  "@coinGold": {"placeholders": {"count": {"type": "int"}, "world": {"type": "String"}}},
+  "coinSilver": "{count} {world, select, arcane{{count, plural, =0{sceau} =1{sceau} other{sceaux}}} north{{count, plural, =0{anneau} =1{anneau} other{anneaux}}} sea{{count, plural, =0{doublon} =1{doublon} other{doublons}}} other{{count, plural, =0{pièce} =1{pièce} other{pièces}}}} d'argent",
+  "@coinSilver": {"placeholders": {"count": {"type": "int"}, "world": {"type": "String"}}},
+  "coinBronze": "{count} {world, select, arcane{{count, plural, =0{sceau} =1{sceau} other{sceaux}}} north{{count, plural, =0{anneau} =1{anneau} other{anneaux}}} sea{{count, plural, =0{doublon} =1{doublon} other{doublons}}} other{{count, plural, =0{pièce} =1{pièce} other{pièces}}}} de bronze",
+  "@coinBronze": {"placeholders": {"count": {"type": "int"}, "world": {"type": "String"}}},
   "progressSessionCoins": "Butin de la séance : +{coins}",
   "@progressSessionCoins": {
     "placeholders": {
@@ -1277,6 +1253,16 @@
   "@worldName": {"placeholders": {"world": {"type": "String"}}},
   "materialName": "{material, select, plate{Plaque} mail{Maille} leather{Cuir} cloth{Tissu} other{?}}",
   "@materialName": {"placeholders": {"material": {"type": "String"}}},
+  "worldsTitle": "Univers",
+  "worldsIntro": "Chaque univers change l'ambiance de l'application : couleurs, polices, musiques et noms. Ta progression reste la même partout.",
+  "worldDescription": "{world, select, medieval{Royaumes, citadelles et donjons : l'univers de départ.} arcane{Château-école de magie, salles éclairées à la bougie et grimoires.} north{Fjords, drakkars, villages de bois et aurores boréales.} sea{Îles tropicales, galions, ports corsaires et trésors cachés.} other{}}",
+  "@worldDescription": {"placeholders": {"world": {"type": "String"}}},
+  "worldActive": "Univers actif",
+  "worldEnter": "Entrer dans cet univers",
+  "worldLockedBy": "Se débloque avec le haut fait « {achievement} ».",
+  "@worldLockedBy": {"placeholders": {"achievement": {"type": "String"}}},
+  "worldProgress": "{current} / {goal} sur les {days} derniers jours au mieux",
+  "@worldProgress": {"placeholders": {"current": {"type": "int"}, "goal": {"type": "int"}, "days": {"type": "int"}}},
   "filterWorld": "Univers",
   "filterNoResult": "Aucun objet ne correspond à ces filtres.",
   "filterMaterial": "Matière",

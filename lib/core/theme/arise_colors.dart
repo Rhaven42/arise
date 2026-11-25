@@ -1,3 +1,4 @@
+import 'package:arise/core/theme/world_palette.dart';
 import 'package:flutter/material.dart';
 
 /// Palette d'Arisia : pierre, bois, or et lueur de mana.
@@ -5,37 +6,37 @@ import 'package:flutter/material.dart';
 /// Contrastes vérifiés (WCAG AA) pour le texte : parchemin et or sur
 /// abîme/pierre, texte sombre sur or.
 abstract final class AriseColors {
-  static const abyss = Color(0xFF14110F);
-  static const stoneDark = Color(0xFF1F1B18);
-  static const stone = Color(0xFF2B2622);
-  static const stoneLight = Color(0xFF4A423B);
-  static const wood = Color(0xFF5C3D24);
-  static const woodLight = Color(0xFF8A5E3B);
-  static const gold = Color(0xFFD4A84B);
-  static const goldBright = Color(0xFFF0CC74);
-  static const ember = Color(0xFFE07A2E);
-  static const parchment = Color(0xFFEADBC0);
-  static const parchmentMuted = Color(0xFFB9A98E);
+  static Color get abyss => WorldPalette.active.abyss;
+  static Color get stoneDark => WorldPalette.active.stoneDark;
+  static Color get stone => WorldPalette.active.stone;
+  static Color get stoneLight => WorldPalette.active.stoneLight;
+  static Color get wood => WorldPalette.active.wood;
+  static Color get woodLight => WorldPalette.active.woodLight;
+  static Color get gold => WorldPalette.active.gold;
+  static Color get goldBright => WorldPalette.active.goldBright;
+  static Color get ember => WorldPalette.active.ember;
+  static Color get parchment => WorldPalette.active.parchment;
+  static Color get parchmentMuted => WorldPalette.active.parchmentMuted;
   static const mana = Color(0xFF4FB3E8);
   static const danger = Color(0xFFE0735A);
   static const success = Color(0xFF7BC87A);
-  static const onGold = Color(0xFF1B1408);
+  static Color get onGold => WorldPalette.active.onGold;
 
   // Interface MMORPG (refonte du 12/11/2026).
-  static const goldPale = Color(0xFFFFE8A8);
-  static const goldDeep = Color(0xFFB9852E);
-  static const goldShadow = Color(0xFF5A3D12);
-  static const bronzeEdge = Color(0xFF6B5326);
-  static const panelTop = Color(0xFF2B2622);
-  static const panelBottom = Color(0xFF1C1815);
+  static Color get goldPale => WorldPalette.active.goldPale;
+  static Color get goldDeep => WorldPalette.active.goldDeep;
+  static Color get goldShadow => WorldPalette.active.goldShadow;
+  static Color get bronzeEdge => WorldPalette.active.bronzeEdge;
+  static Color get panelTop => WorldPalette.active.panelTop;
+  static Color get panelBottom => WorldPalette.active.panelBottom;
   static const manaBright = Color(0xFF9FE3FF);
   static const manaPale = Color(0xFFBFEAFF);
   static const manaDeep = Color(0xFF0C2539);
   static const manaPanelTop = Color(0xFF0E2030);
   static const manaPanelBottom = Color(0xFF08101A);
   static const manaText = Color(0xFFD6E7F2);
-  static const backdropTop = Color(0xFF221C18);
-  static const backdropBottom = Color(0xFF120F0D);
+  static Color get backdropTop => WorldPalette.active.backdropTop;
+  static Color get backdropBottom => WorldPalette.active.backdropBottom;
 
   // Gemmes des stats (texte blanc lisible sur chacune).
   static const gemStrength = Color(0xFFC0392B);

@@ -21,6 +21,33 @@ enum MusicTrack {
 /// Courts jingles joués par-dessus la musique.
 enum Jingle { levelUp }
 
+/// Variante d'ambiance (un univers) : ses pistes sont dans
+/// `assets/music/<folder>/` ; celles qui manquent restent les pistes par
+/// défaut.
+class MusicVariant {
+  const MusicVariant(
+    this.folder, {
+    this.tracks = const {},
+    this.jingles = const {},
+  });
+
+  final String folder;
+  final Set<MusicTrack> tracks;
+  final Set<Jingle> jingles;
+
+  /// Chemin (relatif à `assets/`) de [track] pour cette variante.
+  static String trackPath(MusicVariant? variant, MusicTrack track) =>
+      variant != null && variant.tracks.contains(track)
+      ? 'music/${variant.folder}/${track.name}.mp3'
+      : 'music/${track.name}.mp3';
+
+  /// Chemin (relatif à `assets/`) de [jingle] pour cette variante.
+  static String jinglePath(MusicVariant? variant, Jingle jingle) =>
+      variant != null && variant.jingles.contains(jingle)
+      ? 'music/${variant.folder}/level_up.mp3'
+      : 'sounds/level_up.mp3';
+}
+
 /// Musique de l'application : une piste en boucle, avec fondus, et des
 /// jingles. Une erreur de lecture n'interrompt jamais l'application.
 abstract interface class MusicPlayer {
@@ -29,6 +56,10 @@ abstract interface class MusicPlayer {
   Future<void> play(MusicTrack? track);
 
   Future<void> jingle(Jingle jingle);
+
+  /// Ambiance de l'univers actif (`null` = pistes par défaut) : la piste en
+  /// cours change si l'univers a la sienne.
+  void setVariant(MusicVariant? variant);
 
   /// Musique et jingles activés (réglage du joueur).
   void setEnabled({required bool enabled});
@@ -50,6 +81,7 @@ class DeviceMusicPlayer implements MusicPlayer {
   AudioPlayer? _music;
   AudioPlayer? _jingle;
   MusicTrack? _track;
+  MusicVariant? _variant;
   bool _enabled = true;
   int _generation = 0;
 
@@ -95,7 +127,7 @@ class DeviceMusicPlayer implements MusicPlayer {
       }
       if (track == null || !_enabled) return;
       await player.setVolume(0);
-      await player.play(AssetSource('music/${track.name}.mp3'));
+      await player.play(AssetSource(MusicVariant.trackPath(_variant, track)));
       await _fadeTo(player, _volume, generation);
     } on Object catch (error) {
       debugPrint('Musique indisponible : $error');
@@ -118,7 +150,7 @@ class DeviceMusicPlayer implements MusicPlayer {
       if (music != null && music.state == PlayerState.playing) {
         unawaited(_fadeTo(music, _volume * 0.25, generation));
       }
-      await player.play(AssetSource('sounds/level_up.mp3'));
+      await player.play(AssetSource(MusicVariant.jinglePath(_variant, jingle)));
       unawaited(
         player.onPlayerComplete.first.then((_) async {
           final current = _music;
@@ -130,6 +162,21 @@ class DeviceMusicPlayer implements MusicPlayer {
     } on Object catch (error) {
       debugPrint('Jingle indisponible : $error');
     }
+  }
+
+  @override
+  void setVariant(MusicVariant? variant) {
+    if (identical(variant, _variant)) return;
+    final track = _track;
+    final changed =
+        track != null &&
+        MusicVariant.trackPath(variant, track) !=
+            MusicVariant.trackPath(_variant, track);
+    _variant = variant;
+    if (!changed) return;
+    // Relance la piste de l'écran dans l'ambiance du nouvel univers.
+    _track = null;
+    unawaited(play(track));
   }
 
   @override

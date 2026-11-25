@@ -32,7 +32,7 @@ class OnboardingPage extends ConsumerWidget {
         child: switch (draft) {
           AsyncData(:final value) => _OnboardingBody(draft: value),
           AsyncError() => Center(child: Text(l10n.errorGeneric)),
-          _ => const Center(
+          _ => Center(
             child: CircularProgressIndicator(color: AriseColors.gold),
           ),
         },

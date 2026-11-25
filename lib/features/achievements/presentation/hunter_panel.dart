@@ -39,10 +39,7 @@ class HunterPanel extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(vertical: AriseSpacing.sm),
                 child: Row(
                   children: [
-                    const Icon(
-                      Icons.emoji_events_outlined,
-                      color: AriseColors.gold,
-                    ),
+                    Icon(Icons.emoji_events_outlined, color: AriseColors.gold),
                     const SizedBox(width: AriseSpacing.sm),
                     Expanded(
                       child: Text(
@@ -61,7 +58,7 @@ class HunterPanel extends ConsumerWidget {
           IconButton(
             key: titlesKey,
             tooltip: l10n.titlesSeeAll,
-            icon: const Icon(
+            icon: Icon(
               Icons.workspace_premium_outlined,
               color: AriseColors.gold,
             ),
@@ -70,7 +67,7 @@ class HunterPanel extends ConsumerWidget {
           IconButton(
             key: shadowsKey,
             tooltip: l10n.shadowsTitle,
-            icon: const Icon(Icons.groups_outlined, color: AriseColors.gold),
+            icon: Icon(Icons.groups_outlined, color: AriseColors.gold),
             onPressed: () => context.go(AppRoutes.shadows),
           ),
         ],

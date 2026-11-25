@@ -38,9 +38,7 @@ class ExerciseDetailPage extends ConsumerWidget {
       ),
       _ => Scaffold(
         appBar: AppBar(),
-        body: const Center(
-          child: CircularProgressIndicator(color: AriseColors.gold),
-        ),
+        body: Center(child: CircularProgressIndicator(color: AriseColors.gold)),
       ),
     };
   }

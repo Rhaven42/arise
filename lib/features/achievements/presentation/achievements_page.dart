@@ -41,9 +41,7 @@ class _AchievementsPageState extends ConsumerState<AchievementsPage> {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.achievementsTitle)),
       body: state == null || metrics == null
-          ? const Center(
-              child: CircularProgressIndicator(color: AriseColors.gold),
-            )
+          ? Center(child: CircularProgressIndicator(color: AriseColors.gold))
           : ListView(
               padding: const EdgeInsets.all(AriseSpacing.md),
               children: [

@@ -5,12 +5,16 @@ class FakeMusicPlayer implements MusicPlayer {
   final List<MusicTrack?> tracks = [];
   final List<Jingle> jingles = [];
   bool isEnabled = true;
+  MusicVariant? variant;
 
   @override
   Future<void> play(MusicTrack? track) async => tracks.add(track);
 
   @override
   Future<void> jingle(Jingle jingle) async => jingles.add(jingle);
+
+  @override
+  void setVariant(MusicVariant? variant) => this.variant = variant;
 
   @override
   void setEnabled({required bool enabled}) => isEnabled = enabled;

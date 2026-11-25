@@ -28,9 +28,7 @@ class HeroClassPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.classTitle)),
       body: state == null
-          ? const Center(
-              child: CircularProgressIndicator(color: AriseColors.gold),
-            )
+          ? Center(child: CircularProgressIndicator(color: AriseColors.gold))
           : ListView(
               padding: const EdgeInsets.all(AriseSpacing.md),
               children: [

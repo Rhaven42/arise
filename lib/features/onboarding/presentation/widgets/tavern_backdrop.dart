@@ -46,11 +46,11 @@ class _TavernPainter extends CustomPainter {
     canvas.drawRect(
       rect,
       Paint()
-        ..shader = const LinearGradient(
+        ..shader = LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [AriseColors.abyss, AriseColors.wood, AriseColors.abyss],
-          stops: [0, 0.65, 1],
+          stops: const [0, 0.65, 1],
         ).createShader(rect),
     );
     final seam = Paint()

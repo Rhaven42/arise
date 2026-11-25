@@ -32,7 +32,7 @@ class ActionDock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -88,9 +88,9 @@ class _Slot extends StatelessWidget {
           height: 60,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AriseSpacing.radius),
-            gradient: const RadialGradient(
-              center: Alignment(0, -0.4),
-              colors: [Color(0xFF3A322B), AriseColors.panelBottom],
+            gradient: RadialGradient(
+              center: const Alignment(0, -0.4),
+              colors: [const Color(0xFF3A322B), AriseColors.panelBottom],
             ),
             border: Border.all(
               color: on ? AriseColors.goldBright : AriseColors.bronzeEdge,
@@ -111,7 +111,7 @@ class _Slot extends StatelessWidget {
                 top: 2,
                 child: Text(
                   '$hotkey',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 9,
                     color: AriseColors.parchmentMuted,
                   ),
@@ -165,14 +165,14 @@ class _CenterButton extends StatelessWidget {
           height: 74,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: const RadialGradient(
-              center: Alignment(0, -0.3),
+            gradient: RadialGradient(
+              center: const Alignment(0, -0.3),
               colors: [
                 AriseColors.goldPale,
                 AriseColors.gold,
-                Color(0xFF7A5A22),
+                const Color(0xFF7A5A22),
               ],
-              stops: [0, 0.45, 1],
+              stops: const [0, 0.45, 1],
             ),
             border: Border.all(color: const Color(0xFFFFF3C9), width: 2),
             boxShadow: [

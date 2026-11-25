@@ -1,3 +1,5 @@
+import 'package:arise/core/config/game_config.dart';
+
 /// Univers de l'application : chacun change l'ambiance (couleurs, polices,
 /// musiques, noms), jamais la progression, qui reste commune.
 enum World {
@@ -31,3 +33,14 @@ World worldFromName(String? name) => World.values.firstWhere(
   (w) => w.name == name,
   orElse: () => World.medieval,
 );
+
+/// Haut fait d'appel de [world] dans la configuration (seuil et mesure), ou
+/// `null` pour le Médiéval.
+AchievementDefinition? unlockDefinitionOf(
+  World world, {
+  GameConfig config = gameConfig,
+}) {
+  final id = world.unlockAchievement;
+  if (id == null) return null;
+  return config.achievements.definitions.firstWhere((d) => d.id == id);
+}

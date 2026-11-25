@@ -179,7 +179,7 @@ class FigurePainter extends CustomPainter {
   }
 
   // Épaisseurs (rayons) des segments, en unités du mannequin.
-  static const Map<FigureSegment, (double, double)> _limbRadii = {
+  static final Map<FigureSegment, (double, double)> _limbRadii = {
     FigureSegment.upperArm: (0.046, 0.037),
     FigureSegment.forearm: (0.036, 0.027),
     FigureSegment.thigh: (0.066, 0.047),
@@ -266,8 +266,12 @@ class FigurePainter extends CustomPainter {
         Offset(0, y),
         Offset(size.width, y),
         Paint()
-          ..shader = const LinearGradient(
-            colors: [Color(0x00D4A84B), AriseColors.gold, Color(0x00D4A84B)],
+          ..shader = LinearGradient(
+            colors: [
+              const Color(0x00D4A84B),
+              AriseColors.gold,
+              const Color(0x00D4A84B),
+            ],
           ).createShader(Rect.fromLTWH(0, y - 1, size.width, 2))
           ..strokeWidth = 1.5,
       );
@@ -303,8 +307,8 @@ class FigurePainter extends CustomPainter {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: wall
-                    ? const [AriseColors.stoneLight, AriseColors.stone]
-                    : const [AriseColors.woodLight, AriseColors.wood],
+                    ? [AriseColors.stoneLight, AriseColors.stone]
+                    : [AriseColors.woodLight, AriseColors.wood],
               ).createShader(rect),
           )
           ..drawRRect(
@@ -332,8 +336,8 @@ class FigurePainter extends CustomPainter {
             c,
             0.035 * scale,
             Paint()
-              ..shader = const RadialGradient(
-                center: Alignment(-0.4, -0.4),
+              ..shader = RadialGradient(
+                center: const Alignment(-0.4, -0.4),
                 colors: [AriseColors.coinSilver, AriseColors.stoneLight],
               ).createShader(Rect.fromCircle(center: c, radius: 0.035 * scale)),
           );
@@ -527,8 +531,8 @@ class FigurePainter extends CustomPainter {
         c,
         r,
         Paint()
-          ..shader = const RadialGradient(
-            center: Alignment(-0.3, -0.4),
+          ..shader = RadialGradient(
+            center: const Alignment(-0.3, -0.4),
             colors: [AriseColors.parchment, AriseColors.parchmentMuted],
           ).createShader(Rect.fromCircle(center: c, radius: r)),
       );

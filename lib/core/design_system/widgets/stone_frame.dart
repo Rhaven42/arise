@@ -26,7 +26,7 @@ class StoneFrame extends StatelessWidget {
       FrameMaterial.wood => (AriseColors.wood, AriseColors.stoneDark),
     };
     return CustomPaint(
-      foregroundPainter: const CornerBracketsPainter(color: AriseColors.gold),
+      foregroundPainter: CornerBracketsPainter(color: AriseColors.gold),
       child: Padding(
         // Place pour les équerres qui dépassent du panneau.
         padding: const EdgeInsets.all(3),

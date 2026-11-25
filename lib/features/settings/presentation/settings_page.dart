@@ -87,7 +87,7 @@ class SettingsPage extends ConsumerWidget {
           const Divider(),
           _SectionHeader(l10n.settingsBackupSection),
           ListTile(
-            leading: const Icon(Icons.save_alt, color: AriseColors.gold),
+            leading: Icon(Icons.save_alt, color: AriseColors.gold),
             title: Text(l10n.settingsBackupTile),
             subtitle: Text(l10n.settingsBackupTileHint),
             trailing: const Icon(Icons.chevron_right),
@@ -95,7 +95,7 @@ class SettingsPage extends ConsumerWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.info_outline, color: AriseColors.gold),
+            leading: Icon(Icons.info_outline, color: AriseColors.gold),
             title: Text(l10n.creditsTile),
             subtitle: Text(l10n.creditsTileHint),
             trailing: const Icon(Icons.chevron_right),
@@ -158,7 +158,7 @@ class _SickModeTile extends ConsumerWidget {
       );
     }
     return ListTile(
-      leading: const Icon(Icons.healing_outlined, color: AriseColors.gold),
+      leading: Icon(Icons.healing_outlined, color: AriseColors.gold),
       title: Text(l10n.settingsSickStart),
       subtitle: Text(l10n.settingsSickHint),
       enabled: state != null,

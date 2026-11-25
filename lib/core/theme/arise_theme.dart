@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 /// Thème sombre et chaud d'ARISE (Material 3 personnalisé).
 abstract final class AriseTheme {
   static ThemeData dark() {
-    const colorScheme = ColorScheme(
+    final colorScheme = ColorScheme(
       brightness: Brightness.dark,
       primary: AriseColors.gold,
       onPrimary: AriseColors.onGold,
@@ -54,14 +54,14 @@ abstract final class AriseTheme {
         backgroundColor: AriseColors.panelBottom.withValues(alpha: 0.92),
         surfaceTintColor: Colors.transparent,
         foregroundColor: AriseColors.goldBright,
-        iconTheme: const IconThemeData(color: AriseColors.gold),
+        iconTheme: IconThemeData(color: AriseColors.gold),
         titleTextStyle: textTheme.titleLarge?.copyWith(
           color: AriseColors.goldBright,
           letterSpacing: 1.5,
-          shadows: const [Shadow(blurRadius: 4)],
+          shadows: [const Shadow(blurRadius: 4)],
         ),
         centerTitle: true,
-        shape: const Border(bottom: BorderSide(color: AriseColors.bronzeEdge)),
+        shape: Border(bottom: BorderSide(color: AriseColors.bronzeEdge)),
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
@@ -84,22 +84,24 @@ abstract final class AriseTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AriseColors.goldBright,
           disabledForegroundColor: AriseColors.parchmentMuted,
-          side: const BorderSide(color: AriseColors.gold, width: 1.5),
+          side: BorderSide(color: AriseColors.gold, width: 1.5),
           minimumSize: minSize,
           padding: padding,
           shape: shape,
           textStyle: textTheme.labelLarge,
         ).copyWith(backgroundBuilder: _darkPlate),
       ),
-      cardTheme: const CardThemeData(
+      cardTheme: CardThemeData(
         color: AriseColors.panelTop,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           side: BorderSide(color: AriseColors.bronzeEdge),
-          borderRadius: BorderRadius.all(Radius.circular(AriseSpacing.radius)),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(AriseSpacing.radius),
+          ),
         ),
       ),
-      inputDecorationTheme: const InputDecorationTheme(
+      inputDecorationTheme: InputDecorationTheme(
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: AriseColors.bronzeEdge),
         ),
@@ -107,12 +109,12 @@ abstract final class AriseTheme {
           borderSide: BorderSide(color: AriseColors.goldBright, width: 2),
         ),
       ),
-      dividerTheme: const DividerThemeData(color: AriseColors.stoneLight),
+      dividerTheme: DividerThemeData(color: AriseColors.stoneLight),
       chipTheme: ChipThemeData(
         backgroundColor: AriseColors.stone,
         selectedColor: AriseColors.gold,
         checkmarkColor: AriseColors.onGold,
-        side: const BorderSide(color: AriseColors.woodLight),
+        side: BorderSide(color: AriseColors.woodLight),
         labelStyle: textTheme.bodyMedium?.copyWith(
           color: WidgetStateColor.resolveWith(
             (states) => states.contains(WidgetState.selected)
@@ -134,7 +136,7 @@ abstract final class AriseTheme {
         backgroundColor: AriseColors.panelTop,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          side: const BorderSide(color: AriseColors.gold),
+          side: BorderSide(color: AriseColors.gold),
           borderRadius: BorderRadius.circular(AriseSpacing.radius),
         ),
         titleTextStyle: textTheme.titleLarge,
@@ -161,21 +163,21 @@ abstract final class AriseTheme {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: disabled
-              ? const [AriseColors.stoneLight, AriseColors.stone]
+              ? [AriseColors.stoneLight, AriseColors.stone]
               : pressed
-              ? const [AriseColors.goldDeep, AriseColors.gold]
-              : const [
+              ? [AriseColors.goldDeep, AriseColors.gold]
+              : [
                   AriseColors.goldPale,
                   AriseColors.gold,
                   AriseColors.goldDeep,
                   AriseColors.gold,
                 ],
-          stops: disabled || pressed ? null : const [0, 0.42, 0.6, 1],
+          stops: disabled || pressed ? null : [0, 0.42, 0.6, 1],
         ),
         boxShadow: disabled
             ? null
             : [
-                const BoxShadow(color: AriseColors.goldShadow, spreadRadius: 1),
+                BoxShadow(color: AriseColors.goldShadow, spreadRadius: 1),
                 BoxShadow(
                   color: AriseColors.goldBright.withValues(
                     alpha: pressed ? 0.1 : 0.18,
@@ -201,8 +203,8 @@ abstract final class AriseTheme {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: states.contains(WidgetState.pressed)
-              ? const [AriseColors.panelBottom, AriseColors.panelTop]
-              : const [AriseColors.panelTop, AriseColors.panelBottom],
+              ? [AriseColors.panelBottom, AriseColors.panelTop]
+              : [AriseColors.panelTop, AriseColors.panelBottom],
         ),
       ),
       child: child,

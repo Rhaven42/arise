@@ -1,5 +1,6 @@
 import 'package:arise/core/theme/arise_colors.dart';
 import 'package:arise/core/theme/arise_spacing.dart';
+import 'package:arise/core/theme/world_palette.dart';
 import 'package:arise/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 
@@ -69,7 +70,7 @@ class XpBar extends StatelessWidget {
             ),
             const SizedBox(height: AriseSpacing.xs),
             Text(
-              l10n.xpProgress(current, goal),
+              l10n.xpProgress(current, goal, WorldPalette.active.id),
               textAlign: TextAlign.end,
               style: textTheme.labelMedium,
             ),

@@ -1,3 +1,4 @@
+import 'package:arise/features/worlds/domain/world.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'player_profile.freezed.dart';
@@ -53,6 +54,10 @@ abstract class PlayerProfile with _$PlayerProfile {
 
     /// Musique d'ambiance et jingles (activés par défaut).
     @Default(true) bool music,
+
+    /// Univers actif : son ambiance (couleurs, polices, musiques, noms).
+    /// Médiéval par défaut, et pour les sauvegardes qui ne le connaissent pas.
+    @Default(World.medieval) World world,
   }) = _PlayerProfile;
 
   factory PlayerProfile.fromJson(Map<String, dynamic> json) =>
