@@ -198,6 +198,28 @@ void main() {
     expect(_px(out, 3, 6), [10, 20, 30, 255]);
   });
 
+  test('pas de trait vide entre le cou et une tenue qui commence plus bas', () {
+    // Tenue posée une ligne sous le menton : la fente est comblée.
+    final outfit = _fill(10, 20, (x, y) => y > 6 && x >= 3 && x <= 6, [
+      10,
+      20,
+      30,
+      255,
+    ]);
+    final out = composer.compose(
+      const CharacterAppearance(
+        bodyId: 'human_male',
+        skinColor: 0xFFC8966A,
+        hairColor: 0,
+        outfitId: 'awakened_leather',
+      ),
+      SpriteLayers(body: body, outfit: outfit),
+    );
+    expect(_px(out, 4, 6), [10, 20, 30, 255]);
+    // Hors de la tenue, rien n'est inventé.
+    expect(_px(out, 2, 6)[3], 0);
+  });
+
   test('la frange laisse le visage dégagé et les cornes passent devant', () {
     final horned = RgbaImage(10, 20, Uint8List.fromList(body.pixels));
     // Corne à gauche du crâne, sur la ligne 1.

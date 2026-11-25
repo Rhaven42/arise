@@ -548,10 +548,21 @@ def outfit_layer(base: np.ndarray, edit: np.ndarray, neck: int,
     # à la tête (l'appli redessine de toute façon la peau du visage).
     feet = int(np.where((base[..., 3] > 0).any(axis=1))[0][-1])
     collar = np.zeros_like(rows)
-    collar[max(0, neck - round(0.07 * (feet - neck))): neck] = True
-    face = ndimage.binary_dilation((base[..., 3] > 0) & ~rows & _head_region(base, neck),
-                                   np.ones((3, 3)))
+    collar[max(0, neck - round(COLLAR_BAND * (feet - neck))): neck] = True
     pal = face_palette(base, skin_sample)
+    head = (base[..., 3] > 0) & ~rows & _head_region(base, neck)
+    # Les épaules touchent la tête par le cou : en descendant, la tête ne
+    # s'élargit plus (visage puis cou) ; au-delà, ce sont les épaules, que la
+    # tenue recouvre.
+    head_skin = head & skin_mask(base, pal, 30)
+    left, right = 0, base.shape[1]
+    for yy in range(max(0, neck - round(COLLAR_BAND * (feet - neck))), neck):
+        cols = np.where(head_skin[yy])[0]
+        if len(cols):
+            left, right = max(left, cols[0]), min(right, cols[-1])
+        head[yy, :max(0, left - 1)] = False
+        head[yy, right + 2:] = False
+    face = ndimage.binary_dilation(head, np.ones((3, 3)))
     collar &= (edit[..., 3] > 0) & ~face & (color_dist(edit, base) > 40)
     collar &= ~skin_mask(edit, pal, 30)
     body |= collar
@@ -563,11 +574,34 @@ def outfit_layer(base: np.ndarray, edit: np.ndarray, neck: int,
     skin = skin_mask(edit, face_palette(base, skin_sample), 24) & bright & near & body
     # Peau du corps de base restée telle quelle (cou vert de l'orque compris).
     skin |= base_skin & body & (color_dist(edit, base) < 40)
+    # Encolure : la peau dans l'ombre du col (plus sombre) aussi, pour
+    # qu'aucune peau du gabarit (verte pour l'orque) ne reste.
+    neck_rows = np.zeros_like(rows)
+    neck_rows[neck: neck + round(NECK_SKIN_BAND * (feet - neck))] = True
+    skin |= skin_mask(edit, face_palette(base, skin_sample), 34) & near & body & neck_rows
+    # Ombre sombre au fond de l'encolure (entre la peau du cou de part et
+    # d'autre) : c'est encore le cou du gabarit, pas la tenue. Sinon elle
+    # trace un trait sombre sous le menton des autres races.
+    hull = np.zeros_like(rows)
+    for yy in np.where(neck_rows)[0]:
+        cols = np.where(skin[yy])[0]
+        if len(cols) >= 2:
+            hull[yy, cols[0]: cols[-1] + 1] = True
+    hull = ndimage.binary_dilation(hull, np.ones((7, 1), bool)) & neck_rows
+    skin |= hull & body & (v < 0.3)
     # Peau nue (cou, mains, avant-bras) : marquée par l'alpha de peau,
     # recolorée à la teinte du personnage dans l'appli.
     out[skin, 3] = SKIN_ALPHA
     return out
 
+
+# Hauteur (fraction du cou aux pieds) au-dessus du menton où la tenue garde
+# ses épaules et son col.
+COLLAR_BAND = 0.12
+
+# Hauteur (fraction du cou aux pieds) de l'encolure où toute la peau d'une
+# tenue est marquée, même dans l'ombre du col.
+NECK_SKIN_BAND = 0.14
 
 # Alphas réservés des corps : zones recolorées dans l'appli.
 EYE_ALPHA = 253
