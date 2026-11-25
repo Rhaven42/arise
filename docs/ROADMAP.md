@@ -154,7 +154,8 @@
 - [x] Tenues, pièces et armes rangées par univers et matière ; filtres de la boutique et du sac
 - [x] Vignettes des tenues et pièces tirées des images générées ; barbes recalées sur le visage
 - [ ] Nouvelles tenues par univers et matière (crédits SpriteCook à recharger)
-- [ ] Musiques Viking et Pirate manquantes (à fournir par la propriétaire)
+- [x] Musiques Pirate (ouverture, Système, boutique)
+- [ ] Musiques Viking manquantes (ouverture, boutique, level up) et jingle Pirate
 
 ## Phase 12 — Finitions et publication
 - [x] Sons et ambiance (musiques et jingle fournis par la propriétaire du projet, 11/11/2026)

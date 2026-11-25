@@ -35,7 +35,11 @@ void main() {
     expect(MusicVariant.trackPath(north, MusicTrack.shop), 'music/shop.mp3');
     expect(
       MusicVariant.trackPath(musicVariantOf(World.sea), MusicTrack.title),
-      'music/title.mp3',
+      'music/sea/title.mp3',
+    );
+    expect(
+      MusicVariant.jinglePath(musicVariantOf(World.sea), Jingle.levelUp),
+      'sounds/level_up.mp3',
     );
     expect(
       MusicVariant.jinglePath(null, Jingle.levelUp),

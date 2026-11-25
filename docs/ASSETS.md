@@ -68,7 +68,8 @@ Créations de la propriétaire du projet, générées avec Suno sous abonnement 
 
 Musiques des univers (mêmes origine et droits, même compression ; noms des fichiers envoyés par la propriétaire) :
 - `assets/music/arcane/` (Magie) : `title.mp3` (« Ouverture Magie »), `system.mp3` (« Stats Magie »), `shop.mp3` (« Boutique Magie »), `level_up.mp3` (« Level Up Magie ») ;
-- `assets/music/north/` (Viking) : `system.mp3` (« Stats Viking »).
+- `assets/music/north/` (Viking) : `system.mp3` (« Stats Viking ») ;
+- `assets/music/sea/` (Pirate) : `title.mp3` (« Ouverture Pirate »), `system.mp3` (« Pirate Stats »), `shop.mp3` (« Boutique Pirate »).
 Une piste absente d'un univers reprend celle du Médiéval (`MusicVariant`, `world_style.dart`). Pour en ajouter une : la déposer sous le même nom dans le dossier de l'univers et l'ajouter à `musicVariantOf`.
 
 Polices des univers (SIL Open Font License, fichier `OFL.txt` à côté de chacune, tirées de google/fonts) : Metamorphous (Magie), Uncial Antiqua (Viking), Pirata One (Pirate).

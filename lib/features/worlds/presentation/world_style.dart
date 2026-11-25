@@ -20,5 +20,8 @@ MusicVariant? musicVariantOf(World world) => switch (world) {
     jingles: {Jingle.levelUp},
   ),
   World.north => const MusicVariant('north', tracks: {MusicTrack.system}),
-  World.sea => null,
+  World.sea => const MusicVariant(
+    'sea',
+    tracks: {MusicTrack.title, MusicTrack.system, MusicTrack.shop},
+  ),
 };
