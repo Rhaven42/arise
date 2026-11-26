@@ -421,7 +421,8 @@ const List<EquipmentItem> outfitCatalog = [
     rarity: Rarity.legendary,
     dyeable: true,
     material: EquipmentMaterial.plate,
-  ),  EquipmentItem(
+  ),
+  EquipmentItem(
     id: 'sea_deckhand',
     slot: EquipmentSlot.chest,
     rarity: Rarity.common,
