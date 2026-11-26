@@ -276,6 +276,47 @@ def key_layer(base: np.ndarray, edit: np.ndarray, hue: float | None = None,
     return out
 
 
+# Pixels du visage d'une barbe dessinée avec son visage (nain) : gardés tels
+# quels dans l'appli (yeux, sourcils, contour), la peau prenant l'alpha de
+# peau pour être recolorée.
+FACE_KEEP_ALPHA = 249
+
+
+def beard_face(base: np.ndarray, edit: np.ndarray, sample: tuple[int, int],
+               chin: int) -> np.ndarray:
+    """Visage dessiné avec la barbe (nez au-dessus de la moustache, bouche à
+    sa place) : la tête de l'image générée, du sommet au menton, sur la
+    largeur de la tête du corps. Peau marquée par l'alpha de peau, le reste
+    (yeux, sourcils, contour) par FACE_KEEP_ALPHA."""
+    x0, top, x1, neck = head_box(base)
+    e = align(prealign(edit, base), base, slice(neck + 20, CANVAS_H))
+    out = np.zeros_like(e)
+    head = _head_region(e, chin + 1) & (e[..., 3] > 0)
+    margin = int(0.15 * (x1 - x0))
+    head[:, : max(0, x0 - margin)] = False
+    head[:, x1 + margin:] = False
+    out[head] = e[head]
+    # Peau : teinte du visage du corps, ombres et reflets compris ; les
+    # traits sombres (yeux, sourcils, contour) restent tels quels.
+    hh, ss, vv = _hue_sat_val(e.astype(float))
+    bh, bs, bv = _hue_sat_val(base.astype(float))
+    sx, sy = sample
+    h0 = float(np.median(bh[sy - 1: sy + 2, sx - 1: sx + 2]))
+    v0 = float(np.median(bv[sy - 1: sy + 2, sx - 1: sx + 2]))
+    dh = np.abs(((hh - h0 + 0.5) % 1) - 0.5)
+    skin = head & ((skin_mask(e, face_palette(base, sample), 34))
+                   | ((dh < 0.06) & (ss > 0.25) & (vv > 0.5 * v0))
+                   # Rougeurs (nez, pommettes) : plus rouges que la peau.
+                   | ((((hh - h0 + 0.5) % 1) - 0.5 > -0.12) & (((hh - h0 + 0.5) % 1) - 0.5 < 0)
+                      & (ss > 0.3) & (vv > 0.45 * v0)))
+    out[head, 3] = FACE_KEEP_ALPHA
+    out[skin, 3] = SKIN_ALPHA
+    # Franges magenta de la barbe (hors de son calque) : jamais posées.
+    key = (np.abs(((hh - 0.952 + 0.5) % 1) - 0.5) < 0.1) & (ss > 0.3)
+    out[key & ~skin] = 0
+    return out
+
+
 def race_beard_layer(base: np.ndarray, edit: np.ndarray, face: bool = True,
                      open_mouth: bool = True) -> np.ndarray:
     """Barbe dessinée sur le corps d'une race : recalage grossier puis fin,

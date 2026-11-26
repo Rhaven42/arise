@@ -280,6 +280,7 @@ class SpriteMeta {
     required this.templates,
     required this.hairSources,
     required this.weapons,
+    this.faceAlpha = 249,
     this.raceBeards = const {},
     this.pieceSlots = const {},
     this.gloves = const {},
@@ -296,6 +297,7 @@ class SpriteMeta {
       height: (canvas[1] as num).toInt(),
       skinAlpha: (json['skinAlpha'] as num).toInt(),
       frontAlpha: (json['frontAlpha'] as num).toInt(),
+      faceAlpha: (json['faceAlpha'] as num?)?.toInt() ?? 249,
       bodies: map(
         'bodies',
         (v) => BodyMeta.fromJson(v as Map<String, dynamic>),
@@ -337,6 +339,10 @@ class SpriteMeta {
 
   /// Alpha des pixels d'un corps dessinés devant la coiffure (cornes).
   final int frontAlpha;
+
+  /// Alpha des traits d'un visage dessiné avec sa barbe (yeux, sourcils,
+  /// contour) : posés tels quels, sans teinte.
+  final int faceAlpha;
   final Map<String, BodyMeta> bodies;
   final Map<String, OutfitTemplate> templates;
   final Map<String, HeadFrame> hairSources;
@@ -809,13 +815,21 @@ class SpriteComposer {
         ? body.head
         : meta.hairSources['beard'];
     if (beard != null && beardSource != null) {
-      final ref = _medianLuminance(beard);
+      final ref = _medianLuminance(beard, only: 255);
       final color = a.beardColor ?? a.hairColor;
+      // Barbe dessinée avec son visage (nain) : la peau prend la teinte du
+      // personnage, les traits restent tels quels, la barbe celle choisie.
       _warp(
         out,
         beard,
         headWarp(beardSource, body.head, meta.height, hugJaw: true),
-        (r, g, b) => tintHairPixel(r, g, b, ref, color),
+        (r, g, b, alpha) {
+          if (alpha == meta.skinAlpha) {
+            return tintPixel(r, g, b, body.skinRef, a.skinColor);
+          }
+          if (alpha == meta.faceAlpha) return (r, g, b);
+          return tintHairPixel(r, g, b, ref, color);
+        },
         // Au-dessus du menton, la barbe suit le contour du visage : rien
         // au-delà de la joue.
         skip: (x, y) {
@@ -837,7 +851,7 @@ class SpriteComposer {
         out,
         hair,
         headWarp(hairSource, body.head, meta.height),
-        (r, g, b) => tintHairPixel(r, g, b, ref, a.hairColor),
+        (r, g, b, _) => tintHairPixel(r, g, b, ref, a.hairColor),
         // Visage dégagé : pas de mèche sur le centre du visage (yeux, nez,
         // bouche) entre sourcils et menton ; les mèches qui tombent sur les
         // joues restent entières.
@@ -988,7 +1002,7 @@ class SpriteComposer {
     RgbaImage out,
     RgbaImage layer,
     HeadWarp warp,
-    (int, int, int) Function(int r, int g, int b) colour, {
+    (int, int, int) Function(int r, int g, int b, int alpha) colour, {
     bool Function(int x, int y)? skip,
   }) {
     for (var y = 0; y < out.height; y++) {
@@ -1006,6 +1020,7 @@ class SpriteComposer {
           layer.pixels[i],
           layer.pixels[i + 1],
           layer.pixels[i + 2],
+          layer.pixels[i + 3],
         );
         _put(out, x, y, cr, cg, cb);
       }
@@ -1399,10 +1414,11 @@ class SpriteComposer {
     return out;
   }
 
-  static double _medianLuminance(RgbaImage layer) {
+  static double _medianLuminance(RgbaImage layer, {int? only}) {
     final values = <double>[];
     for (var i = 0; i < layer.pixels.length; i += 4) {
       if (layer.pixels[i + 3] == 0) continue;
+      if (only != null && layer.pixels[i + 3] != only) continue;
       values.add(
         luminanceOf(layer.pixels[i], layer.pixels[i + 1], layer.pixels[i + 2]),
       );

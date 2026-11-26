@@ -19,7 +19,7 @@ from scipy import ndimage
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(__file__))
-from layers import (CANVAS_H, CANVAS_W, SKIN_ALPHA, best_skin,  # noqa: E402
+from layers import (CANVAS_H, CANVAS_W, FACE_KEEP_ALPHA, SKIN_ALPHA, beard_face, best_skin,  # noqa: E402
                     fill_crown, key_layer, load, race_beard_layer, neck_row, outfit_layer, recolor, save)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -68,6 +68,9 @@ HAND_REACH = 0.07
 # génération (nain) n'a pas la bouche au même endroit que le corps, un trou
 # y montrerait la peau et la lèvre décalées.
 CLOSED_MOUTH_BEARDS = {"dwarf"}
+# Barbes posées avec le visage dessiné en même temps (nez, bouche et joues à
+# leur place autour de la barbe, comme sur le modèle).
+FACE_BEARDS = {"dwarf"}
 
 
 
@@ -205,7 +208,7 @@ def main() -> None:
     outfits = json.load(open(os.path.join(HERE, "outfits.json")))
     for sub in ("bodies", "hair", "beards", "outfits", "weapons"):
         os.makedirs(os.path.join(OUT, sub), exist_ok=True)
-    meta: dict = {"canvas": [CANVAS_W, CANVAS_H], "skinAlpha": SKIN_ALPHA,
+    meta: dict = {"canvas": [CANVAS_W, CANVAS_H], "skinAlpha": SKIN_ALPHA, "faceAlpha": FACE_KEEP_ALPHA,
                   "frontAlpha": FRONT_ALPHA,
                   "bodies": {}, "templates": {}, "hairSources": {}, "weapons": {}}
 
@@ -255,12 +258,24 @@ def main() -> None:
     # Barbes dessinées sur le visage de chaque race trop éloignée de l'humain
     # (raw/beard_<race>_NN.png) : posées telles quelles dans l'appli.
     for race in RACE_BEARDS:
-        base = load(raw(body_name(race, "male")))
+        name = body_name(race, "male")
+        base = load(raw(name))
         os.makedirs(os.path.join(OUT, "beards", race), exist_ok=True)
+        if race in FACE_BEARDS:
+            skull = tuple(heads[name])
+            neck = neck_of(heads, name, base)
+            skin, sample = best_skin(base, skull, neck, heads["arms"].get(name))
+            chin = chin_row(skin, neck, skull)
         for i in range(1, BEARD_COUNT + 1):
-            lay = race_beard_layer(base, load(raw(f"beard_{race}_{i:02d}")),
+            edit = load(raw(f"beard_{race}_{i:02d}"))
+            lay = race_beard_layer(base, edit,
                                    face=race not in BODY_ALIGNED_BEARDS,
                                    open_mouth=race not in CLOSED_MOUTH_BEARDS)
+            if race in FACE_BEARDS:
+                # Visage dessiné avec la barbe, sous elle (nez au-dessus).
+                face = beard_face(base, edit, sample, chin)
+                face[lay[..., 3] > 0] = lay[lay[..., 3] > 0]
+                lay = face
             save(lay, os.path.join(OUT, "beards", race, f"b{i:02d}.png"))
     meta["raceBeards"] = list(RACE_BEARDS)
 
