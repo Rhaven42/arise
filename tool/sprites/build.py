@@ -51,7 +51,7 @@ RACE_BEARDS = ["dwarf", "gnome", "goblin", "minotaur", "orc"]
 # souvent la tête), sauf pour le gnome et le nain : leur grand visage rond
 # trompe le recalage (barbes élargies), le recalage sur le corps y est plus
 # juste.
-BODY_ALIGNED_BEARDS = {"gnome", "dwarf"}
+BODY_ALIGNED_BEARDS = {"gnome"}
 # Races à cornes : les cornes passent devant la coiffure.
 HORNED = {"demon", "minotaur"}
 # Alpha des pixels d'un corps dessinés devant la coiffure (cornes).
@@ -67,10 +67,10 @@ HAND_REACH = 0.07
 # Barbes dont la bouche reste couverte : le visage redessiné par la
 # génération (nain) n'a pas la bouche au même endroit que le corps, un trou
 # y montrerait la peau et la lèvre décalées.
-CLOSED_MOUTH_BEARDS = {"dwarf"}
+CLOSED_MOUTH_BEARDS: set[str] = set()
 # Barbes posées avec le visage dessiné en même temps (nez, bouche et joues à
 # leur place autour de la barbe, comme sur le modèle).
-FACE_BEARDS = {"dwarf"}
+FACE_BEARDS: set[str] = set()
 
 
 
