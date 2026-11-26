@@ -280,6 +280,7 @@ class SpriteMeta {
     required this.templates,
     required this.hairSources,
     required this.weapons,
+    this.faceAlpha = 249,
     this.raceBeards = const {},
     this.pieceSlots = const {},
     this.gloves = const {},
@@ -296,6 +297,7 @@ class SpriteMeta {
       height: (canvas[1] as num).toInt(),
       skinAlpha: (json['skinAlpha'] as num).toInt(),
       frontAlpha: (json['frontAlpha'] as num).toInt(),
+      faceAlpha: (json['faceAlpha'] as num?)?.toInt() ?? 249,
       bodies: map(
         'bodies',
         (v) => BodyMeta.fromJson(v as Map<String, dynamic>),
@@ -337,6 +339,10 @@ class SpriteMeta {
 
   /// Alpha des pixels d'un corps dessinés devant la coiffure (cornes).
   final int frontAlpha;
+
+  /// Alpha des traits d'un visage dessiné avec sa barbe (yeux, sourcils,
+  /// contour) : posés tels quels, sans teinte.
+  final int faceAlpha;
   final Map<String, BodyMeta> bodies;
   final Map<String, OutfitTemplate> templates;
   final Map<String, HeadFrame> hairSources;
@@ -778,19 +784,27 @@ class SpriteComposer {
       );
     }
     // Visage intact : le col d'une tenue ou d'un haut ne recouvre jamais la
-    // peau du visage au-dessus du menton.
+    // peau du visage au-dessus du menton, ni le contour du bas du visage
+    // (sur la largeur de la mâchoire : le menton du gnome repose sur ses
+    // épaules).
     if (outfit != null || layers.pieces.isNotEmpty) {
+      final cx = body.head.skull.centre;
+      final jaw = _jawHalf(body, neck);
       for (var y = 0; y <= neck && y < src.height; y++) {
+        final half = body.head.halfWidthAt(y.toDouble()) ?? jaw;
         for (var x = 0; x < src.width; x++) {
           final i = (y * src.width + x) * 4;
-          if (src.pixels[i + 3] != meta.skinAlpha) continue;
-          final (r, g, b) = tintPixel(
-            src.pixels[i],
-            src.pixels[i + 1],
-            src.pixels[i + 2],
-            body.skinRef,
-            a.skinColor,
-          );
+          final alpha = src.pixels[i + 3];
+          if (alpha == 0) continue;
+          var r = src.pixels[i];
+          var g = src.pixels[i + 1];
+          var b = src.pixels[i + 2];
+          if (alpha == meta.skinAlpha) {
+            (r, g, b) = tintPixel(r, g, b, body.skinRef, a.skinColor);
+          } else if (alpha == meta.frontAlpha ||
+              (x + 0.5 - cx).abs() > half + 1) {
+            continue;
+          }
           _put(out, x, y, r, g, b);
         }
       }
@@ -801,13 +815,21 @@ class SpriteComposer {
         ? body.head
         : meta.hairSources['beard'];
     if (beard != null && beardSource != null) {
-      final ref = _medianLuminance(beard);
+      final ref = _medianLuminance(beard, only: 255);
       final color = a.beardColor ?? a.hairColor;
+      // Barbe dessinée avec son visage (nain) : la peau prend la teinte du
+      // personnage, les traits restent tels quels, la barbe celle choisie.
       _warp(
         out,
         beard,
         headWarp(beardSource, body.head, meta.height, hugJaw: true),
-        (r, g, b) => tintHairPixel(r, g, b, ref, color),
+        (r, g, b, alpha) {
+          if (alpha == meta.skinAlpha) {
+            return tintPixel(r, g, b, body.skinRef, a.skinColor);
+          }
+          if (alpha == meta.faceAlpha) return (r, g, b);
+          return tintHairPixel(r, g, b, ref, color);
+        },
         // Au-dessus du menton, la barbe suit le contour du visage : rien
         // au-delà de la joue.
         skip: (x, y) {
@@ -829,7 +851,7 @@ class SpriteComposer {
         out,
         hair,
         headWarp(hairSource, body.head, meta.height),
-        (r, g, b) => tintHairPixel(r, g, b, ref, a.hairColor),
+        (r, g, b, _) => tintHairPixel(r, g, b, ref, a.hairColor),
         // Visage dégagé : pas de mèche sur le centre du visage (yeux, nez,
         // bouche) entre sourcils et menton ; les mèches qui tombent sur les
         // joues restent entières.
@@ -980,7 +1002,7 @@ class SpriteComposer {
     RgbaImage out,
     RgbaImage layer,
     HeadWarp warp,
-    (int, int, int) Function(int r, int g, int b) colour, {
+    (int, int, int) Function(int r, int g, int b, int alpha) colour, {
     bool Function(int x, int y)? skip,
   }) {
     for (var y = 0; y < out.height; y++) {
@@ -998,6 +1020,7 @@ class SpriteComposer {
           layer.pixels[i],
           layer.pixels[i + 1],
           layer.pixels[i + 2],
+          layer.pixels[i + 3],
         );
         _put(out, x, y, cr, cg, cb);
       }
@@ -1034,9 +1057,21 @@ class SpriteComposer {
     }
   }
 
+  /// Demi-largeur de la mâchoire : la plus étroite du profil de la tête
+  /// entre la bouche et le menton.
+  static double _jawHalf(BodyMeta body, int neck) {
+    final head = body.head;
+    double? jaw;
+    for (var y = (neck - 0.3 * (neck - head.brow)).floor(); y <= neck; y++) {
+      final half = head.halfWidthAt(y.toDouble());
+      if (half != null && (jaw == null || half < jaw)) jaw = half;
+    }
+    return jaw ?? 0.25 * head.skull.width;
+  }
+
   /// Trapèzes et épaules du corps plus hauts que la tenue : le haut de la
   /// tenue est étiré, colonne par colonne, jusqu'à leur sommet (ligne lissée
-  /// sur 5 colonnes). Le cou, de sa largeur sous le menton, reste nu. Même
+  /// sur 5 colonnes). Le cou, sous la mâchoire, reste nu. Même
   /// calcul que `stretch_shoulders` dans `tool/sprites/preview.py`.
   void _stretchShoulders(
     RgbaImage img,
@@ -1051,20 +1086,12 @@ class SpriteComposer {
     final cx = body.head.skull.centre;
     final rise = (shoulderRiseRatio * span).round();
     final keepMin = math.max(2, (shoulderStretchRatio * span).round());
-    // Largeur du cou juste sous le menton (peau à moins de 3/4 de crâne de
-    // l'axe ; un contour au milieu ne la coupe pas).
-    final row = math.min(h - 1, neck + 2);
-    final reach = 0.75 * body.head.skull.width;
-    var left = cx.floor();
-    var right = cx.floor();
-    var found = false;
-    for (var x = 0; x < src.width && row < src.height; x++) {
-      if (src.alphaAt(x, row) != meta.skinAlpha) continue;
-      if ((x + 0.5 - cx).abs() > reach) continue;
-      if (!found || x < left) left = x;
-      if (!found || x > right) right = x;
-      found = true;
-    }
+    // Cou : sous la mâchoire (sa demi-largeur la plus étroite entre la
+    // bouche et le menton) ; au-delà, trapèzes et épaules, même en peau
+    // (minotaure).
+    final neckHalf = _jawHalf(body, neck);
+    final left = (cx - neckHalf).floor();
+    final right = (cx + neckHalf).floor();
     final tops = List<int?>.filled(w, null);
     for (var x = 0; x < w && x < src.width; x++) {
       if (x >= left - 1 && x <= right + 1) continue;
@@ -1387,10 +1414,11 @@ class SpriteComposer {
     return out;
   }
 
-  static double _medianLuminance(RgbaImage layer) {
+  static double _medianLuminance(RgbaImage layer, {int? only}) {
     final values = <double>[];
     for (var i = 0; i < layer.pixels.length; i += 4) {
       if (layer.pixels[i + 3] == 0) continue;
+      if (only != null && layer.pixels[i + 3] != only) continue;
       values.add(
         luminanceOf(layer.pixels[i], layer.pixels[i + 1], layer.pixels[i + 2]),
       );

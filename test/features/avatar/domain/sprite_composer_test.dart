@@ -258,6 +258,27 @@ void main() {
     expect(_px(out, 4, 3)[0], isNot(10));
   });
 
+  test('barbe dessinée avec son visage : peau teintée, traits intacts', () {
+    final beard = RgbaImage(10, 20)
+      // Barbe (teinte de la barbe), joue (peau) et œil (gardé tel quel).
+      ..pixels.setAll((4 * 10 + 4) * 4, [200, 50, 150, 255])
+      ..pixels.setAll((3 * 10 + 4) * 4, [200, 150, 100, 254])
+      ..pixels.setAll((2 * 10 + 4) * 4, [20, 30, 40, 249]);
+    final out = composer.compose(
+      const CharacterAppearance(
+        bodyId: 'human_male',
+        skinColor: 0xFF00FF00,
+        hairColor: 0,
+        beardColor: 0xFF5A371E,
+        beardId: 'b01',
+      ),
+      SpriteLayers(body: body, beard: beard),
+    );
+    expect(_px(out, 4, 3), [0, 255, 0, 255]);
+    expect(_px(out, 4, 2), [20, 30, 40, 255]);
+    expect(_px(out, 4, 4).take(3), isNot([200, 50, 150]));
+  });
+
   test('la frange laisse le visage dégagé et les cornes passent devant', () {
     final horned = RgbaImage(10, 20, Uint8List.fromList(body.pixels));
     // Corne à gauche du crâne, sur la ligne 1.

@@ -223,16 +223,18 @@ def head_half(b, y):
 def stretch_shoulders(canvas, marks, body, skin_px, b, neck, span):
     """Trapèzes et épaules du corps plus hauts que la tenue (minotaure) : le
     haut de la tenue est étiré, colonne par colonne, jusqu'à leur sommet
-    (comme l'appli). Le cou lui-même (sa largeur sous le menton) reste nu."""
+    (comme l'appli). Le cou, sous la mâchoire, reste nu."""
     H, W = canvas.shape[:2]
     cx = (b["skull"][0] + b["skull"][2]) / 2
     rise = round(SHOULDER_RISE * span)
     keep_min = max(2, round(SHOULDER_STRETCH * span))
     # Largeur du cou juste sous le menton.
-    row = skin_px[min(H - 1, neck + 2)]
-    reach = 0.75 * (b["skull"][2] - b["skull"][0])
-    xs = [x for x in range(W) if row[x] and abs(x + 0.5 - cx) <= reach]
-    left, right = (min(xs), max(xs)) if xs else (int(cx), int(cx))
+    # Cou : sous la mâchoire (sa demi-largeur la plus étroite entre la bouche
+    # et le menton) ; au-delà, trapèzes et épaules, même en peau (minotaure).
+    jaw = [head_half(b, y) for y in range(int(neck - 0.3 * (neck - b["brow"])), neck + 1)]
+    jaw = [w for w in jaw if w is not None]
+    half = min(jaw) if jaw else 0.25 * (b["skull"][2] - b["skull"][0])
+    left, right = int(np.floor(cx - half)), int(np.floor(cx + half))
     tops = [None] * W
     for x in range(W):
         if left - 1 <= x <= right + 1:

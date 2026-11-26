@@ -200,6 +200,12 @@ def _hue_sat_val(rgb: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     return h, np.where(mx > 0, d / (mx + 1e-6), 0), mx
 
 
+# Taille (pixels) à partir de laquelle une barbe couvre toute la bouche.
+FULL_BEARD_PIXELS = 700
+# Taille maximale (pixels) d'un trou bouché dans une grande barbe (bouche,
+# reflets) ; au-delà (entre deux tresses), c'est la chemise.
+MOUTH_HOLE_PIXELS = 30
+
 # Teinte de détourage des coiffures et barbes (magenta vif).
 KEY_HUE = 0.87
 
@@ -248,6 +254,15 @@ def key_layer(base: np.ndarray, edit: np.ndarray, hue: float | None = None,
         key &= np.isin(grown, list(keep))
     # Trous internes (reflets désaturés) et contour sombre d'un pixel.
     filled = ndimage.binary_fill_holes(key) & opaque
+    if not open_mouth and seed_rows is None and key.sum() > FULL_BEARD_PIXELS:
+        # Grande barbe à bouche couverte : les trous ouverts d'un pixel sur le
+        # bord (bouche, reflets) sont fermés aussi. Les petites (bouc,
+        # barbiche, guidon) gardent la bouche dégagée entre leurs morceaux.
+        holes = ndimage.binary_fill_holes(
+            ndimage.binary_closing(key, np.ones((3, 3)), iterations=2)) & ~key & opaque
+        parts, n = ndimage.label(holes)
+        sizes = ndimage.sum(holes, parts, range(1, n + 1))
+        filled |= np.isin(parts, [i + 1 for i, sz in enumerate(sizes) if sz <= MOUTH_HOLE_PIXELS])
     if open_mouth:
         # Barbe : les trous qui ne sont pas de la teinte clé (bouche, lèvres)
         # restent transparents, la bouche du visage apparaît.
@@ -261,12 +276,54 @@ def key_layer(base: np.ndarray, edit: np.ndarray, hue: float | None = None,
     return out
 
 
-def race_beard_layer(base: np.ndarray, edit: np.ndarray, face: bool = True) -> np.ndarray:
+# Pixels du visage d'une barbe dessinée avec son visage (nain) : gardés tels
+# quels dans l'appli (yeux, sourcils, contour), la peau prenant l'alpha de
+# peau pour être recolorée.
+FACE_KEEP_ALPHA = 249
+
+
+def beard_face(base: np.ndarray, edit: np.ndarray, sample: tuple[int, int],
+               chin: int) -> np.ndarray:
+    """Visage dessiné avec la barbe (nez au-dessus de la moustache, bouche à
+    sa place) : la tête de l'image générée, du sommet au menton, sur la
+    largeur de la tête du corps. Peau marquée par l'alpha de peau, le reste
+    (yeux, sourcils, contour) par FACE_KEEP_ALPHA."""
+    x0, top, x1, neck = head_box(base)
+    e = align(prealign(edit, base), base, slice(neck + 20, CANVAS_H))
+    out = np.zeros_like(e)
+    head = _head_region(e, chin + 1) & (e[..., 3] > 0)
+    margin = int(0.15 * (x1 - x0))
+    head[:, : max(0, x0 - margin)] = False
+    head[:, x1 + margin:] = False
+    out[head] = e[head]
+    # Peau : teinte du visage du corps, ombres et reflets compris ; les
+    # traits sombres (yeux, sourcils, contour) restent tels quels.
+    hh, ss, vv = _hue_sat_val(e.astype(float))
+    bh, bs, bv = _hue_sat_val(base.astype(float))
+    sx, sy = sample
+    h0 = float(np.median(bh[sy - 1: sy + 2, sx - 1: sx + 2]))
+    v0 = float(np.median(bv[sy - 1: sy + 2, sx - 1: sx + 2]))
+    dh = np.abs(((hh - h0 + 0.5) % 1) - 0.5)
+    skin = head & ((skin_mask(e, face_palette(base, sample), 34))
+                   | ((dh < 0.06) & (ss > 0.25) & (vv > 0.5 * v0))
+                   # Rougeurs (nez, pommettes) : plus rouges que la peau.
+                   | ((((hh - h0 + 0.5) % 1) - 0.5 > -0.12) & (((hh - h0 + 0.5) % 1) - 0.5 < 0)
+                      & (ss > 0.3) & (vv > 0.45 * v0)))
+    out[head, 3] = FACE_KEEP_ALPHA
+    out[skin, 3] = SKIN_ALPHA
+    # Franges magenta de la barbe (hors de son calque) : jamais posées.
+    key = (np.abs(((hh - 0.952 + 0.5) % 1) - 0.5) < 0.1) & (ss > 0.3)
+    out[key & ~skin] = 0
+    return out
+
+
+def race_beard_layer(base: np.ndarray, edit: np.ndarray, face: bool = True,
+                     open_mouth: bool = True) -> np.ndarray:
     """Barbe dessinée sur le corps d'une race : recalage grossier puis fin,
     tout le magenta (sans graine au-dessus du cou), bouche transparente ; les
     miettes détachées de la barbe (perles, reflets isolés) sont écartées."""
     lay = key_layer(base, prealign(edit, base), hue=0.952, tol=0.065, min_sat=0.15,
-                    seed_rows=None, open_mouth=True, face=face)
+                    seed_rows=None, open_mouth=open_mouth, face=face)
     m = lay[..., 3] > 0
     parts, n = ndimage.label(m, np.ones((3, 3)))
     if n > 1:
@@ -506,6 +563,17 @@ def body_skin(base: np.ndarray, sample: tuple[int, int], neck: int, skull_top: f
     hand_skin[hands:] = False
     hand_skin = ndimage.binary_opening(hand_skin, np.ones((3, 3)))
     skin = (cand & np.isin(labels, list(keep))) | hand_skin
+    # Reflets saturés de la peau autour du cou (nain) : même teinte que le
+    # visage, plus vive ; sinon ils gardent la couleur d'origine.
+    band = np.zeros(alpha.shape, bool)
+    band[max(0, neck - int(0.03 * h)): neck + int(0.15 * h)] = True
+    dh0 = np.abs(((hh - h0 + 0.5) % 1) - 0.5)
+    vivid = alpha & band & (dh0 < 0.04) & (ss > max(0.45, s0)) & (v > 0.8 * v0)
+    for _ in range(3):
+        grow = vivid & ndimage.binary_dilation(skin, np.ones((3, 3), bool)) & ~skin
+        if not grow.any():
+            break
+        skin |= grow
     # Encolure : la peau du cou et du poitrail dans le col, même séparée du
     # menton par un contour épais (minotaure, orque), si elle part du cou.
     col = np.zeros(alpha.shape, bool)
