@@ -48,9 +48,10 @@ BEARD_COUNT = 10
 # Races dont chaque barbe est générée sur leur propre visage (homme).
 RACE_BEARDS = ["dwarf", "gnome", "goblin", "minotaur", "orc"]
 # Barbes recalées sur le visage redessiné (le modèle grossit ou décale
-# souvent la tête), sauf pour le gnome : son grand visage de dessin animé
-# trompe le recalage, le recalage sur le corps y est plus juste.
-BODY_ALIGNED_BEARDS = {"gnome"}
+# souvent la tête), sauf pour le gnome et le nain : leur grand visage rond
+# trompe le recalage (barbes élargies), le recalage sur le corps y est plus
+# juste.
+BODY_ALIGNED_BEARDS = {"gnome", "dwarf"}
 # Races à cornes : les cornes passent devant la coiffure.
 HORNED = {"demon", "minotaur"}
 # Alpha des pixels d'un corps dessinés devant la coiffure (cornes).
@@ -63,6 +64,10 @@ ICON_MAX_H = 224
 FOOT_BAND = 0.075
 HAND_BAND = (0.05, 0.06)
 HAND_REACH = 0.07
+# Barbes dont la bouche reste couverte : le visage redessiné par la
+# génération (nain) n'a pas la bouche au même endroit que le corps, un trou
+# y montrerait la peau et la lèvre décalées.
+CLOSED_MOUTH_BEARDS = {"dwarf"}
 
 
 
@@ -254,7 +259,8 @@ def main() -> None:
         os.makedirs(os.path.join(OUT, "beards", race), exist_ok=True)
         for i in range(1, BEARD_COUNT + 1):
             lay = race_beard_layer(base, load(raw(f"beard_{race}_{i:02d}")),
-                                   face=race not in BODY_ALIGNED_BEARDS)
+                                   face=race not in BODY_ALIGNED_BEARDS,
+                                   open_mouth=race not in CLOSED_MOUTH_BEARDS)
             save(lay, os.path.join(OUT, "beards", race, f"b{i:02d}.png"))
     meta["raceBeards"] = list(RACE_BEARDS)
 

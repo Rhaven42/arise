@@ -778,19 +778,27 @@ class SpriteComposer {
       );
     }
     // Visage intact : le col d'une tenue ou d'un haut ne recouvre jamais la
-    // peau du visage au-dessus du menton.
+    // peau du visage au-dessus du menton, ni le contour du bas du visage
+    // (sur la largeur de la mâchoire : le menton du gnome repose sur ses
+    // épaules).
     if (outfit != null || layers.pieces.isNotEmpty) {
+      final cx = body.head.skull.centre;
+      final jaw = _jawHalf(body, neck);
       for (var y = 0; y <= neck && y < src.height; y++) {
+        final half = body.head.halfWidthAt(y.toDouble()) ?? jaw;
         for (var x = 0; x < src.width; x++) {
           final i = (y * src.width + x) * 4;
-          if (src.pixels[i + 3] != meta.skinAlpha) continue;
-          final (r, g, b) = tintPixel(
-            src.pixels[i],
-            src.pixels[i + 1],
-            src.pixels[i + 2],
-            body.skinRef,
-            a.skinColor,
-          );
+          final alpha = src.pixels[i + 3];
+          if (alpha == 0) continue;
+          var r = src.pixels[i];
+          var g = src.pixels[i + 1];
+          var b = src.pixels[i + 2];
+          if (alpha == meta.skinAlpha) {
+            (r, g, b) = tintPixel(r, g, b, body.skinRef, a.skinColor);
+          } else if (alpha == meta.frontAlpha ||
+              (x + 0.5 - cx).abs() > half + 1) {
+            continue;
+          }
           _put(out, x, y, r, g, b);
         }
       }
@@ -1034,6 +1042,18 @@ class SpriteComposer {
     }
   }
 
+  /// Demi-largeur de la mâchoire : la plus étroite du profil de la tête
+  /// entre la bouche et le menton.
+  static double _jawHalf(BodyMeta body, int neck) {
+    final head = body.head;
+    double? jaw;
+    for (var y = (neck - 0.3 * (neck - head.brow)).floor(); y <= neck; y++) {
+      final half = head.halfWidthAt(y.toDouble());
+      if (half != null && (jaw == null || half < jaw)) jaw = half;
+    }
+    return jaw ?? 0.25 * head.skull.width;
+  }
+
   /// Trapèzes et épaules du corps plus hauts que la tenue : le haut de la
   /// tenue est étiré, colonne par colonne, jusqu'à leur sommet (ligne lissée
   /// sur 5 colonnes). Le cou, sous la mâchoire, reste nu. Même
@@ -1054,13 +1074,7 @@ class SpriteComposer {
     // Cou : sous la mâchoire (sa demi-largeur la plus étroite entre la
     // bouche et le menton) ; au-delà, trapèzes et épaules, même en peau
     // (minotaure).
-    final head = body.head;
-    double? jaw;
-    for (var y = (neck - 0.3 * (neck - head.brow)).floor(); y <= neck; y++) {
-      final half = head.halfWidthAt(y.toDouble());
-      if (half != null && (jaw == null || half < jaw)) jaw = half;
-    }
-    final neckHalf = jaw ?? 0.25 * head.skull.width;
+    final neckHalf = _jawHalf(body, neck);
     final left = (cx - neckHalf).floor();
     final right = (cx + neckHalf).floor();
     final tops = List<int?>.filled(w, null);
