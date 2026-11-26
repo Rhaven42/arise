@@ -154,7 +154,7 @@
 - [x] Tenues, pièces et armes rangées par univers et matière ; filtres de la boutique et du sac
 - [x] Vignettes des tenues et pièces tirées des images générées ; barbes recalées sur le visage
 - [x] Pièces séparées retirées : seules restent les tenues complètes et les armes
-- [ ] Nouvelles tenues par univers et matière (crédits SpriteCook à recharger)
+- [x] Nouvelles tenues par univers et matière : 10 tenues le 26/11/2026 (4 Pirate, 2 Viking, 2 Magie, 2 Médiéval rigolotes)
 - [ ] Retirer `ARISE_UNLOCK_WORLDS` de l'APK de la CI une fois les univers vérifiés
 - [x] Musiques Pirate (ouverture, Système, boutique)
 - [ ] Musiques Viking manquantes (ouverture, boutique, level up) et jingle Pirate

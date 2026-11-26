@@ -2244,5 +2244,125 @@
   "asset_id": "1e0d8b6a-f23c-480f-9bdc-e0f65bd88827",
   "sha12": "564625121757",
   "label": "north_bear_hide large"
+ },
+ "armor_arcane_alchemist_large": {
+  "asset_id": "b75ee75e-559e-4387-a333-a2b289c379b9",
+  "sha12": "63fe2598a766",
+  "label": "arcane_alchemist large"
+ },
+ "armor_arcane_rune_mail_large": {
+  "asset_id": "7332c2dd-49d4-4d05-b97f-6ce99c0a51a1",
+  "sha12": "c74f07be80c2",
+  "label": "arcane_rune_mail large"
+ },
+ "armor_jester_motley_large": {
+  "asset_id": "3c5edcc6-45b6-48fa-aeeb-d24250a2c2d8",
+  "sha12": "ce27f48b231f",
+  "label": "jester_motley large"
+ },
+ "armor_scrap_knight_large": {
+  "asset_id": "0add85cf-18a3-4377-833a-4a7fdf6222d4",
+  "sha12": "1490fe1dc9d8",
+  "label": "scrap_knight large"
+ },
+ "armor_sea_deckhand_stocky": {
+  "asset_id": "897ab532-9c89-4b3d-8e07-428f7ca4a024",
+  "sha12": "34c91af0d632",
+  "label": "sea_deckhand stocky"
+ },
+ "armor_sea_corsair_stocky": {
+  "asset_id": "b5a32ddb-8d35-4955-8276-77dfc162d225",
+  "sha12": "5ae3f6bdb25e",
+  "label": "sea_corsair stocky"
+ },
+ "armor_sea_barnacle_mail_stocky": {
+  "asset_id": "7f40194e-dd74-44a0-877f-bbb105e92896",
+  "sha12": "646d69026c36",
+  "label": "sea_barnacle_mail stocky"
+ },
+ "armor_sea_kraken_plate_stocky": {
+  "asset_id": "b2871ac1-6f05-4747-a34f-18ad6d3a6027",
+  "sha12": "d92672e32621",
+  "label": "sea_kraken_plate stocky"
+ },
+ "armor_north_wool_tunic_stocky": {
+  "asset_id": "96c1343b-5557-4826-bfed-7ac53a2a0a5d",
+  "sha12": "e7f6a38ad81b",
+  "label": "north_wool_tunic stocky"
+ },
+ "armor_north_bear_hide_stocky": {
+  "asset_id": "dee0209c-4e1e-4d1a-a9c9-b0366db804ae",
+  "sha12": "43ad2e166d73",
+  "label": "north_bear_hide stocky"
+ },
+ "armor_arcane_alchemist_stocky": {
+  "asset_id": "94c60365-106d-485c-bdd8-57250f16669a",
+  "sha12": "9fedcb28fde0",
+  "label": "arcane_alchemist stocky"
+ },
+ "armor_arcane_rune_mail_stocky": {
+  "asset_id": "9b71de72-9008-45a9-8799-1bb295ad527b",
+  "sha12": "9abbceda2efb",
+  "label": "arcane_rune_mail stocky"
+ },
+ "armor_jester_motley_stocky": {
+  "asset_id": "999e33af-da1f-4509-a74d-33593b7e7b87",
+  "sha12": "76d61f104f52",
+  "label": "jester_motley stocky"
+ },
+ "armor_scrap_knight_stocky": {
+  "asset_id": "1697a2a8-26bc-41b7-886a-73bbbfc06aa4",
+  "sha12": "4a82c6f8d961",
+  "label": "scrap_knight stocky"
+ },
+ "armor_sea_deckhand_small": {
+  "asset_id": "18c65797-921d-45eb-8e87-17b15bd2957a",
+  "sha12": "2dd568678346",
+  "label": "sea_deckhand small"
+ },
+ "armor_sea_corsair_small": {
+  "asset_id": "15e973da-d4ba-44c7-a2f7-003e8f7c9523",
+  "sha12": "67eac363740b",
+  "label": "sea_corsair small"
+ },
+ "armor_sea_barnacle_mail_small": {
+  "asset_id": "6b9bbd07-0876-44e3-9a75-52aa30d94bb6",
+  "sha12": "180b1bd1f95c",
+  "label": "sea_barnacle_mail small"
+ },
+ "armor_sea_kraken_plate_small": {
+  "asset_id": "b026ffdd-a3ab-468d-ac81-aece91fe3c66",
+  "sha12": "736c12ab997b",
+  "label": "sea_kraken_plate small"
+ },
+ "armor_north_wool_tunic_small": {
+  "asset_id": "79272c29-9c60-4f19-8f46-9fb285e64fb7",
+  "sha12": "2fab8d839137",
+  "label": "north_wool_tunic small"
+ },
+ "armor_north_bear_hide_small": {
+  "asset_id": "0db22f37-75da-4a87-bf89-ea1bae3e6deb",
+  "sha12": "22fe7764a409",
+  "label": "north_bear_hide small"
+ },
+ "armor_arcane_alchemist_small": {
+  "asset_id": "8446ab93-349f-4c2c-a9a4-70be4c2f0ece",
+  "sha12": "9673724840aa",
+  "label": "arcane_alchemist small"
+ },
+ "armor_arcane_rune_mail_small": {
+  "asset_id": "fcc91294-2e85-4deb-b731-43b8d286353d",
+  "sha12": "afc51a125155",
+  "label": "arcane_rune_mail small"
+ },
+ "armor_jester_motley_small": {
+  "asset_id": "296ece07-5130-4827-988a-b58904426f9f",
+  "sha12": "8c75687d41ea",
+  "label": "jester_motley small"
+ },
+ "armor_scrap_knight_small": {
+  "asset_id": "27992297-ff42-4fac-a612-71e6f62785b2",
+  "sha12": "52db67173b5f",
+  "label": "scrap_knight small"
  }
 }
