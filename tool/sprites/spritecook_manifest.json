@@ -2114,5 +2114,135 @@
   "asset_id": "9f1805d4-c011-4fdf-ae85-67b2ade579b5",
   "sha12": "a82ef4334491",
   "label": "fond création"
+ },
+ "armor_sea_deckhand_mm": {
+  "asset_id": "ff0853ac-1447-4369-8321-752651d0aa6a",
+  "sha12": "4d339302eed0",
+  "label": "sea_deckhand mm"
+ },
+ "armor_sea_corsair_mm": {
+  "asset_id": "a154de18-7bde-4156-b015-d4ef29b7bcf2",
+  "sha12": "bc49662303e5",
+  "label": "sea_corsair mm"
+ },
+ "armor_sea_barnacle_mail_mm": {
+  "asset_id": "d5318dfa-2b77-4d02-9f00-ae303ac5a4b8",
+  "sha12": "379ba44f9bc9",
+  "label": "sea_barnacle_mail mm"
+ },
+ "armor_sea_kraken_plate_mm": {
+  "asset_id": "fd590412-b225-463c-9583-8b84591327ec",
+  "sha12": "fc60f2114fe0",
+  "label": "sea_kraken_plate mm"
+ },
+ "armor_north_wool_tunic_mm": {
+  "asset_id": "da32e0dc-92c0-4489-8d12-ac93d23bb84e",
+  "sha12": "d864ac4120d0",
+  "label": "north_wool_tunic mm"
+ },
+ "armor_north_bear_hide_mm": {
+  "asset_id": "98f72ca7-8fc0-4289-9ffd-0d117f2f954d",
+  "sha12": "be418316359c",
+  "label": "north_bear_hide mm"
+ },
+ "armor_arcane_alchemist_mm": {
+  "asset_id": "845dc913-4efa-4890-95b4-6e5092b6fea7",
+  "sha12": "96057d0088b9",
+  "label": "arcane_alchemist mm"
+ },
+ "armor_arcane_rune_mail_mm": {
+  "asset_id": "66e387ad-b455-4e4b-b057-d62bb22d8d29",
+  "sha12": "96cf78c3ec29",
+  "label": "arcane_rune_mail mm"
+ },
+ "armor_jester_motley_mm": {
+  "asset_id": "cf8742d2-e3b7-4bf3-bc0c-bfcf6e2b40d5",
+  "sha12": "9a5058f30867",
+  "label": "jester_motley mm"
+ },
+ "armor_scrap_knight_mm": {
+  "asset_id": "b1986881-d9bc-4e02-906c-a2f350cc4a19",
+  "sha12": "5884ba7ada76",
+  "label": "scrap_knight mm"
+ },
+ "armor_sea_deckhand_mf": {
+  "asset_id": "669918f1-3857-4875-9f19-7040794a62cb",
+  "sha12": "28e892717d5d",
+  "label": "sea_deckhand mf"
+ },
+ "armor_sea_corsair_mf": {
+  "asset_id": "370c26bc-42f7-427b-b80e-22a4a3f4b67c",
+  "sha12": "ad3871c25d1b",
+  "label": "sea_corsair mf"
+ },
+ "armor_sea_barnacle_mail_mf": {
+  "asset_id": "056b8f46-1b5e-4fd2-ba82-f60e3f6dae3e",
+  "sha12": "2325485de55c",
+  "label": "sea_barnacle_mail mf"
+ },
+ "armor_sea_kraken_plate_mf": {
+  "asset_id": "efcbe886-013a-4fe9-a3f9-eab7983aa4cd",
+  "sha12": "d37f679337bb",
+  "label": "sea_kraken_plate mf"
+ },
+ "armor_north_wool_tunic_mf": {
+  "asset_id": "a8207849-ffa6-401e-b9d6-e672c7240259",
+  "sha12": "a01359b1dbe2",
+  "label": "north_wool_tunic mf"
+ },
+ "armor_north_bear_hide_mf": {
+  "asset_id": "045cca8d-51c4-4863-b1c0-5dd67dd7a16a",
+  "sha12": "3e453dcb6f34",
+  "label": "north_bear_hide mf"
+ },
+ "armor_arcane_alchemist_mf": {
+  "asset_id": "c1f57835-6f69-4341-a260-bbf919d6a7dd",
+  "sha12": "1c61ebe77453",
+  "label": "arcane_alchemist mf"
+ },
+ "armor_arcane_rune_mail_mf": {
+  "asset_id": "4aeaa64c-0f7c-4599-b82a-622fb862f108",
+  "sha12": "03d464e13a5e",
+  "label": "arcane_rune_mail mf"
+ },
+ "armor_jester_motley_mf": {
+  "asset_id": "fcf6b6ee-b422-4901-950b-7b9a004d0933",
+  "sha12": "be9593ddd7b5",
+  "label": "jester_motley mf"
+ },
+ "armor_scrap_knight_mf": {
+  "asset_id": "62e74293-d965-44cd-bf8f-5de8cda5b444",
+  "sha12": "7d248983e9c1",
+  "label": "scrap_knight mf"
+ },
+ "armor_sea_deckhand_large": {
+  "asset_id": "624a844b-7eab-4b48-88c3-cfb847e9ecd3",
+  "sha12": "5bbc83333da2",
+  "label": "sea_deckhand large"
+ },
+ "armor_sea_corsair_large": {
+  "asset_id": "94841a4e-7c66-41e2-8581-9144d536ae54",
+  "sha12": "89b5b65dfa6e",
+  "label": "sea_corsair large"
+ },
+ "armor_sea_barnacle_mail_large": {
+  "asset_id": "e05f5fcd-752f-4f2a-a5b5-d60171a85cc9",
+  "sha12": "ca05f5b2ebbd",
+  "label": "sea_barnacle_mail large"
+ },
+ "armor_sea_kraken_plate_large": {
+  "asset_id": "52141608-002a-4ac6-8d41-b9d69f200860",
+  "sha12": "113eeb07c98e",
+  "label": "sea_kraken_plate large"
+ },
+ "armor_north_wool_tunic_large": {
+  "asset_id": "6b821023-0209-4ebd-8abe-48305dbcdda2",
+  "sha12": "f4e4b04a1756",
+  "label": "north_wool_tunic large"
+ },
+ "armor_north_bear_hide_large": {
+  "asset_id": "1e0d8b6a-f23c-480f-9bdc-e0f65bd88827",
+  "sha12": "564625121757",
+  "label": "north_bear_hide large"
  }
 }
